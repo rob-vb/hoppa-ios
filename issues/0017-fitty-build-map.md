@@ -44,12 +44,25 @@ real**, and nothing after that is worth doing before it.
     run a simulator or open Xcode. Swift sources, the data model and tests are written here;
     **compiling, running and looking at the app happen on the Mac**, and build errors come back
     through Rob. Plan tickets so that a session's output is something he can paste in and run.
+  - **How the code travels: a private GitHub remote.** The charter above named two machines and
+    never said how anything gets between them — and it turned out nothing did. The agent works on
+    a **VPS**, not on the Mac, and this repo had no remote at all, so the first session that
+    produced something to run had nothing to run it with. Found while working
+    [An empty app on the phone](0018-an-empty-app-on-the-phone.md).
+    The loop, from here on: **the agent commits and pushes on the VPS; Rob pulls on the Mac,
+    builds, and pushes whatever Xcode changed; the agent pulls it back.** Two-way, because Xcode
+    generates files — `project.pbxproj` above all — that the agent has to read and patch. A
+    session that writes Swift is not finished until it has pushed.
   - **`SPEC.md` §8.2 is the known-defect list.** The `Fitty` module in
     `design/0007-logging/fitty-workout-logging.html` predates three later tickets and is wrong in
     eight named ways. The spec is right and the code is wrong. Fix them in the lift; never port a
     defect forward.
-  - The app is called **Fitty** here, as a working name. The definitive name is out of scope, as
-    it was on the design map.
+  - ~~The app is called **Fitty** here, as a working name. The definitive name is out of scope, as
+    it was on the design map.~~ **Superseded.** Rob named the app **Hoppa** while answering
+    [An empty app on the phone](0018-an-empty-app-on-the-phone.md); the Xcode project, the target
+    and the bundle id `com.robvb.hoppa` are already Hoppa, and the rest of the repo catches up in
+    [The app is called Hoppa](0021-the-app-is-called-hoppa.md). This map keeps its own title until
+    that ticket runs.
 
 ## Decisions so far
 
@@ -75,15 +88,25 @@ real**, and nothing after that is worth doing before it.
 - **Build order across the five flows, and what "done" means for each.** Probably logging first,
   because it is the screen with the most rules behind it — but that is a guess until the model
   exists.
+- **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
+  machines edit the same Xcode project file — the agent by patching it, Xcode by regenerating it.
+  It is a merge conflict waiting to happen, in a file no one wants to hand-merge. Not sharp until
+  the loop has run a few times and shown which edits actually collide.
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.
 
 ## Out of scope
 
-- **The App Store, TestFlight and other users** — with everything they drag in: the definitive
-  name, an icon, screenshots, a privacy policy, a support address, App Review. A later effort, and
-  a much easier one once one lifter has trained with the app for a month.
+- **The App Store, TestFlight and other users** — with everything they drag in: an icon,
+  screenshots, a privacy policy, a support address, App Review, and whether the name `Hoppa`
+  survives an App Store name check. A later effort, and a much easier one once one lifter has
+  trained with the app for a month.
+  **Rob has stated that publishing is the goal**, and *"launch soon after"* training with it
+  himself. That does not move this map's destination — it is why the paid Apple Developer route
+  was taken at [An empty app on the phone](0018-an-empty-app-on-the-phone.md) rather than a free
+  Apple ID, and it is a reason for later tickets not to paint the launch into a corner. The launch
+  itself stays a fresh effort with its own map.
 - **iCloud sync, accounts and any backend.** Settled at charter: local only.
 - **User-set plate colours.** `SPEC.md` §10 attaches a deadline to it — before the app is public —
   and this map never goes public. It stays where the design map left it.

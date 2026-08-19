@@ -4,7 +4,7 @@ title: An empty app on the phone
 parent: 17
 labels: [wayfinder:task]
 status: open
-assignee:
+assignee: henk
 blocked-by: []
 ---
 
