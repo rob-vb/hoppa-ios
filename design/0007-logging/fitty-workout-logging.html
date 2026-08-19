@@ -1,0 +1,1358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fitty — Workout logging prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --floor:#0E0F10; --card:#17191B; --line:#26292C; --steel:#9BA1A7;
+    --dim:#8D9296; --text:#F4F1EC; --green:#2E9E52;
+    --page:#141517; --panel:#1B1D1F; --panel-line:#2B2E31;
+    --display:Anton, Haettenschweiler, Impact, sans-serif;
+    --body:'IBM Plex Sans', system-ui, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--text);font-family:var(--body);
+       font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+  a{color:var(--steel)}
+
+  header.top{padding:28px 28px 20px;border-bottom:1px solid var(--panel-line);max-width:1500px;margin:0 auto}
+  .tag{display:inline-block;border:1px solid #7A4E23;color:#D9974A;border-radius:2px;
+       padding:3px 8px;font-size:10px;font-weight:600;letter-spacing:.14em}
+  h1{font-family:var(--display);font-size:34px;letter-spacing:.01em;margin:12px 0 8px;text-transform:uppercase}
+  header.top p{margin:0;max-width:78ch;color:#C9CDD1;font-size:14px;line-height:1.6}
+  header.top p + p{margin-top:8px;color:var(--dim)}
+
+  main{display:flex;gap:28px;align-items:flex-start;padding:24px 28px 80px;max-width:1500px;margin:0 auto}
+  .phone-col{position:sticky;top:24px;flex:0 0 auto}
+  .phone{width:390px;height:844px;background:var(--floor);border-radius:6px;
+         border:1px solid #2B2E31;overflow:hidden;position:relative;
+         box-shadow:0 24px 60px rgba(0,0,0,.55)}
+  .under{margin-top:10px;width:390px;font-size:11px;color:var(--dim);letter-spacing:.06em;line-height:1.6}
+  .panel-col{flex:1 1 0;min-width:380px;display:flex;flex-direction:column;gap:20px}
+
+  section.box{background:var(--panel);border:1px solid var(--panel-line);border-radius:3px}
+  section.box > h2{font-family:var(--display);font-size:14px;letter-spacing:.12em;text-transform:uppercase;
+      margin:0;padding:14px 16px;border-bottom:1px solid var(--panel-line);color:#C9CDD1}
+  .box-body{padding:16px}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:6px;padding:12px 16px;border-bottom:1px solid var(--panel-line)}
+  .tab{background:transparent;border:1px solid var(--panel-line);color:var(--dim);border-radius:2px;
+       padding:7px 10px;font-family:var(--body);font-size:11.5px;cursor:pointer;letter-spacing:.02em}
+  .tab:hover{color:var(--text);border-color:#41464A}
+  .tab[aria-selected="true"]{background:var(--text);color:#0E0F10;border-color:var(--text);font-weight:600}
+
+  .blurb{font-size:13.5px;line-height:1.65;color:#C9CDD1;margin:0 0 6px}
+  .blurb b{color:var(--text)}
+  .watch{font-size:12.5px;line-height:1.6;color:var(--dim);margin:0 0 14px;
+         border-left:2px solid #41464A;padding-left:10px}
+  .steps{display:flex;flex-direction:column;gap:6px}
+  .step{display:flex;align-items:center;gap:10px;text-align:left;width:100%;
+        background:#212427;border:1px solid var(--panel-line);color:#C9CDD1;border-radius:2px;
+        padding:10px 12px;font-family:var(--body);font-size:13px;cursor:pointer}
+  .step:hover:not(:disabled){border-color:#5A6064;color:var(--text)}
+  .step:disabled{opacity:.34;cursor:default}
+  .step .n{font-family:var(--display);font-size:13px;color:var(--dim);width:16px;flex:0 0 auto}
+  .step.current{border-color:var(--text);background:#292D30;color:var(--text)}
+  .step.current .n{color:var(--text)}
+  .step.done{opacity:.45}
+  .step.done .n::after{content:' ✓';color:var(--green)}
+
+  .free{display:flex;flex-wrap:wrap;gap:6px}
+  .free button{background:#212427;border:1px solid var(--panel-line);color:#C9CDD1;border-radius:2px;
+       padding:8px 11px;font-family:var(--body);font-size:12px;cursor:pointer}
+  .free button:hover:not(:disabled){border-color:#5A6064;color:var(--text)}
+  .free button:disabled{opacity:.3;cursor:default}
+  .free .danger{border-color:#5A3230;color:#D98A85}
+
+  .state-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:12.5px;margin-bottom:16px}
+  .state-grid dt{color:var(--dim);letter-spacing:.06em;text-transform:uppercase;font-size:10.5px;padding-top:2px}
+  .state-grid dd{margin:0;color:var(--text)}
+  table.ex{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.ex th{text-align:left;color:var(--dim);font-weight:500;font-size:10px;letter-spacing:.12em;
+      text-transform:uppercase;padding:0 8px 7px 0;border-bottom:1px solid var(--panel-line)}
+  table.ex td{padding:8px 8px 8px 0;border-bottom:1px solid #232628;vertical-align:top}
+  .pill{display:inline-block;border-radius:2px;padding:2px 6px;font-size:10px;font-weight:600;letter-spacing:.08em}
+  .pill.open{border:1px solid #41464A;color:var(--steel)}
+  .pill.completed{border:1px solid var(--green);color:var(--green)}
+  .pill.skipped{border:1px solid #41464A;color:#5F6469}
+  .pill.oneoff{border:1px solid #5A6064;color:var(--steel);margin-left:6px}
+  .up{color:var(--green);font-weight:600}
+  .flat{color:var(--dim)}
+  .events{margin:14px 0 0;padding:0;list-style:none;font-family:var(--mono);font-size:11.5px;
+          max-height:190px;overflow:auto}
+  .events li{padding:4px 0;color:var(--dim);border-bottom:1px solid #202325}
+  .events li:first-child{color:var(--text)}
+  .events li .t{color:#5F6469;margin-right:8px}
+
+  ul.react{margin:0;padding-left:18px;font-size:13px;line-height:1.75;color:#C9CDD1}
+  ul.react b{color:var(--text)}
+  code{font-family:var(--mono);font-size:.92em;color:var(--steel)}
+
+  /* ---------- phone internals ---------- */
+  .screen{width:390px;height:844px;padding:54px 20px 22px;display:flex;flex-direction:column;
+          gap:16px;position:relative;font-size:14px}
+  .rowbetween{display:flex;align-items:baseline;justify-content:space-between}
+  .kicker{font-family:var(--display);font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+  .label{font-size:10.5px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+  .exname{font-family:var(--display);font-size:31px;line-height:.94;letter-spacing:.005em;text-transform:uppercase}
+  .meta{font-size:10.5px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+  .bignum{font-family:var(--display);font-size:88px;line-height:.78;letter-spacing:-.01em}
+  .unit{font-size:15px;font-weight:600;letter-spacing:.14em;color:var(--dim)}
+  .chip{border-radius:2px;padding:3px 7px;font-size:10px;font-weight:600;letter-spacing:.1em;
+        display:inline-block;white-space:nowrap}
+  .chip.steel{border:1px solid #3A3E42;color:var(--steel)}
+  .chip.green{border:1px solid var(--green);color:var(--green)}
+  .setrow{display:flex;align-items:center;gap:14px;height:50px;padding:0 14px;
+          border:1px solid var(--line);border-radius:3px;background:var(--card)}
+  .setrow.next{border:1.5px solid var(--text);background:transparent}
+  .setrow .n{font-family:var(--display);font-size:15px;color:var(--dim);width:14px}
+  .setrow.next .n{color:var(--text)}
+  .bottom{display:flex;gap:9px}
+  .bkey{width:62px;height:64px;flex:0 0 auto;border:1px solid #3A3E42;border-radius:3px;
+        display:flex;align-items:center;justify-content:center;font-size:26px;color:#C9CDD1;
+        cursor:pointer;user-select:none;background:transparent}
+  .bkey:active{background:#202325}
+  .bmain{flex:1 1 auto;height:64px;background:var(--text);color:#0E0F10;border-radius:3px;
+         display:flex;align-items:center;justify-content:center;font-family:var(--display);
+         font-size:22px;letter-spacing:.02em;cursor:pointer;border:none;padding:0 8px;text-align:center}
+  .bmain:active{background:#D8D5D0}
+  .bmain.ghost{background:transparent;border:1px solid #3A3E42;color:var(--text)}
+  .tapzone{cursor:pointer}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#141618;border-top:1px solid var(--line);
+         padding:20px 20px 24px;display:flex;flex-direction:column;gap:14px;z-index:3}
+  .scrim{position:absolute;inset:0;background:rgba(6,7,8,.66);z-index:2}
+  .sheet h3{font-family:var(--display);font-size:19px;margin:0;letter-spacing:.02em;text-transform:uppercase}
+  .sheet p{margin:0;font-size:13px;color:var(--dim);line-height:1.5}
+  .sheetbtn{height:54px;border:1px solid #3A3E42;border-radius:3px;background:transparent;color:var(--text);
+            font-family:var(--body);font-size:15px;cursor:pointer;display:flex;align-items:center;
+            justify-content:space-between;padding:0 16px;width:100%;text-align:left}
+  .sheetbtn:active{background:#1D2022}
+  .sheetbtn.primary{background:var(--text);color:#0E0F10;border-color:var(--text);
+                    font-family:var(--display);font-size:18px;justify-content:center;letter-spacing:.02em}
+  .sheetbtn.danger{border-color:#5A3230;color:#D98A85}
+  .sheetbtn .sub{font-size:11px;color:var(--dim)}
+  .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .keypad button{height:52px;background:var(--card);border:1px solid var(--line);border-radius:3px;
+       color:var(--text);font-family:var(--display);font-size:21px;cursor:pointer}
+  .keypad button:active{background:#212427}
+  .drawer{position:absolute;inset:0;background:var(--floor);z-index:4;padding:54px 20px 22px;
+          display:flex;flex-direction:column;gap:14px}
+  .exrow{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--line);
+         border-radius:3px;background:var(--card);cursor:pointer}
+  .exrow.current{border-color:var(--text)}
+  .exrow .nm{font-size:14px;line-height:1.25}
+  .barwrap{position:relative;height:118px;display:flex;align-items:center;justify-content:center}
+  .barshaft{position:absolute;left:8px;right:8px;height:9px;border-radius:2px;
+            background:linear-gradient(180deg,#C3C8CD 0%,#8A9096 45%,#5C6165 100%)}
+  .plates{position:relative;display:flex;align-items:center;gap:4px}
+  .cap{display:flex;align-items:baseline;justify-content:space-between;font-size:11px;
+       letter-spacing:.06em;color:var(--dim)}
+  .cap .right{color:var(--text);font-weight:600}
+  .closest{display:flex;align-items:center;gap:9px;font-size:11px;color:var(--dim);letter-spacing:.06em}
+  .scroll{overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .flexfill{flex:1 1 auto;min-height:0}
+  .center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <span class="tag">PROTOTYPE — THROWAWAY</span>
+  <h1>Fitty — logging a workout</h1>
+  <p><b>The question (ticket 0007):</b> does logging a Workout feel right under the thumb? The phone on the left runs the
+  real rules from the map: free pick of the Workout Day, explicit start, one-tap set confirmation at Target Reps with
+  <code>−</code> / <code>+</code>, the Plate Breakdown always in view, a count-up Rest Timer that starts itself after
+  every Set, weight changes on the Exercise card, and progression applied at Finish — never offered.</p>
+  <p>Nothing is saved. Every number you see comes from one pure state module (<code>Fitty</code>), so the logic can lift
+  out of this page later. Drive it by hand on the phone, or run a walkthrough on the right. The Workout Summary is a
+  placeholder here — it is designed in ticket 0009.</p>
+</header>
+
+<main>
+  <div class="phone-col">
+    <div class="phone" id="phone"></div>
+    <div class="under">Tap anything on the screen. The weight, the exercise counter and the <code>⋯</code> menu all work.</div>
+  </div>
+
+  <div class="panel-col">
+
+    <section class="box">
+      <h2>Guided walkthroughs</h2>
+      <div class="tabs" id="tabs" role="tablist"></div>
+      <div class="box-body" id="scenario"></div>
+    </section>
+
+    <section class="box">
+      <h2>Free play</h2>
+      <div class="box-body"><div class="free" id="free"></div></div>
+    </section>
+
+    <section class="box">
+      <h2>Current state</h2>
+      <div class="box-body" id="state"></div>
+    </section>
+
+    <section class="box">
+      <h2>What I need you to react to</h2>
+      <div class="box-body">
+        <ul class="react">
+          <li><b>Changing the weight.</b> Tap the big number. A keypad sheet opens with <code>−</code> / <code>+</code> at
+          the Increment. Raising it closes at once. Lowering it asks <i>Just today, or from now on?</i> Is a keypad right
+          in a gym, or should it be <code>−</code>/<code>+</code> steps only?</li>
+          <li><b>Marking a One-off Weight.</b> A steel <code>ONE-OFF</code> chip sits beside the unit and every Set row
+          logged under it carries the same chip. Too loud? Not loud enough?</li>
+          <li><b>The rule chip under the weight.</b> Steel <code>+2.5 IF ALL 12</code> while you log, green
+          <code>→ 75 NEXT TIME</code> the moment the Exercise completes. It states a fact; it asks nothing.</li>
+          <li><b>Finishing an Exercise.</b> The last Set completes it automatically, then the big button becomes
+          <code>NEXT: BARBELL ROW</code>. One tap moves on. Should it jump by itself instead?</li>
+          <li><b>Reps over the range.</b> <code>14 reps</code> shows plain beside <code>8–12</code>, no colour, and the
+          weight still goes up by one Increment.</li>
+          <li><b>The exercise list.</b> Tap <code>3 / 5 ▾</code>. Open, Completed and Skipped read differently, and
+          leaving an Open Exercise costs nothing.</li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+/* ============================================================================
+   Fitty — pure state module.
+   No DOM, no timers, no Date.now(). Every action that needs a clock takes `at`.
+   This is the part worth keeping; the page below it is throwaway.
+   ========================================================================= */
+const Fitty = (function () {
+
+  const LBS_PER_KG = 2.2046226218;
+
+  // ---- the user's own program (he is the first test user) -------------------
+  function template() {
+    return [
+      { name: 'Smith machine bench press', equipment: 'smith',      unit: 'kg',
+        weight: 72.5, base: 15, sets: 3, repMin: 8, repMax: 12,
+        mode: 'progressive-overload', increment: 2.5 },
+      { name: 'Barbell row',               equipment: 'barbell',    unit: 'kg',
+        weight: 60, base: 20, sets: 3, repMin: 8, repMax: 10,
+        mode: 'progressive-overload', increment: 2.5 },
+      { name: 'Lat pulldown',              equipment: 'stack',      unit: 'lbs',
+        weight: 100, blockSize: 10, sets: 3, repMin: 10, repMax: 12,
+        mode: 'microloading', microplate: 1, microplateUnit: 'kg', microplates: 1 },
+      { name: 'Dumbbell shoulder press',   equipment: 'dumbbell',   unit: 'kg',
+        weight: 22.5, sets: 3, repMin: 8, repMax: 12,
+        mode: 'progressive-overload', increment: 2.5 },
+      { name: 'Weighted chin-up',          equipment: 'bodyweight', unit: 'kg',
+        weight: 15, sets: 3, repMin: 6, repMax: 8,
+        mode: 'progressive-overload', increment: 2.5 }
+    ];
+  }
+
+  function initialState() {
+    return {
+      program: {
+        name: 'Upper / Lower',
+        defaultUnit: 'kg',
+        mode: 'progressive-overload',
+        // The microplates the user actually owns. 1.25 is a normal plate in his
+        // gym, not a microplate — which is why the accumulation question is open.
+        inventory: { unit: 'kg', plates: [20, 15, 10, 5, 2.5, 1.25], microplates: [1, 0.75, 0.5, 0.25] }
+      },
+      days: [
+        { name: 'Upper A', last: '4 days ago' },
+        { name: 'Lower A', last: '2 days ago' },
+        { name: 'Upper B', last: '9 days ago' },
+        { name: 'Lower B', last: '11 days ago' }
+      ],
+      screen: 'days',      // days | logging | summary
+      workout: null,
+      overlay: null,       // {kind, ...}
+      draft: null,         // weight keypad buffer
+      events: []
+    };
+  }
+
+  // ---- derived, pure --------------------------------------------------------
+
+  // The weight this Exercise is performed at right now: a One-off Weight wins.
+  function effective(ex) { return ex.oneOff != null ? ex.oneOff : ex.weight; }
+
+  // Threshold a Set must meet for this Exercise's Progression Mode.
+  function threshold(ex) { return ex.mode === 'microloading' ? ex.repMin : ex.repMax; }
+
+  // Pre-filled rep count for the next Set: always the top of the Rep Range.
+  function targetReps(ex) { return ex.repMax; }
+
+  function openCount(w) { return w.exercises.filter(e => e.state === 'open').length; }
+
+  function nextOpenIndex(w, from) {
+    const n = w.exercises.length;
+    for (let i = 1; i <= n; i++) {
+      const j = (from + i) % n;
+      if (w.exercises[j].state === 'open') return j;
+    }
+    return -1;
+  }
+
+  // Does this Exercise progress? All planned Sets, every Set at threshold,
+  // and never under a One-off Weight.
+  function progression(ex) {
+    const done = ex.sets.length === ex.sets_planned;
+    const all  = ex.sets.length > 0 && ex.sets.every(s => s.reps >= threshold(ex));
+    const ok   = ex.state === 'completed' && done && all && ex.oneOff == null;
+    if (!ok) return { progresses: false, from: ex.weight, to: ex.weight };
+    if (ex.mode === 'microloading') {
+      return { progresses: true, from: ex.weight, to: ex.weight,
+               fromPlates: ex.microplates, toPlates: ex.microplates + 1 };
+    }
+    return { progresses: true, from: ex.weight, to: round(ex.weight + ex.increment) };
+  }
+
+  function round(n) { return Math.round(n * 1000) / 1000; }
+
+  // ---- plate breakdown ------------------------------------------------------
+
+  // Greedy over the plate sizes the Plate Inventory has switched on. The
+  // inventory holds no count of pairs, so every size is unlimited.
+  function greedy(perSide, sizes) {
+    const out = []; let left = round(perSide);
+    for (const s of sizes) { while (left >= s - 1e-9) { out.push(s); left = round(left - s); } }
+    return { plates: out, left: round(left) };
+  }
+
+  // Every buildable per-side load is a multiple of the smallest plate.
+  function closestBuildable(perSide, sizes) {
+    const step = sizes[sizes.length - 1];
+    const down = Math.floor(perSide / step) * step;
+    const up   = down + step;
+    const dd = perSide - down, du = up - perSide;
+    return round(du < dd ? up : down);      // tie rounds down
+  }
+
+  function breakdown(ex, inv) {
+    const w = effective(ex);
+    if (ex.equipment === 'barbell' || ex.equipment === 'smith' || ex.equipment === 'plate-machine') {
+      const base = ex.base;
+      const perSide = round((w - base) / 2);
+      if (perSide < 0) return { kind: 'bar', base, perSide: 0, plates: [], exact: true };
+      const g = greedy(perSide, inv.plates);
+      if (g.left < 1e-9) return { kind: 'bar', base, perSide, plates: g.plates, exact: true };
+      const cb = closestBuildable(perSide, inv.plates);
+      const g2 = greedy(cb, inv.plates);
+      return { kind: 'bar', base, perSide: cb, plates: g2.plates, exact: false,
+               loadTotal: round(base + cb * 2), diff: round(base + cb * 2 - w) };
+    }
+    if (ex.equipment === 'stack') {
+      return { kind: 'stack', blocks: Math.round(w / ex.blockSize), blockSize: ex.blockSize,
+               microplates: ex.microplates || 0, microplate: ex.microplate, exact: true };
+    }
+    if (ex.equipment === 'dumbbell')   return { kind: 'dumbbell', each: w, exact: true };
+    return { kind: 'bodyweight', added: w, exact: true };
+  }
+
+  // ---- reducer --------------------------------------------------------------
+
+  function say(s, text, at) {
+    const stamp = at != null && s.workout ? fmtClock(at - s.workout.startedAt) : '—';
+    return [{ text, stamp }].concat(s.events).slice(0, 60);
+  }
+
+  function fmtClock(ms) {
+    const t = Math.max(0, Math.floor(ms / 1000));
+    return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0');
+  }
+
+  function cur(s) { return s.workout.exercises[s.workout.index]; }
+
+  function reduce(state, a) {
+    const s = clone(state);
+    const w = s.workout;
+
+    switch (a.type) {
+
+      case 'START_WORKOUT': {
+        s.workout = {
+          day: a.day,
+          startedAt: a.at,
+          index: 0,
+          restStartedAt: null,
+          pendingReps: null,
+          exercises: template().map(t => Object.assign({}, t, {
+            sets_planned: t.sets, state: 'open', sets: [], oneOff: null
+          })),
+          result: null
+        };
+        s.workout.pendingReps = targetReps(s.workout.exercises[0]);
+        s.screen = 'logging';
+        s.events = [];
+        s.events = say(s, 'Workout started · ' + a.day, a.at);
+        return s;
+      }
+
+      case 'SELECT_EXERCISE': {
+        w.index = a.index;
+        w.pendingReps = targetReps(cur(s));
+        s.overlay = null;
+        s.events = say(s, 'Moved to ' + cur(s).name +
+          (cur(s).state === 'open' ? ' (still open — that means later)' : ''), a.at);
+        return s;
+      }
+
+      case 'ADJUST_REPS': {
+        w.pendingReps = Math.max(0, w.pendingReps + a.delta);
+        return s;
+      }
+
+      case 'LOG_SET': {
+        const ex = cur(s);
+        if (ex.state === 'skipped' || ex.sets.length >= ex.sets_planned) return state;
+        ex.sets.push({ reps: w.pendingReps, weight: effective(ex), oneOff: ex.oneOff != null });
+        w.restStartedAt = a.at;
+        const over = w.pendingReps > ex.repMax;
+        s.events = say(s, 'Set ' + ex.sets.length + ' logged · ' + w.pendingReps + ' reps' +
+          (over ? ' (above the range)' : '') + (ex.oneOff != null ? ' · one-off weight' : ''), a.at);
+        if (ex.sets.length === ex.sets_planned) {
+          ex.state = 'completed';
+          s.events = say(s, ex.name + ' completed', a.at);
+        }
+        w.pendingReps = targetReps(ex);
+        return s;
+      }
+
+      case 'DONE_EARLY': {
+        const ex = cur(s);
+        ex.state = 'completed';
+        s.overlay = null;
+        s.events = say(s, ex.name + ' completed early with ' + ex.sets.length + ' of ' +
+          ex.sets_planned + ' Sets — it will not progress', a.at);
+        return s;
+      }
+
+      case 'SKIP': {
+        const ex = cur(s);
+        ex.state = 'skipped'; ex.sets = [];
+        s.overlay = null;
+        s.events = say(s, ex.name + ' skipped — not at all, not later', a.at);
+        return s;
+      }
+
+      case 'REOPEN': {
+        const ex = cur(s);
+        ex.state = 'open';
+        s.overlay = null;
+        s.events = say(s, ex.name + ' reopened', a.at);
+        return s;
+      }
+
+      case 'OPEN_OVERLAY': {
+        s.overlay = a.overlay;
+        if (a.overlay.kind === 'weight') s.draft = String(effective(cur(s)));
+        return s;
+      }
+
+      case 'CLOSE_OVERLAY': { s.overlay = null; s.draft = null; return s; }
+
+      case 'KEY': {
+        let d = s.draft == null ? '' : s.draft;
+        if (a.key === 'del') d = d.slice(0, -1);
+        else if (a.key === '.') { if (!d.includes('.')) d = (d === '' ? '0' : d) + '.'; }
+        else d = (d === '0' ? '' : d) + a.key;
+        s.draft = d;
+        return s;
+      }
+
+      case 'NUDGE': {          // − / + at the Increment, inside the weight sheet
+        const ex = cur(s);
+        const step = ex.mode === 'microloading' ? ex.blockSize : ex.increment;
+        const n = round(Math.max(0, (parseFloat(s.draft) || 0) + a.delta * step));
+        s.draft = String(n);
+        return s;
+      }
+
+      case 'SUBMIT_WEIGHT': {
+        const ex = cur(s);
+        const v = round(parseFloat(s.draft));
+        if (!isFinite(v) || v <= 0) return state;
+        const now = effective(ex);
+        if (v === now) { s.overlay = null; s.draft = null; return s; }
+        if (v > now) {                       // raising always sticks, no question
+          ex.weight = v; ex.oneOff = null;
+          s.overlay = null; s.draft = null;
+          s.events = say(s, 'Working Weight raised to ' + v + ' ' + ex.unit + ' — no question asked', a.at);
+          return s;
+        }
+        s.overlay = { kind: 'lower', value: v };   // lowering asks once
+        return s;
+      }
+
+      case 'RESOLVE_LOWER': {
+        if (!s.overlay || s.overlay.kind !== 'lower') return state;
+        const ex = cur(s);
+        const v = s.overlay.value;
+        if (a.choice === 'forever') {
+          ex.weight = v; ex.oneOff = null;
+          s.events = say(s, 'Working Weight lowered to ' + v + ' ' + ex.unit + ' from now on', a.at);
+        } else {
+          ex.oneOff = v;
+          s.events = say(s, 'One-off Weight ' + v + ' ' + ex.unit +
+            ' for today — it never becomes the Working Weight and never progresses', a.at);
+        }
+        s.overlay = null; s.draft = null;
+        return s;
+      }
+
+      case 'NEXT_OPEN': {
+        const j = nextOpenIndex(w, w.index);
+        if (j >= 0) { w.index = j; w.pendingReps = targetReps(w.exercises[j]); }
+        return s;
+      }
+
+      case 'FINISH': {
+        if (openCount(w) > 0) { s.overlay = { kind: 'gate' }; return s; }
+        return finish(s, a.at);
+      }
+
+      case 'SKIP_REST_AND_FINISH': {
+        w.exercises.forEach(e => { if (e.state === 'open') { e.state = 'skipped'; e.sets = []; } });
+        s.events = say(s, 'Remaining open Exercises skipped', a.at);
+        return finish(s, a.at);
+      }
+
+      case 'CONFIRM_DISCARD': {
+        s.events = say(s, 'Workout discarded — nothing kept', a.at);
+        s.workout = null; s.screen = 'days'; s.overlay = null;
+        return s;
+      }
+
+      case 'BACK_TO_DAYS': { s.screen = 'days'; s.overlay = null; return s; }
+
+      default: return state;
+    }
+  }
+
+  // Fitty applies the progression at Finish. The user accepts nothing.
+  function finish(s, at) {
+    const w = s.workout;
+    const lines = w.exercises.map(ex => {
+      const p = progression(ex);
+      const line = { name: ex.name, unit: ex.unit, state: ex.state,
+                     from: p.from, to: p.to, progresses: p.progresses,
+                     micro: ex.mode === 'microloading'
+                       ? { size: ex.microplate, unit: ex.microplateUnit,
+                           from: p.fromPlates != null ? p.fromPlates : ex.microplates,
+                           to:   p.toPlates   != null ? p.toPlates   : ex.microplates }
+                       : null,
+                     sets: ex.sets.length, oneOff: ex.oneOff };
+      if (p.progresses) {
+        if (ex.mode === 'microloading') ex.microplates += 1;
+        else ex.weight = p.to;
+      }
+      return line;
+    });
+    const volume = w.exercises.reduce((sum, ex) => sum + ex.sets.reduce((t, st) => {
+      let kgWeight = ex.unit === 'lbs' ? st.weight / LBS_PER_KG : st.weight;
+      if (ex.equipment === 'dumbbell') kgWeight *= 2;
+      return t + st.reps * kgWeight;
+    }, 0), 0);
+    w.result = {
+      lines,
+      duration: at - w.startedAt,
+      sets: w.exercises.reduce((n, ex) => n + ex.sets.length, 0),
+      volume: Math.round(volume),
+      progressed: lines.filter(l => l.progresses).length
+    };
+    s.screen = 'summary';
+    s.overlay = null;
+    s.events = say(s, 'Workout finished · ' + w.result.progressed + ' Exercise(s) progressed', at);
+    return s;
+  }
+
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  return { initialState, reduce, breakdown, progression, effective, threshold,
+           targetReps, openCount, nextOpenIndex, fmtClock, round, LBS_PER_KG };
+})();
+
+/* ============================================================================
+   Throwaway page shell below. It renders Fitty's state and dispatches actions.
+   ========================================================================= */
+
+let S = Fitty.initialState();
+let clock = 0;                 // fake wall clock in ms, so runs are repeatable
+let scenario = 0, stepAt = 0;
+
+function tickClock(ms) { clock += ms; return clock; }
+function now() { return clock; }
+
+function dispatch(action) {
+  if (action.type !== 'ADJUST_REPS' && action.type !== 'KEY' && action.type !== 'NUDGE') tickClock(9000);
+  S = Fitty.reduce(S, Object.assign({ at: now() }, action));
+  render();
+}
+
+/* ---------- plate drawing ------------------------------------------------ */
+
+const PLATE = {
+  20:   { w: 34, h: 114, c: '#1F5FCB' },
+  15:   { w: 30, h: 104, c: '#E4BC1B' },
+  10:   { w: 24, h: 96,  c: '#2E9E52' },
+  5:    { w: 20, h: 90,  c: '#E8E6E1' },
+  2.5:  { w: 15, h: 74,  c: '#C8322B' },
+  1.25: { w: 11, h: 60,  c: '#B9BEC3' }
+};
+
+function plateEl(size) {
+  const p = PLATE[size];
+  return '<div style="width:' + p.w + 'px;height:' + p.h + 'px;border-radius:2px;background:' + p.c + '"></div>';
+}
+
+function drawBar(bd) {
+  const asc = bd.plates.slice().sort((a, b) => a - b);      // smallest outermost
+  const left = asc.map(plateEl).join('');
+  const right = asc.slice().reverse().map(plateEl).join('');
+  const collar = '<div style="width:8px;height:40px;border-radius:2px;background:#6E7479"></div>';
+  const stop = '<div style="width:6px;height:46px;border-radius:1px;background:#8A9096"></div>';
+  const shaft = '<div style="width:100px;height:11px;border-radius:2px;background:repeating-linear-gradient(90deg,#A6ABB0 0 2px,#7C8286 2px 4px)"></div>';
+  return '<div class="barwrap"><div class="barshaft"></div><div class="plates">' +
+    collar + left + stop + shaft + stop + right + collar + '</div></div>';
+}
+
+// The pin lifts everything above it, so the loaded blocks are the top ones.
+function drawStack(bd) {
+  const total = 14, on = Math.max(1, Math.min(bd.blocks, total));
+  let col = '';
+  for (let i = 1; i <= total; i++) {
+    col += '<div style="width:74px;height:6px;border-radius:1px;margin-bottom:2px;background:' +
+      (i <= on ? '#9BA1A7' : '#22262A') + '"></div>';
+    if (i === on) {
+      col += '<div style="position:relative;height:0;width:74px">' +
+        '<div style="position:absolute;left:-12px;top:-2px;width:104px;height:3px;border-radius:1px;background:#C3C8CD"></div>' +
+        (bd.microplates > 0
+          ? '<div style="position:absolute;left:84px;top:-15px;width:11px;height:30px;border-radius:2px;background:#B9BEC3"></div>'
+          : '') + '</div>';
+    }
+  }
+  return '<div class="barwrap" style="height:118px">' +
+    '<div style="display:flex;flex-direction:column;align-items:flex-start">' + col + '</div></div>';
+}
+
+function drawDumbbell() {
+  return '<div class="barwrap"><div class="plates">' +
+    '<div style="width:26px;height:84px;border-radius:2px;background:#8A9096"></div>' +
+    '<div style="width:16px;height:60px;border-radius:2px;background:#6E7479"></div>' +
+    '<div style="width:70px;height:11px;border-radius:2px;background:repeating-linear-gradient(90deg,#A6ABB0 0 2px,#7C8286 2px 4px)"></div>' +
+    '<div style="width:16px;height:60px;border-radius:2px;background:#6E7479"></div>' +
+    '<div style="width:26px;height:84px;border-radius:2px;background:#8A9096"></div>' +
+    '</div></div>';
+}
+
+function drawBodyweight(bd) {
+  const c = PLATE[bd.added] ? PLATE[bd.added].c : '#E4BC1B';
+  return '<div class="barwrap"><div style="display:flex;flex-direction:column;align-items:center;gap:0">' +
+    '<div style="width:2px;height:20px;background:#8A9096"></div>' +
+    '<div style="width:12px;height:12px;border:2px solid #8A9096;border-radius:50%"></div>' +
+    '<div style="width:78px;height:78px;border-radius:50%;background:' + c +
+      ';display:flex;align-items:center;justify-content:center;margin-top:-3px">' +
+      '<div style="width:22px;height:22px;border-radius:50%;background:#0E0F10"></div></div>' +
+    '</div></div>';
+}
+
+function drawing(ex) {
+  const bd = Fitty.breakdown(ex, S.program.inventory);
+  let art = '', left = '', right = '';
+  if (bd.kind === 'bar') {
+    art = drawBar(bd);
+    const parts = [];
+    if (ex.equipment !== 'barbell') parts.push(bd.base + ' base');
+    bd.plates.forEach(p => parts.push(String(p)));
+    left = parts.join(' + ') || String(bd.base) + ' base';
+    right = bd.perSide + ' ' + S.program.inventory.unit + ' per side';
+  } else if (bd.kind === 'stack') {
+    art = drawStack(bd);
+    left = 'pin at ' + bd.blocks + ' × ' + bd.blockSize + ' ' + ex.unit +
+      (bd.microplates ? ' · ' + bd.microplates + ' microplate' + (bd.microplates > 1 ? 's' : '') : '');
+    right = Fitty.effective(ex) + ' ' + ex.unit +
+      (bd.microplates ? ' + ' + Fitty.round(bd.microplates * bd.microplate) + ' ' + ex.microplateUnit : '');
+  } else if (bd.kind === 'dumbbell') {
+    art = drawDumbbell(); left = 'each hand'; right = '2 × ' + bd.each + ' ' + ex.unit;
+  } else {
+    art = drawBodyweight(bd); left = 'added weight only';
+    right = '1 × ' + bd.added + ' ' + ex.unit + ' on the belt';
+  }
+  let closest = '';
+  if (bd.exact === false) {
+    const d = Math.abs(bd.diff);
+    closest = '<div class="closest"><span class="chip steel">≈ CLOSEST</span>' +
+      '<span>you load ' + bd.loadTotal + ' ' + ex.unit + ' · ' + d + ' ' +
+      (bd.diff > 0 ? 'over' : 'under') + '</span></div>';
+  }
+  return '<div style="display:flex;flex-direction:column;gap:10px">' + art +
+    '<div class="cap"><div>' + left + '</div><div class="right">' + right + '</div></div>' +
+    closest + '</div>';
+}
+
+/* ---------- screens ------------------------------------------------------ */
+
+function screenDays() {
+  const rows = S.days.map((d, i) =>
+    '<div class="exrow" data-act="start" data-day="' + d.name + '">' +
+      '<div style="flex:1"><div class="nm" style="font-family:var(--display);font-size:19px;letter-spacing:.03em;text-transform:uppercase">' +
+      d.name + '</div><div class="label" style="margin-top:5px">' + d.last + '</div></div>' +
+      '<div style="color:#5F6469;font-size:22px">›</div></div>').join('');
+  return '<div class="screen">' +
+    '<div class="rowbetween"><div class="kicker">' + S.program.name + '</div>' +
+      '<div class="label">PROGRAM</div></div>' +
+    '<div style="font-family:var(--display);font-size:31px;line-height:.94;text-transform:uppercase;margin-top:4px">Pick a day</div>' +
+    '<div class="label" style="margin-top:-6px">Fitty never chooses for you</div>' +
+    '<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">' + rows + '</div>' +
+    '</div>';
+}
+
+function ruleChip(ex) {
+  const p = Fitty.progression(ex);
+  const U = ex.unit.toUpperCase();
+  if (ex.state === 'completed' && p.progresses) {
+    const to = ex.mode === 'microloading'
+      ? '+' + Fitty.round((ex.microplates + 1) * ex.microplate) + ' ' + ex.microplateUnit.toUpperCase()
+      : p.to + ' ' + U;
+    return '<span class="chip green">→ ' + to + ' NEXT TIME</span>';
+  }
+  // A One-off Weight never writes back, so the Working Weight is the number to name.
+  if (ex.oneOff != null) return '<span class="chip steel">ONE-OFF · ' + ex.weight + ' ' + U + ' STAYS</span>';
+  if (ex.state === 'completed') return '<span class="chip steel">STAYS ' + ex.weight + ' ' + U + '</span>';
+  const add = ex.mode === 'microloading'
+    ? '+' + ex.microplate + ' ' + ex.microplateUnit.toUpperCase()
+    : '+' + ex.increment + ' ' + ex.unit.toUpperCase();
+  return '<span class="chip steel">' + add + ' IF ALL ' + Fitty.threshold(ex) + '</span>';
+}
+
+function screenLogging() {
+  const w = S.workout, ex = w.exercises[w.index];
+  const done = ex.sets.length;
+  const range = ex.repMin + '–' + ex.repMax;
+
+  const metaBits = [range + ' reps'];
+  if (ex.state === 'skipped') metaBits.push('skipped');
+  else if (ex.state === 'completed') metaBits.push(done + ' of ' + ex.sets_planned + ' sets done');
+  else metaBits.push('set ' + Math.min(done + 1, ex.sets_planned) + ' of ' + ex.sets_planned);
+  // A Barbell bar is standard, so only Smith and plate-loaded name a Base Weight.
+  if (ex.base && ex.equipment !== 'barbell') metaBits.push('base ' + ex.base + ' ' + ex.unit);
+
+  // set rows
+  let rows = '';
+  ex.sets.forEach((st, i) => {
+    const over = st.reps > ex.repMax;
+    rows += '<div class="setrow"><div class="n">' + (i + 1) + '</div>' +
+      '<div style="color:#C9CDD1">' + st.reps + ' reps' +
+        (over ? ' <span style="color:var(--dim)">· ' + range + '</span>' : '') + '</div>' +
+      (st.oneOff ? '<span class="chip steel" style="margin-left:8px">ONE-OFF</span>' : '') +
+      '<div style="margin-left:auto"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E9E52" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div></div>';
+  });
+  if (ex.state === 'open' && done < ex.sets_planned) {
+    rows += '<div class="setrow next"><div class="n">' + (done + 1) + '</div>' +
+      '<div>' + (w.pendingReps === Fitty.targetReps(ex) ? 'Target ' : '') + w.pendingReps + ' reps' +
+        (w.pendingReps > ex.repMax ? ' <span style="color:var(--dim)">· ' + range + '</span>' : '') +
+      '</div></div>';
+  }
+  for (let i = done + (ex.state === 'open' ? 1 : 0); i < ex.sets_planned; i++) {
+    rows += '<div class="setrow" style="opacity:.4"><div class="n">' + (i + 1) + '</div>' +
+      '<div style="color:var(--dim)">' + (ex.state === 'skipped' ? 'skipped' : 'not done') + '</div></div>';
+  }
+
+  // weight block, with the mixed-unit stack for a microplate in the other unit
+  const wgt = Fitty.effective(ex);
+  let weightBlock =
+    '<div style="display:flex;align-items:flex-end;gap:12px" class="tapzone" data-act="weight">' +
+      '<div class="bignum">' + wgt + '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px;padding-bottom:4px">' +
+        '<div class="unit">' + ex.unit.toUpperCase() + '</div>' +
+        ruleChip(ex) +
+      '</div></div>';
+  if (ex.mode === 'microloading' && ex.microplates > 0) {
+    weightBlock =
+      '<div style="display:flex;align-items:flex-end;gap:12px" class="tapzone" data-act="weight">' +
+        '<div style="display:flex;flex-direction:column">' +
+          '<div class="bignum">' + wgt + '</div>' +
+          '<div style="display:flex;align-items:flex-end;gap:8px;margin-top:6px">' +
+            '<div style="font-family:var(--display);font-size:38px;line-height:.8;color:#C9CDD1">+' +
+              Fitty.round(ex.microplates * ex.microplate) + '</div>' +
+            '<div class="unit" style="padding-bottom:4px">' + ex.microplateUnit.toUpperCase() + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;padding-bottom:4px">' +
+          '<div class="unit">' + ex.unit.toUpperCase() + '</div>' + ruleChip(ex) +
+        '</div></div>';
+  }
+
+  // bottom row
+  let bottom;
+  const openLeft = Fitty.openCount(w);
+  if (ex.state === 'open' && done < ex.sets_planned) {
+    bottom = '<div class="bottom">' +
+      '<div class="bkey" data-act="reps-" >−</div>' +
+      '<button class="bmain" data-act="log">LOG ' + w.pendingReps + ' REPS</button>' +
+      '<div class="bkey" data-act="reps+">+</div></div>';
+  } else {
+    const j = Fitty.nextOpenIndex(w, w.index);
+    if (j >= 0) {
+      bottom = '<div class="bottom"><button class="bmain" data-act="next">NEXT: ' +
+        w.exercises[j].name.toUpperCase() + '</button></div>';
+    } else {
+      bottom = '<div class="bottom"><button class="bmain" data-act="finish">FINISH WORKOUT</button></div>';
+    }
+  }
+
+  const rest = w.restStartedAt == null
+    ? '<div class="label">READY</div>'
+    : '<div class="label">RESTING</div><div id="restclock" style="font-family:var(--display);font-size:21px;letter-spacing:.01em">' +
+      Fitty.fmtClock(now() - w.restStartedAt) + '</div>';
+
+  return '<div class="screen">' +
+    '<div class="rowbetween">' +
+      '<div class="kicker">' + w.day + '</div>' +
+      '<div style="display:flex;align-items:center;gap:14px">' +
+        '<div class="label tapzone" data-act="list">' + (w.index + 1) + ' / ' + w.exercises.length + ' ▾</div>' +
+        '<div class="tapzone" data-act="menu" style="color:#9BA1A7;font-size:18px;line-height:1">⋯</div>' +
+      '</div></div>' +
+
+    '<div style="display:flex;flex-direction:column;gap:8px">' +
+      '<div class="exname">' + ex.name + '</div>' +
+      '<div class="meta">' + metaBits.join(' · ') +
+        (ex.state === 'completed' ? ' · <span style="color:#2E9E52">completed</span>' : '') + '</div>' +
+    '</div>' +
+
+    weightBlock +
+    drawing(ex) +
+    '<div class="flexfill scroll" style="display:flex;flex-direction:column;gap:8px">' + rows + '</div>' +
+    '<div style="display:flex;align-items:center;gap:9px">' +
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9BA1A7" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M9 2h6"/></svg>' +
+      rest +
+      '<div style="margin-left:auto" class="label">' + openLeft + ' OPEN</div>' +
+    '</div>' +
+    bottom +
+    overlay() +
+    '</div>';
+}
+
+function screenSummary() {
+  const r = S.workout.result;
+  const up = r.lines.filter(l => l.progresses);
+  const flat = r.lines.filter(l => !l.progresses && l.state === 'completed');
+  const skipped = r.lines.filter(l => l.state === 'skipped');
+  const line = l => {
+    if (l.micro) {
+      return l.from + ' ' + l.unit + ' +' + Fitty.round(l.micro.from * l.micro.size) + ' ' + l.micro.unit +
+        ' → ' + l.from + ' ' + l.unit + ' +' + Fitty.round(l.micro.to * l.micro.size) + ' ' + l.micro.unit;
+    }
+    return l.from + ' → ' + l.to + ' ' + l.unit;
+  };
+  return '<div class="screen">' +
+    '<div class="rowbetween"><div class="kicker">' + S.workout.day + '</div><div class="label">SUMMARY</div></div>' +
+    '<div style="border:1px dashed #3A3E42;border-radius:3px;padding:10px 12px;color:#8D9296;font-size:11px;line-height:1.5">' +
+      'Placeholder. The Workout Summary — layout, confetti, the celebration — is designed in ticket 0009. ' +
+      'It sits here only so this prototype can show that Fitty applies the progression at Finish.' +
+    '</div>' +
+    '<div class="flexfill scroll" style="display:flex;flex-direction:column;gap:14px">' +
+      (up.length
+        ? '<div><div class="label" style="margin-bottom:8px">WENT UP</div>' +
+            up.map(l => '<div style="margin-bottom:10px"><div style="font-family:var(--display);font-size:19px;text-transform:uppercase">' +
+              l.name + '</div><div style="color:#2E9E52;font-size:14px;margin-top:2px">' + line(l) + '</div></div>').join('') +
+          '</div>'
+        : '<div class="label">NOTHING WENT UP THIS TIME</div>') +
+      (flat.length
+        ? '<div><div class="label" style="margin-bottom:8px">STAYED</div>' +
+            flat.map(l => '<div style="font-size:14px;color:#C9CDD1;margin-bottom:5px">' + l.name +
+              ' <span style="color:var(--dim)">· ' + l.from + ' ' + l.unit + ' · ' + l.sets + ' sets' +
+              (l.oneOff != null ? ' · one-off ' + l.oneOff + ' ' + l.unit + ', never written back' : '') +
+              '</span></div>').join('') + '</div>'
+        : '') +
+      (skipped.length
+        ? '<div><div class="label" style="margin-bottom:8px">SKIPPED</div>' +
+            skipped.map(l => '<div style="font-size:14px;color:var(--dim);margin-bottom:4px">' + l.name + '</div>').join('') +
+          '</div>'
+        : '') +
+    '</div>' +
+    '<div class="cap"><div>' + Fitty.fmtClock(r.duration) + ' · ' + r.sets + ' sets</div>' +
+      '<div class="right">' + r.volume + ' kg volume</div></div>' +
+    '<div class="bottom"><button class="bmain ghost" data-act="days">BACK TO THE DAYS</button></div>' +
+    '</div>';
+}
+
+/* ---------- overlays ----------------------------------------------------- */
+
+function overlay() {
+  const o = S.overlay;
+  if (!o) return '';
+  const w = S.workout, ex = w.exercises[w.index];
+  const scrim = '<div class="scrim" data-act="close"></div>';
+
+  if (o.kind === 'list') {
+    const rows = w.exercises.map((e, i) => {
+      const cls = e.state === 'open' ? 'open' : e.state;
+      return '<div class="exrow' + (i === w.index ? ' current' : '') + '" data-act="pick" data-i="' + i + '">' +
+        '<div style="flex:1"><div class="nm">' + e.name + '</div>' +
+        '<div class="label" style="margin-top:4px">' + Fitty.effective(e) + ' ' + e.unit +
+          ' · ' + e.sets.length + '/' + e.sets_planned + ' sets</div></div>' +
+        '<span class="pill ' + cls + '">' + e.state.toUpperCase() + '</span></div>';
+    }).join('');
+    return '<div class="drawer">' +
+      '<div class="rowbetween"><div class="kicker">' + w.day + '</div>' +
+        '<div class="label tapzone" data-act="close">CLOSE ✕</div></div>' +
+      '<div class="label">Leaving an open Exercise means later, never "not at all".</div>' +
+      '<div class="flexfill scroll" style="display:flex;flex-direction:column;gap:8px">' + rows + '</div>' +
+      '<div class="bottom"><button class="bmain" data-act="finish">FINISH WORKOUT</button></div></div>';
+  }
+
+  if (o.kind === 'menu') {
+    const canDoneEarly = ex.state === 'open' && ex.sets.length > 0;
+    return scrim + '<div class="sheet">' +
+      '<h3>' + ex.name + '</h3>' +
+      (ex.state === 'skipped'
+        ? '<button class="sheetbtn" data-act="reopen">Put it back<span class="sub">reopen</span></button>'
+        : '<button class="sheetbtn" data-act="skip">Skip this Exercise<span class="sub">not at all</span></button>') +
+      (canDoneEarly
+        ? '<button class="sheetbtn" data-act="doneearly">Done early<span class="sub">' + ex.sets.length +
+          ' of ' + ex.sets_planned + ' Sets · will not progress</span></button>' : '') +
+      '<button class="sheetbtn" data-act="weight">Change the weight<span class="sub">' +
+        Fitty.effective(ex) + ' ' + ex.unit + '</span></button>' +
+      '<button class="sheetbtn" data-act="finish">Finish the Workout</button>' +
+      '<button class="sheetbtn danger" data-act="discard">Discard the Workout</button>' +
+      '<button class="sheetbtn" data-act="close" style="justify-content:center">Close</button>' +
+      '</div>';
+  }
+
+  if (o.kind === 'weight') {
+    const keys = ['1','2','3','4','5','6','7','8','9','.','0','del'];
+    const pad = keys.map(k => '<button data-act="key" data-k="' + k + '">' +
+      (k === 'del' ? '⌫' : k) + '</button>').join('');
+    const step = ex.mode === 'microloading' ? ex.blockSize : ex.increment;
+    return scrim + '<div class="sheet">' +
+      '<div class="rowbetween"><h3>Weight</h3><div class="label tapzone" data-act="close">CANCEL</div></div>' +
+      '<div style="display:flex;align-items:flex-end;gap:12px">' +
+        '<div class="bkey" data-act="nudge-" style="width:56px;height:56px">−</div>' +
+        '<div style="flex:1;text-align:center"><span style="font-family:var(--display);font-size:56px;line-height:.8">' +
+          (S.draft === '' ? '0' : S.draft) + '</span> <span class="unit">' + ex.unit.toUpperCase() + '</span></div>' +
+        '<div class="bkey" data-act="nudge+" style="width:56px;height:56px">+</div>' +
+      '</div>' +
+      '<div class="label" style="text-align:center">− / + step by ' + step + ' ' + ex.unit + '</div>' +
+      '<div class="keypad">' + pad + '</div>' +
+      '<button class="sheetbtn primary" data-act="submit">SET THE WEIGHT</button>' +
+      '</div>';
+  }
+
+  if (o.kind === 'lower') {
+    return scrim + '<div class="sheet">' +
+      '<h3>Down to ' + o.value + ' ' + ex.unit + '</h3>' +
+      '<p>Just today, or from now on?</p>' +
+      '<button class="sheetbtn" data-act="lower-today">Just today' +
+        '<span class="sub">a One-off Weight · never written back</span></button>' +
+      '<button class="sheetbtn" data-act="lower-forever">From now on' +
+        '<span class="sub">this becomes the Working Weight</span></button>' +
+      '<button class="sheetbtn" data-act="close" style="justify-content:center">Cancel</button>' +
+      '</div>';
+  }
+
+  if (o.kind === 'gate') {
+    const n = Fitty.openCount(w);
+    return scrim + '<div class="sheet">' +
+      '<h3>' + n + ' Exercise' + (n > 1 ? 's are' : ' is') + ' still open</h3>' +
+      '<p>Skip ' + (n > 1 ? 'them' : 'it') + ' and finish?</p>' +
+      '<button class="sheetbtn primary" data-act="skipfinish">SKIP AND FINISH</button>' +
+      '<button class="sheetbtn" data-act="close" style="justify-content:center">Keep logging</button>' +
+      '</div>';
+  }
+
+  if (o.kind === 'discard') {
+    const anySets = w.exercises.some(e => e.sets.length > 0);
+    if (!anySets) return '';
+    return scrim + '<div class="sheet">' +
+      '<h3>Discard this Workout?</h3>' +
+      '<p>Every logged Set goes. Fitty keeps nothing.</p>' +
+      '<button class="sheetbtn danger" data-act="discard-yes" style="justify-content:center">DISCARD</button>' +
+      '<button class="sheetbtn" data-act="close" style="justify-content:center">Keep it</button>' +
+      '</div>';
+  }
+  return '';
+}
+
+/* ---------- phone events -------------------------------------------------- */
+
+document.addEventListener('click', function (e) {
+  const t = e.target.closest('[data-act]');
+  if (!t || !document.getElementById('phone').contains(t)) return;
+  const act = t.dataset.act;
+  const w = S.workout;
+
+  switch (act) {
+    case 'start':      dispatch({ type: 'START_WORKOUT', day: t.dataset.day }); break;
+    case 'log':        dispatch({ type: 'LOG_SET' }); break;
+    case 'reps-':      dispatch({ type: 'ADJUST_REPS', delta: -1 }); break;
+    case 'reps+':      dispatch({ type: 'ADJUST_REPS', delta: 1 }); break;
+    case 'next':       dispatch({ type: 'NEXT_OPEN' }); break;
+    case 'list':       dispatch({ type: 'OPEN_OVERLAY', overlay: { kind: 'list' } }); break;
+    case 'menu':       dispatch({ type: 'OPEN_OVERLAY', overlay: { kind: 'menu' } }); break;
+    case 'weight':     dispatch({ type: 'OPEN_OVERLAY', overlay: { kind: 'weight' } }); break;
+    case 'pick':       dispatch({ type: 'SELECT_EXERCISE', index: +t.dataset.i }); break;
+    case 'skip':       dispatch({ type: 'SKIP' }); break;
+    case 'reopen':     dispatch({ type: 'REOPEN' }); break;
+    case 'doneearly':  dispatch({ type: 'DONE_EARLY' }); break;
+    case 'key':        dispatch({ type: 'KEY', key: t.dataset.k }); break;
+    case 'nudge-':     dispatch({ type: 'NUDGE', delta: -1 }); break;
+    case 'nudge+':     dispatch({ type: 'NUDGE', delta: 1 }); break;
+    case 'submit':     dispatch({ type: 'SUBMIT_WEIGHT' }); break;
+    case 'lower-today':   dispatch({ type: 'RESOLVE_LOWER', choice: 'today' }); break;
+    case 'lower-forever': dispatch({ type: 'RESOLVE_LOWER', choice: 'forever' }); break;
+    case 'finish':     dispatch({ type: 'FINISH' }); break;
+    case 'skipfinish': dispatch({ type: 'SKIP_REST_AND_FINISH' }); break;
+    case 'discard':
+      if (w.exercises.some(x => x.sets.length > 0)) dispatch({ type: 'OPEN_OVERLAY', overlay: { kind: 'discard' } });
+      else dispatch({ type: 'CONFIRM_DISCARD' });
+      break;
+    case 'discard-yes': dispatch({ type: 'CONFIRM_DISCARD' }); break;
+    case 'close':      dispatch({ type: 'CLOSE_OVERLAY' }); break;
+    case 'days':       dispatch({ type: 'BACK_TO_DAYS' }); break;
+  }
+});
+
+/* ---------- walkthroughs -------------------------------------------------- */
+
+const A = {
+  start:   () => ({ type: 'START_WORKOUT', day: 'Upper A' }),
+  pick:    i => ({ type: 'SELECT_EXERCISE', index: i }),
+  log:     () => ({ type: 'LOG_SET' }),
+  reps:    d => ({ type: 'ADJUST_REPS', delta: d }),
+  menu:    () => ({ type: 'OPEN_OVERLAY', overlay: { kind: 'menu' } }),
+  list:    () => ({ type: 'OPEN_OVERLAY', overlay: { kind: 'list' } }),
+  weight:  () => ({ type: 'OPEN_OVERLAY', overlay: { kind: 'weight' } }),
+  typed:   v => ({ type: 'TYPE', value: v }),   // handled by the runner, see below
+  submit:  () => ({ type: 'SUBMIT_WEIGHT' }),
+  today:   () => ({ type: 'RESOLVE_LOWER', choice: 'today' }),
+  forever: () => ({ type: 'RESOLVE_LOWER', choice: 'forever' }),
+  skip:    () => ({ type: 'SKIP' }),
+  reopen:  () => ({ type: 'REOPEN' }),
+  early:   () => ({ type: 'DONE_EARLY' }),
+  next:    () => ({ type: 'NEXT_OPEN' }),
+  finish:  () => ({ type: 'FINISH' }),
+  skipfin: () => ({ type: 'SKIP_REST_AND_FINISH' }),
+  close:   () => ({ type: 'CLOSE_OVERLAY' })
+};
+
+// A step is a label plus a list of actions. TYPE is a shell-level shortcut that
+// fills the keypad buffer, so scenarios stay readable.
+function run(actions) {
+  actions.forEach(mk => {
+    const a = mk();
+    if (a.type === 'TYPE') { S = Object.assign({}, S, { draft: String(a.value) }); render(); }
+    else dispatch(a);
+  });
+}
+
+const logAll = (n, reps) => {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    if (reps != null) out.push(() => ({ type: 'SET_REPS_ABS', reps: reps }));
+    out.push(A.log);
+  }
+  return out;
+};
+
+const SCENARIOS = [
+  {
+    title: 'Everything goes up',
+    blurb: 'The plain case. Start <b>Upper A</b>, log every Set at the top of the Rep Range, and finish. ' +
+           'The weight goes up by itself at Finish — Fitty asks nothing.',
+    watch: 'Watch the chip under the weight. Steel <code>+2.5 IF ALL 12</code> while you log; green ' +
+           '<code>→ 75 KG NEXT TIME</code> the instant the last Set lands. Then the big button becomes the next Exercise.',
+    steps: [
+      ['Start Upper A', [A.start]],
+      ['Log 3 Sets at 12 reps (Smith bench)', logAll(3)],
+      ['Next Exercise', [A.next]],
+      ['Log 3 Sets at 10 reps (Barbell row)', logAll(3)],
+      ['Next Exercise', [A.next]],
+      ['Log 3 Sets at 12 reps (Lat pulldown, lbs + kg microplate)', logAll(3)],
+      ['Next Exercise', [A.next]],
+      ['Log 3 Sets at 12 reps (Dumbbell press)', logAll(3)],
+      ['Next Exercise', [A.next]],
+      ['Log 3 Sets at 8 reps (Chin-up)', logAll(3)],
+      ['Finish the Workout', [A.finish]]
+    ]
+  },
+  {
+    title: 'Done early',
+    blurb: 'Two Sets of three, both at 12 reps, then <b>Done early</b>. The Exercise is Completed — it is real work, ' +
+           'not a Skip — but it does <b>not</b> progress.',
+    watch: 'The chip turns steel <code>STAYS 72.5 KG</code>, not green. This rule was accepted with the trade-off named: ' +
+           'otherwise you progress by doing less.',
+    steps: [
+      ['Start Upper A', [A.start]],
+      ['Log 2 Sets at 12 reps', logAll(2)],
+      ['Open the ⋯ menu', [A.menu]],
+      ['Done early', [A.early]],
+      ['Skip the rest and finish', [A.finish, A.skipfin]]
+    ]
+  },
+  {
+    title: 'Reps above the range',
+    blurb: 'A good day: 14 reps where the range tops out at 12. Press <code>+</code> twice, then log.',
+    watch: 'The Set row reads <code>14 reps · 8–12</code> — plain, no warning colour. The weight still goes up by ' +
+           '<b>one</b> Increment, never more.',
+    steps: [
+      ['Start Upper A', [A.start]],
+      ['Press + twice (12 → 14)', [() => A.reps(1), () => A.reps(1)]],
+      ['Log 14 reps', [A.log]],
+      ['Log 2 more Sets at 12', logAll(2)],
+      ['Finish (skip the rest)', [A.finish, A.skipfin]]
+    ]
+  },
+  {
+    title: 'A bad day — lower the weight',
+    blurb: 'You are ill and 72.5 kg is not happening. Tap the weight, take it to 65, and Fitty asks the one question ' +
+           'it asks on the way down: <b>Just today, or from now on?</b>',
+    watch: 'Pick <b>Just today</b>. The weight gets a steel <code>ONE-OFF</code> chip, every Set row carries it too, and ' +
+           'at Finish the Working Weight is still 72.5 kg. The Summary says so.',
+    steps: [
+      ['Start Upper A', [A.start]],
+      ['Tap the weight', [A.weight]],
+      ['Type 65', [() => A.typed(65)]],
+      ['Set the weight', [A.submit]],
+      ['Just today', [A.today]],
+      ['Log 3 Sets at 12 reps', logAll(3)],
+      ['Finish (skip the rest)', [A.finish, A.skipfin]]
+    ]
+  },
+  {
+    title: 'Raise the weight',
+    blurb: 'The other direction. Tap the weight, hit <code>+</code> once, set it. No question, no sheet — it just sticks.',
+    watch: 'Then log all three Sets at 12. A weight you changed by hand progresses under the normal rules: ' +
+           '75 → 77.5. There is no "unless you edited it" clause.',
+    steps: [
+      ['Start Upper A', [A.start]],
+      ['Tap the weight', [A.weight]],
+      ['+2.5 (72.5 → 75)', [() => ({ type: 'NUDGE', delta: 1 })]],
+      ['Set the weight', [A.submit]],
+      ['Log 3 Sets at 12 reps', logAll(3)],
+      ['Finish (skip the rest)', [A.finish, A.skipfin]]
+    ]
+  },
+  {
+    title: 'Skip, and put it back',
+    blurb: 'The rack is busy. Skip the Barbell row, do the Lat pulldown, then come back and reopen the row.',
+    watch: 'Open, Completed and Skipped read differently in the list. Moving past an <b>Open</b> Exercise costs nothing ' +
+           'and means "later"; Skip means "not at all" — and it is reversible in the same Workout.',
+    steps: [
+      ['Start Upper A', [A.start]],
+      ['Open the exercise list', [A.list]],
+      ['Go to Barbell row', [() => A.pick(1)]],
+      ['⋯ → Skip this Exercise', [A.menu, A.skip]],
+      ['Go to Lat pulldown', [A.list, () => A.pick(2)]],
+      ['Log 3 Sets at 12 reps', logAll(3)],
+      ['Back to Barbell row', [A.list, () => A.pick(1)]],
+      ['⋯ → Put it back', [A.menu, A.reopen]],
+      ['Log 3 Sets at 10 reps', logAll(3)],
+      ['Finish (skip the rest)', [A.finish, A.skipfin]]
+    ]
+  },
+  {
+    title: 'Finish with Exercises still open',
+    blurb: 'You are out of time after one Exercise. Tap Finish with four still Open.',
+    watch: 'The gate holds — but it holds with one tap out: <b>4 Exercises are still open. Skip them and finish?</b> ' +
+           'Nothing stays ambiguous; every Exercise ends Completed or Skipped.',
+    steps: [
+      ['Start Upper A', [A.start]],
+      ['Log 3 Sets at 12 reps', logAll(3)],
+      ['Tap Finish', [A.finish]],
+      ['Skip and finish', [A.skipfin]]
+    ]
+  },
+  {
+    title: 'A weight the rack cannot build',
+    blurb: 'Set the Barbell row to <b>61.25 kg</b>. The gym has no 0.625 kg plates, so the exact weight cannot be loaded.',
+    watch: 'The big number stays 61.25 — the Working Weight never bends to fit the plate rack. A steel ' +
+           '<code>≈ CLOSEST</code> line appears under the bar with what you actually load, and by how much it misses. ' +
+           'A tie rounds down.',
+    steps: [
+      ['Start Upper A', [A.start]],
+      ['Go to Barbell row', [A.list, () => A.pick(1)]],
+      ['Tap the weight', [A.weight]],
+      ['Type 61.25', [() => A.typed(61.25)]],
+      ['Set the weight', [A.submit]],
+      ['Log 3 Sets at 10 reps', logAll(3)],
+      ['Finish (skip the rest)', [A.finish, A.skipfin]]
+    ]
+  },
+  {
+    title: 'Two units in one Workout',
+    blurb: 'The Lat pulldown is a stack machine that steps in <b>lbs</b>, with a <b>kg</b> microplate on the pin. ' +
+           'It is set to Microloading, so it goes up by one microplate at a time.',
+    watch: 'The screen stacks two numbers — <code>100 LBS</code> and <code>+1 KG</code> — and never converts them. ' +
+           'Microloading needs only the <b>bottom</b> of the range (10), so 10 reps is enough. On the Summary, ' +
+           'total volume is the one place a conversion happens.',
+    steps: [
+      ['Start Upper A', [A.start]],
+      ['Go to Lat pulldown', [A.list, () => A.pick(2)]],
+      ['Press − twice (12 → 10)', [() => A.reps(-1), () => A.reps(-1)]],
+      ['Log 3 Sets at 10 reps', logAll(3, 10)],
+      ['Finish (skip the rest)', [A.finish, A.skipfin]]
+    ]
+  }
+];
+
+// SET_REPS_ABS is a shell shortcut so a scenario can say "log at 12" without
+// counting taps. It never enters the pure module.
+const realDispatch = dispatch;
+dispatch = function (action) {
+  if (action.type === 'SET_REPS_ABS') {
+    const w = S.workout; if (!w) return;
+    S = JSON.parse(JSON.stringify(S));
+    S.workout.pendingReps = action.reps != null ? action.reps
+      : Fitty.targetReps(S.workout.exercises[S.workout.index]);
+    render(); return;
+  }
+  realDispatch(action);
+};
+
+function resetTo(i) {
+  S = Fitty.initialState(); clock = 0; scenario = i; stepAt = 0; render();
+}
+
+function renderTabs() {
+  document.getElementById('tabs').innerHTML = SCENARIOS.map((s, i) =>
+    '<button class="tab" role="tab" aria-selected="' + (i === scenario) + '" data-tab="' + i + '">' +
+    s.title + '</button>').join('');
+}
+
+function renderScenario() {
+  const sc = SCENARIOS[scenario];
+  const steps = sc.steps.map(([label], i) => {
+    const cls = i < stepAt ? 'step done' : (i === stepAt ? 'step current' : 'step');
+    return '<button class="' + cls + '" data-step="' + i + '"' + (i === stepAt ? '' : ' disabled') + '>' +
+      '<span class="n">' + (i + 1) + '</span><span>' + label + '</span></button>';
+  }).join('');
+  document.getElementById('scenario').innerHTML =
+    '<p class="blurb">' + sc.blurb + '</p><p class="watch">' + sc.watch + '</p>' +
+    '<div class="steps">' + steps + '</div>' +
+    '<div style="margin-top:12px"><button class="tab" data-restart="1">Restart this walkthrough</button></div>';
+}
+
+document.addEventListener('click', function (e) {
+  const tab = e.target.closest('[data-tab]');
+  if (tab) { resetTo(+tab.dataset.tab); return; }
+  if (e.target.closest('[data-restart]')) { resetTo(scenario); return; }
+  const st = e.target.closest('[data-step]');
+  if (st && !st.disabled) {
+    const i = +st.dataset.step;
+    if (i === 0) { S = Fitty.initialState(); clock = 0; }
+    run(SCENARIOS[scenario].steps[i][1]);
+    stepAt = i + 1; render();
+  }
+});
+
+/* ---------- free play ----------------------------------------------------- */
+
+function renderFree() {
+  const w = S.workout;
+  const inWorkout = !!w && S.screen === 'logging';
+  const ex = inWorkout ? w.exercises[w.index] : null;
+  const b = (label, action, on, cls) =>
+    '<button data-free=\'' + JSON.stringify(action) + '\'' + (on ? '' : ' disabled') +
+    (cls ? ' class="' + cls + '"' : '') + '>' + label + '</button>';
+
+  const out = [
+    b('Start Upper A', { type: 'START_WORKOUT', day: 'Upper A' }, S.screen === 'days'),
+    b('Log a Set at target', { type: 'LOG_SET' }, inWorkout && ex.state === 'open' && ex.sets.length < ex.sets_planned),
+    b('− 1 rep', { type: 'ADJUST_REPS', delta: -1 }, inWorkout),
+    b('+ 1 rep', { type: 'ADJUST_REPS', delta: 1 }, inWorkout),
+    b('Next open Exercise', { type: 'NEXT_OPEN' }, inWorkout),
+    b('Exercise list', { type: 'OPEN_OVERLAY', overlay: { kind: 'list' } }, inWorkout),
+    b('Change the weight', { type: 'OPEN_OVERLAY', overlay: { kind: 'weight' } }, inWorkout),
+    b('Skip this Exercise', { type: 'SKIP' }, inWorkout && ex.state !== 'skipped'),
+    b('Reopen this Exercise', { type: 'REOPEN' }, inWorkout && ex.state !== 'open'),
+    b('Done early', { type: 'DONE_EARLY' }, inWorkout && ex.state === 'open' && ex.sets.length > 0),
+    b('Finish', { type: 'FINISH' }, inWorkout),
+    b('Skip the rest and finish', { type: 'SKIP_REST_AND_FINISH' }, inWorkout),
+    b('Discard', { type: 'CONFIRM_DISCARD' }, inWorkout, 'danger')
+  ].join('');
+  document.getElementById('free').innerHTML = out +
+    '<button data-reset="1" class="danger">Reset everything</button>';
+}
+
+document.addEventListener('click', function (e) {
+  const f = e.target.closest('[data-free]');
+  if (f && !f.disabled) { dispatch(JSON.parse(f.dataset.free)); return; }
+  if (e.target.closest('[data-reset]')) { resetTo(scenario); }
+});
+
+/* ---------- state panel --------------------------------------------------- */
+
+function renderState() {
+  const w = S.workout;
+  let html = '';
+  const dl = [];
+  dl.push(['Program', S.program.name + ' · default ' + S.program.defaultUnit + ' · ' +
+           (S.program.mode === 'microloading' ? 'Microloading' : 'Progressive Overload')]);
+  dl.push(['Plate inventory', S.program.inventory.plates.join(', ') + ' ' + S.program.inventory.unit +
+           ' · microplates ' + S.program.inventory.microplates.join(', ')]);
+  dl.push(['Workout', w ? (S.screen === 'summary' ? 'Finished' : 'Open') + ' · ' + w.day +
+           ' · ' + Fitty.fmtClock(now() - w.startedAt) : 'None started']);
+  if (w && S.screen === 'logging') {
+    dl.push(['Open Exercises', String(Fitty.openCount(w))]);
+    dl.push(['Finish allowed', Fitty.openCount(w) === 0 ? 'yes' : 'no — the gate holds (with a one-tap way out)']);
+  }
+  html += '<dl class="state-grid">' + dl.map(([k, v]) =>
+    '<dt>' + k + '</dt><dd>' + v + '</dd>').join('') + '</dl>';
+
+  if (w) {
+    html += '<table class="ex"><thead><tr><th>Exercise</th><th>State</th><th>Weight</th><th>Sets</th><th>At Finish</th></tr></thead><tbody>' +
+      w.exercises.map((ex, i) => {
+        const p = Fitty.progression(ex);
+        const setsTxt = ex.sets.length ? ex.sets.map(s => s.reps).join(' · ') : '—';
+        const verdict = S.screen === 'summary'
+          ? (w.result.lines[i].progresses ? '<span class="up">went up</span>' : '<span class="flat">stayed</span>')
+          : (ex.state === 'open' ? '<span class="flat">pending</span>'
+            : p.progresses ? '<span class="up">will go up</span>' : '<span class="flat">stays</span>');
+        return '<tr' + (i === w.index && S.screen === 'logging' ? ' style="background:#212427"' : '') + '>' +
+          '<td>' + ex.name + '</td>' +
+          '<td><span class="pill ' + ex.state + '">' + ex.state + '</span></td>' +
+          '<td>' + Fitty.effective(ex) + ' ' + ex.unit +
+            (ex.mode === 'microloading' && ex.microplates ? ' +' + Fitty.round(ex.microplates * ex.microplate) + ' ' + ex.microplateUnit : '') +
+            (ex.oneOff != null ? '<span class="pill oneoff">ONE-OFF</span>' : '') + '</td>' +
+          '<td>' + setsTxt + ' <span class="flat">of ' + ex.sets_planned + '</span></td>' +
+          '<td>' + verdict + '</td></tr>';
+      }).join('') + '</tbody></table>';
+  }
+
+  html += '<ul class="events">' + S.events.map(ev =>
+    '<li><span class="t">' + ev.stamp + '</span>' + ev.text + '</li>').join('') + '</ul>';
+  document.getElementById('state').innerHTML = html;
+}
+
+/* ---------- render + rest timer ------------------------------------------- */
+
+function render() {
+  const phone = document.getElementById('phone');
+  phone.innerHTML = S.screen === 'days' ? screenDays()
+                  : S.screen === 'logging' ? screenLogging()
+                  : screenSummary();
+  renderTabs(); renderScenario(); renderFree(); renderState();
+}
+
+// The Rest Timer counts up and starts itself after every logged Set. The fake
+// clock only moves when something happens, so this drives it in real time.
+setInterval(function () {
+  if (S.screen !== 'logging' || !S.workout || S.workout.restStartedAt == null) return;
+  clock += 1000;
+  const el = document.getElementById('restclock');
+  if (el) el.textContent = Fitty.fmtClock(clock - S.workout.restStartedAt);
+  const st = document.getElementById('state');
+  if (st) renderState();
+}, 1000);
+
+render();
+</script>
+</body>
+</html>

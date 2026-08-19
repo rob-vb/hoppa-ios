@@ -1,0 +1,12 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Pick a direction", "x": 0, "y": 0, "w": 480, "h": 620 },
+    { "file": "PlateRack.dc.html", "title": "A · Plate Rack — style", "x": 0, "y": 700, "w": 480, "h": 844 },
+    { "file": "PlateRackScreen.dc.html", "title": "A · Active workout", "x": 520, "y": 700, "w": 390, "h": 844 },
+    { "file": "Console.dc.html", "title": "B · Console — style", "x": 960, "y": 700, "w": 480, "h": 844 },
+    { "file": "ConsoleScreen.dc.html", "title": "B · Active workout", "x": 1480, "y": 700, "w": 390, "h": 844 },
+    { "file": "Logbook.dc.html", "title": "C · Logbook — style", "x": 1920, "y": 700, "w": 480, "h": 844 },
+    { "file": "LogbookScreen.dc.html", "title": "C · Active workout", "x": 2440, "y": 700, "w": 390, "h": 844 }
+  ],
+  "launch": { "view": "canvas" }
+}

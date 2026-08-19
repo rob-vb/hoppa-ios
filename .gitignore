@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Xcode — for the build effort that starts from SPEC.md
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Editors
+.idea/
+*.swp
+
+# Nothing in design/ is ignored on purpose. The seeded canvas files are large
+# (~2.2 MB each) because the design editor is baked into every one, but they are
+# the published prototypes this project's decisions were validated against, and
+# they cannot be regenerated once the tooling that seeded them moves on.

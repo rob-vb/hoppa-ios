@@ -1,0 +1,580 @@
+<title>Fitty Workout Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --floor:#0E0F10; --card:#17191B; --line:#26292C; --steel:#9BA1A7;
+    --dim:#8D9296; --text:#F4F1EC; --green:#2E9E52;
+    --page:#141517; --panel:#1B1D1F; --panel-line:#2B2E31;
+    --display:Anton, Haettenschweiler, Impact, sans-serif;
+    --body:'IBM Plex Sans', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--text);font-family:var(--body);
+       font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+
+  header.top{padding:28px 28px 20px;border-bottom:1px solid var(--panel-line);max-width:1500px;margin:0 auto}
+  .tag{display:inline-block;border:1px solid #7A4E23;color:#D9974A;border-radius:2px;
+       padding:3px 8px;font-size:10px;font-weight:600;letter-spacing:.14em}
+  h1{font-family:var(--display);font-size:34px;letter-spacing:.01em;margin:12px 0 8px;text-transform:uppercase}
+  header.top p{margin:0;max-width:80ch;color:#C9CDD1;font-size:14px;line-height:1.6}
+  header.top p + p{margin-top:8px;color:var(--dim)}
+
+  main{display:flex;gap:28px;align-items:flex-start;padding:24px 28px 80px;max-width:1500px;margin:0 auto}
+  .phone-col{position:sticky;top:24px;flex:0 0 auto}
+  .phone{width:390px;height:844px;background:var(--floor);border-radius:6px;
+         border:1px solid #2B2E31;overflow:hidden;position:relative;
+         box-shadow:0 24px 60px rgba(0,0,0,.55)}
+  #fx{position:absolute;inset:0;width:390px;height:844px;pointer-events:none;z-index:20}
+  .under{margin-top:10px;width:390px;font-size:11px;color:var(--dim);letter-spacing:.06em;line-height:1.6}
+  .panel-col{flex:1 1 0;min-width:400px;display:flex;flex-direction:column;gap:20px}
+
+  section.box{background:var(--panel);border:1px solid var(--panel-line);border-radius:3px}
+  section.box > h2{font-family:var(--display);font-size:14px;letter-spacing:.12em;text-transform:uppercase;
+      margin:0;padding:14px 16px;border-bottom:1px solid var(--panel-line);color:#C9CDD1}
+  .box-body{padding:16px}
+  .blurb{font-size:13.5px;line-height:1.65;color:#C9CDD1;margin:0 0 10px}
+  .blurb b{color:var(--text)}
+  .blurb:last-child{margin-bottom:0}
+  .watch{font-size:12.5px;line-height:1.6;color:var(--dim);margin:0;
+         border-left:2px solid #41464A;padding-left:10px}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:6px;padding:12px 16px;border-bottom:1px solid var(--panel-line)}
+  .tab{background:transparent;border:1px solid var(--panel-line);color:var(--dim);border-radius:2px;
+       padding:7px 10px;font-family:var(--body);font-size:11.5px;cursor:pointer;letter-spacing:.02em}
+  .tab:hover{color:var(--text);border-color:#41464A}
+  .tab[aria-selected="true"]{background:var(--text);color:#0E0F10;border-color:var(--text);font-weight:600}
+
+  .opt{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+  .opt:last-child{margin-bottom:0}
+  .opt > .cap{font-size:10px;letter-spacing:.14em;color:#55595D;text-transform:uppercase}
+  .opt button{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;
+      background:#212427;border:1px solid var(--panel-line);color:#C9CDD1;border-radius:2px;
+      padding:10px 12px;font-family:var(--body);font-size:12.5px;cursor:pointer;line-height:1.5}
+  .opt button:hover{border-color:#5A6064;color:var(--text)}
+  .opt button[aria-pressed="true"]{border-color:var(--text);background:#292D30;color:var(--text)}
+  .opt button .k{font-family:var(--display);font-size:12px;letter-spacing:.1em;flex:0 0 74px;color:var(--dim)}
+  .opt button[aria-pressed="true"] .k{color:var(--text)}
+  .opt button em{font-style:normal;color:var(--dim);display:block;margin-top:2px;font-size:11.5px}
+
+  .replay{width:100%;background:var(--text);color:#0E0F10;border:0;border-radius:2px;padding:13px;
+      font-family:var(--display);font-size:15px;letter-spacing:.1em;cursor:pointer}
+  .replay:hover{background:#fff}
+
+  table.st{width:100%;border-collapse:collapse;font-size:12px}
+  table.st th{text-align:left;color:var(--dim);font-weight:500;font-size:9.5px;letter-spacing:.12em;
+      text-transform:uppercase;padding:0 8px 7px 0;border-bottom:1px solid var(--panel-line)}
+  table.st td{padding:7px 8px 7px 0;border-bottom:1px solid #232628;vertical-align:top}
+  .pill{display:inline-block;border-radius:2px;padding:2px 6px;font-size:9.5px;font-weight:600;letter-spacing:.08em}
+  .p-up{background:rgba(46,158,82,.16);color:#5FCB86}
+  .p-flat{background:#2A2E31;color:#9BA1A7}
+  .p-skip{background:#232628;color:#6A6F73}
+
+  /* ---------- the screen itself ---------- */
+  .screen{position:absolute;inset:0;padding:54px 20px 20px;display:flex;flex-direction:column;gap:0;z-index:10}
+  .kicker{font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
+  .label{font-size:10px;letter-spacing:.14em;color:#55595D;text-transform:uppercase}
+  .rowbetween{display:flex;align-items:baseline;justify-content:space-between}
+
+  .hero{margin:18px 0 6px}
+  .hero .n{font-family:var(--display);font-size:96px;line-height:.78;color:var(--green);letter-spacing:-.01em}
+  .hero .n.zero{font-size:33px;color:var(--text);line-height:1;letter-spacing:.03em;text-transform:uppercase}
+  .hero .cap{font-family:var(--display);font-size:19px;line-height:1;letter-spacing:.05em;
+             text-transform:uppercase;margin-top:10px;color:var(--text)}
+  .hero .sub{font-size:12px;color:var(--dim);margin-top:6px;line-height:1.5}
+
+  .scroll{overflow-y:auto;flex:1 1 auto;margin-top:16px;padding-right:2px}
+  .scroll::-webkit-scrollbar{width:0}
+  .sec{margin-bottom:20px}
+  .sec > .label{margin-bottom:10px;display:block}
+
+  .uprow{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+  .uprow:last-child{border-bottom:1px solid var(--line)}
+  .plate{flex:0 0 auto;width:9px;height:34px;border-radius:2px;margin-top:3px}
+  .exname{font-family:var(--display);font-size:17px;line-height:1;letter-spacing:.02em;text-transform:uppercase}
+  .arrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:7px;margin-top:7px}
+  .arrow .old{font-size:14px;color:var(--dim)}
+  .arrow .ar{color:#55595D;font-size:13px}
+  .arrow .new{font-family:var(--display);font-size:22px;line-height:1;color:var(--green);letter-spacing:.02em}
+  .arrow .nt{font-size:9px;letter-spacing:.14em;color:var(--steel);text-transform:uppercase}
+
+  .flatrow{padding:9px 0;border-top:1px solid #1E2123}
+  .flatrow .nm{font-size:14px;color:#C9CDD1}
+  .flatrow .meta{font-size:11.5px;color:#55595D;margin-top:3px}
+  .cond{font-size:10px;letter-spacing:.1em;color:var(--steel);margin-top:5px;text-transform:uppercase}
+  .oneoff{display:inline-block;border:1px solid #41464A;color:var(--steel);border-radius:2px;
+          padding:2px 6px;font-size:9px;letter-spacing:.12em;margin-top:5px}
+  .skiprow{font-size:14px;color:var(--dim);padding:6px 0}
+
+  .stats{border-top:1px solid var(--line);padding-top:12px;display:flex;gap:0;margin-top:auto}
+  .stat{flex:1 1 0}
+  .stat .v{font-family:var(--display);font-size:20px;line-height:1;letter-spacing:.02em}
+  .stat .l{font-size:9px;letter-spacing:.13em;color:#55595D;margin-top:5px;text-transform:uppercase}
+  .bottom{margin-top:14px}
+  .bmain{width:100%;height:64px;border:0;border-radius:3px;background:var(--text);color:#0E0F10;
+         font-family:var(--display);font-size:20px;letter-spacing:.06em;cursor:pointer;text-transform:uppercase}
+
+  .reveal{opacity:0;transform:translateY(14px)}
+  .reveal.go{animation:land .42s cubic-bezier(.2,.8,.3,1) forwards}
+  @keyframes land{to{opacity:1;transform:none}}
+</style>
+
+<header class="top">
+  <span class="tag">PROTOTYPE · THROWAWAY</span>
+  <h1>Fitty — Workout Summary</h1>
+  <p>Ticket <b>0009</b>. The layout is settled by <b>Workout session lifecycle</b> (0003); this prototype only answers the three open questions: <b>how the confetti amount reads as “more” without becoming noise</b>, <b>whether the plate colours drive the confetti</b>, and <b>how the zero-progressed screen stays encouraging without a celebration</b>.</p>
+  <p>Pick a state on the left, then a confetti model and a colour rule. <b>Every switch replays the motion.</b> The screen has no Accept and no Undo — Fitty applied the new Working Weight at Finish, so the arrow is a statement of fact.</p>
+</header>
+
+<main>
+  <div class="phone-col">
+    <div class="phone" id="phone">
+      <div id="screen"></div>
+      <canvas id="fx"></canvas>
+    </div>
+    <div class="under" id="under"></div>
+  </div>
+
+  <div class="panel-col">
+
+    <section class="box">
+      <h2>1 · The state</h2>
+      <div class="tabs" id="tabs"></div>
+      <div class="box-body">
+        <p class="blurb" id="stateBlurb"></p>
+      </div>
+    </section>
+
+    <section class="box">
+      <h2>2 · Confetti model — how “more” reads</h2>
+      <div class="box-body">
+        <div class="opt" id="variants"></div>
+        <p class="watch" id="variantNote"></p>
+      </div>
+    </section>
+
+    <section class="box">
+      <h2>3 · Colour rule — does colour mean weight?</h2>
+      <div class="box-body">
+        <div class="opt" id="colours"></div>
+        <p class="watch" id="colourNote"></p>
+      </div>
+    </section>
+
+    <section class="box">
+      <h2>Replay</h2>
+      <div class="box-body"><button class="replay" id="replay">PLAY IT AGAIN</button></div>
+    </section>
+
+    <section class="box">
+      <h2>What the screen is showing</h2>
+      <div class="box-body">
+        <table class="st"><thead><tr>
+          <th>Exercise</th><th>State</th><th>Sets</th><th>Result</th>
+        </tr></thead><tbody id="stateTable"></tbody></table>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+/* ==========================================================================
+   Fitty — the pure part. Same shape as the module in 0007; this file only
+   needs the Finish result, so it carries summarise() and the plate colours.
+   ========================================================================== */
+const Fitty = (function () {
+
+  const LBS_PER_KG = 2.2046226218;
+
+  // Colour is data: a plate size maps to exactly one colour. From ticket 0002.
+  const PLATE_COLOUR = { 25:'#C8322B', 20:'#1F5FCB', 15:'#E4BC1B', 10:'#2E9E52',
+                         5:'#E8E6E1', 2.5:'#C8322B', 1.25:'#B9BEC3' };
+  const MICRO_COLOUR = '#9BA1A7';           // microplates have no calibrated colour
+
+  const INVENTORY = { unit:'kg', plates:[20,15,10,5,2.5,1.25], microplates:[1,0.75,0.5,0.25] };
+
+  function round(n){ return Math.round(n*1000)/1000 }
+  function threshold(ex){ return ex.mode === 'microloading' ? ex.repMin : ex.repMax }
+
+  function greedy(perSide, sizes){
+    const out = []; let left = round(perSide);
+    for (const s of sizes) { while (left >= s - 1e-9) { out.push(s); left = round(left - s) } }
+    return out;
+  }
+
+  // Does this Exercise progress? All planned Sets, every Set at threshold,
+  // and never under a One-off Weight.
+  function progression(ex){
+    const done = ex.sets.length === ex.setsPlanned;
+    const all  = ex.sets.length > 0 && ex.sets.every(r => r >= threshold(ex));
+    const ok   = ex.state === 'completed' && done && all && ex.oneOff == null;
+    if (!ok) return { progresses:false, to:ex.weight };
+    if (ex.mode === 'microloading') return { progresses:true, to:ex.weight, toPlates:ex.microplates + 1 };
+    return { progresses:true, to:round(ex.weight + ex.increment) };
+  }
+
+  // The plates the confetti can be made of, per colour rule.
+  function colours(ex, p){
+    const added = ex.mode === 'microloading'
+      ? MICRO_COLOUR
+      : (PLATE_COLOUR[ex.increment] || MICRO_COLOUR);
+    let rack = [added];
+    if (ex.equipment === 'barbell' || ex.equipment === 'smith' || ex.equipment === 'plate-machine') {
+      const perSide = round((p.to - ex.base) / 2);
+      const sizes = greedy(perSide, INVENTORY.plates);
+      if (sizes.length) rack = sizes.map(s => PLATE_COLOUR[s] || MICRO_COLOUR);
+    }
+    return { added, rack };
+  }
+
+  function fmtClock(ms){
+    const t = Math.max(0, Math.floor(ms/1000));
+    return Math.floor(t/60) + ':' + String(t % 60).padStart(2,'0');
+  }
+
+  // Weight as the user reads it. Mixed units stack as two numbers with their
+  // own labels and never convert (ticket 0005).
+  function weightText(ex, weight, plates){
+    const main = round(weight) + ' ' + ex.unit.toUpperCase();
+    if (ex.mode !== 'microloading') return main;
+    const micro = round(plates * ex.microplate);
+    return micro > 0 ? main + ' + ' + micro + ' ' + ex.microplateUnit.toUpperCase() : main;
+  }
+
+  function summarise(day, exercises, duration, defaultUnit){
+    const lines = exercises.map(ex => {
+      const p = progression(ex);
+      const c = colours(ex, p);
+      return {
+        name: ex.name, state: ex.state, unit: ex.unit,
+        sets: ex.sets.slice(), setsPlanned: ex.setsPlanned,
+        progresses: p.progresses,
+        oneOff: ex.oneOff,
+        threshold: threshold(ex),
+        fromText: weightText(ex, ex.weight, ex.microplates),
+        // What the Sets were actually performed at — a One-off Weight wins.
+        atText: weightText(ex, ex.weightAt != null ? ex.weightAt : ex.weight, ex.microplates),
+        toText:   weightText(ex, p.to, p.toPlates != null ? p.toPlates : ex.microplates),
+        // What it would take next time, for an Exercise that stayed.
+        wouldText: weightText(ex,
+          ex.mode === 'microloading' ? ex.weight : round(ex.weight + ex.increment),
+          ex.mode === 'microloading' ? ex.microplates + 1 : ex.microplates),
+        added: c.added, rack: c.rack
+      };
+    });
+
+    // Total volume converts to the Program's default unit and shows as one
+    // labelled number (ticket 0004).
+    let volume = 0;
+    exercises.forEach(ex => ex.sets.forEach(reps => {
+      let w = ex.unit === 'lbs' ? ex.weightAt / LBS_PER_KG : ex.weightAt;
+      if (ex.equipment === 'dumbbell') w *= 2;       // both dumbbells count
+      volume += reps * w;
+    }));
+    if (defaultUnit === 'lbs') volume *= LBS_PER_KG;
+
+    return {
+      day, lines, duration, defaultUnit,
+      sets: exercises.reduce((n, ex) => n + ex.sets.length, 0),
+      volume: Math.round(volume),
+      progressed: lines.filter(l => l.progresses).length,
+      performed: exercises.filter(ex => ex.state === 'completed').length
+    };
+  }
+
+  return { summarise, fmtClock, round, PLATE_COLOUR, MICRO_COLOUR };
+})();
+
+/* ==========================================================================
+   Throwaway page shell below.
+   ========================================================================== */
+
+// The user's own Upper A day. He is the first test user.
+function upperA(){
+  return [
+    { name:'Smith machine bench press', equipment:'smith', unit:'kg', weight:72.5, base:15,
+      setsPlanned:3, repMin:8, repMax:12, mode:'progressive-overload', increment:2.5 },
+    { name:'Barbell row', equipment:'barbell', unit:'kg', weight:60, base:20,
+      setsPlanned:3, repMin:8, repMax:10, mode:'progressive-overload', increment:2.5 },
+    { name:'Lat pulldown', equipment:'stack', unit:'lbs', weight:100,
+      setsPlanned:3, repMin:10, repMax:12, mode:'microloading',
+      microplate:1, microplateUnit:'kg', microplates:1 },
+    { name:'Dumbbell shoulder press', equipment:'dumbbell', unit:'kg', weight:22.5,
+      setsPlanned:3, repMin:8, repMax:12, mode:'progressive-overload', increment:2.5 },
+    { name:'Weighted chin-up', equipment:'bodyweight', unit:'kg', weight:15,
+      setsPlanned:3, repMin:6, repMax:8, mode:'progressive-overload', increment:2.5 }
+  ];
+}
+
+// reps[] per Exercise; null = Skipped. oneOff overrides the weight for the day.
+function build(reps, opts){
+  const ex = upperA();
+  ex.forEach((e, i) => {
+    const r = reps[i];
+    e.oneOff = (opts && opts.oneOff && opts.oneOff[i] != null) ? opts.oneOff[i] : null;
+    e.weightAt = e.oneOff != null ? e.oneOff : e.weight;
+    if (r === null) { e.state = 'skipped'; e.sets = [] }
+    else { e.sets = r; e.state = 'completed' }
+  });
+  return ex;
+}
+
+const SC = [
+  { key:'all', label:'All five went up',
+    blurb:'The best day this Program has had: every Exercise hit its threshold in every Set. <b>Five bursts, or one big one?</b> This is where a density ramp turns into noise.',
+    ex: build([[12,12,12],[10,10,10],[11,10,10],[12,12,12],[8,8,8]]), dur: 41*60000+12000 },
+
+  { key:'one', label:'One went up',
+    blurb:'The ordinary good day. One Exercise progressed, four stayed. <b>The celebration must not look the same as the five-Exercise day</b>, or the count stops meaning anything.',
+    ex: build([[12,12,12],[10,10,9],[11,9,9],[12,11,10],[8,7,6]]), dur: 38*60000+20000 },
+
+  { key:'none', label:'Nothing went up',
+    blurb:'A full Workout, nothing progressed, one Exercise skipped. <b>No confetti — the screen stays calm.</b> The question is whether it still reads as worth having done, without consoling the user.',
+    ex: build([[12,11,10],[10,9,8],[10,10,9],[11,10,10],null]), dur: 33*60000+5000 },
+
+  { key:'real', label:'Mixed — 3 up, a one-off, a skip',
+    blurb:'The realistic case, and the one that carries the mixed units. The Lat pulldown is an <b>lbs</b> Exercise with a <b>kg</b> Microplate, so its line stacks two numbers and converts nothing. The Dumbbell press was moved to a One-off Weight, so three perfect Sets progress nothing.',
+    ex: build([[12,12,12],[10,10,10],[11,10,10],[12,12,12],null], { oneOff:[null,null,null,20,null] }),
+    dur: 44*60000+38000 }
+];
+SC.forEach(s => s.result = Fitty.summarise('Upper A', s.ex, s.dur, 'kg'));
+
+const VARIANTS = [
+  { key:'A', name:'BURSTS', title:'One burst per Exercise, fired in sequence',
+    note:'“More” is a <b>count you can hear</b>: five bursts land one after another, 170 ms apart. The particle count per burst never changes, so a big day is longer, not denser. Risk: five bursts take ~1 s before the screen settles.' },
+  { key:'B', name:'DENSITY', title:'One burst, particle count scales with the number',
+    note:'“More” is <b>density</b>: 18 particles per progressed Exercise, all at once. Fast and clean at one Exercise. Watch what five does — this is the variant that can tip into noise.' },
+  { key:'C', name:'IGNITION', title:'Each row lands and throws its own burst',
+    note:'Motion is <b>tied to the data</b>: the row slides in, then fires from its own plate chip in its own colour. You read the list and the celebration as one thing. Risk: the list is not fully readable until the last row lands.' }
+];
+
+const COLOURS = [
+  { key:'green', name:'GREEN', title:'One colour — the progression green',
+    note:'Safe and unambiguous: green already means “done / progression” everywhere else in Fitty. But it says nothing about weight, so the celebration is the one place in the app where colour is pure decoration.' },
+  { key:'increment', name:'INCREMENT', title:'The plate you added',
+    note:'Colour keeps meaning weight: the particles are the Increment plate. Honest — and it exposes something. Every Exercise here has a <b>2.5 kg</b> Increment, so the confetti is nearly all <b>red</b>, and the Microloading Exercise is steel. A big day is one colour.' },
+  { key:'rack', name:'RACK', title:'The plates on the new load',
+    note:'The particles are the actual per-side Plate Breakdown of the weight you just earned — Smith bench at 75 kg throws <b>blue + green</b>. Colour still means weight, and a big day is genuinely multi-coloured. The link is one step less literal.' }
+];
+
+let cur = 0, variant = 'A', colourRule = 'rack';
+
+/* ---------- the screen ---------- */
+
+function screenSummary(){
+  const r = SC[cur].result;
+  const up      = r.lines.filter(l => l.progresses);
+  const flat    = r.lines.filter(l => !l.progresses && l.state === 'completed');
+  const skipped = r.lines.filter(l => l.state === 'skipped');
+
+  const hero = up.length
+    ? '<div class="n">' + up.length + '</div>' +
+      '<div class="cap">' + (up.length === 1 ? 'Exercise went up' : 'Exercises went up') + '</div>' +
+      '<div class="sub">Fitty already changed the weight. Next time it is on the bar.</div>'
+    : '<div class="n zero">Nothing went up</div>' +
+      '<div class="sub">' + r.performed + ' Exercises performed. Every Set is logged.</div>';
+
+  const upSec = up.length
+    ? '<div class="sec"><span class="label">Went up</span>' +
+        up.map((l, i) =>
+          '<div class="uprow' + (variant === 'C' ? ' reveal' : '') + '" data-up="' + i + '">' +
+            '<div class="plate" style="background:' + l.added + '"></div>' +
+            '<div style="flex:1 1 auto;min-width:0">' +
+              '<div class="exname">' + l.name + '</div>' +
+              '<div class="arrow">' +
+                '<span class="old">' + l.fromText + '</span>' +
+                '<span class="ar">&rarr;</span>' +
+                '<span class="new">' + l.toText + '</span>' +
+                '<span class="nt">Next&nbsp;time</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>').join('') +
+      '</div>'
+    : '';
+
+  const flatSec = flat.length
+    ? '<div class="sec"><span class="label">Stayed</span>' +
+        flat.map(l =>
+          '<div class="flatrow">' +
+            '<div class="nm">' + l.name + '</div>' +
+            '<div class="meta">' + l.atText + ' &middot; ' + l.sets.join(' &middot; ') + ' reps</div>' +
+            (l.oneOff != null
+              ? '<div class="oneoff">One-off &middot; ' + l.fromText + ' stays</div>'
+              : '<div class="cond">All ' + l.setsPlanned + ' sets at ' + l.threshold +
+                ' &rarr; ' + l.wouldText + '</div>') +
+          '</div>').join('') +
+      '</div>'
+    : '';
+
+  const skipSec = skipped.length
+    ? '<div class="sec"><span class="label">Skipped</span>' +
+        skipped.map(l => '<div class="skiprow">' + l.name + '</div>').join('') +
+      '</div>'
+    : '';
+
+  return '<div class="screen">' +
+    '<div class="rowbetween"><div class="kicker">' + r.day + '</div><div class="label">Summary</div></div>' +
+    '<div class="hero">' + hero + '</div>' +
+    '<div class="scroll">' + upSec + flatSec + skipSec + '</div>' +
+    '<div class="stats">' +
+      '<div class="stat"><div class="v">' + Fitty.fmtClock(r.duration) + '</div><div class="l">Duration</div></div>' +
+      '<div class="stat"><div class="v">' + r.sets + '</div><div class="l">Sets</div></div>' +
+      '<div class="stat"><div class="v">' + r.volume.toLocaleString('en-GB').replace(/,/g, ' ') +
+        '</div><div class="l">' + r.defaultUnit + ' volume</div></div>' +
+    '</div>' +
+    '<div class="bottom"><button class="bmain">Done</button></div>' +
+    '</div>';
+}
+
+/* ---------- confetti ---------- */
+
+const CAN = document.getElementById('fx');
+const ctx = CAN.getContext('2d');
+let parts = [], raf = null, timers = [];
+
+(function sizeCanvas(){
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  CAN.width = 390 * dpr; CAN.height = 844 * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+})();
+
+function plateRect(x, y, w, h, r){
+  if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r) }
+  else { ctx.beginPath(); ctx.rect(x, y, w, h) }
+}
+
+// Particles are plate-shaped: a small vertical slab, the same glyph the
+// Plate Inventory and the Went-up rows draw.
+function burst(n, cols, ox, oy, power, spread){
+  for (let i = 0; i < n; i++) {
+    const a = -Math.PI/2 + (Math.random() - .5) * spread;
+    const v = power * (.55 + Math.random() * .8);
+    parts.push({
+      x: ox + (Math.random() - .5) * 34, y: oy + (Math.random() - .5) * 12,
+      vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+      w: 5 + Math.random() * 4, h: 14 + Math.random() * 13,
+      rot: Math.random() * Math.PI, vr: (Math.random() - .5) * .34,
+      c: cols[(Math.random() * cols.length) | 0], life: 0
+    });
+  }
+  if (!raf) raf = requestAnimationFrame(step);
+}
+
+function step(){
+  ctx.clearRect(0, 0, 390, 844);
+  for (const p of parts) {
+    p.vy += .42; p.vx *= .992; p.vy *= .992;
+    p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
+    ctx.save();
+    ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+    ctx.globalAlpha = p.y > 720 ? Math.max(0, (860 - p.y) / 140) : 1;
+    ctx.fillStyle = p.c;
+    plateRect(-p.w/2, -p.h/2, p.w, p.h, 2); ctx.fill();
+    ctx.restore();
+  }
+  parts = parts.filter(p => p.y < 900 && p.life < 420);
+  raf = (parts.length || timers.length) ? requestAnimationFrame(step) : null;
+  if (!raf) ctx.clearRect(0, 0, 390, 844);
+}
+
+function later(fn, ms){
+  const id = setTimeout(() => { timers = timers.filter(t => t !== id); fn() }, ms);
+  timers.push(id);
+}
+
+function colsFor(l){
+  if (colourRule === 'green') return ['#2E9E52'];
+  if (colourRule === 'increment') return [l.added];
+  return l.rack;
+}
+
+function play(){
+  timers.forEach(clearTimeout); timers = []; parts = [];
+  ctx.clearRect(0, 0, 390, 844);
+
+  const up = SC[cur].result.lines.filter(l => l.progresses);
+  if (!up.length) return;                       // zero progressed = no confetti
+
+  if (variant === 'A') {
+    up.forEach((l, i) => later(() => burst(26, colsFor(l), 195, 262, 9.2, Math.PI * 1.1), i * 170));
+  }
+
+  if (variant === 'B') {
+    const cols = up.flatMap(colsFor);
+    burst(18 * up.length, cols, 195, 262, 9.6, Math.PI * 1.25);
+  }
+
+  if (variant === 'C') {
+    const rows = [].slice.call(document.querySelectorAll('[data-up]'));
+    const top = document.getElementById('phone').getBoundingClientRect().top;
+    rows.forEach((row, i) => later(() => {
+      row.classList.add('go');
+      const b = row.getBoundingClientRect();
+      burst(15, colsFor(up[i]), 34, b.top - top + b.height / 2, 7.4, Math.PI * .95);
+    }, i * 190));
+  }
+}
+
+/* ---------- panel ---------- */
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML = SC.map((s, i) =>
+    '<button class="tab" data-sc="' + i + '" aria-selected="' + (i === cur) + '">' + s.label + '</button>').join('');
+  document.getElementById('stateBlurb').innerHTML = SC[cur].blurb;
+}
+
+function renderOpts(){
+  document.getElementById('variants').innerHTML =
+    '<div class="cap">Pick one</div>' + VARIANTS.map(v =>
+      '<button data-var="' + v.key + '" aria-pressed="' + (v.key === variant) + '">' +
+        '<span class="k">' + v.name + '</span><span>' + v.title + '</span></button>').join('');
+  document.getElementById('variantNote').innerHTML =
+    VARIANTS.find(v => v.key === variant).note;
+
+  document.getElementById('colours').innerHTML =
+    '<div class="cap">Pick one</div>' + COLOURS.map(c =>
+      '<button data-col="' + c.key + '" aria-pressed="' + (c.key === colourRule) + '">' +
+        '<span class="k">' + c.name + '</span><span>' + c.title + '</span></button>').join('');
+  document.getElementById('colourNote').innerHTML =
+    COLOURS.find(c => c.key === colourRule).note;
+}
+
+function renderTable(){
+  document.getElementById('stateTable').innerHTML = SC[cur].result.lines.map(l => {
+    const pill = l.state === 'skipped' ? '<span class="pill p-skip">Skipped</span>'
+      : l.progresses ? '<span class="pill p-up">Went up</span>'
+      : '<span class="pill p-flat">Stayed</span>';
+    const res = l.state === 'skipped' ? '—'
+      : l.progresses ? l.fromText + ' → ' + l.toText
+      : (l.oneOff != null ? 'one-off, never written back' : 'needs ' + l.setsPlanned + '×' + l.threshold);
+    return '<tr><td>' + l.name + '</td><td>' + pill + '</td><td>' +
+      (l.sets.length ? l.sets.join(' · ') : '—') + '</td><td>' + res + '</td></tr>';
+  }).join('');
+
+  const r = SC[cur].result;
+  document.getElementById('under').innerHTML =
+    'UPPER A · ' + r.progressed + ' OF ' + r.lines.length + ' WENT UP · ' +
+    Fitty.fmtClock(r.duration) + ' · ' + r.sets + ' SETS · ' + r.volume + ' KG<br>' +
+    'Volume converts to the Program default unit and shows as one number. The Went-up lines never convert.';
+}
+
+function render(){
+  document.getElementById('screen').innerHTML = screenSummary();
+  renderTabs(); renderOpts(); renderTable();
+  requestAnimationFrame(play);
+}
+
+document.addEventListener('click', function (e) {
+  const t = e.target.closest('[data-sc],[data-var],[data-col],#replay');
+  if (!t) return;
+  if (t.id === 'replay') { render(); return }
+  if (t.dataset.sc  != null) cur = +t.dataset.sc;
+  if (t.dataset.var) variant = t.dataset.var;
+  if (t.dataset.col) colourRule = t.dataset.col;
+  render();
+});
+
+render();
+</script>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #B4B9BD; } a:hover { color: #EDEDEC; }
+  </style>
+</helmet>
+<div style="width: 480px; height: 620px; box-sizing: border-box; background: #121314; color: #EDEDEC; font-family: 'IBM Plex Sans', system-ui, sans-serif; padding: 40px; display: flex; flex-direction: column; gap: 20px;">
+
+  <div style="font-size: 10px; letter-spacing: 0.16em; color: #7E8489; text-transform: uppercase;">Fitty · visual direction</div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <h1 style="margin: 0; font-size: 38px; font-weight: 600; letter-spacing: -0.02em; line-height: 1;">Pick a direction</h1>
+    <p style="margin: 0; font-size: 14.5px; line-height: 1.55; color: #B4B9BD; max-width: 400px; text-wrap: pretty;">Three visual languages for one screen: mid-workout, Push day, Smith machine bench at 72.5 kg. Same anatomy, different voice. Each direction has a style tile and a phone screen.</p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 0;">
+
+    <div style="display: flex; gap: 16px; padding: 18px 0; border-top: 1px solid #232527;">
+      <div style="width: 28px; height: 28px; flex-shrink: 0; background: #EDEDEC; color: #121314; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600;">A</div>
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="font-size: 15px; font-weight: 600;">Plate Rack</div>
+          <div style="border: 1px solid #2E9E52; color: #2E9E52; border-radius: 2px; padding: 2px 6px; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em;">CHOSEN</div>
+        </div>
+        <div style="font-size: 13px; line-height: 1.5; color: #9BA0A5;">Calibrated plate colours are the palette. Colour only ever means weight.</div>
+        <div style="font-size: 12px; line-height: 1.45; color: #7E8489;">Trade-off: strongest on barbell and Smith work, quieter on cable and dumbbell days.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; padding: 18px 0; border-top: 1px solid #232527;">
+      <div style="width: 28px; height: 28px; flex-shrink: 0; border: 1px solid #34383B; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600;">B</div>
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <div style="font-size: 15px; font-weight: 600;">Console</div>
+        <div style="font-size: 13px; line-height: 1.5; color: #9BA0A5;">Gym-equipment instrumentation: mono readouts, hairlines, one amber signal.</div>
+        <div style="font-size: 12px; line-height: 1.45; color: #7E8489;">Trade-off: best at a glance, but cold — it reads like a machine, not a journal.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; padding: 18px 0; border-top: 1px solid #232527; border-bottom: 1px solid #232527;">
+      <div style="width: 28px; height: 28px; flex-shrink: 0; border: 1px solid #34383B; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600;">C</div>
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <div style="font-size: 15px; font-weight: 600;">Logbook</div>
+        <div style="font-size: 13px; line-height: 1.5; color: #9BA0A5;">The training notebook, inverted: ruled rows you fill in, a red pen for progression.</div>
+        <div style="font-size: 12px; line-height: 1.45; color: #7E8489;">Trade-off: the most personal, and the least readable at arm&#39;s length in bad light.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="font-size: 12.5px; line-height: 1.5; color: #7E8489; margin-top: auto;">Mixing is allowed: take the palette from one and the set list from another.</div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":480,"height":620}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

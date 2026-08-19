@@ -1,0 +1,282 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    :root{
+      --floor:#0E0F10; --line:#26292C; --steel:#9BA1A7;
+      --dim:#8D9296; --text:#F4F1EC; --green:#2E9E52;
+      --display:Anton, Haettenschweiler, Impact, sans-serif;
+      --body:'IBM Plex Sans', system-ui, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--floor);color:var(--text);font-family:var(--body);
+         font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+    a{color:#9BA1A7} a:hover{color:#F4F1EC}
+    /* ---------- the screen itself ---------- */
+    .screen{position:absolute;inset:0;padding:54px 20px 20px;display:flex;flex-direction:column;gap:0;z-index:10}
+    .kicker{font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
+    .label{font-size:10px;letter-spacing:.14em;color:#55595D;text-transform:uppercase}
+    .rowbetween{display:flex;align-items:baseline;justify-content:space-between}
+    
+    .hero{margin:18px 0 6px}
+    .hero .n{font-family:var(--display);font-size:96px;line-height:.78;color:var(--green);letter-spacing:-.01em}
+    .hero .n.zero{font-size:33px;color:var(--text);line-height:1;letter-spacing:.03em;text-transform:uppercase}
+    .hero .cap{font-family:var(--display);font-size:19px;line-height:1;letter-spacing:.05em;
+    text-transform:uppercase;margin-top:10px;color:var(--text)}
+    .hero .sub{font-size:12px;color:var(--dim);margin-top:6px;line-height:1.5}
+    
+    .scroll{overflow-y:auto;flex:1 1 auto;margin-top:16px;padding-right:2px}
+    .scroll::-webkit-scrollbar{width:0}
+    .sec{margin-bottom:20px}
+    .sec > .label{margin-bottom:10px;display:block}
+    
+    .uprow{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+    .uprow:last-child{border-bottom:1px solid var(--line)}
+    .plate{flex:0 0 auto;width:9px;height:34px;border-radius:2px;margin-top:3px}
+    .exname{font-family:var(--display);font-size:17px;line-height:1;letter-spacing:.02em;text-transform:uppercase}
+    .arrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:7px;margin-top:7px}
+    .arrow .old{font-size:14px;color:var(--dim)}
+    .arrow .ar{color:#55595D;font-size:13px}
+    .arrow .new{font-family:var(--display);font-size:22px;line-height:1;color:var(--green);letter-spacing:.02em}
+    .arrow .nt{font-size:9px;letter-spacing:.14em;color:var(--steel);text-transform:uppercase}
+    
+    .flatrow{padding:9px 0;border-top:1px solid #1E2123}
+    .flatrow .nm{font-size:14px;color:#C9CDD1}
+    .flatrow .meta{font-size:11.5px;color:#55595D;margin-top:3px}
+    .cond{font-size:10px;letter-spacing:.1em;color:var(--steel);margin-top:5px;text-transform:uppercase}
+    .oneoff{display:inline-block;border:1px solid #41464A;color:var(--steel);border-radius:2px;
+    padding:2px 6px;font-size:9px;letter-spacing:.12em;margin-top:5px}
+    .skiprow{font-size:14px;color:var(--dim);padding:6px 0}
+    
+    .stats{border-top:1px solid var(--line);padding-top:12px;display:flex;gap:0;margin-top:auto}
+    .stat{flex:1 1 0}
+    .stat .v{font-family:var(--display);font-size:20px;line-height:1;letter-spacing:.02em}
+    .stat .l{font-size:9px;letter-spacing:.13em;color:#55595D;margin-top:5px;text-transform:uppercase}
+    .bottom{margin-top:14px}
+    .bmain{width:100%;height:64px;border:0;border-radius:3px;background:var(--text);color:#0E0F10;
+    font-family:var(--display);font-size:20px;letter-spacing:.06em;cursor:pointer;text-transform:uppercase}
+
+  </style>
+</helmet>
+<div style="background: #141517; padding: 40px; display: flex; flex-direction: column; gap: 28px; width: 1780px;">
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="font-family: var(--display); font-size: 34px; letter-spacing: 0.02em; text-transform: uppercase;">Ignition &middot; the chosen motion</div>
+    <div style="font-size: 14px; line-height: 1.6; color: #C9CDD1; max-width: 74ch;">Each Went-up row lands on its own, 190 ms after the one above it, and throws a burst from its own plate chip. The particles are the per-side Plate Breakdown of the weight just earned, so colour still means weight. The whole sequence runs 1.4 s; after that the screen is quiet and every number is readable.</div>
+  </div>
+  <div style="display: flex; gap: 28px;">
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: baseline; gap: 10px;">
+      <div style="font-family: var(--display); font-size: 22px; letter-spacing: 0.02em; color: #F4F1EC;">300 MS</div>
+      <div style="font-size: 10px; letter-spacing: 0.14em; color: #55595D; text-transform: uppercase;">Row 2 lands</div>
+    </div>
+    <div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #0E0F10; border: 1px solid #26292C;">
+<div class="screen"><div class="rowbetween"><div class="kicker">Upper A</div><div class="label">Summary</div></div><div class="hero"><div class="n">5</div><div class="cap">Exercises went up</div><div class="sub">Fitty already changed the weight. Next time it is on the bar.</div></div><div class="scroll"><div class="sec"><span class="label">Went up</span><div class="uprow" style="opacity:0.977984;transform:matrix(1, 0, 0, 1, 0, 0.30823);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Smith machine bench press</div><div class="arrow"><span class="old">72.5 KG</span><span class="ar">→</span><span class="new">75 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:0.700073;transform:matrix(1, 0, 0, 1, 0, 4.19898);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Barbell row</div><div class="arrow"><span class="old">60 KG</span><span class="ar">→</span><span class="new">62.5 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:0;transform:matrix(1, 0, 0, 1, 0, 14);"><div class="plate" style="background:#9BA1A7"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Lat pulldown</div><div class="arrow"><span class="old">100 LBS + 1 KG</span><span class="ar">→</span><span class="new">100 LBS + 2 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:0;transform:matrix(1, 0, 0, 1, 0, 14);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Dumbbell shoulder press</div><div class="arrow"><span class="old">22.5 KG</span><span class="ar">→</span><span class="new">25 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:0;transform:matrix(1, 0, 0, 1, 0, 14);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Weighted chin-up</div><div class="arrow"><span class="old">15 KG</span><span class="ar">→</span><span class="new">17.5 KG</span><span class="nt">Next&nbsp;time</span></div></div></div></div></div><div class="stats"><div class="stat"><div class="v">41:12</div><div class="l">Duration</div></div><div class="stat"><div class="v">15</div><div class="l">Sets</div></div><div class="stat"><div class="v">7 796</div><div class="l">kg volume</div></div></div><div class="bottom"><button class="bmain">Done</button></div></div>
+<div style="position: absolute; left: 96.1px; top: 370.9px; width: 6.0px; height: 18.7px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(4.5deg);"></div>
+<div style="position: absolute; left: -39.6px; top: 301.9px; width: 8.4px; height: 14.6px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(197.1deg);"></div>
+<div style="position: absolute; left: -0.9px; top: 238.5px; width: 6.7px; height: 16.0px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(-47.8deg);"></div>
+<div style="position: absolute; left: 86.8px; top: 314.7px; width: 8.7px; height: 25.4px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(-81.9deg);"></div>
+<div style="position: absolute; left: 72.7px; top: 321.2px; width: 7.0px; height: 26.9px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(146.2deg);"></div>
+<div style="position: absolute; left: 158.0px; top: 337.0px; width: 5.1px; height: 15.4px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(201.2deg);"></div>
+<div style="position: absolute; left: -15.0px; top: 309.9px; width: 6.7px; height: 19.9px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(119.2deg);"></div>
+<div style="position: absolute; left: 36.4px; top: 281.3px; width: 7.6px; height: 23.1px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(-14.4deg);"></div>
+<div style="position: absolute; left: 134.7px; top: 324.1px; width: 6.3px; height: 14.9px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(79.5deg);"></div>
+<div style="position: absolute; left: -41.0px; top: 245.8px; width: 6.1px; height: 17.3px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(200.8deg);"></div>
+<div style="position: absolute; left: -33.0px; top: 282.5px; width: 5.3px; height: 20.4px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(47.3deg);"></div>
+<div style="position: absolute; left: 47.7px; top: 291.5px; width: 9.0px; height: 16.7px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(120.8deg);"></div>
+<div style="position: absolute; left: -17.0px; top: 242.0px; width: 6.2px; height: 16.7px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(152.2deg);"></div>
+<div style="position: absolute; left: -71.7px; top: 361.7px; width: 6.6px; height: 17.2px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(93.8deg);"></div>
+<div style="position: absolute; left: 88.0px; top: 239.5px; width: 8.4px; height: 19.9px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(171.6deg);"></div>
+<div style="position: absolute; left: 36.5px; top: 358.2px; width: 7.6px; height: 17.9px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(114.4deg);"></div>
+<div style="position: absolute; left: -33.6px; top: 376.3px; width: 6.2px; height: 19.9px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(112.1deg);"></div>
+<div style="position: absolute; left: -16.5px; top: 356.7px; width: 5.6px; height: 22.6px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(89.9deg);"></div>
+<div style="position: absolute; left: 52.6px; top: 383.9px; width: 5.4px; height: 25.3px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(0.8deg);"></div>
+<div style="position: absolute; left: 50.6px; top: 346.8px; width: 6.0px; height: 22.5px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(85.3deg);"></div>
+<div style="position: absolute; left: 104.1px; top: 379.4px; width: 7.2px; height: 25.3px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(68.5deg);"></div>
+<div style="position: absolute; left: 20.3px; top: 363.0px; width: 8.7px; height: 17.6px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(5.0deg);"></div>
+<div style="position: absolute; left: -24.9px; top: 376.7px; width: 8.6px; height: 15.3px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(-50.4deg);"></div>
+<div style="position: absolute; left: 47.9px; top: 351.3px; width: 8.6px; height: 26.1px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(57.9deg);"></div>
+<div style="position: absolute; left: 7.9px; top: 345.1px; width: 5.5px; height: 26.7px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(1.8deg);"></div>
+<div style="position: absolute; left: 34.9px; top: 321.4px; width: 6.5px; height: 17.1px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(-9.8deg);"></div>
+<div style="position: absolute; left: -16.6px; top: 368.4px; width: 8.8px; height: 19.0px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(178.0deg);"></div>
+<div style="position: absolute; left: 65.6px; top: 371.9px; width: 8.8px; height: 14.1px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(70.1deg);"></div>
+<div style="position: absolute; left: 50.9px; top: 378.7px; width: 6.1px; height: 20.4px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(130.3deg);"></div>
+<div style="position: absolute; left: 13.6px; top: 380.3px; width: 6.4px; height: 18.5px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(234.6deg);"></div>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: baseline; gap: 10px;">
+      <div style="font-family: var(--display); font-size: 22px; letter-spacing: 0.02em; color: #F4F1EC;">700 MS</div>
+      <div style="font-size: 10px; letter-spacing: 0.14em; color: #55595D; text-transform: uppercase;">Row 4 lands</div>
+    </div>
+    <div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #0E0F10; border: 1px solid #26292C;">
+<div class="screen"><div class="rowbetween"><div class="kicker">Upper A</div><div class="label">Summary</div></div><div class="hero"><div class="n">5</div><div class="cap">Exercises went up</div><div class="sub">Fitty already changed the weight. Next time it is on the bar.</div></div><div class="scroll"><div class="sec"><span class="label">Went up</span><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Smith machine bench press</div><div class="arrow"><span class="old">72.5 KG</span><span class="ar">→</span><span class="new">75 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Barbell row</div><div class="arrow"><span class="old">60 KG</span><span class="ar">→</span><span class="new">62.5 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:0.983984;transform:matrix(1, 0, 0, 1, 0, 0.224224);"><div class="plate" style="background:#9BA1A7"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Lat pulldown</div><div class="arrow"><span class="old">100 LBS + 1 KG</span><span class="ar">→</span><span class="new">100 LBS + 2 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:0.699814;transform:matrix(1, 0, 0, 1, 0, 4.2026);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Dumbbell shoulder press</div><div class="arrow"><span class="old">22.5 KG</span><span class="ar">→</span><span class="new">25 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:0;transform:matrix(1, 0, 0, 1, 0, 14);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Weighted chin-up</div><div class="arrow"><span class="old">15 KG</span><span class="ar">→</span><span class="new">17.5 KG</span><span class="nt">Next&nbsp;time</span></div></div></div></div></div><div class="stats"><div class="stat"><div class="v">41:12</div><div class="l">Duration</div></div><div class="stat"><div class="v">15</div><div class="l">Sets</div></div><div class="stat"><div class="v">7 796</div><div class="l">kg volume</div></div></div><div class="bottom"><button class="bmain">Done</button></div></div>
+<div style="position: absolute; left: 50.9px; top: 332.7px; width: 7.4px; height: 17.1px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(84.1deg);"></div>
+<div style="position: absolute; left: 154.9px; top: 520.4px; width: 8.7px; height: 22.5px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(82.4deg);"></div>
+<div style="position: absolute; left: 231.0px; top: 430.5px; width: 5.3px; height: 20.5px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(223.5deg);"></div>
+<div style="position: absolute; left: -282.6px; top: 528.9px; width: 5.1px; height: 21.6px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(310.4deg);"></div>
+<div style="position: absolute; left: -151.8px; top: 567.9px; width: 7.3px; height: 15.7px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(69.8deg);"></div>
+<div style="position: absolute; left: 169.3px; top: 388.5px; width: 8.8px; height: 21.3px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(363.1deg);"></div>
+<div style="position: absolute; left: 171.4px; top: 497.3px; width: 7.6px; height: 15.1px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(-81.0deg);"></div>
+<div style="position: absolute; left: 320.0px; top: 595.1px; width: 8.8px; height: 21.6px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(-128.1deg);"></div>
+<div style="position: absolute; left: 56.1px; top: 455.8px; width: 5.4px; height: 17.2px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(26.3deg);"></div>
+<div style="position: absolute; left: 49.4px; top: 465.9px; width: 7.9px; height: 26.4px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(121.8deg);"></div>
+<div style="position: absolute; left: 89.5px; top: 474.0px; width: 6.8px; height: 17.5px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(-223.4deg);"></div>
+<div style="position: absolute; left: -20.2px; top: 300.3px; width: 6.6px; height: 19.3px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(344.4deg);"></div>
+<div style="position: absolute; left: 282.2px; top: 441.3px; width: 5.3px; height: 16.1px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(314.4deg);"></div>
+<div style="position: absolute; left: -120.5px; top: 595.1px; width: 5.3px; height: 18.0px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(-94.4deg);"></div>
+<div style="position: absolute; left: -182.3px; top: 603.4px; width: 5.1px; height: 20.8px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(39.0deg);"></div>
+<div style="position: absolute; left: -205.5px; top: 524.3px; width: 5.1px; height: 24.6px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(52.3deg);"></div>
+<div style="position: absolute; left: -20.9px; top: 380.8px; width: 7.6px; height: 18.3px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(-34.7deg);"></div>
+<div style="position: absolute; left: -113.2px; top: 356.6px; width: 6.9px; height: 22.8px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(453.0deg);"></div>
+<div style="position: absolute; left: 248.8px; top: 531.2px; width: 5.3px; height: 19.5px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(191.3deg);"></div>
+<div style="position: absolute; left: 128.9px; top: 456.3px; width: 7.4px; height: 26.8px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(-87.5deg);"></div>
+<div style="position: absolute; left: -86.4px; top: 512.1px; width: 6.8px; height: 18.7px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(240.4deg);"></div>
+<div style="position: absolute; left: 83.8px; top: 369.7px; width: 7.8px; height: 18.5px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(190.9deg);"></div>
+<div style="position: absolute; left: 125.6px; top: 525.4px; width: 8.6px; height: 21.9px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(54.7deg);"></div>
+<div style="position: absolute; left: 191.7px; top: 419.7px; width: 7.8px; height: 21.4px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(305.1deg);"></div>
+<div style="position: absolute; left: -27.2px; top: 458.3px; width: 5.6px; height: 15.5px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(-121.8deg);"></div>
+<div style="position: absolute; left: -80.3px; top: 482.6px; width: 8.2px; height: 20.2px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(197.3deg);"></div>
+<div style="position: absolute; left: -207.6px; top: 533.9px; width: 5.5px; height: 18.4px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(-84.5deg);"></div>
+<div style="position: absolute; left: -184.9px; top: 465.3px; width: 6.8px; height: 19.3px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(200.0deg);"></div>
+<div style="position: absolute; left: 112.3px; top: 343.4px; width: 5.5px; height: 15.3px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(70.3deg);"></div>
+<div style="position: absolute; left: -11.3px; top: 454.7px; width: 8.5px; height: 20.1px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(228.0deg);"></div>
+<div style="position: absolute; left: 64.8px; top: 455.0px; width: 6.0px; height: 19.7px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(234.4deg);"></div>
+<div style="position: absolute; left: 47.2px; top: 463.7px; width: 8.1px; height: 23.8px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(185.7deg);"></div>
+<div style="position: absolute; left: 139.6px; top: 483.4px; width: 6.8px; height: 16.3px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(2.1deg);"></div>
+<div style="position: absolute; left: 9.0px; top: 452.1px; width: 5.7px; height: 26.5px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(-116.9deg);"></div>
+<div style="position: absolute; left: 126.0px; top: 428.1px; width: 8.4px; height: 21.1px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(226.6deg);"></div>
+<div style="position: absolute; left: -11.9px; top: 383.5px; width: 7.9px; height: 23.2px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(267.0deg);"></div>
+<div style="position: absolute; left: -37.2px; top: 371.4px; width: 7.6px; height: 15.0px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(177.0deg);"></div>
+<div style="position: absolute; left: -61.7px; top: 408.3px; width: 6.8px; height: 22.8px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(178.7deg);"></div>
+<div style="position: absolute; left: 58.4px; top: 419.1px; width: 7.3px; height: 15.1px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(-58.3deg);"></div>
+<div style="position: absolute; left: 87.3px; top: 438.3px; width: 8.6px; height: 16.1px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(-94.4deg);"></div>
+<div style="position: absolute; left: 28.8px; top: 435.2px; width: 7.5px; height: 21.5px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(161.3deg);"></div>
+<div style="position: absolute; left: -22.1px; top: 459.6px; width: 7.2px; height: 21.1px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(-10.5deg);"></div>
+<div style="position: absolute; left: -75.1px; top: 425.9px; width: 5.7px; height: 19.5px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(-18.1deg);"></div>
+<div style="position: absolute; left: 74.3px; top: 479.0px; width: 5.4px; height: 23.2px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(290.4deg);"></div>
+<div style="position: absolute; left: 111.1px; top: 384.2px; width: 5.8px; height: 16.7px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(69.1deg);"></div>
+<div style="position: absolute; left: -8.5px; top: 469.0px; width: 5.3px; height: 21.9px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(179.8deg);"></div>
+<div style="position: absolute; left: -13.9px; top: 488.7px; width: 7.5px; height: 19.5px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(8.6deg);"></div>
+<div style="position: absolute; left: -42.0px; top: 512.3px; width: 7.6px; height: 18.8px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-3.3deg);"></div>
+<div style="position: absolute; left: 11.1px; top: 506.7px; width: 5.2px; height: 25.1px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(94.9deg);"></div>
+<div style="position: absolute; left: 15.7px; top: 466.9px; width: 7.8px; height: 26.2px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(97.9deg);"></div>
+<div style="position: absolute; left: 69.0px; top: 478.0px; width: 7.9px; height: 23.9px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(86.9deg);"></div>
+<div style="position: absolute; left: 61.1px; top: 488.5px; width: 5.2px; height: 23.2px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(28.1deg);"></div>
+<div style="position: absolute; left: 14.5px; top: 472.7px; width: 8.3px; height: 17.7px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(3.5deg);"></div>
+<div style="position: absolute; left: 16.8px; top: 503.6px; width: 6.3px; height: 15.4px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(133.7deg);"></div>
+<div style="position: absolute; left: 35.7px; top: 501.5px; width: 6.9px; height: 20.3px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-11.2deg);"></div>
+<div style="position: absolute; left: -39.3px; top: 502.9px; width: 7.2px; height: 16.7px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-18.7deg);"></div>
+<div style="position: absolute; left: 4.7px; top: 489.3px; width: 7.0px; height: 20.5px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(70.9deg);"></div>
+<div style="position: absolute; left: 79.7px; top: 512.6px; width: 6.8px; height: 15.2px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(73.8deg);"></div>
+<div style="position: absolute; left: 67.3px; top: 496.8px; width: 6.4px; height: 25.9px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(112.7deg);"></div>
+<div style="position: absolute; left: 2.8px; top: 521.4px; width: 7.9px; height: 20.5px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(156.0deg);"></div>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: baseline; gap: 10px;">
+      <div style="font-family: var(--display); font-size: 22px; letter-spacing: 0.02em; color: #F4F1EC;">1100 MS</div>
+      <div style="font-size: 10px; letter-spacing: 0.14em; color: #55595D; text-transform: uppercase;">Last row lands</div>
+    </div>
+    <div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #0E0F10; border: 1px solid #26292C;">
+<div class="screen"><div class="rowbetween"><div class="kicker">Upper A</div><div class="label">Summary</div></div><div class="hero"><div class="n">5</div><div class="cap">Exercises went up</div><div class="sub">Fitty already changed the weight. Next time it is on the bar.</div></div><div class="scroll"><div class="sec"><span class="label">Went up</span><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Smith machine bench press</div><div class="arrow"><span class="old">72.5 KG</span><span class="ar">→</span><span class="new">75 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Barbell row</div><div class="arrow"><span class="old">60 KG</span><span class="ar">→</span><span class="new">62.5 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#9BA1A7"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Lat pulldown</div><div class="arrow"><span class="old">100 LBS + 1 KG</span><span class="ar">→</span><span class="new">100 LBS + 2 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Dumbbell shoulder press</div><div class="arrow"><span class="old">22.5 KG</span><span class="ar">→</span><span class="new">25 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:0.988777;transform:matrix(1, 0, 0, 1, 0, 0.157129);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Weighted chin-up</div><div class="arrow"><span class="old">15 KG</span><span class="ar">→</span><span class="new">17.5 KG</span><span class="nt">Next&nbsp;time</span></div></div></div></div></div><div class="stats"><div class="stat"><div class="v">41:12</div><div class="l">Duration</div></div><div class="stat"><div class="v">15</div><div class="l">Sets</div></div><div class="stat"><div class="v">7 796</div><div class="l">kg volume</div></div></div><div class="bottom"><button class="bmain">Done</button></div></div>
+<div style="position: absolute; left: -84.3px; top: 783.6px; width: 8.4px; height: 20.2px; border-radius: 2px; background: #2E9E52; opacity: 0.47; transform: rotate(340.6deg);"></div>
+<div style="position: absolute; left: 163.2px; top: 806.5px; width: 5.4px; height: 19.8px; border-radius: 2px; background: #1F5FCB; opacity: 0.31; transform: rotate(324.8deg);"></div>
+<div style="position: absolute; left: 75.7px; top: 740.9px; width: 8.2px; height: 21.9px; border-radius: 2px; background: #2E9E52; opacity: 0.77; transform: rotate(185.5deg);"></div>
+<div style="position: absolute; left: -46.3px; top: 651.2px; width: 5.1px; height: 20.6px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(280.4deg);"></div>
+<div style="position: absolute; left: 246.1px; top: 731.1px; width: 6.7px; height: 26.7px; border-radius: 2px; background: #2E9E52; opacity: 0.83; transform: rotate(371.0deg);"></div>
+<div style="position: absolute; left: 79.8px; top: 804.3px; width: 5.4px; height: 23.9px; border-radius: 2px; background: #1F5FCB; opacity: 0.31; transform: rotate(-401.9deg);"></div>
+<div style="position: absolute; left: 181.8px; top: 611.2px; width: 5.7px; height: 21.2px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(-252.7deg);"></div>
+<div style="position: absolute; left: -323.3px; top: 702.0px; width: 5.3px; height: 24.4px; border-radius: 2px; background: #2E9E52; opacity: 1.00; transform: rotate(-115.0deg);"></div>
+<div style="position: absolute; left: -95.4px; top: 803.6px; width: 6.2px; height: 23.9px; border-radius: 2px; background: #2E9E52; opacity: 0.32; transform: rotate(235.3deg);"></div>
+<div style="position: absolute; left: 251.2px; top: 847.5px; width: 7.9px; height: 17.5px; border-radius: 2px; background: #1F5FCB; opacity: 0.03; transform: rotate(-356.6deg);"></div>
+<div style="position: absolute; left: -104.9px; top: 684.0px; width: 6.5px; height: 26.1px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(250.1deg);"></div>
+<div style="position: absolute; left: 204.1px; top: 838.4px; width: 8.4px; height: 24.1px; border-radius: 2px; background: #B9BEC3; opacity: 0.07; transform: rotate(607.2deg);"></div>
+<div style="position: absolute; left: 6.0px; top: 648.5px; width: 8.6px; height: 15.8px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(627.8deg);"></div>
+<div style="position: absolute; left: 80.2px; top: 725.5px; width: 5.5px; height: 23.8px; border-radius: 2px; background: #1F5FCB; opacity: 0.88; transform: rotate(-212.3deg);"></div>
+<div style="position: absolute; left: 185.2px; top: 795.0px; width: 6.3px; height: 20.9px; border-radius: 2px; background: #B9BEC3; opacity: 0.39; transform: rotate(418.4deg);"></div>
+<div style="position: absolute; left: 172.0px; top: 806.5px; width: 6.0px; height: 22.8px; border-radius: 2px; background: #1F5FCB; opacity: 0.30; transform: rotate(415.6deg);"></div>
+<div style="position: absolute; left: -93.0px; top: 724.1px; width: 5.3px; height: 20.6px; border-radius: 2px; background: #1F5FCB; opacity: 0.90; transform: rotate(183.8deg);"></div>
+<div style="position: absolute; left: -175.2px; top: 824.0px; width: 9.0px; height: 16.4px; border-radius: 2px; background: #1F5FCB; opacity: 0.20; transform: rotate(-236.8deg);"></div>
+<div style="position: absolute; left: 265.0px; top: 576.5px; width: 5.2px; height: 15.6px; border-radius: 2px; background: #B9BEC3; opacity: 1.00; transform: rotate(-48.4deg);"></div>
+<div style="position: absolute; left: 173.0px; top: 554.2px; width: 5.8px; height: 26.6px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(488.0deg);"></div>
+<div style="position: absolute; left: -186.7px; top: 630.9px; width: 7.6px; height: 16.2px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(317.4deg);"></div>
+<div style="position: absolute; left: -78.2px; top: 733.3px; width: 7.2px; height: 19.2px; border-radius: 2px; background: #1F5FCB; opacity: 0.84; transform: rotate(406.4deg);"></div>
+<div style="position: absolute; left: 318.1px; top: 827.9px; width: 8.3px; height: 19.9px; border-radius: 2px; background: #1F5FCB; opacity: 0.16; transform: rotate(-208.0deg);"></div>
+<div style="position: absolute; left: 115.1px; top: 591.5px; width: 5.7px; height: 26.6px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(-95.8deg);"></div>
+<div style="position: absolute; left: -43.6px; top: 698.0px; width: 7.3px; height: 21.5px; border-radius: 2px; background: #1F5FCB; opacity: 1.00; transform: rotate(62.9deg);"></div>
+<div style="position: absolute; left: 249.2px; top: 579.0px; width: 7.8px; height: 17.0px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(341.5deg);"></div>
+<div style="position: absolute; left: 46.6px; top: 636.1px; width: 7.1px; height: 14.4px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(-167.8deg);"></div>
+<div style="position: absolute; left: 41.3px; top: 645.0px; width: 6.6px; height: 19.0px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(518.3deg);"></div>
+<div style="position: absolute; left: 236.0px; top: 695.2px; width: 6.4px; height: 14.8px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(-41.8deg);"></div>
+<div style="position: absolute; left: -203.2px; top: 668.2px; width: 6.1px; height: 18.8px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(208.2deg);"></div>
+<div style="position: absolute; left: -237.5px; top: 696.1px; width: 6.1px; height: 23.7px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(131.8deg);"></div>
+<div style="position: absolute; left: 52.0px; top: 611.8px; width: 5.3px; height: 19.8px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(236.9deg);"></div>
+<div style="position: absolute; left: 126.5px; top: 600.5px; width: 8.5px; height: 18.4px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(-287.5deg);"></div>
+<div style="position: absolute; left: -23.9px; top: 596.0px; width: 8.6px; height: 25.5px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(535.9deg);"></div>
+<div style="position: absolute; left: -206.7px; top: 568.7px; width: 8.2px; height: 23.2px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(460.0deg);"></div>
+<div style="position: absolute; left: 314.7px; top: 769.7px; width: 7.5px; height: 22.4px; border-radius: 2px; background: #9BA1A7; opacity: 0.56; transform: rotate(160.8deg);"></div>
+<div style="position: absolute; left: -44.9px; top: 581.2px; width: 5.4px; height: 22.1px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(85.3deg);"></div>
+<div style="position: absolute; left: 249.2px; top: 573.1px; width: 8.6px; height: 24.3px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(-235.8deg);"></div>
+<div style="position: absolute; left: 171.2px; top: 560.6px; width: 7.1px; height: 26.8px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(-280.0deg);"></div>
+<div style="position: absolute; left: 234.1px; top: 521.4px; width: 6.9px; height: 17.9px; border-radius: 2px; background: #9BA1A7; opacity: 1.00; transform: rotate(380.9deg);"></div>
+<div style="position: absolute; left: -123.4px; top: 658.5px; width: 5.6px; height: 21.4px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-71.5deg);"></div>
+<div style="position: absolute; left: 225.6px; top: 652.3px; width: 8.6px; height: 18.9px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-175.8deg);"></div>
+<div style="position: absolute; left: -116.5px; top: 488.2px; width: 7.5px; height: 14.1px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(250.6deg);"></div>
+<div style="position: absolute; left: 56.6px; top: 529.3px; width: 7.2px; height: 18.7px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-18.3deg);"></div>
+<div style="position: absolute; left: -84.2px; top: 462.4px; width: 5.5px; height: 19.6px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-57.1deg);"></div>
+<div style="position: absolute; left: 227.1px; top: 521.3px; width: 8.4px; height: 18.5px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-109.0deg);"></div>
+<div style="position: absolute; left: -53.6px; top: 608.8px; width: 6.6px; height: 26.0px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(373.9deg);"></div>
+<div style="position: absolute; left: -88.6px; top: 619.9px; width: 7.8px; height: 26.4px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(86.3deg);"></div>
+<div style="position: absolute; left: -32.9px; top: 560.1px; width: 5.1px; height: 25.5px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-68.0deg);"></div>
+<div style="position: absolute; left: 33.7px; top: 500.3px; width: 8.3px; height: 23.0px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(233.0deg);"></div>
+<div style="position: absolute; left: 130.5px; top: 644.7px; width: 8.3px; height: 16.8px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(176.8deg);"></div>
+<div style="position: absolute; left: 10.5px; top: 589.7px; width: 7.5px; height: 23.7px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-148.5deg);"></div>
+<div style="position: absolute; left: 70.2px; top: 599.8px; width: 6.1px; height: 22.8px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(383.9deg);"></div>
+<div style="position: absolute; left: -184.2px; top: 572.3px; width: 8.9px; height: 23.8px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-9.1deg);"></div>
+<div style="position: absolute; left: 140.2px; top: 656.5px; width: 7.5px; height: 16.6px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(234.1deg);"></div>
+<div style="position: absolute; left: 6.6px; top: 569.7px; width: 7.9px; height: 24.4px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(57.6deg);"></div>
+<div style="position: absolute; left: 106.4px; top: 643.0px; width: 6.4px; height: 23.7px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-7.7deg);"></div>
+<div style="position: absolute; left: 206.8px; top: 649.9px; width: 6.3px; height: 22.4px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(46.5deg);"></div>
+<div style="position: absolute; left: 126.8px; top: 639.4px; width: 7.5px; height: 15.6px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(94.9deg);"></div>
+<div style="position: absolute; left: 86.5px; top: 534.9px; width: 5.1px; height: 15.0px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-81.5deg);"></div>
+<div style="position: absolute; left: 114.0px; top: 627.9px; width: 8.8px; height: 16.9px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(272.2deg);"></div>
+<div style="position: absolute; left: 65.8px; top: 599.7px; width: 6.2px; height: 16.0px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(57.3deg);"></div>
+<div style="position: absolute; left: 84.5px; top: 613.5px; width: 6.8px; height: 24.6px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(216.1deg);"></div>
+<div style="position: absolute; left: 98.0px; top: 631.0px; width: 7.8px; height: 19.5px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(41.1deg);"></div>
+<div style="position: absolute; left: -111.6px; top: 665.0px; width: 9.0px; height: 14.6px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-74.3deg);"></div>
+<div style="position: absolute; left: 51.7px; top: 533.2px; width: 7.9px; height: 22.4px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-0.6deg);"></div>
+<div style="position: absolute; left: -90.2px; top: 650.0px; width: 7.2px; height: 18.5px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(80.1deg);"></div>
+<div style="position: absolute; left: 127.6px; top: 561.3px; width: 8.0px; height: 19.4px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-83.0deg);"></div>
+<div style="position: absolute; left: 45.4px; top: 531.4px; width: 7.4px; height: 15.0px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(30.9deg);"></div>
+<div style="position: absolute; left: 150.6px; top: 582.8px; width: 6.1px; height: 19.9px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-57.7deg);"></div>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: baseline; gap: 10px;">
+      <div style="font-family: var(--display); font-size: 22px; letter-spacing: 0.02em; color: #F4F1EC;">1600 MS</div>
+      <div style="font-size: 10px; letter-spacing: 0.14em; color: #55595D; text-transform: uppercase;">Settled</div>
+    </div>
+    <div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #0E0F10; border: 1px solid #26292C;">
+<div class="screen"><div class="rowbetween"><div class="kicker">Upper A</div><div class="label">Summary</div></div><div class="hero"><div class="n">5</div><div class="cap">Exercises went up</div><div class="sub">Fitty already changed the weight. Next time it is on the bar.</div></div><div class="scroll"><div class="sec"><span class="label">Went up</span><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Smith machine bench press</div><div class="arrow"><span class="old">72.5 KG</span><span class="ar">→</span><span class="new">75 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Barbell row</div><div class="arrow"><span class="old">60 KG</span><span class="ar">→</span><span class="new">62.5 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#9BA1A7"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Lat pulldown</div><div class="arrow"><span class="old">100 LBS + 1 KG</span><span class="ar">→</span><span class="new">100 LBS + 2 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Dumbbell shoulder press</div><div class="arrow"><span class="old">22.5 KG</span><span class="ar">→</span><span class="new">25 KG</span><span class="nt">Next&nbsp;time</span></div></div></div><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Weighted chin-up</div><div class="arrow"><span class="old">15 KG</span><span class="ar">→</span><span class="new">17.5 KG</span><span class="nt">Next&nbsp;time</span></div></div></div></div></div><div class="stats"><div class="stat"><div class="v">41:12</div><div class="l">Duration</div></div><div class="stat"><div class="v">15</div><div class="l">Sets</div></div><div class="stat"><div class="v">7 796</div><div class="l">kg volume</div></div></div><div class="bottom"><button class="bmain">Done</button></div></div>
+<div style="position: absolute; left: -128.8px; top: 837.5px; width: 6.9px; height: 17.9px; border-radius: 2px; background: #C8322B; opacity: 0.10; transform: rotate(-119.9deg);"></div>
+<div style="position: absolute; left: 127.7px; top: 746.4px; width: 8.0px; height: 19.4px; border-radius: 2px; background: #C8322B; opacity: 0.74; transform: rotate(236.8deg);"></div>
+<div style="position: absolute; left: -7.8px; top: 834.6px; width: 7.7px; height: 26.9px; border-radius: 2px; background: #C8322B; opacity: 0.08; transform: rotate(440.8deg);"></div>
+<div style="position: absolute; left: 3.2px; top: 804.0px; width: 5.5px; height: 16.1px; border-radius: 2px; background: #C8322B; opacity: 0.34; transform: rotate(-203.7deg);"></div>
+<div style="position: absolute; left: 137.7px; top: 753.3px; width: 7.7px; height: 22.7px; border-radius: 2px; background: #C8322B; opacity: 0.68; transform: rotate(313.9deg);"></div>
+<div style="position: absolute; left: -191.8px; top: 776.0px; width: 7.4px; height: 15.1px; border-radius: 2px; background: #C8322B; opacity: 0.55; transform: rotate(-325.7deg);"></div>
+<div style="position: absolute; left: 4.5px; top: 802.1px; width: 6.4px; height: 15.2px; border-radius: 2px; background: #C8322B; opacity: 0.36; transform: rotate(135.0deg);"></div>
+<div style="position: absolute; left: 87.9px; top: 708.7px; width: 7.5px; height: 16.2px; border-radius: 2px; background: #C8322B; opacity: 1.00; transform: rotate(-36.5deg);"></div>
+    </div>
+  </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,67 @@
+{
+  "artboards": [
+    { "file": "Home.dc.html",        "title": "Door 1 — the day picker",         "x": 0,    "y": 0,    "w": 390, "h": 844 },
+    { "file": "History.dc.html",     "title": "History — streak + workout list", "x": 440,  "y": 0,    "w": 390, "h": 844 },
+    { "file": "Workout.dc.html",     "title": "One past workout",                "x": 880,  "y": 0,    "w": 390, "h": 844 },
+    { "file": "Delete.dc.html",      "title": "Deleting a past workout",         "x": 1320, "y": 0,    "w": 390, "h": 844 },
+    { "file": "Empty.dc.html",       "title": "Before the first workout",        "x": 1760, "y": 0,    "w": 390, "h": 844 },
+
+    { "file": "Main.dc.html",        "title": "A — the set grid (CHOSEN)",       "x": 0,    "y": 1080, "w": 390, "h": 844 },
+    { "file": "ChartLabels.dc.html", "title": "B — reps on points (rejected)",   "x": 440,  "y": 1080, "w": 390, "h": 844 },
+    { "file": "Plateau.dc.html",     "title": "A plateau, read honestly",        "x": 880,  "y": 1080, "w": 390, "h": 844 },
+    { "file": "Mixed.dc.html",       "title": "Mixed units — 90 lbs + 3 kg",     "x": 1320, "y": 1080, "w": 390, "h": 844 },
+    { "file": "Program.dc.html",     "title": "Door 2 — the exercise cards",     "x": 1760, "y": 1080, "w": 390, "h": 844 }
+  ],
+  "annotations": [
+    {
+      "id": "note-doors",
+      "x": 0,
+      "y": -300,
+      "w": 830,
+      "text": "TWO DOORS, NO TAB BAR\nHistory is reached from the two places the user already stands. The day picker carries one HISTORY row at the bottom of the screen — under the thumb, out of the way of the thing you came to do. The Program sheet turns every Exercise card into a door to that Exercise's chart, and the card already carries a sparkline, so the door announces itself.\n\nNothing permanent is added to the logging screen. Fitty stays one screen deep."
+    },
+    {
+      "id": "note-streak",
+      "x": 880,
+      "y": -300,
+      "w": 830,
+      "text": "THE STREAK, WITHOUT THE PUNISHMENT\nA week counts as soon as it holds one Workout. The grid is 16 weeks; the missed week is a darker block and nothing else — no flame, no warning, no \"streak lost\", no best-ever number to fall short of. The count states the run of now, and the grid states what happened.\n\nThat is the whole design: the grid is the hero and the number is a fact about it. Fitty states, it never advises."
+    },
+    {
+      "id": "note-delete",
+      "x": 1320,
+      "y": 900,
+      "w": 390,
+      "text": "DELETE KEEPS THE WEIGHT\nThe confirm says what it removes and what it does not touch. Fitty applied the progression at Finish and never lowers a Working Weight by itself, so deleting the log does not walk the weight back.\n\nThe red is the 25 kg plate red, reused as the destructive colour. Settled: a filled rectangle of plate colour is a plate only inside a Plate Breakdown. Outside one, red is free."
+    },
+    {
+      "id": "note-charts",
+      "x": 0,
+      "y": 1980,
+      "w": 830,
+      "text": "A IS THE CHART. B IS THE RECORD OF THE CHOICE.\nBoth plot the Working Weight in steel, because a plate colour on a line would claim to be a plate. Green is the one exception: ticket 2 already made green mean progression everywhere in Fitty, so a green dot is a session that earned the step.\n\nA — CHOSEN. A SET GRID under the line: one column per session, one cell per Set, filled where the Set met the threshold. Three filled cells IS the progression rule, so the grid answers \"why did it not go up\" with no words at all, and it never collides.\n\nB — REJECTED. The best Set's rep count over every point. At fifteen sessions the figures collide (the 10 · 9 · 11 cluster at the top right), and one figure carries two meanings: the best Set, and, when green, all Sets. Kept on the canvas as the record of the choice."
+    },
+    {
+      "id": "note-plateau",
+      "x": 880,
+      "y": 1980,
+      "w": 390,
+      "text": "THE PLATEAU IS THE TEST\nFive sessions at 22.5 kg, then five at 25. A bare staircase would read as ten wasted weeks. The grid shows the reps climbing under the flat line, and the last column of each run going full green — the session that earned the step.\n\nNo copy tells the user they stalled. The picture does not need it."
+    },
+    {
+      "id": "note-mixed",
+      "x": 1320,
+      "y": 1980,
+      "w": 830,
+      "text": "MIXED UNITS: THE PIN NEVER MOVED\nLat pulldown is an lbs stack with a kg Microplate on the pin. The two units never convert, so there is no single number to plot. In fifteen weeks the pin has not moved once — every gram of the climb is in the Microload — so the Microload is the line, and the axis says + KG.\n\nThe dashed green NEXT step is the weight Fitty already applied at Finish and the user has not lifted yet. Solid is lifted; dashed is not. It exists because the hero and the end of the line would otherwise contradict each other."
+    },
+    {
+      "id": "note-data",
+      "x": 0,
+      "y": 2320,
+      "w": 830,
+      "text": "THE DATA IS REAL\nNo invented curves. A generator runs Fitty's progression rules forward over the logging prototype's Program — four Workout Days, 18 Exercises, 56 Workouts over 16 weeks — and every weight, rep count, step and streak on these ten screens is that generator's output. The lifter has bad days, so the staircases stall the way a real one does.\n\nRunning it that far found a hole no single screen had shown: NOTHING EVER STOPS A MICROLOAD. With the user's own 1 kg Microplate the same rules run the Lat pulldown to +11 kg hanging on a pin. It has its own ticket now — a roll-up into the pin would have to convert kg to lbs, and this map forbids that everywhere, so the answer cannot be arithmetic."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

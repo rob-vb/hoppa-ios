@@ -1,0 +1,18 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "1 — First run", "x": 0, "y": 0, "w": 390, "h": 844 },
+    { "file": "Gym.dc.html", "title": "2 — Your plate rack", "x": 440, "y": 0, "w": 390, "h": 844 },
+    { "file": "Program.dc.html", "title": "3 — Program sheet", "x": 880, "y": 0, "w": 390, "h": 844 },
+    { "file": "Day.dc.html", "title": "Workout Day", "x": 1320, "y": 0, "w": 390, "h": 844 },
+    { "file": "AddExercise.dc.html", "title": "Add Exercise — typing the name", "x": 1760, "y": 0, "w": 390, "h": 844 },
+    { "file": "Exercise.dc.html", "title": "Exercise — reopened", "x": 2200, "y": 0, "w": 390, "h": 844 },
+    { "file": "Taps.dc.html", "title": "The count", "x": 0, "y": 1030, "w": 660, "h": 1320 }
+  ],
+  "annotations": [
+    { "id": "note-flow", "x": 0, "y": -170, "w": 830, "text": "THE FLOW\nThree steps before you own a Program. Step 1 names it and shows the three decisions Fitty makes at Program level. Step 2 is the Plate Inventory from ticket 5, with the standard kg rack pre-selected. Step 3 is the Program sheet, the hub you come back to." },
+    { "id": "note-entry", "x": 1320, "y": -170, "w": 830, "text": "THE ENTRY MODEL — CHOSEN\nOne full sheet per Exercise. Nine fields, all on screen. The name field proposes known Exercises but never overrules your own words, and it never sets the Equipment Type. Sets and Rep Range carry over from the Exercise before it; nothing else does." },
+    { "id": "note-exercise", "x": 2200, "y": -170, "w": 390, "text": "SAME SHEET, REOPENED\nAdd and edit are one screen. Base Weight only shows for a Smith machine or a plate-loaded machine. The unit is locked and says why." },
+    { "id": "note-count", "x": 0, "y": 900, "w": 660, "text": "THE COUNT\n400 taps for the whole Program, against 287 for the rejected fast list. The 113-tap difference buys explicit control over every field that changes how an Exercise behaves." }
+  ],
+  "launch": { "view": "canvas" }
+}

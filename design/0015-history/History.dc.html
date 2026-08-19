@@ -1,0 +1,571 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+:root{
+  --floor:#0E0F10; --card:#17191B; --line:#26292C; --steel:#9BA1A7;
+  --dim:#8D9296; --text:#F4F1EC; --green:#2E9E52; --label:#55595D;
+  --display:Anton, Haettenschweiler, Impact, sans-serif;
+  --body:'IBM Plex Sans', system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--floor);color:var(--text);font-family:var(--body);
+     font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.screen{position:absolute;inset:0;padding:54px 20px 20px;display:flex;flex-direction:column;z-index:10}
+.kicker{font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
+.label{font-size:10px;letter-spacing:.14em;color:var(--label);text-transform:uppercase}
+.rowbetween{display:flex;align-items:center;justify-content:space-between}
+.back{font-size:13px;color:var(--steel);letter-spacing:.02em}
+.dots{color:var(--steel);font-size:17px;letter-spacing:.06em}
+
+/* the chart screen */
+.exname{font-family:var(--display);font-size:25px;line-height:.94;letter-spacing:.02em;text-transform:uppercase;margin-top:16px}
+.exmeta{font-size:11px;color:var(--dim);margin-top:7px;letter-spacing:.02em}
+.hero{display:flex;align-items:baseline;gap:10px;margin-top:18px}
+.hero .n{font-family:var(--display);font-size:58px;line-height:.78;letter-spacing:-.01em}
+.hero .u{font-family:var(--display);font-size:21px;line-height:1;letter-spacing:.04em;color:var(--steel)}
+.hero .l{font-size:9px;letter-spacing:.14em;color:var(--label);text-transform:uppercase;margin-left:auto;text-align:right;line-height:1.5}
+.chip{display:inline-block;border:1px solid #41464A;color:var(--steel);border-radius:2px;
+      padding:4px 8px;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;margin-top:14px}
+.chip.up{border-color:#2E9E52;color:#2E9E52}
+.chartwrap{margin-top:18px}
+.legend{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.11em;color:var(--label);text-transform:uppercase}
+.stats{border-top:1px solid var(--line);padding-top:12px;display:flex;margin-top:auto}
+.stat{flex:1 1 0}
+.stat .v{font-family:var(--display);font-size:19px;line-height:1;letter-spacing:.02em}
+.stat .v.g{color:var(--green)}
+.stat .l{font-size:9px;letter-spacing:.13em;color:var(--label);margin-top:5px;text-transform:uppercase}
+
+/* lists */
+.scroll{overflow-y:auto;flex:1 1 auto;margin-top:16px}
+.scroll::-webkit-scrollbar{width:0}
+.sec > .label{margin-bottom:10px;display:block}
+.wrow{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-top:1px solid var(--line)}
+.wrow:last-child{border-bottom:1px solid var(--line)}
+.wdate{flex:0 0 46px;font-family:var(--display);font-size:15px;line-height:1;letter-spacing:.03em;color:var(--steel);text-transform:uppercase;padding-top:2px}
+.wday{font-family:var(--display);font-size:16px;line-height:1;letter-spacing:.02em;text-transform:uppercase}
+.wmeta{font-size:11px;color:var(--dim);margin-top:6px}
+.wup{font-size:10px;letter-spacing:.11em;color:var(--green);margin-top:6px;text-transform:uppercase}
+.chev{flex:0 0 auto;color:var(--label);font-size:13px;padding-top:2px}
+
+/* streak */
+.streak{border:1px solid var(--line);border-radius:3px;padding:16px 15px 14px;margin-top:16px}
+.streak .n{font-family:var(--display);font-size:44px;line-height:.8;letter-spacing:-.01em}
+.streak .c{font-family:var(--display);font-size:14px;line-height:1;letter-spacing:.05em;
+           text-transform:uppercase;margin-top:9px;color:var(--text)}
+.grid{display:flex;gap:3px;margin-top:15px}
+.wk{flex:1 1 0;height:26px;border-radius:2px}
+.wk.on{background:var(--steel)}
+.wk.off{background:#191B1D}
+.gridfoot{display:flex;justify-content:space-between;margin-top:8px}
+
+/* exercise cards (program sheet) */
+.card{border:1px solid var(--line);border-radius:3px;padding:13px 14px;margin-bottom:8px;display:flex;
+      align-items:center;gap:12px}
+.card .nm{font-family:var(--display);font-size:15px;line-height:1;letter-spacing:.02em;text-transform:uppercase}
+.card .mt{font-size:11px;color:var(--dim);margin-top:6px}
+.spark{flex:0 0 auto}
+
+/* set table */
+.setrow{display:flex;align-items:center;gap:0;padding:0 0;height:44px;border-top:1px solid var(--faint)}
+.setrow .i{flex:0 0 26px;font-size:11px;color:var(--label)}
+.setrow .r{font-family:var(--display);font-size:19px;line-height:1;letter-spacing:.02em;flex:0 0 54px}
+.setrow .rl{font-size:9px;letter-spacing:.13em;color:var(--label);text-transform:uppercase;flex:0 0 42px}
+.setrow .w{font-size:13px;color:#C9CDD1;margin-left:auto}
+.exhead{display:flex;align-items:baseline;justify-content:space-between;margin-top:20px;margin-bottom:2px}
+.exhead .nm{font-family:var(--display);font-size:16px;line-height:1;letter-spacing:.02em;text-transform:uppercase}
+.exhead .st{font-size:10px;letter-spacing:.12em;color:var(--label);text-transform:uppercase}
+.exhead .st.up{color:var(--green)}
+.oneoff{display:inline-block;border:1px solid #41464A;color:var(--steel);border-radius:2px;
+        padding:2px 6px;font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+
+/* sheet */
+.scrim{position:absolute;inset:0;background:rgba(6,7,8,.72);z-index:20}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#131517;border-top:1px solid var(--line);
+       border-radius:3px 3px 0 0;padding:24px 20px 22px;z-index:30}
+.sheet h1{font-family:var(--display);font-size:22px;line-height:1;letter-spacing:.03em;
+          text-transform:uppercase;margin:0 0 14px}
+.sheet p{font-size:13px;line-height:1.6;color:#C9CDD1;margin:0 0 10px}
+.sheet p.keep{color:var(--steel)}
+.btns{display:flex;gap:10px;margin-top:20px}
+.btn{flex:1 1 0;height:56px;border:1px solid var(--line);border-radius:3px;background:transparent;
+     color:var(--text);font-family:var(--display);font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+.btn.danger{background:#C8322B;border-color:#C8322B;color:#0E0F10}
+.bmain{width:100%;height:64px;border:0;border-radius:3px;background:var(--text);color:#0E0F10;
+       font-family:var(--display);font-size:20px;letter-spacing:.06em;text-transform:uppercase;margin-top:14px}
+.empty{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.empty .h{font-family:var(--display);font-size:26px;line-height:.96;letter-spacing:.02em;text-transform:uppercase}
+.empty .p{font-size:13px;line-height:1.65;color:var(--dim);margin-top:12px}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #0E0F10;">
+<div class="screen">
+  <div class="rowbetween"><div class="back">‹ Upper / Lower</div><div class="label">History</div></div>
+  <div class="streak">
+    <div class="n">9</div>
+    <div class="c">Weeks in a row</div>
+    <div class="grid"><div class="wk on"></div><div class="wk on"></div><div class="wk on"></div><div class="wk on"></div><div class="wk on"></div><div class="wk on"></div><div class="wk off"></div><div class="wk on"></div><div class="wk on"></div><div class="wk on"></div><div class="wk on"></div><div class="wk on"></div><div class="wk on"></div><div class="wk on"></div><div class="wk on"></div><div class="wk on"></div></div>
+    <div class="gridfoot"><span class="label">4 MAY</span><span class="label">17 AUG</span></div>
+  </div>
+  <div class="scroll"><div class="sec"><span class="label">56 workouts</span><div class="wrow">
+      <div class="wdate">18<br><span style="font-size:10px;color:#55595D">AUG</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">17<br><span style="font-size:10px;color:#55595D">AUG</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">14<br><span style="font-size:10px;color:#55595D">AUG</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">3 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">13<br><span style="font-size:10px;color:#55595D">AUG</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">4 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">11<br><span style="font-size:10px;color:#55595D">AUG</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">10<br><span style="font-size:10px;color:#55595D">AUG</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">4 exercises · 12 sets · 1 skipped</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">7<br><span style="font-size:10px;color:#55595D">AUG</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">6<br><span style="font-size:10px;color:#55595D">AUG</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">4<br><span style="font-size:10px;color:#55595D">AUG</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">3<br><span style="font-size:10px;color:#55595D">AUG</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">31<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">30<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">4 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">28<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">27<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">3 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">21<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">20<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">17<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">16<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">14<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">13<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">3 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">10<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">9<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">4 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">7<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">6<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">3<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">2<br><span style="font-size:10px;color:#55595D">JUL</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">3 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">30<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">29<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">5 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">26<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">25<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">4 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">23<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">22<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">12<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">11<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">3 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">9<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">8<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">5<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">4<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">2<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">1<br><span style="font-size:10px;color:#55595D">JUN</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">3 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">29<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">28<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">5 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">26<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">25<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">22<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">21<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">19<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">18<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">15<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">3 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">14<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">5 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">12<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        <div class="wup">2 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">11<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">4 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">8<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower B</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">7<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper B</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">5<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Lower A</div>
+        <div class="wmeta">4 exercises · 13 sets</div>
+        
+      </div>
+      <div class="chev">›</div>
+    </div><div class="wrow">
+      <div class="wdate">4<br><span style="font-size:10px;color:#55595D">MAY</span></div>
+      <div style="flex:1 1 auto;min-width:0">
+        <div class="wday">Upper A</div>
+        <div class="wmeta">5 exercises · 15 sets</div>
+        <div class="wup">1 went up</div>
+      </div>
+      <div class="chev">›</div>
+    </div></div></div>
+</div>
+</div>
+</x-dc>
+</body>
+</html>

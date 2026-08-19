@@ -1,0 +1,47 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html",    "title": "All five went up",            "x": 0,    "y": 0,    "w": 390,  "h": 844 },
+    { "file": "One.dc.html",     "title": "One went up",                 "x": 440,  "y": 0,    "w": 390,  "h": 844 },
+    { "file": "Nothing.dc.html", "title": "Nothing went up",             "x": 880,  "y": 0,    "w": 390,  "h": 844 },
+    { "file": "Mixed.dc.html",   "title": "Three up, a One-off, a skip", "x": 1320, "y": 0,    "w": 390,  "h": 844 },
+    { "file": "Ignition.dc.html","title": "Ignition — the chosen motion","x": 0,    "y": 1080, "w": 1860, "h": 1160 }
+  ],
+  "annotations": [
+    {
+      "id": "note-anatomy",
+      "x": 0,
+      "y": -230,
+      "w": 830,
+      "text": "THE ANATOMY\nThe count is the hero, because the count is what the confetti scales to. Under it: WENT UP first, each row leading with old → new weight, then STAYED, then SKIPPED plain at the bottom. Duration, Sets and volume sit in one steel bar above the button.\n\nThere is no Accept and no Undo. Fitty applied the new Working Weight at Finish, so the green number is a statement of fact."
+    },
+    {
+      "id": "note-stayed",
+      "x": 880,
+      "y": -230,
+      "w": 830,
+      "text": "STAYED CARRIES THE CONDITION\nEvery Exercise that did not progress states what it takes: ALL 3 SETS AT 12 → 75 KG. That is the same rule chip the logging screen shows, restated as a condition. It is a fact, not encouragement — which is how the zero-progressed screen stays worth reading without a celebration and without consoling the user.\n\nA One-off Weight replaces that line with ONE-OFF · 22.5 KG STAYS, because nothing was ever going to progress."
+    },
+    {
+      "id": "note-units",
+      "x": 1320,
+      "y": 900,
+      "w": 540,
+      "text": "MIXED UNITS\nLat pulldown is an lbs Exercise with a kg Microplate. Its line stacks two numbers with their own labels and converts nothing: 100 LBS + 1 KG → 100 LBS + 2 KG.\n\nTotal volume is the one number that does convert — to the Program's default unit, labelled KG VOLUME."
+    },
+    {
+      "id": "note-motion",
+      "x": 0,
+      "y": 2280,
+      "w": 830,
+      "text": "WHY IGNITION, NOT A SINGLE BURST\nThree models were built and watched. One burst whose density scales with the count turns to noise at five Exercises — the particles cover the numbers. Ignition ties the motion to the data instead: you read the list and the celebration as one thing, and \"more\" is a count you watch land, not a cloud you estimate."
+    },
+    {
+      "id": "note-colour",
+      "x": 880,
+      "y": 2280,
+      "w": 830,
+      "text": "WHY THE RACK COLOURS\nColour only ever means weight in Fitty. Colouring the confetti by the Increment plate keeps that rule but says nothing new — every Increment here is 2.5 kg, so a five-Exercise day is almost entirely red. The per-side Plate Breakdown of the weight just earned is one step less literal and genuinely multi-coloured: Smith bench at 75 kg throws blue + green."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

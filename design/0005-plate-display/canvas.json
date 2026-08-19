@@ -1,0 +1,19 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Barbell", "x": 0, "y": 0, "w": 390, "h": 844 },
+    { "file": "Smith.dc.html", "title": "Smith machine", "x": 440, "y": 0, "w": 390, "h": 844 },
+    { "file": "PlateMachine.dc.html", "title": "Plate-loaded machine", "x": 880, "y": 0, "w": 390, "h": 844 },
+    { "file": "Stack.dc.html", "title": "Stack / cable — mixed units", "x": 1320, "y": 0, "w": 390, "h": 844 },
+    { "file": "Dumbbell.dc.html", "title": "Dumbbell", "x": 1760, "y": 0, "w": 390, "h": 844 },
+    { "file": "Bodyweight.dc.html", "title": "Bodyweight", "x": 2200, "y": 0, "w": 390, "h": 844 },
+    { "file": "Inventory.dc.html", "title": "Plate Inventory", "x": 0, "y": 1010, "w": 390, "h": 844 },
+    { "file": "UnreachableC.dc.html", "title": "Unreachable weight", "x": 440, "y": 1010, "w": 390, "h": 844 }
+  ],
+  "annotations": [
+    { "id": "row-equipment", "x": 0, "y": -150, "w": 520, "text": "EQUIPMENT TYPES\nBarbell, Smith machine and plate-loaded machine all draw the same loaded bar. Only the meta line and the caption differ, because those carry the Base Weight. Colour still only ever means weight." },
+    { "id": "note-mixed", "x": 1320, "y": -150, "w": 390, "text": "MIXED UNITS\nStack in lbs, microplate in kg. Two numbers, two units, stacked. Fitty never shows a converted total." },
+    { "id": "note-inventory", "x": 0, "y": 880, "w": 390, "text": "PLATE INVENTORY\nOn or off per plate size, nothing more. The unit here sets the unit for every barbell, Smith machine and plate-loaded exercise." },
+    { "id": "note-unreachable", "x": 440, "y": 880, "w": 390, "text": "UNREACHABLE WEIGHT\nThe big number stays the Working Weight Fitty tracks. The caption tells you the closest load you can build, with the difference." }
+  ],
+  "launch": { "view": "canvas" }
+}

@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+:root{
+  --floor:#0E0F10; --card:#17191B; --line:#26292C; --steel:#9BA1A7;
+  --dim:#8D9296; --text:#F4F1EC; --green:#2E9E52; --label:#55595D;
+  --display:Anton, Haettenschweiler, Impact, sans-serif;
+  --body:'IBM Plex Sans', system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--floor);color:var(--text);font-family:var(--body);
+     font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.screen{position:absolute;inset:0;padding:54px 20px 20px;display:flex;flex-direction:column;z-index:10}
+.kicker{font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
+.label{font-size:10px;letter-spacing:.14em;color:var(--label);text-transform:uppercase}
+.rowbetween{display:flex;align-items:center;justify-content:space-between}
+.back{font-size:13px;color:var(--steel);letter-spacing:.02em}
+.dots{color:var(--steel);font-size:17px;letter-spacing:.06em}
+
+/* the chart screen */
+.exname{font-family:var(--display);font-size:25px;line-height:.94;letter-spacing:.02em;text-transform:uppercase;margin-top:16px}
+.exmeta{font-size:11px;color:var(--dim);margin-top:7px;letter-spacing:.02em}
+.hero{display:flex;align-items:baseline;gap:10px;margin-top:18px}
+.hero .n{font-family:var(--display);font-size:58px;line-height:.78;letter-spacing:-.01em}
+.hero .u{font-family:var(--display);font-size:21px;line-height:1;letter-spacing:.04em;color:var(--steel)}
+.hero .l{font-size:9px;letter-spacing:.14em;color:var(--label);text-transform:uppercase;margin-left:auto;text-align:right;line-height:1.5}
+.chip{display:inline-block;border:1px solid #41464A;color:var(--steel);border-radius:2px;
+      padding:4px 8px;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;margin-top:14px}
+.chip.up{border-color:#2E9E52;color:#2E9E52}
+.chartwrap{margin-top:18px}
+.legend{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.11em;color:var(--label);text-transform:uppercase}
+.stats{border-top:1px solid var(--line);padding-top:12px;display:flex;margin-top:auto}
+.stat{flex:1 1 0}
+.stat .v{font-family:var(--display);font-size:19px;line-height:1;letter-spacing:.02em}
+.stat .v.g{color:var(--green)}
+.stat .l{font-size:9px;letter-spacing:.13em;color:var(--label);margin-top:5px;text-transform:uppercase}
+
+/* lists */
+.scroll{overflow-y:auto;flex:1 1 auto;margin-top:16px}
+.scroll::-webkit-scrollbar{width:0}
+.sec > .label{margin-bottom:10px;display:block}
+.wrow{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-top:1px solid var(--line)}
+.wrow:last-child{border-bottom:1px solid var(--line)}
+.wdate{flex:0 0 46px;font-family:var(--display);font-size:15px;line-height:1;letter-spacing:.03em;color:var(--steel);text-transform:uppercase;padding-top:2px}
+.wday{font-family:var(--display);font-size:16px;line-height:1;letter-spacing:.02em;text-transform:uppercase}
+.wmeta{font-size:11px;color:var(--dim);margin-top:6px}
+.wup{font-size:10px;letter-spacing:.11em;color:var(--green);margin-top:6px;text-transform:uppercase}
+.chev{flex:0 0 auto;color:var(--label);font-size:13px;padding-top:2px}
+
+/* streak */
+.streak{border:1px solid var(--line);border-radius:3px;padding:16px 15px 14px;margin-top:16px}
+.streak .n{font-family:var(--display);font-size:44px;line-height:.8;letter-spacing:-.01em}
+.streak .c{font-family:var(--display);font-size:14px;line-height:1;letter-spacing:.05em;
+           text-transform:uppercase;margin-top:9px;color:var(--text)}
+.grid{display:flex;gap:3px;margin-top:15px}
+.wk{flex:1 1 0;height:26px;border-radius:2px}
+.wk.on{background:var(--steel)}
+.wk.off{background:#191B1D}
+.gridfoot{display:flex;justify-content:space-between;margin-top:8px}
+
+/* exercise cards (program sheet) */
+.card{border:1px solid var(--line);border-radius:3px;padding:13px 14px;margin-bottom:8px;display:flex;
+      align-items:center;gap:12px}
+.card .nm{font-family:var(--display);font-size:15px;line-height:1;letter-spacing:.02em;text-transform:uppercase}
+.card .mt{font-size:11px;color:var(--dim);margin-top:6px}
+.spark{flex:0 0 auto}
+
+/* set table */
+.setrow{display:flex;align-items:center;gap:0;padding:0 0;height:44px;border-top:1px solid var(--faint)}
+.setrow .i{flex:0 0 26px;font-size:11px;color:var(--label)}
+.setrow .r{font-family:var(--display);font-size:19px;line-height:1;letter-spacing:.02em;flex:0 0 54px}
+.setrow .rl{font-size:9px;letter-spacing:.13em;color:var(--label);text-transform:uppercase;flex:0 0 42px}
+.setrow .w{font-size:13px;color:#C9CDD1;margin-left:auto}
+.exhead{display:flex;align-items:baseline;justify-content:space-between;margin-top:20px;margin-bottom:2px}
+.exhead .nm{font-family:var(--display);font-size:16px;line-height:1;letter-spacing:.02em;text-transform:uppercase}
+.exhead .st{font-size:10px;letter-spacing:.12em;color:var(--label);text-transform:uppercase}
+.exhead .st.up{color:var(--green)}
+.oneoff{display:inline-block;border:1px solid #41464A;color:var(--steel);border-radius:2px;
+        padding:2px 6px;font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+
+/* sheet */
+.scrim{position:absolute;inset:0;background:rgba(6,7,8,.72);z-index:20}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#131517;border-top:1px solid var(--line);
+       border-radius:3px 3px 0 0;padding:24px 20px 22px;z-index:30}
+.sheet h1{font-family:var(--display);font-size:22px;line-height:1;letter-spacing:.03em;
+          text-transform:uppercase;margin:0 0 14px}
+.sheet p{font-size:13px;line-height:1.6;color:#C9CDD1;margin:0 0 10px}
+.sheet p.keep{color:var(--steel)}
+.btns{display:flex;gap:10px;margin-top:20px}
+.btn{flex:1 1 0;height:56px;border:1px solid var(--line);border-radius:3px;background:transparent;
+     color:var(--text);font-family:var(--display);font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+.btn.danger{background:#C8322B;border-color:#C8322B;color:#0E0F10}
+.bmain{width:100%;height:64px;border:0;border-radius:3px;background:var(--text);color:#0E0F10;
+       font-family:var(--display);font-size:20px;letter-spacing:.06em;text-transform:uppercase;margin-top:14px}
+.empty{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.empty .h{font-family:var(--display);font-size:26px;line-height:.96;letter-spacing:.02em;text-transform:uppercase}
+.empty .p{font-size:13px;line-height:1.65;color:var(--dim);margin-top:12px}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #0E0F10;">
+<div class="screen">
+  <div class="rowbetween"><div class="back">‹ Upper A</div><div class="dots">•••</div></div>
+  <div class="exname">Lat pulldown</div>
+  <div class="exmeta">Machine (stack) · 3 × 10–12 · Microloading</div>
+  <div class="hero" style="margin-top:16px"><div class="n" style="font-size:46px">90</div><div class="u">lbs</div>
+    <div class="l">Pin</div></div>
+  <div class="hero" style="margin-top:10px"><div class="n" style="font-size:46px">+ 3</div><div class="u">kg</div>
+    <div class="l">Microload<br>on the pin</div></div>
+  <div class="chip">All 3 sets at 10 → + 3.25 kg</div>
+  <div class="chartwrap"><svg width="350" height="220" viewBox="0 0 350 220" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Sans', system-ui, sans-serif"><line x1="36" y1="144.1" x2="316" y2="144.1" stroke="#1E2123" stroke-width="1"/><text x="28" y="147.6" text-anchor="end" font-size="9.5" fill="#55595D" letter-spacing=".04em">0</text><line x1="36" y1="107.4" x2="316" y2="107.4" stroke="#1E2123" stroke-width="1"/><text x="28" y="110.9" text-anchor="end" font-size="9.5" fill="#55595D" letter-spacing=".04em">1</text><line x1="36" y1="70.6" x2="316" y2="70.6" stroke="#1E2123" stroke-width="1"/><text x="28" y="74.1" text-anchor="end" font-size="9.5" fill="#55595D" letter-spacing=".04em">2</text><line x1="36" y1="33.9" x2="316" y2="33.9" stroke="#1E2123" stroke-width="1"/><text x="28" y="37.4" text-anchor="end" font-size="9.5" fill="#55595D" letter-spacing=".04em">3</text><text x="28" y="11" text-anchor="end" font-size="8.5" fill="#55595D" letter-spacing=".1em">+ KG</text><path d="M36.0 144.1 L52.9 135.0 L69.9 125.8 L86.8 116.6 L103.7 107.4 L120.7 98.2 L154.5 89.0 L171.5 89.0 L188.4 79.8 L205.3 70.6 L222.3 61.4 L239.2 61.4 L256.1 52.2 L273.1 52.2 L290.0 43.0" stroke="#9BA1A7" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M290.0 43.0 L316.0 33.9" stroke="#2E9E52" stroke-width="2" stroke-dasharray="3 3" stroke-linecap="round"/><circle cx="316.0" cy="33.9" r="6" fill="#0E0F10"/><circle cx="316.0" cy="33.9" r="4" fill="#0E0F10" stroke="#2E9E52" stroke-width="1.8"/><text x="316.0" y="22.9" text-anchor="end" font-size="8.5" fill="#2E9E52" letter-spacing=".13em">NEXT</text><text x="36.0" y="182" text-anchor="middle" font-size="9" fill="#55595D" letter-spacing=".13em">MAY</text><text x="103.7" y="182" text-anchor="middle" font-size="9" fill="#55595D" letter-spacing=".13em">JUN</text><text x="188.4" y="182" text-anchor="middle" font-size="9" fill="#55595D" letter-spacing=".13em">JUL</text><text x="256.1" y="182" text-anchor="middle" font-size="9" fill="#55595D" letter-spacing=".13em">AUG</text><circle cx="36.0" cy="144.1" r="6" fill="#0E0F10"/><circle cx="36.0" cy="144.1" r="4" fill="#2E9E52"/><circle cx="52.9" cy="135.0" r="6" fill="#0E0F10"/><circle cx="52.9" cy="135.0" r="4" fill="#2E9E52"/><circle cx="69.9" cy="125.8" r="6" fill="#0E0F10"/><circle cx="69.9" cy="125.8" r="4" fill="#2E9E52"/><circle cx="86.8" cy="116.6" r="6" fill="#0E0F10"/><circle cx="86.8" cy="116.6" r="4" fill="#2E9E52"/><circle cx="103.7" cy="107.4" r="6" fill="#0E0F10"/><circle cx="103.7" cy="107.4" r="4" fill="#2E9E52"/><circle cx="120.7" cy="98.2" r="6" fill="#0E0F10"/><circle cx="120.7" cy="98.2" r="4" fill="#2E9E52"/><circle cx="154.5" cy="89.0" r="5.2" fill="#0E0F10"/><circle cx="154.5" cy="89.0" r="3.2" fill="#9BA1A7"/><circle cx="171.5" cy="89.0" r="6" fill="#0E0F10"/><circle cx="171.5" cy="89.0" r="4" fill="#2E9E52"/><circle cx="188.4" cy="79.8" r="6" fill="#0E0F10"/><circle cx="188.4" cy="79.8" r="4" fill="#2E9E52"/><circle cx="205.3" cy="70.6" r="6" fill="#0E0F10"/><circle cx="205.3" cy="70.6" r="4" fill="#2E9E52"/><circle cx="222.3" cy="61.4" r="5.2" fill="#0E0F10"/><circle cx="222.3" cy="61.4" r="3.2" fill="#9BA1A7"/><circle cx="239.2" cy="61.4" r="6" fill="#0E0F10"/><circle cx="239.2" cy="61.4" r="4" fill="#2E9E52"/><circle cx="256.1" cy="52.2" r="5.2" fill="#0E0F10"/><circle cx="256.1" cy="52.2" r="3.2" fill="#9BA1A7"/><circle cx="273.1" cy="52.2" r="6" fill="#0E0F10"/><circle cx="273.1" cy="52.2" r="4" fill="#2E9E52"/><circle cx="290.0" cy="43.0" r="6" fill="#0E0F10"/><circle cx="290.0" cy="43.0" r="4" fill="#2E9E52"/><rect x="32.5" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="32.5" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="32.5" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="49.4" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="49.4" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="49.4" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="66.4" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="66.4" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="66.4" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="83.3" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="83.3" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="83.3" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="100.2" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="100.2" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="100.2" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="117.2" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="117.2" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="117.2" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="151.0" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="151.5" y="202" width="6" height="6" rx="1.5" fill="none" stroke="#3A3F43" stroke-width="1"/><rect x="151.5" y="211.5" width="6" height="6" rx="1.5" fill="none" stroke="#3A3F43" stroke-width="1"/><rect x="168.0" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="168.0" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="168.0" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="184.9" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="184.9" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="184.9" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="201.8" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="201.8" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="201.8" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="219.3" y="192.5" width="6" height="6" rx="1.5" fill="none" stroke="#3A3F43" stroke-width="1"/><rect x="219.3" y="202" width="6" height="6" rx="1.5" fill="none" stroke="#3A3F43" stroke-width="1"/><rect x="219.3" y="211.5" width="6" height="6" rx="1.5" fill="none" stroke="#3A3F43" stroke-width="1"/><rect x="235.7" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="235.7" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="235.7" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="253.1" y="192.5" width="6" height="6" rx="1.5" fill="none" stroke="#3A3F43" stroke-width="1"/><rect x="253.1" y="202" width="6" height="6" rx="1.5" fill="none" stroke="#3A3F43" stroke-width="1"/><rect x="253.1" y="211.5" width="6" height="6" rx="1.5" fill="none" stroke="#3A3F43" stroke-width="1"/><rect x="269.6" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="269.6" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="269.6" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="286.5" y="192" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="286.5" y="201.5" width="7" height="7" rx="1.5" fill="#2E9E52"/><rect x="286.5" y="211" width="7" height="7" rx="1.5" fill="#2E9E52"/><text x="28" y="204" text-anchor="end" font-size="8.5" fill="#55595D" letter-spacing=".1em">SETS</text></svg></div>
+  <div class="legend">
+    <div class="leg" style="text-transform:none;letter-spacing:0;font-size:11px;color:#8D9296;line-height:1.5">
+      The line is the microload. The pin has not moved in 15 weeks, so the pin is not on it.
+      Nothing here converts.</div>
+  </div>
+  <div style="margin-top:14px"><span class="label">Last sessions</span></div>
+  <div style="margin-top:6px"><div class="setrow" style="height:40px">
+      <div class="i" style="flex:0 0 52px;color:#9BA1A7">17 AUG</div>
+      <div style="font-size:14px;color:#2E9E52;letter-spacing:.06em">11 · 10 · 10</div>
+      <div class="w">90 lbs + 2.75 kg</div>
+    </div><div class="setrow" style="height:40px">
+      <div class="i" style="flex:0 0 52px;color:#9BA1A7">10 AUG</div>
+      <div style="font-size:14px;color:#2E9E52;letter-spacing:.06em">12 · 12 · 12</div>
+      <div class="w">90 lbs + 2.5 kg</div>
+    </div><div class="setrow" style="height:40px">
+      <div class="i" style="flex:0 0 52px;color:#9BA1A7">3 AUG</div>
+      <div style="font-size:14px;color:#C9CDD1;letter-spacing:.06em">9 · 8 · 8</div>
+      <div class="w">90 lbs + 2.5 kg</div>
+    </div></div>
+  <div class="stats">
+    <div class="stat"><div class="v">90 lbs</div><div class="l">Pin, unchanged</div></div>
+    <div class="stat"><div class="v g">+3 kg</div><div class="l">On the pin</div></div>
+    <div class="stat"><div class="v">12</div><div class="l">Times up</div></div>
+  </div>
+</div>
+</div>
+</x-dc>
+</body>
+</html>

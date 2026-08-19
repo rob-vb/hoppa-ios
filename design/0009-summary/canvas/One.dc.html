@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    :root{
+      --floor:#0E0F10; --line:#26292C; --steel:#9BA1A7;
+      --dim:#8D9296; --text:#F4F1EC; --green:#2E9E52;
+      --display:Anton, Haettenschweiler, Impact, sans-serif;
+      --body:'IBM Plex Sans', system-ui, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--floor);color:var(--text);font-family:var(--body);
+         font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+    a{color:#9BA1A7} a:hover{color:#F4F1EC}
+    /* ---------- the screen itself ---------- */
+    .screen{position:absolute;inset:0;padding:54px 20px 20px;display:flex;flex-direction:column;gap:0;z-index:10}
+    .kicker{font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
+    .label{font-size:10px;letter-spacing:.14em;color:#55595D;text-transform:uppercase}
+    .rowbetween{display:flex;align-items:baseline;justify-content:space-between}
+    
+    .hero{margin:18px 0 6px}
+    .hero .n{font-family:var(--display);font-size:96px;line-height:.78;color:var(--green);letter-spacing:-.01em}
+    .hero .n.zero{font-size:33px;color:var(--text);line-height:1;letter-spacing:.03em;text-transform:uppercase}
+    .hero .cap{font-family:var(--display);font-size:19px;line-height:1;letter-spacing:.05em;
+    text-transform:uppercase;margin-top:10px;color:var(--text)}
+    .hero .sub{font-size:12px;color:var(--dim);margin-top:6px;line-height:1.5}
+    
+    .scroll{overflow-y:auto;flex:1 1 auto;margin-top:16px;padding-right:2px}
+    .scroll::-webkit-scrollbar{width:0}
+    .sec{margin-bottom:20px}
+    .sec > .label{margin-bottom:10px;display:block}
+    
+    .uprow{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+    .uprow:last-child{border-bottom:1px solid var(--line)}
+    .plate{flex:0 0 auto;width:9px;height:34px;border-radius:2px;margin-top:3px}
+    .exname{font-family:var(--display);font-size:17px;line-height:1;letter-spacing:.02em;text-transform:uppercase}
+    .arrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:7px;margin-top:7px}
+    .arrow .old{font-size:14px;color:var(--dim)}
+    .arrow .ar{color:#55595D;font-size:13px}
+    .arrow .new{font-family:var(--display);font-size:22px;line-height:1;color:var(--green);letter-spacing:.02em}
+    .arrow .nt{font-size:9px;letter-spacing:.14em;color:var(--steel);text-transform:uppercase}
+    
+    .flatrow{padding:9px 0;border-top:1px solid #1E2123}
+    .flatrow .nm{font-size:14px;color:#C9CDD1}
+    .flatrow .meta{font-size:11.5px;color:#55595D;margin-top:3px}
+    .cond{font-size:10px;letter-spacing:.1em;color:var(--steel);margin-top:5px;text-transform:uppercase}
+    .oneoff{display:inline-block;border:1px solid #41464A;color:var(--steel);border-radius:2px;
+    padding:2px 6px;font-size:9px;letter-spacing:.12em;margin-top:5px}
+    .skiprow{font-size:14px;color:var(--dim);padding:6px 0}
+    
+    .stats{border-top:1px solid var(--line);padding-top:12px;display:flex;gap:0;margin-top:auto}
+    .stat{flex:1 1 0}
+    .stat .v{font-family:var(--display);font-size:20px;line-height:1;letter-spacing:.02em}
+    .stat .l{font-size:9px;letter-spacing:.13em;color:#55595D;margin-top:5px;text-transform:uppercase}
+    .bottom{margin-top:14px}
+    .bmain{width:100%;height:64px;border:0;border-radius:3px;background:var(--text);color:#0E0F10;
+    font-family:var(--display);font-size:20px;letter-spacing:.06em;cursor:pointer;text-transform:uppercase}
+
+  </style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #0E0F10;">
+<div class="screen"><div class="rowbetween"><div class="kicker">Upper A</div><div class="label">Summary</div></div><div class="hero"><div class="n">1</div><div class="cap">Exercise went up</div><div class="sub">Fitty already changed the weight. Next time it is on the bar.</div></div><div class="scroll"><div class="sec"><span class="label">Went up</span><div class="uprow" style="opacity:1;transform:matrix(1, 0, 0, 1, 0, 0);"><div class="plate" style="background:#C8322B"></div><div style="flex:1 1 auto;min-width:0"><div class="exname">Smith machine bench press</div><div class="arrow"><span class="old">72.5 KG</span><span class="ar">→</span><span class="new">75 KG</span><span class="nt">Next&nbsp;time</span></div></div></div></div><div class="sec"><span class="label">Stayed</span><div class="flatrow"><div class="nm">Barbell row</div><div class="meta">60 KG · 10 · 10 · 9 reps</div><div class="cond">All 3 sets at 10 → 62.5 KG</div></div><div class="flatrow"><div class="nm">Lat pulldown</div><div class="meta">100 LBS + 1 KG · 11 · 9 · 9 reps</div><div class="cond">All 3 sets at 10 → 100 LBS + 2 KG</div></div><div class="flatrow"><div class="nm">Dumbbell shoulder press</div><div class="meta">22.5 KG · 12 · 11 · 10 reps</div><div class="cond">All 3 sets at 12 → 25 KG</div></div><div class="flatrow"><div class="nm">Weighted chin-up</div><div class="meta">15 KG · 8 · 7 · 6 reps</div><div class="cond">All 3 sets at 8 → 17.5 KG</div></div></div></div><div class="stats"><div class="stat"><div class="v">38:20</div><div class="l">Duration</div></div><div class="stat"><div class="v">15</div><div class="l">Sets</div></div><div class="stat"><div class="v">7 465</div><div class="l">kg volume</div></div></div><div class="bottom"><button class="bmain">Done</button></div></div>
+</div>
+</x-dc>
+</body>
+</html>
