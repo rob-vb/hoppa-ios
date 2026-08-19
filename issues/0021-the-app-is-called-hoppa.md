@@ -36,6 +36,14 @@ session.
    already treats them as a record rather than as living code. Renaming them buys nothing and
    breaks every link in `SPEC.md` §8.3. The default answer is: leave them.
 
+### The name is already taken, by Rob
+
+`rob-vb/hoppa` on GitHub is the **earlier Expo test app** (see the map's charter). It holds the
+plain `hoppa` repo name and a public `hoppa-landing`. This map's repo therefore pushes to
+**`rob-vb/hoppa-ios`**, and no existing repo of Rob's was touched to make room for it. Whether the
+real app eventually takes the plain name back — by renaming the test repo, which GitHub redirects
+— is part of this ticket's sweep and costs one command.
+
 ### Do it when nothing else is in flight
 
 A repo-wide rename conflicts with every open branch. Take this ticket on its own, between other

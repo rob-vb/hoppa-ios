@@ -44,6 +44,16 @@ real**, and nothing after that is worth doing before it.
     run a simulator or open Xcode. Swift sources, the data model and tests are written here;
     **compiling, running and looking at the app happen on the Mac**, and build errors come back
     through Rob. Plan tickets so that a session's output is something he can paste in and run.
+  - **There is an earlier Hoppa, and it is a test app.** `rob-vb/hoppa` on GitHub holds a
+    substantially built Expo / React Native version of *this same product* — SQLite, Zustand,
+    i18n, jest, a 94 KB `PRD.md` marking most of a 7.5-week MVP as done, and a public
+    `hoppa-landing` beside it. Its domain matches `SPEC.md` almost term for term (schemas →
+    Program, set_logs → Set, plate calculator → Plate Breakdown), and its own `CONTEXT.md`
+    reached this map's charter decision independently: no login, all data in SQLite.
+    **Rob calls it a test app; this map builds the good one.** Recorded here because a session
+    that meets it cold will reasonably wonder whether this whole map is a duplicate effort. It is
+    not — it is the rebuild, and the Expo app is superseded, not a source of truth. `SPEC.md`
+    stays the only spec.
   - **How the code travels: a private GitHub remote.** The charter above named two machines and
     never said how anything gets between them — and it turned out nothing did. The agent works on
     a **VPS**, not on the Mac, and this repo had no remote at all, so the first session that
