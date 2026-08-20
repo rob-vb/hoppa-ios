@@ -230,6 +230,24 @@ real**, and nothing after that is worth doing before it.
   The Xcode project is **already patched** — 16 additive lines, `relativePath = ../HoppaStore`, plus
   the two Info.plist flags as build settings.
 
+- **[Program edits, and which of them are rules](0026-program-edits-and-the-rules-boundary.md)** —
+  **every §6.6 edit is an `Action` on `HoppaRules`**, flat beside the logging ones, each naming its
+  target id; the split lives in `Rules+Edit.swift`, not in the type. The sheet is Model B and saves
+  once, so an Exercise edit is **one action carrying a draft**, and §6.6's rules are the **diff** —
+  ten per-field actions would let a sheet clear the weight it was just given. One model change:
+  `workingWeight` and `increment` become `Weight?`, because **an unset weight is not zero** and zero
+  is a real Bodyweight lift; the Re-weigh list is then `nil` rather than a list anyone writes down.
+  It needs **no migration step** — ticket 25's finding read forwards says widening to `Optional` is
+  the safe direction — but a committed v1 file proves it. §3.2 was wrong twice: read literally it
+  reopens a **Done early** Exercise, which its own reason refuses, and it never said that
+  **lowering** the planned Sets completes an Open Exercise — without which the Exercise is stuck
+  Open and holds the Finish gate at the rack. **Stranding was never implemented**: a switched-off
+  Microplate still moves the weight today, a live defect the 46 green tests never met. It is derived,
+  like the Re-weigh list and the counts — four pure queries, because a warning must ask **before**
+  the act and a silent no-op is not a block. Every structural edit **mirrors into the Open Workout**,
+  and `currentIndex` follows the `ExerciseID`, not the position. The build graduates as
+  [Build the Program edits](0028-build-the-program-edits.md).
+
 ## Not yet specified
 
 - **Drawing the loaded bar, and the Ignition confetti, natively.** `SPEC.md` §7.5 and §6.5 specify
@@ -241,10 +259,12 @@ real**, and nothing after that is worth doing before it.
   because it is the screen with the most rules behind it. The model exists, the seam is fixed and
   [The Logbook on disk](0025-the-logbook-on-disk.md) has put a real store under a real screen — a
   harness, not Flow 2, but the wiring is proved. This is ticketable as soon as that force-quit test
-  passes on the phone. **Flow 1 is entangled with two open tickets**, not one: it needs §6.6's
-  Program edits ([ticket 26](0026-program-edits-and-the-rules-boundary.md)) and §6.3's name
-  suggestions ([ticket 27](0027-name-suggestions-and-foundation.md)), so build order is a question
-  about those two as much as about the screens.
+  passes on the phone. **Flow 1 is entangled with two tickets**, and one of them is now decided:
+  §6.6's Program edits are settled and wait on
+  [Build the Program edits](0028-build-the-program-edits.md), which is where Flow 1's create and
+  edit actions come from; §6.3's name suggestions are still open at
+  [ticket 27](0027-name-suggestions-and-foundation.md). So build order is a question about those two
+  as much as about the screens.
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
   machines edit the same Xcode project file — the agent by patching it, Xcode by regenerating it.
   It is a merge conflict waiting to happen, in a file no one wants to hand-merge. Not sharp until
@@ -270,8 +290,9 @@ real**, and nothing after that is worth doing before it.
   [Persistence and the data model](0019-persistence-and-the-data-model.md), which deliberately did
   not decide it: it is a gap in the spec, not a rule that is wrong. The model survives either way —
   a Workout keeps its Workout Day's Name — so this is a flows question, not a storage one.
-  [Program edits, and which of them are rules](0026-program-edits-and-the-rules-boundary.md) takes
-  deleting an Exercise and a Workout Day, which §6.6 *does* specify, and leaves this one here.
+  [Program edits, and which of them are rules](0026-program-edits-and-the-rules-boundary.md) settled
+  deleting an Exercise and a Workout Day, which §6.6 *does* specify, and deliberately left this one
+  here — it is a gap in the spec, so it needs a decision and not a build.
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.

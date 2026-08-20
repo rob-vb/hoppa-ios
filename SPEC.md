@@ -100,8 +100,8 @@ the Progression Mode, so the user never sees more than nine at once (§6.2).
 | 3 | Weight Unit | always | **Locked** to the Plate Inventory's unit for the four types loaded off the user's own rack — Barbell, Smith, Plate-loaded and Bodyweight — with a steel lock line stating why. |
 | 4 | Sets | always | Carries over from the previous Exercise. |
 | 5 | Rep Range | always | Carries over from the previous Exercise. |
-| 6 | Working Weight | always | Any number the user types. Bodyweight: added weight only. |
-| 7 | Increment | Progressive Overload | Any number. Defaults 2.5 kg, 5 kg for legs (lbs: 5 / 10). |
+| 6 | Working Weight | always | Any number the user types. Bodyweight: added weight only. **May be unset**: a new Exercise has none until the user types one, and §6.6 clears it back to unset. Unset is not zero — see §2.8. |
+| 7 | Increment | Progressive Overload | Any number. Defaults 2.5 kg, 5 kg for legs (lbs: 5 / 10). **May be unset**, like the Working Weight, and §6.6 clears it with it. |
 | 7′ | Microloading Increment | Microloading | Picked from the Microplates in the Plate Inventory, never typed. Keeps the **Inventory's** unit. |
 | 8 | Progression Mode override | always | Inherits from the Program. |
 | 9 | Base Weight | Smith, Plate-loaded | The empty-carriage weight. No default; typed per Exercise. |
@@ -233,11 +233,16 @@ get wrong quietly. They are gathered here so nothing has to be re-derived from t
   break by accident.
 - **The Weight Unit of a plate-loaded Exercise is not stored on it.** Barbell, Smith, Plate-loaded
   and Bodyweight read it from the Plate Inventory, so a stale copy cannot exist (§5.1, §6.6).
+- **An unset weight is not zero.** A weight the user has not typed — a new Exercise, or one §6.6
+  has just cleared — is **absent**, and the store must be able to say so. Zero is a real weight: a
+  Bodyweight Exercise done with no belt. An Exercise with no Working Weight does not progress, and
+  the Re-weigh list (§6.6) is exactly the Exercises that have none.
 - **A Base Weight and a Stack Step survive a change of Equipment Type; a Microload does not survive
   a change of unit.** The first is a fact about a machine in the gym and §2.3 refuses to re-ask it.
   The second is a state that belongs to a unit, and §6.6 destroys it and recreates it at zero.
 
-> Decision record: [Persistence and the data model](issues/0019-persistence-and-the-data-model.md).
+> Decision record: [Persistence and the data model](issues/0019-persistence-and-the-data-model.md),
+> [Program edits, and which of them are rules](issues/0026-program-edits-and-the-rules-boundary.md).
 
 ---
 
@@ -274,6 +279,17 @@ conflate:
   number of Sets logged (§6.6). Finish is gated again, and the user logs the missing Set or ends
   early. Otherwise the edit would take away a progression the user earned, with no way to earn it
   back the same day.
+  **"Done early" is the exception.** It never earned a progression, so a raise takes none away, and
+  ending early is a deliberate act that an edit made afterwards must not argue with. So a raise
+  reopens what Hoppa completed **by itself** — the Exercise whose logged Sets reached its plan —
+  and leaves a Done-early Exercise Completed.
+- **Lowering** the planned Sets to the number already logged **Completes** an Open Exercise. It is
+  the mirror of the rule above, and without it the Exercise is stuck: the plan is full so no Set
+  can be logged, nothing fires to complete it, and it holds the Finish gate until the user finds
+  *Done early*.
+
+> Both sharpenings were found while building. Decision record:
+> [Program edits, and which of them are rules](issues/0026-program-edits-and-the-rules-boundary.md).
 
 ### 3.3 Ending a Workout
 
@@ -418,6 +434,15 @@ stand when they find out the weight is wrong.
 | Progression Mode changed at all | **Never** changes the current Working Weight. It changes only the rule for next time. |
 | Microloading Increment changed | Plain field, no migration, no warning. The next progression uses the new plate. |
 | The exact weight cannot be built from the rack | Progression does **not** snap to buildable weights. The Working Weight is exactly what the Increment makes it; only the display deals with the gap (§5.4). |
+
+**The default Microloading Increment is the smallest Microplate switched on**, and there is none
+when the rack has none on. §5.2 ships every Microplate off, so *none* is the common case, and such
+an Exercise falls into the empty state §5.2 already draws rather than getting a plate the user does
+not own. The smallest is the right default because the smallest jump the rack can make is the whole
+point of Microloading; the largest would be Progressive Overload with extra steps.
+
+> Found while building. Decision record:
+> [Program edits, and which of them are rules](issues/0026-program-edits-and-the-rules-boundary.md).
 
 ---
 
@@ -876,10 +901,14 @@ buys nothing.
 
 It follows that, mid-Workout:
 
-- Reorder takes effect at once, and the `3 / 5 ▾` counter renumbers with it.
-- An Exercise added arrives **Open**, so it gates Finish like any other.
+- Reorder takes effect at once, and the `3 / 5 ▾` counter renumbers with it. **The user does not
+  move with it**: Hoppa keeps him on the Exercise he was standing at, not on the position he was
+  standing in, so a drag never changes the card under his thumb (§6.4).
+- An Exercise added arrives **Open**, so it gates Finish like any other — and it arrives at its
+  place in the Workout Day, not at the end of the Workout.
 - An Exercise deleted keeps the Sets it already logged, and the Summary counts them. The user
-  lifted them.
+  lifted them. It **stops holding the Finish gate**, because the user cannot reach it any more:
+  with Sets logged it ends Completed, with none it ends Skipped.
 - Raising the planned Sets can **reopen** a Completed Exercise (§3.2). Nothing fires before
   Finish; the rule chip restates the condition the moment the edit lands, `+2.5 KG IF ALL 3` →
   `+2.5 KG IF ALL 4`, so the cost of the edit is visible in place.
@@ -898,11 +927,14 @@ Converting was rejected: it produces numbers no machine can make. `100 lbs` on a
 becomes `45.4 kg` in steps of `4.54 kg`, with an Increment of `2.27 kg`. **The rule *units never
 convert* now covers the stored number, not only the display.**
 
+**Cleared means unset, not zero** (§2.8): the field is empty, and the Exercise does not progress
+until the user types a number.
+
 The **Microload follows and never carries across**:
 
 | Change | The Microload |
 | --- | --- |
-| Exercise unit moves **to** the Plate Inventory's unit | Deleted. The Working Weight is retyped anyway, so there is nothing to fold in. |
+| Exercise unit moves **to** the Plate Inventory's unit | Deleted — really gone, not merely hidden. Hide it instead and a second unit change brings the old Microload back. The Working Weight is retyped anyway, so there is nothing to fold in. |
 | Exercise unit moves **away** from it | Created at zero on a Machine (stack) or Cable, for the next Microloading progression to fill. On a Dumbbell — the only other type that can change unit — no Microload is created, and a Dumbbell already on Microloading states why (§2.6). |
 
 #### Changing the Plate Inventory's unit — the Re-weigh list
@@ -920,6 +952,12 @@ The same rule at full blast radius. One switch:
 So Hoppa warns with the count — `THIS CLEARS THE WEIGHT ON 12 EXERCISES` — and the confirm leads
 to **one Re-weigh list**: every affected Exercise on one screen, each with an empty weight field.
 
+**The Re-weigh list is every Exercise with no Working Weight**, which is what the switch has just
+made them. It is not a list the switch writes down. Leave the screen, close the app, come back a
+day later, and the same Exercises still have no weight — so the same list appears, without anything
+having to remember it. The count in the warning is the same rule, asked before the switch instead
+of after.
+
 The user throws this switch when they change gym or country, so it is rare and deliberate. Paying
 its cost once at the kitchen table beats meeting it twelve times at the rack. Blocking the switch
 once Workouts exist was rejected: it locks a real event out of the app.
@@ -930,6 +968,11 @@ The switch warns with the count — `3 EXERCISES USE THIS PLATE` — and the aff
 into the empty state §6.2 already draws: `NO MICROPLATES · SET UP YOUR RACK`, tapping through to
 the Inventory. Such an Exercise **does not progress** until a plate is picked, and the Summary
 states that condition in place of the green line.
+
+A **stranded** Exercise is one whose Microloading Increment names a Microplate that is now off.
+Nothing is written and nothing is cleared: switch the plate back on, and the Exercise progresses
+again with the plate the user picked. The count in the warning asks the same question before the
+switch.
 
 Hoppa never re-points to the nearest remaining Microplate, which would change the steel the user
 hangs on the bar without telling them. It never blocks the switch either, which would lock a rack
@@ -946,6 +989,10 @@ the user stands.
 | Delete the last Workout Day in a Program | **Blocked.** A Program with no Days cannot be started. |
 | Confirm | Plain, with **no** count of destroyed Sets — because nothing is destroyed. |
 
+A block is stated **before** the user commits: the delete control refuses with its reason where the
+user taps it. A confirm that quietly does nothing is not a block, it is a bug the user gets to
+diagnose.
+
 #### Program-level edits, which follow from rules already fixed
 
 - The Program's **Weight Unit** is a default for new Exercises only (§2.1), so changing it touches
@@ -954,6 +1001,9 @@ the user stands.
   re-solves their Plate Breakdowns (§5.3), and with no Microplate on, §5.2 opens the Microplate
   group in place.
 - **Renaming** anything is free and migrates nothing (§2.7).
+
+> Sharpened while building. Decision record:
+> [Program edits, and which of them are rules](issues/0026-program-edits-and-the-rules-boundary.md).
 
 ### 6.7 Flow 4 — History and the progression chart
 
