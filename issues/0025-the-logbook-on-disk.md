@@ -3,7 +3,7 @@ id: 25
 title: The Logbook on disk
 parent: 17
 labels: [wayfinder:task]
-status: open
+status: closed
 assignee: rob
 blocked-by: [23]
 ---
@@ -205,3 +205,27 @@ logged` still reads 2, `Current index` still reads 0, and `logbook.json` reports
 same claim is already green here as `A relaunch sees exactly what the last send left`, against a
 real file — but a test on the VPS is not a phone, and this map's own charter says to check the
 artefact rather than the report about it.
+
+
+---
+
+## Closed on the phone
+
+**The acceptance test passed** (Rob, 2026-08-20). Launch, `START WORKOUT`, `LOG SET` twice,
+force-quit from the app switcher, reopen — `Upper A`, `Sets logged 2`, `Current index 0`. So a
+`Logbook` survives a kill on a real device, and the store's synchronous atomic write is not merely
+green against a temporary directory on Linux.
+
+That was the whole reason this ticket stayed open past its build. Nothing else in it was in doubt,
+and nothing about it changed.
+
+Two facts it takes with it. The Xcode project **accepted the hand-patched `project.pbxproj`** — 16
+additive lines the agent wrote here rather than adding the package through *Add Local…* on the Mac —
+so both directions of that hand-off have now run clean, and the map's fog on who owns that file is
+one instance better informed. And the same Mac session ran both package suites at **98 and 25**,
+the counts this machine reports, so there is no platform drift between the two toolchains today.
+
+`AcceptanceHarness.swift` and `HarnessSeed.swift` have now done their job. They are scaffolding, and
+the first real screen deletes both — `HarnessSeed` in particular exists only because no `Action`
+created a Program, which stopped being true at
+[Build the Program edits](0028-build-the-program-edits.md).

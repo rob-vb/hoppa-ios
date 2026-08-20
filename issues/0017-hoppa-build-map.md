@@ -56,15 +56,16 @@ real**, and nothing after that is worth doing before it.
     be type-checked on the VPS against the built modules, and so can every rules/store call a
     SwiftUI view makes. See the charter bullet on Swift on the VPS. What reaches Rob should be
     something that has already had every checkable thing checked.
-  - **The queue, as it stands.** One Mac session covers all of it.
-    1. [The Logbook on disk](0025-the-logbook-on-disk.md) — the **force-quit on the phone**, which
-       is the one proof this machine cannot give. That ticket is still open for it.
-    2. ~~[Build the Program edits](0028-build-the-program-edits.md) — `#expect(Rules.fold("é") == "e")`
-       in `SuggestionTests`.~~ **Done, 2026-08-20: green on Darwin.** Apple ships the Unicode name
-       tables, so `Unicode.Scalar.Properties.name` is a fact a rule may read on both platforms, and
-       §6.3 keeps accent folding. This was the last thing ticket 27 left unproven.
-    3. ~~Open the project once and check it still builds.~~ **Done, 2026-08-20: it builds.** Both
-       package suites are green on the Mac too — 98 and 25, the same counts as here.
+  - **The queue is empty**, cleared 2026-08-20 in one session, which is the pattern working as
+    intended. What it settled, because each answer outlives its ticket:
+    - **The force-quit passes on the phone** — `Upper A`, `Sets logged 2`, `Current index 0` after a
+      kill from the app switcher. [The Logbook on disk](0025-the-logbook-on-disk.md) is closed.
+    - **`fold("é") == "e"` is green on Darwin.** Apple ships the Unicode name tables, so
+      `Unicode.Scalar.Properties.name` is a fact a rule may read on both platforms and §6.3 keeps its
+      accent folding. That was the last thing ticket 27 left unproven.
+    - **Both suites run the same counts on the Mac**, 98 and 25, and the project builds — including
+      the `project.pbxproj` the agent hand-patched at ticket 25. **No toolchain drift today**, which
+      is what makes proving things here worth anything.
 
 - **Charter decisions** (settled while charting, before any ticket):
   - **Local only.** No account, no sync, no server, no CloudKit. Programs and Workouts live on the
@@ -227,9 +228,11 @@ real**, and nothing after that is worth doing before it.
   time is subtraction, so a lock, a background and a call cost no code.
   [The Logbook on disk](0025-the-logbook-on-disk.md) was rewritten off the Mac onto the VPS.
 
-- **[The Logbook on disk](0025-the-logbook-on-disk.md)** — **`app/HoppaStore` is built and 27 tests
-  are green on the VPS**, and the ticket is still open on Rob's Mac for the one proof this machine
-  cannot give: the force-quit on the phone. The store came out as ticket 24 drew it — `send` is four
+- **[The Logbook on disk](0025-the-logbook-on-disk.md)** — **`app/HoppaStore` is built, and the
+  force-quit passes on Rob's phone** (2026-08-20): kill it from the app switcher mid-Workout and
+  `Upper A`, `Sets logged 2` and `Current index 0` all come back. The suite was green here first;
+  a test on the VPS is not a phone, and this map checks the artefact rather than the report about
+  it. The store came out as ticket 24 drew it — `send` is four
   lines, three of them guards — so the findings outrank the code. **"Additive migration needs no
   step" is only true for an `Optional` field**: Swift's synthesised `Codable` decodes an Optional
   with `decodeIfPresent` and everything else with plain `decode`, so a non-Optional property fails
@@ -308,20 +311,6 @@ real**, and nothing after that is worth doing before it.
 
 ## Not yet specified
 
-- **Drawing the loaded bar, and the Ignition confetti, natively.** `SPEC.md` §7.5 and §6.5 specify
-  both exactly, and both exist as working HTML. SwiftUI `Canvas`, plain shapes, SpriteKit or
-  Core Animation — not sharp until there is a project to run them in.
-- **Appearance: dark only, or a light mode too.** The whole spec is dark-first and never says
-  whether light mode exists. On iOS that is a decision with real work behind it, not a default.
-- **Build order across the five flows, and what "done" means for each.** Probably logging first,
-  because it is the screen with the most rules behind it. The model exists, the seam is fixed and
-  [The Logbook on disk](0025-the-logbook-on-disk.md) has put a real store under a real screen — a
-  harness, not Flow 2, but the wiring is proved. This is ticketable as soon as that force-quit test
-  passes on the phone. **Everything under the screens is now built.**
-  [Build the Program edits](0028-build-the-program-edits.md) landed §6.6's create and edit actions
-  and §6.3's name field, so Flow 1 and Flow 5 have their rules and Flow 2 has had them since ticket
-  23. What is left is SwiftUI, which is the one thing this machine cannot prove — so the shape of
-  the next ticket is *which screen, and what does the Mac have to see*.
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
   machines edit the same Xcode project file — the agent by patching it, Xcode by regenerating it.
   It is a merge conflict waiting to happen, in a file no one wants to hand-merge. Not sharp until
@@ -340,7 +329,9 @@ real**, and nothing after that is worth doing before it.
   places Xcode used, plus two `INFOPLIST_KEY_*` build settings. It saves a round trip, which is this
   loop's expensive unit, and it is unverified until Rob opens the project. Whether the agent *should*
   own this file is the live half of this question, and there is now one instance of each direction
-  to judge it on.
+  to judge it on. **Xcode accepted the hand-patched file** when Rob opened it on 2026-08-20 — the
+  project builds and the store runs on the phone — so the agent-written direction has now run clean
+  as well, and neither direction has yet cost anything.
   **A third hand-off needed no edit at all.** [Build the Program edits](0028-build-the-program-edits.md)
   moved a source file *between* the two packages and added four more, and Xcode never has to know:
   both are path references and SPM globs their sources, so the file list is not in `project.pbxproj`
