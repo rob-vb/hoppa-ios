@@ -3,7 +3,7 @@ id: 18
 title: An empty app on the phone
 parent: 17
 labels: [wayfinder:task]
-status: open
+status: closed
 assignee: henk
 blocked-by: []
 ---
@@ -47,3 +47,75 @@ Fonts are only smoke-tested here. **Licensing and bundling Anton and IBM Plex Sa
 still fog on the map — a `<link>` to Google Fonts is not a licence to ship a face inside a binary.
 If the smoke test needs the file on the device to render at all, note what was done and leave the
 licence question to its own ticket.
+
+## Resolution
+
+**Hoppa runs on Rob's iPhone 16, and the build lasts a year.** The smoke screen renders the `72.5`
+hero in Anton on the `#0E0F10` floor, and its own verdict block reports all three faces **LOADED** —
+so the toolchain, the colours, the bundled fonts and the signing all work end to end. Nothing fought
+back.
+
+### The fact this ticket existed to find
+
+**One year, not seven days.** Rob took the **Apple Developer Program (paid)** route, and the
+provisioning profile Xcode issued expires **2027-08-20**. The map's destination — weeks of real
+training — is therefore not fenced in by signing at all, and no ticket has to plan around a weekly
+re-install. Read out of the profile itself (`security cms -D` → `ExpirationDate`), not from what the
+dialog claimed.
+
+This also matches the ambition Rob stated while answering: publishing to the App Store is the goal,
+and *"launch soon after"* training with it himself. The paid route was the cheaper decision in both
+directions.
+
+### Recorded
+
+| | |
+| --- | --- |
+| Bundle id | `com.robvb.hoppa` |
+| Display name / target / project | `Hoppa` |
+| Minimum iOS | 17.0 |
+| Orientation | Portrait only, iPhone only |
+| Signing | Apple Developer Program (paid), team *Rob van Baaren*, expires 2027-08-20 |
+| macOS | 26.3.1 |
+| Xcode | 26.6 |
+| Swift | 6.3.3 |
+| Device | iPhone 16, iOS 26.6.1 |
+
+The minimum of iOS 17.0 leaves a wide margin under the phone's iOS 26.6.1. It was chosen for the
+modern SwiftUI surface (`@Observable`, SwiftData) rather than for reach, and this map has exactly
+one device to reach.
+
+### Fonts: answered further than this ticket asked
+
+The ticket said fonts were only smoke-tested here and left licensing to its own ticket. That fog is
+now closed instead, because the answer arrived while doing the work: **Anton and IBM Plex Sans are
+both SIL OFL 1.1**, which permits bundling a face inside an app binary provided the licence text
+ships with it. `app/bootstrap/Fonts/` carries both `.txt` licences and the wizard copies them into
+the app. Two details worth keeping:
+
+- **The PostScript names are not the filenames.** They are `Anton-Regular`, `IBMPlexSans` and
+  `IBMPlexSans-Medm`. A guess would have compiled, run, and silently fallen back to the system face.
+- **Registration is at runtime**, via `CTFontManagerRegisterFontsForURL`, not `UIAppFonts`. Modern
+  Xcode generates its `Info.plist` from build settings, so there is no plist file to hand-edit.
+- IBM ships only a variable `IBMPlexSans[wdth,wght].ttf` through Google Fonts. The static Regular
+  and Medium came from `github.com/IBM/plex`.
+
+### What fought back: the project did not travel
+
+Xcode's New Project dialog **created a git repository inside `app/Hoppa/`**, so the outer repo
+recorded the folder as a gitlink (mode `160000`) with no `.gitmodules` behind it. Rob pushed, and
+nothing but an empty pointer arrived on the VPS — no `project.pbxproj`, no sources. The wizard's
+`ticket-0018-facts.env` travelled fine, which is why this ticket could still be resolved.
+
+The nested repo has to go, and the fix is four commands on the Mac. This is a transport defect, not
+a question this ticket had to answer, and it is recorded on the map so the next session does not
+meet it cold.
+
+### How this was done
+
+`app/bootstrap/setup-hoppa.sh`, an eight-stage wizard, drove the Mac half. Only two steps needed a
+human in Xcode: the New Project dialog, and picking the Team. Everything after project creation —
+bundle id, deployment target, orientation, device family — the wizard patched into
+`project.pbxproj` by `sed`, verified with `grep`, and fell back to printed instructions where a
+patch did not take. Hand-writing a `.pbxproj` was considered and rejected: a malformed one would
+have stranded Rob in a debug loop on the machine the agent cannot see.

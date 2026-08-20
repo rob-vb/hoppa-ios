@@ -63,6 +63,11 @@ real**, and nothing after that is worth doing before it.
     builds, and pushes whatever Xcode changed; the agent pulls it back.** Two-way, because Xcode
     generates files — `project.pbxproj` above all — that the agent has to read and patch. A
     session that writes Swift is not finished until it has pushed.
+    **The loop's first run failed silently.** Xcode's New Project dialog creates its own git
+    repository inside the project folder unless told not to, so `app/Hoppa` was committed as a
+    gitlink (mode `160000`) with no `.gitmodules`: Rob pushed, and an empty pointer arrived. A
+    push that reports success is not proof the files travelled — **check that what you need is
+    actually in the tree** before working from it.
   - **`SPEC.md` §8.2 is the known-defect list.** The `Fitty` module in
     `design/0007-logging/fitty-workout-logging.html` predates three later tickets and is wrong in
     eight named ways. The spec is right and the code is wrong. Fix them in the lift; never port a
@@ -77,6 +82,12 @@ real**, and nothing after that is worth doing before it.
 ## Decisions so far
 
 <!-- one line per closed ticket -->
+
+- **[An empty app on the phone](0018-an-empty-app-on-the-phone.md)** — Hoppa runs on Rob's iPhone 16
+  and **the build lasts a year**, not seven days: the paid Apple Developer route, profile expiring
+  2027-08-20. `com.robvb.hoppa`, iOS 17.0 minimum, portrait-only iPhone, Xcode 26.6 / Swift 6.3.3.
+  Anton and IBM Plex Sans are bundled and confirmed rendering on the device. No ticket has to plan
+  around re-installing weekly.
 
 ## Not yet specified
 
@@ -93,15 +104,14 @@ real**, and nothing after that is worth doing before it.
 - **The Rest Timer across backgrounding.** §6.4 gives a count-up stopwatch that auto-starts after
   each Set. What it does when the phone locks, the app backgrounds, or a call comes in is an iOS
   question the spec never had to answer.
-- **Fonts.** Anton and IBM Plex Sans (§7.4). Both need licence-checking and bundling in an app
-  binary, which is not the same as a `<link>` to Google Fonts.
 - **Build order across the five flows, and what "done" means for each.** Probably logging first,
   because it is the screen with the most rules behind it — but that is a guess until the model
   exists.
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
   machines edit the same Xcode project file — the agent by patching it, Xcode by regenerating it.
   It is a merge conflict waiting to happen, in a file no one wants to hand-merge. Not sharp until
-  the loop has run a few times and shown which edits actually collide.
+  the loop has run a few times and shown which edits actually collide. The loop's **first** run
+  already drew blood, though in a smaller way: see the charter bullet on the nested repo.
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.
