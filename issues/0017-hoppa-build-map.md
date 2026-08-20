@@ -22,6 +22,16 @@ real**, and nothing after that is worth doing before it.
   filling `assignee:` before any work. A ticket is blocked while any id in `blocked-by:` has
   `status: open`. The frontier = open, unassigned, unblocked tickets. Close a ticket by setting
   `status: closed` and appending a `## Resolution` section.
+- **The `is-this-a-rule` test**, from
+  [Name suggestions, and where a rule that needs Foundation lives](0027-name-suggestions-and-foundation.md).
+  Two steps, and the second is the one this map keeps getting wrong. **1. Is it a rule?** It is, if
+  it decides an outcome from the `Logbook` alone *and* two lifters with the same `Logbook` must see
+  the same answer; otherwise it is a view or a service. **2. Does it need Foundation? Prove it, do
+  not assume it** — write the file with no imports and run `swiftc -typecheck`. §6.3 stood recorded
+  as needing Foundation in three places and one compiler run ended all three. If a rule ever really
+  does need it: first push the Foundation part out to the caller as a service; only if that fails,
+  add a second Foundation-importing target inside the `HoppaRules` package. No third boundary
+  exists today, on purpose.
 - **`SPEC.md` is the source of truth, and `CONTEXT.md` is the vocabulary.** Consult both every
   session. The *reasoning* behind every rule is in issues `0002`–`0016`; the spec deliberately
   carries none of it, so zoom a ticket when a rule looks arbitrary.
@@ -248,6 +258,25 @@ real**, and nothing after that is worth doing before it.
   and `currentIndex` follows the `ExerciseID`, not the position. The build graduates as
   [Build the Program edits](0028-build-the-program-edits.md).
 
+- **[Name suggestions, and where a rule that needs Foundation lives](0027-name-suggestions-and-foundation.md)**
+  — **the third boundary is not drawn, because §6.3 never needed Foundation.** Four facts, all
+  checked before a question was put: `lowercased()` is standard library and folds `İ` and `ß`
+  correctly with no imports; Swift already compares `é` and `e`+combining-acute as equal, so half of
+  "accent-insensitive" was free; the 156-name catalogue holds **no accented letter at all**; and the
+  base letter behind an accent is readable from the Unicode names the standard library ships
+  (`é` → `LATIN SMALL LETTER E WITH ACUTE`), so folding is ten lines and **no hand-written table** —
+  guarded to a single-letter base, so `ß`, `ı` and `œ` fall through. The ticket existed because
+  nobody had compiled the claim; that is now step 2 of the **`is-this-a-rule` test** in Notes. So all
+  of §6.3 is a rule in `HoppaRules`, and **the Exercise Catalogue moves down to join it** — ticket
+  25's "content, not a rule" is reversed, because the ranking reads both sources and de-duplicates
+  across them. Four rules the spec left loose: **most recently used means most recently *trained***,
+  `openWorkout` included, never-trained names under them; **six rows while typing too**, not only on
+  focus; a duplicate **keeps its own-names row**; a word breaks on a space or a hyphen, **not** on an
+  apostrophe. One risk carried forward: the Unicode name tables are proved on Linux, and
+  `fold("é") == "e"` is the Mac's own check — red there means drop folding and keep `lowercased()`.
+  The build **merged into** [Build the Program edits](0028-build-the-program-edits.md) as piece 5,
+  rather than taking a ticket: same package, same Mac session.
+
 ## Not yet specified
 
 - **Drawing the loaded bar, and the Ignition confetti, natively.** `SPEC.md` §7.5 and §6.5 specify
@@ -259,12 +288,11 @@ real**, and nothing after that is worth doing before it.
   because it is the screen with the most rules behind it. The model exists, the seam is fixed and
   [The Logbook on disk](0025-the-logbook-on-disk.md) has put a real store under a real screen — a
   harness, not Flow 2, but the wiring is proved. This is ticketable as soon as that force-quit test
-  passes on the phone. **Flow 1 is entangled with two tickets**, and one of them is now decided:
-  §6.6's Program edits are settled and wait on
-  [Build the Program edits](0028-build-the-program-edits.md), which is where Flow 1's create and
-  edit actions come from; §6.3's name suggestions are still open at
-  [ticket 27](0027-name-suggestions-and-foundation.md). So build order is a question about those two
-  as much as about the screens.
+  passes on the phone. **Flow 1's entanglement is gone**: both of the tickets it waited on are
+  decided, and both build in
+  [Build the Program edits](0028-build-the-program-edits.md) — §6.6's create and edit actions as
+  pieces 1–4, §6.3's name field as piece 5. So build order is now a question about the screens
+  alone.
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
   machines edit the same Xcode project file — the agent by patching it, Xcode by regenerating it.
   It is a merge conflict waiting to happen, in a file no one wants to hand-merge. Not sharp until

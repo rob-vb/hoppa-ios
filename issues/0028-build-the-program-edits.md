@@ -11,11 +11,18 @@ blocked-by: [26]
 ## Question
 
 **Build what [Program edits, and which of them are rules](0026-program-edits-and-the-rules-boundary.md)
-decided.** No decision is open; this ticket writes the Swift and the tests, on the VPS, and pushes.
-Zoom ticket 26's resolution for the reasoning behind every line below — this is the checklist, not
-the argument.
+decided, and §6.3's name suggestions with it.** No decision is open; this ticket writes the Swift
+and the tests, on the VPS, and pushes. Zoom ticket 26's resolution for the reasoning behind pieces
+1–4, and
+[Name suggestions, and where a rule that needs Foundation lives](0027-name-suggestions-and-foundation.md)
+for piece 5 — this is the checklist, not the argument.
 
-Four pieces, in this order, because each one's tests need the one before it:
+**Piece 5 was merged in rather than ticketed.** §6.3 turned out to be one source file, its tests and
+a file move, all inside `HoppaRules`, which this ticket is already opening — and it goes to the same
+Mac session either way.
+
+Five pieces. Take 1–4 in order, because each one's tests need the one before it; piece 5 is
+independent of them and can go first or last.
 
 1. **`workingWeight` and `increment` become `Weight?`.** Through `Exercise`, `ResolvedExercise`,
    `progressionMove` (no weight → no move) and `logSet` (no weight → no Set). `resolved`'s
@@ -38,6 +45,25 @@ Four pieces, in this order, because each one's tests need the one before it:
 4. **The mirroring into the Open Workout**: add in place, reorder with `currentIndex` following the
    `ExerciseID`, delete without shrinking the list and without holding the Finish gate. Only into a
    Workout running on that Day.
+
+5. **§6.3's name suggestions.** Move `ExerciseCatalogue.swift` from `HoppaStore` into `HoppaRules`
+   unchanged — it imports nothing already — **and its tests with it**, so the curated order and the
+   equipment-prefix check keep running. Drop the doc comment that says the matching has no home,
+   because this piece is that home. Neither package changes its dependencies and `project.pbxproj`
+   needs no edit: the app target already links both. Then one new file beside it:
+   - **`fold`**: lowercase, then, for each scalar outside `a`–`z`, read
+     `Unicode.Scalar.Properties.name` and take the token after `LETTER`; **accept the base only
+     when it is a single letter `a`–`z`**, so `ß`, `ı` and `œ` fall through unchanged. Test it on
+     é è ê ë á à â ä å ø ç ñ ü İ, and **keep one test for `ß`, `ı` and `œ` staying put**.
+     `#expect(fold("é") == "e")` is also the Mac's proof that Apple ships the Unicode name
+     tables — if it goes red there, drop folding, keep `lowercased()`, and say so on the map.
+   - **`Rules.nameSuggestions(in: Logbook, query: String) -> [String]`**: own names first, then the
+     catalogue, a duplicate keeping its own-names row, **six at most whether or not `query` is
+     empty**. Own names come from the Exercises that exist right now across **all** Programs, sorted
+     by the `startedAt` of the newest Workout that performed them — **`openWorkout` included** —
+     with never-trained names under them in Program order. An empty `query` returns own names only,
+     no catalogue. A non-empty `query` matches at the start of any word, where a word breaks on a
+     space or a hyphen and **not** on an apostrophe.
 
 Proof, in the shape ticket 23 set: every guard re-broken to show a test goes red, or a comment in
 the code saying why it cannot. `swift test` green on the VPS before the push — the whole point of

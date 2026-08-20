@@ -695,8 +695,20 @@ underneath. A name in both appears once.
   `Incline Dumbbell Press` and `Dumbbell Incline Press`. String-start matching fails exactly where
   it is needed, because a name often opens with the equipment. Fuzzy matching (`idp` →
   `Incline Dumbbell Press`) was rejected as noise.
+- **A word breaks on a space or a hyphen, never on an apostrophe.** `up` finds `Pull-up` and
+  `Chin-up`, which are two words to a lifter. `Farmer's` stays one word, because `s` is not a
+  search anyone makes.
+- **Most recently used means most recently *trained*.** The own names sort by the start of the
+  newest Workout that performed them, newest first, and **the Open Workout counts** — the Exercise
+  logged ten minutes ago belongs at the top. A name on an Exercise that exists but was never
+  trained sorts under the trained ones, in Program order.
+- **Six rows at most, on focus and while typing alike.** A keyboard leaves room for about that
+  many, and the reason the catalogue stops at ~150 names is that `press` must not return thirty
+  rows — an uncapped typing list hands that failure straight back.
 - **On focus, before typing**: the user's own names, most recently used first, **six at most**, no
   catalogue entries mixed in. On a first run it shows nothing and the user types.
+- **A name in both sources keeps its own-names row**, because that row carries the recency and the
+  user wrote it.
 
 **The Exercise Catalogue:**
 
@@ -716,12 +728,18 @@ underneath. A name in both appears once.
 - Adding a variant later can force a bare name to gain a prefix. That never touches existing
   Exercises: **a suggestion copies the name at the moment it is picked**, and no link survives.
 
-Writing the ~150 names is content work for the build (§10). **It is done**: the list lives
-in `app/HoppaStore/Sources/HoppaStore/ExerciseCatalogue.swift`, as a plain array of strings,
-and the two conventions above — the curated order and the equipment-prefix rule — are checked
-mechanically by `CatalogueTests`, so a name added later cannot quietly break either.
-**The matching and ranking are not built.** They are rules, they need Foundation to fold
-accents, and `HoppaRules` imports no Foundation — so they have no home yet. See the build map.
+Writing the ~150 names is content work for the build (§10). **It is done**: the list lives in
+`ExerciseCatalogue.swift`, as a plain array of strings, and the two conventions above — the
+curated order and the equipment-prefix rule — are checked mechanically, so a name added later
+cannot quietly break either.
+
+**The matching and the ranking are rules, and they live in `HoppaRules` with everything else.**
+They were once recorded as needing Foundation to fold accents, which `HoppaRules` does not import.
+That was wrong: `lowercased()` is standard library, Swift compares `é` and `e`+combining-acute
+as equal already, and the base letter behind an accent is readable from the Unicode character names
+the standard library ships. So folding costs about ten lines and no import. The catalogue moves
+down into `HoppaRules` beside the rule that reads it. See
+[Name suggestions, and where a rule that needs Foundation lives](issues/0027-name-suggestions-and-foundation.md).
 
 ### 6.4 Flow 2 — Logging a Workout
 
