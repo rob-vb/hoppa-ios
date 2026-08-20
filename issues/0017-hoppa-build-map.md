@@ -84,6 +84,13 @@ real**, and nothing after that is worth doing before it.
     `FileManager` call compile and run under `-swift-version 6`. So a package is Mac-only when it
     imports **SwiftUI or UIKit**, or needs a simulator or a device; not merely because it touches
     files or state. Test that assumption before accepting it: it has now been wrong once.
+    **And the line can be pushed further still.** At
+    [The Logbook on disk](0025-the-logbook-on-disk.md) a file in the *app target* was type-checked
+    here — `HarnessSeed.swift` imports no SwiftUI, so `swiftc -typecheck -I <the built modules>`
+    compiled it against the real `HoppaRules` and `HoppaStore`. The same trick took every store and
+    rules call the SwiftUI harness makes, lifted into a throwaway file, and proved the API names.
+    **Being in the app target is not the same as being unprovable here**; what is genuinely Mac-only
+    is the SwiftUI itself.
   - **`SPEC.md` §8.2 is the known-defect list.** The `Fitty` module in
     `design/0007-logging/fitty-workout-logging.html` predates three later tickets and is wrong in
     eight named ways. The spec is right and the code is wrong. Fix them in the lift; never port a
@@ -190,6 +197,28 @@ real**, and nothing after that is worth doing before it.
   time is subtraction, so a lock, a background and a call cost no code.
   [The Logbook on disk](0025-the-logbook-on-disk.md) was rewritten off the Mac onto the VPS.
 
+- **[The Logbook on disk](0025-the-logbook-on-disk.md)** — **`app/HoppaStore` is built and 27 tests
+  are green on the VPS**, and the ticket is still open on Rob's Mac for the one proof this machine
+  cannot give: the force-quit on the phone. The store came out as ticket 24 drew it — `send` is four
+  lines, three of them guards — so the findings outrank the code. **"Additive migration needs no
+  step" is only true for an `Optional` field**: Swift's synthesised `Codable` decodes an Optional
+  with `decodeIfPresent` and everything else with plain `decode`, so a non-Optional property fails
+  on an older file *even with a default in `init`*. A session adding `var restGoal: Int = 90` would
+  have made every existing logbook `.unreadable`. Both directions are now tests. The **migration
+  engine is tested with no migration to run** — `migrate` takes its step table as an argument, so
+  chaining, version-stamping and a missing step are all proved before the first real bump. **`.atomic`
+  *is* the temporary-file-then-rename**, done by Foundation; hand-rolling it would mean hand-rolling
+  the one path that must behave the same on Darwin and on Linux. Every guard was re-broken and five
+  of six turned a suite red; **the sixth says so in the code** — `send`'s no-Logbook guard cannot
+  fail a test today because `Logbook.empty` is a fixed point under all twelve actions, and it stops
+  being harmless the moment ticket 26 lands an action that creates a Program. The **Exercise
+  Catalogue is written**: 157 names, with §6.3's order and prefix rule checked mechanically, because
+  both are checkable against the list of strings alone. Its **matching and ranking are not**, and
+  they graduate as
+  [Name suggestions, and where a rule that needs Foundation lives](0027-name-suggestions-and-foundation.md).
+  The Xcode project is **already patched** — 16 additive lines, `relativePath = ../HoppaStore`, plus
+  the two Info.plist flags as build settings.
+
 ## Not yet specified
 
 - **Drawing the loaded bar, and the Ignition confetti, natively.** `SPEC.md` §7.5 and §6.5 specify
@@ -198,10 +227,13 @@ real**, and nothing after that is worth doing before it.
 - **Appearance: dark only, or a light mode too.** The whole spec is dark-first and never says
   whether light mode exists. On iOS that is a decision with real work behind it, not a default.
 - **Build order across the five flows, and what "done" means for each.** Probably logging first,
-  because it is the screen with the most rules behind it. The model now exists and the seam is
-  fixed, so this is close to ticketable — it waits on
-  [The Logbook on disk](0025-the-logbook-on-disk.md), which puts a real store under a real screen for
-  the first time.
+  because it is the screen with the most rules behind it. The model exists, the seam is fixed and
+  [The Logbook on disk](0025-the-logbook-on-disk.md) has put a real store under a real screen — a
+  harness, not Flow 2, but the wiring is proved. This is ticketable as soon as that force-quit test
+  passes on the phone. **Flow 1 is entangled with two open tickets**, not one: it needs §6.6's
+  Program edits ([ticket 26](0026-program-edits-and-the-rules-boundary.md)) and §6.3's name
+  suggestions ([ticket 27](0027-name-suggestions-and-foundation.md)), so build order is a question
+  about those two as much as about the screens.
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
   machines edit the same Xcode project file — the agent by patching it, Xcode by regenerating it.
   It is a merge conflict waiting to happen, in a file no one wants to hand-merge. Not sharp until
@@ -214,6 +246,13 @@ real**, and nothing after that is worth doing before it.
   `relativePath = ../HoppaRules` — **relative, not absolute**, so the reference needs no edit on
   either side. One clean run is not a rule, but it narrows the question: the risk is concurrent
   *additions* landing in the same list, not a path that only works on one machine.
+  **The second hand-off went the other way: the agent wrote it.** At
+  [The Logbook on disk](0025-the-logbook-on-disk.md) `HoppaStore` was added by patching
+  `project.pbxproj` here rather than by *Add Local…* on the Mac — 16 additive lines in the same six
+  places Xcode used, plus two `INFOPLIST_KEY_*` build settings. It saves a round trip, which is this
+  loop's expensive unit, and it is unverified until Rob opens the project. Whether the agent *should*
+  own this file is the live half of this question, and there is now one instance of each direction
+  to judge it on.
 - **Deleting a Program.** §6.6 specifies deleting an Exercise and a Workout Day, with two blocks.
   §2.1 allows more than one Program. Nothing says what a whole Program delete does, or whether the
   last Program is blocked the way the last Workout Day is. Found while working

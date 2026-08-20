@@ -1,0 +1,440 @@
+{
+  "nextId" : 102,
+  "openWorkout" : {
+    "currentIndex" : 0,
+    "exercises" : [
+      {
+        "exerciseId" : 10,
+        "name" : "Smith machine bench press",
+        "sets" : [
+          {
+            "oneOff" : false,
+            "reps" : 12,
+            "weight" : {
+              "hundredths" : 7500,
+              "unit" : "kg"
+            }
+          }
+        ],
+        "state" : "open"
+      },
+      {
+        "exerciseId" : 11,
+        "name" : "Barbell row",
+        "sets" : [
+
+        ],
+        "state" : "open"
+      },
+      {
+        "exerciseId" : 12,
+        "name" : "Lat pulldown",
+        "sets" : [
+
+        ],
+        "state" : "open"
+      },
+      {
+        "exerciseId" : 13,
+        "name" : "Dumbbell shoulder press",
+        "sets" : [
+
+        ],
+        "state" : "open"
+      },
+      {
+        "exerciseId" : 14,
+        "name" : "Weighted chin-up",
+        "sets" : [
+
+        ],
+        "state" : "open"
+      }
+    ],
+    "id" : 101,
+    "programId" : 1,
+    "restStartedAt" : 1770000162,
+    "startedAt" : 1770000153,
+    "state" : "open",
+    "workoutDayId" : 2,
+    "workoutDayName" : "Upper A"
+  },
+  "plateInventory" : {
+    "microplates" : [
+      {
+        "isOn" : true,
+        "weight" : {
+          "hundredths" : 100,
+          "unit" : "kg"
+        }
+      },
+      {
+        "isOn" : true,
+        "weight" : {
+          "hundredths" : 75,
+          "unit" : "kg"
+        }
+      },
+      {
+        "isOn" : true,
+        "weight" : {
+          "hundredths" : 50,
+          "unit" : "kg"
+        }
+      },
+      {
+        "isOn" : true,
+        "weight" : {
+          "hundredths" : 25,
+          "unit" : "kg"
+        }
+      }
+    ],
+    "plates" : [
+      {
+        "isOn" : false,
+        "weight" : {
+          "hundredths" : 2500,
+          "unit" : "kg"
+        }
+      },
+      {
+        "isOn" : true,
+        "weight" : {
+          "hundredths" : 2000,
+          "unit" : "kg"
+        }
+      },
+      {
+        "isOn" : true,
+        "weight" : {
+          "hundredths" : 1000,
+          "unit" : "kg"
+        }
+      },
+      {
+        "isOn" : true,
+        "weight" : {
+          "hundredths" : 500,
+          "unit" : "kg"
+        }
+      },
+      {
+        "isOn" : true,
+        "weight" : {
+          "hundredths" : 250,
+          "unit" : "kg"
+        }
+      },
+      {
+        "isOn" : true,
+        "weight" : {
+          "hundredths" : 125,
+          "unit" : "kg"
+        }
+      }
+    ],
+    "unit" : "kg"
+  },
+  "programs" : [
+    {
+      "days" : [
+        {
+          "exercises" : [
+            {
+              "equipment" : "smith",
+              "id" : 10,
+              "increment" : {
+                "hundredths" : 250,
+                "unit" : "kg"
+              },
+              "microloadingIncrement" : {
+                "hundredths" : 25,
+                "unit" : "kg"
+              },
+              "name" : "Smith machine bench press",
+              "ownWeightUnit" : "kg",
+              "plannedSets" : 3,
+              "repRange" : {
+                "bottom" : 8,
+                "top" : 12
+              },
+              "storedBaseWeight" : {
+                "hundredths" : 1500,
+                "unit" : "kg"
+              },
+              "workingWeight" : {
+                "hundredths" : 7500,
+                "unit" : "kg"
+              }
+            },
+            {
+              "equipment" : "barbell",
+              "id" : 11,
+              "increment" : {
+                "hundredths" : 250,
+                "unit" : "kg"
+              },
+              "microloadingIncrement" : {
+                "hundredths" : 25,
+                "unit" : "kg"
+              },
+              "name" : "Barbell row",
+              "ownWeightUnit" : "kg",
+              "plannedSets" : 3,
+              "repRange" : {
+                "bottom" : 8,
+                "top" : 10
+              },
+              "workingWeight" : {
+                "hundredths" : 6000,
+                "unit" : "kg"
+              }
+            },
+            {
+              "equipment" : "machine-stack",
+              "id" : 12,
+              "increment" : {
+                "hundredths" : 1000,
+                "unit" : "lbs"
+              },
+              "microload" : {
+                "hundredths" : 100,
+                "unit" : "kg"
+              },
+              "microloadingIncrement" : {
+                "hundredths" : 100,
+                "unit" : "kg"
+              },
+              "modeOverride" : "microloading",
+              "name" : "Lat pulldown",
+              "ownWeightUnit" : "lbs",
+              "plannedSets" : 3,
+              "repRange" : {
+                "bottom" : 10,
+                "top" : 12
+              },
+              "storedStackStep" : {
+                "hundredths" : 1000,
+                "unit" : "lbs"
+              },
+              "workingWeight" : {
+                "hundredths" : 10000,
+                "unit" : "lbs"
+              }
+            },
+            {
+              "equipment" : "dumbbell",
+              "id" : 13,
+              "increment" : {
+                "hundredths" : 250,
+                "unit" : "kg"
+              },
+              "microloadingIncrement" : {
+                "hundredths" : 25,
+                "unit" : "kg"
+              },
+              "name" : "Dumbbell shoulder press",
+              "ownWeightUnit" : "kg",
+              "plannedSets" : 3,
+              "repRange" : {
+                "bottom" : 8,
+                "top" : 12
+              },
+              "workingWeight" : {
+                "hundredths" : 2250,
+                "unit" : "kg"
+              }
+            },
+            {
+              "equipment" : "bodyweight",
+              "id" : 14,
+              "increment" : {
+                "hundredths" : 250,
+                "unit" : "kg"
+              },
+              "microloadingIncrement" : {
+                "hundredths" : 25,
+                "unit" : "kg"
+              },
+              "name" : "Weighted chin-up",
+              "ownWeightUnit" : "kg",
+              "plannedSets" : 3,
+              "repRange" : {
+                "bottom" : 6,
+                "top" : 8
+              },
+              "workingWeight" : {
+                "hundredths" : 1500,
+                "unit" : "kg"
+              }
+            }
+          ],
+          "id" : 2,
+          "name" : "Upper A"
+        }
+      ],
+      "defaultWeightUnit" : "kg",
+      "id" : 1,
+      "mode" : "progressive-overload",
+      "name" : "Upper / Lower"
+    }
+  ],
+  "schemaVersion" : 1,
+  "workouts" : [
+    {
+      "currentIndex" : 3,
+      "exercises" : [
+        {
+          "exerciseId" : 10,
+          "name" : "Smith machine bench press",
+          "outcome" : {
+            "plannedSets" : 3,
+            "progressed" : true,
+            "thresholdReps" : 12
+          },
+          "sets" : [
+            {
+              "oneOff" : false,
+              "reps" : 12,
+              "weight" : {
+                "hundredths" : 7250,
+                "unit" : "kg"
+              }
+            },
+            {
+              "oneOff" : false,
+              "reps" : 12,
+              "weight" : {
+                "hundredths" : 7250,
+                "unit" : "kg"
+              }
+            },
+            {
+              "oneOff" : false,
+              "reps" : 12,
+              "weight" : {
+                "hundredths" : 7250,
+                "unit" : "kg"
+              }
+            }
+          ],
+          "state" : "completed"
+        },
+        {
+          "exerciseId" : 11,
+          "name" : "Barbell row",
+          "outcome" : {
+            "plannedSets" : 3,
+            "progressed" : false,
+            "thresholdReps" : 10
+          },
+          "sets" : [
+            {
+              "oneOff" : false,
+              "reps" : 9,
+              "weight" : {
+                "hundredths" : 6000,
+                "unit" : "kg"
+              }
+            },
+            {
+              "oneOff" : false,
+              "reps" : 9,
+              "weight" : {
+                "hundredths" : 6000,
+                "unit" : "kg"
+              }
+            }
+          ],
+          "state" : "completed"
+        },
+        {
+          "exerciseId" : 12,
+          "name" : "Lat pulldown",
+          "oneOffWeight" : {
+            "hundredths" : 9000,
+            "unit" : "lbs"
+          },
+          "outcome" : {
+            "plannedSets" : 3,
+            "progressed" : false,
+            "thresholdReps" : 10
+          },
+          "sets" : [
+            {
+              "microload" : {
+                "hundredths" : 100,
+                "unit" : "kg"
+              },
+              "oneOff" : true,
+              "reps" : 11,
+              "weight" : {
+                "hundredths" : 9000,
+                "unit" : "lbs"
+              }
+            },
+            {
+              "microload" : {
+                "hundredths" : 100,
+                "unit" : "kg"
+              },
+              "oneOff" : true,
+              "reps" : 11,
+              "weight" : {
+                "hundredths" : 9000,
+                "unit" : "lbs"
+              }
+            },
+            {
+              "microload" : {
+                "hundredths" : 100,
+                "unit" : "kg"
+              },
+              "oneOff" : true,
+              "reps" : 11,
+              "weight" : {
+                "hundredths" : 9000,
+                "unit" : "lbs"
+              }
+            }
+          ],
+          "state" : "completed"
+        },
+        {
+          "exerciseId" : 13,
+          "name" : "Dumbbell shoulder press",
+          "outcome" : {
+            "plannedSets" : 3,
+            "progressed" : false,
+            "thresholdReps" : 12
+          },
+          "sets" : [
+
+          ],
+          "state" : "skipped"
+        },
+        {
+          "exerciseId" : 14,
+          "name" : "Weighted chin-up",
+          "outcome" : {
+            "plannedSets" : 3,
+            "progressed" : false,
+            "thresholdReps" : 8
+          },
+          "sets" : [
+
+          ],
+          "state" : "skipped"
+        }
+      ],
+      "finishedAt" : 1770000144,
+      "id" : 100,
+      "programId" : 1,
+      "startedAt" : 1770000009,
+      "state" : "finished",
+      "workoutDayId" : 2,
+      "workoutDayName" : "Upper A"
+    }
+  ]
+}

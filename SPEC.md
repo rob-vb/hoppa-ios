@@ -691,7 +691,12 @@ underneath. A name in both appears once.
 - Adding a variant later can force a bare name to gain a prefix. That never touches existing
   Exercises: **a suggestion copies the name at the moment it is picked**, and no link survives.
 
-Writing the ~150 names is content work for the build (§10).
+Writing the ~150 names is content work for the build (§10). **It is done**: the list lives
+in `app/HoppaStore/Sources/HoppaStore/ExerciseCatalogue.swift`, as a plain array of strings,
+and the two conventions above — the curated order and the equipment-prefix rule — are checked
+mechanically by `CatalogueTests`, so a name added later cannot quietly break either.
+**The matching and ranking are not built.** They are rules, they need Foundation to fold
+accents, and `HoppaRules` imports no Foundation — so they have no home yet. See the build map.
 
 ### 6.4 Flow 2 — Logging a Workout
 

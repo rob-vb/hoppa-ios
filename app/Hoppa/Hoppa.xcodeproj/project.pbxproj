@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D4DEAC67303730F7001C744A /* HoppaRules in Frameworks */ = {isa = PBXBuildFile; productRef = D4DEAC66303730F7001C744A /* HoppaRules */; };
+		D4DEAC7030373100001C744A /* HoppaStore in Frameworks */ = {isa = PBXBuildFile; productRef = D4DEAC7130373100001C744A /* HoppaStore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4DEAC67303730F7001C744A /* HoppaRules in Frameworks */,
+				D4DEAC7030373100001C744A /* HoppaStore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +120,7 @@
 			name = Hoppa;
 			packageProductDependencies = (
 				D4DEAC66303730F7001C744A /* HoppaRules */,
+				D4DEAC7130373100001C744A /* HoppaStore */,
 			);
 			productName = Hoppa;
 			productReference = D4DEAC0D3036EC9E001C744A /* Hoppa.app */;
@@ -203,6 +206,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				D4DEAC65303730F7001C744A /* XCLocalSwiftPackageReference "../HoppaRules" */,
+				D4DEAC7230373100001C744A /* XCLocalSwiftPackageReference "../HoppaStore" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D4DEAC0E3036EC9E001C744A /* Products */;
@@ -409,7 +413,9 @@
 				DEVELOPMENT_TEAM = LBSGW42B34;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -441,7 +447,9 @@
 				DEVELOPMENT_TEAM = LBSGW42B34;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -593,12 +601,20 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../HoppaRules;
 		};
+		D4DEAC7230373100001C744A /* XCLocalSwiftPackageReference "../HoppaStore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../HoppaStore;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		D4DEAC66303730F7001C744A /* HoppaRules */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HoppaRules;
+		};
+		D4DEAC7130373100001C744A /* HoppaStore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HoppaStore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
