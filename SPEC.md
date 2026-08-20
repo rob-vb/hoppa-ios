@@ -1182,6 +1182,11 @@ before or during the lift — **the spec above is right and the code is wrong**:
 | `ex.blockSize` | Rename to **Stack Step**, and give it a place on the Exercise sheet (§2.3, §6.2) |
 | A logged Set holds the rep count only, and the weight is read live off the Exercise | A Set stores its own reps, weight, Weight Unit, Microload and One-off mark (§2.5) |
 | Progression tests the logged Sets for **equality** with the planned Sets | The test is **at least** the planned Sets (§4.1) |
+| `breakdown()` puts the pin at `Math.round(w / blockSize)`, which can place it **above** the Working Weight | The pin takes the largest Stack Step **at or under** the Working Weight, and the remainder hangs on the pin (§5.3, §5.5) |
+
+The ninth row was found during the lift itself, at
+[Lift the rules into HoppaRules](issues/0023-lift-the-rules-into-hopparules.md). Every row above is
+now a named, green test in `app/HoppaRules`.
 
 The prototype's Workout Summary is a deliberate placeholder; the real one is §6.5.
 
@@ -1208,8 +1213,15 @@ own, both exposed by [Confetti plate source](issues/0012-confetti-plate-source.m
 `design/0015-history/` also holds a **history generator** (`gen-fixture.mjs`) that runs the
 progression rules of §4 forward over the whole Program — four Workout Days, 18 Exercises, 56
 Workouts, 16 weeks. It is throwaway prototype code, but it is the only thing in this map that has
-ever tested the rules over more than one Workout, and it is what found §9's open item. Worth
-re-running against the real implementation.
+ever tested the rules over more than one Workout, and it is what found §9's open item.
+
+**It has now been re-run against the real implementation.** Its lifter — the seeded generator and
+the rep model — ports into `app/HoppaRules`'s test target, and the rules come from `HoppaRules`
+itself. Its 0.25 kg Microplate does **not** port: `gen-fixture.mjs` picked that size so sixteen
+weeks would stay under one Stack Step and the roll-up would never be reached, so the Swift run uses
+the 1 kg plate and the pin moves twice. The result is committed as a snapshot, and drift shows up as
+a diff. Decision record:
+[Lift the rules into HoppaRules](issues/0023-lift-the-rules-into-hopparules.md).
 
 ---
 

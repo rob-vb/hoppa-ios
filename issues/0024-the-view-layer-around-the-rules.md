@@ -37,8 +37,13 @@ was blocked, and it settled two of the questions this ticket was written to ask.
 
 
 - **Where does the view state actually go?** The keypad buffer, the lowering prompt, which overlay
-  is up, which Exercise is selected. Inside the store beside the `Workout`, or in `@State` on the
-  view that owns it? The prototype kept them together; ticket 20 split them apart on purpose.
+  is up. Inside the store beside the `Workout`, or in `@State` on the view that owns it? The
+  prototype kept them together; ticket 20 split them apart on purpose.
+  **Which Exercise is selected is already answered** and is not view state:
+  [Lift the rules into HoppaRules](0023-lift-the-rules-into-hopparules.md) put `currentIndex` on the
+  `Workout` with a `.selectExercise` action, so the Exercise Rob was standing at survives a
+  relaunch in the middle of a session. The rep counter went the other way — `.logSet(reps:)` takes
+  the number, and `targetReps` is a pure query the view prefills from.
 - **The Rest Timer.** `restStartedAt` is a `Timestamp` on the `Workout`, so it is pure and it
   survives a reduce. Turning it into a ticking count-up on screen is a view problem, and what it
   does across a lock, a background and a phone call is still fog on the map. Decide only the part

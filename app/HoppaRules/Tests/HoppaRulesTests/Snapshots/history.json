@@ -1,0 +1,6601 @@
+{
+  "exerciseCount" : 18,
+  "finalWeights" : [
+    {
+      "name" : "Smith machine bench press",
+      "weight" : "80 kg"
+    },
+    {
+      "name" : "Barbell row",
+      "weight" : "67.5 kg"
+    },
+    {
+      "microload" : "3 kg",
+      "name" : "Lat pulldown",
+      "weight" : "110 lbs"
+    },
+    {
+      "name" : "Dumbbell shoulder press",
+      "weight" : "27.5 kg"
+    },
+    {
+      "name" : "Weighted chin-up",
+      "weight" : "22.5 kg"
+    },
+    {
+      "name" : "Barbell back squat",
+      "weight" : "115 kg"
+    },
+    {
+      "name" : "Romanian deadlift",
+      "weight" : "82.5 kg"
+    },
+    {
+      "microload" : "0 kg",
+      "name" : "Leg curl",
+      "weight" : "140 lbs"
+    },
+    {
+      "name" : "Standing calf raise",
+      "weight" : "72.5 kg"
+    },
+    {
+      "name" : "Overhead press",
+      "weight" : "50 kg"
+    },
+    {
+      "name" : "Dumbbell row",
+      "weight" : "45 kg"
+    },
+    {
+      "name" : "Weighted dip",
+      "weight" : "25 kg"
+    },
+    {
+      "microload" : "0 kg",
+      "name" : "Face pull",
+      "weight" : "90 lbs"
+    },
+    {
+      "name" : "Barbell curl",
+      "weight" : "43 kg"
+    },
+    {
+      "name" : "Front squat",
+      "weight" : "72.5 kg"
+    },
+    {
+      "name" : "Leg press",
+      "weight" : "145 kg"
+    },
+    {
+      "microload" : "0 kg",
+      "name" : "Leg extension",
+      "weight" : "140 lbs"
+    },
+    {
+      "name" : "Seated calf raise",
+      "weight" : "52.5 kg"
+    }
+  ],
+  "weeks" : 16,
+  "workoutCount" : 56,
+  "workouts" : [
+    {
+      "date" : "2026-05-04",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "65 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "65 kg",
+          "weightBefore" : "65 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "52.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "52.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "52.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "52.5 kg",
+          "weightBefore" : "52.5 kg"
+        },
+        {
+          "microloadAfter" : "1 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "90 lbs",
+          "weightBefore" : "90 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "20 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "20 kg",
+          "weightBefore" : "20 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 7,
+              "weight" : "10 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "10 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "10 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "10 kg",
+          "weightBefore" : "10 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-05",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "80 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "80 kg",
+          "weightBefore" : "80 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 7,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "70 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "70 kg",
+          "weightBefore" : "70 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 9,
+              "weight" : "70 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 8,
+              "weight" : "70 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 8,
+              "weight" : "70 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "70 lbs",
+          "weightBefore" : "70 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 11,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "60 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "60 kg",
+          "weightBefore" : "60 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-07",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 5,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "40 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "40 kg",
+          "weightBefore" : "40 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "30 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "30 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "30 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "30 kg",
+          "weightBefore" : "30 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 7,
+              "weight" : "10 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "10 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "10 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "10 kg",
+          "weightBefore" : "10 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 13,
+              "weight" : "40 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "40 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "40 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "40 lbs",
+          "weightBefore" : "40 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "30 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "30 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "30 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "31 kg",
+          "weightBefore" : "30 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-08",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "60 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "60 kg",
+          "weightBefore" : "60 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "120 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "120 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "120 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "120 kg",
+          "weightBefore" : "120 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "80 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "80 lbs",
+          "weightBefore" : "80 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "40 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "40 kg",
+          "weightBefore" : "40 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-11",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "65 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "67.5 kg",
+          "weightBefore" : "65 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "52.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "52.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "52.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "52.5 kg",
+          "weightBefore" : "52.5 kg"
+        },
+        {
+          "microloadAfter" : "2 kg",
+          "microloadBefore" : "1 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "1 kg",
+              "reps" : 11,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "1 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "1 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "90 lbs",
+          "weightBefore" : "90 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "20 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "22.5 kg",
+          "weightBefore" : "20 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "10 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "10 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "10 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "12.5 kg",
+          "weightBefore" : "10 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-12",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "80 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "85 kg",
+          "weightBefore" : "80 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "70 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "70 kg",
+          "weightBefore" : "70 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "70 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "70 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "70 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "80 lbs",
+          "weightBefore" : "70 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 13,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "60 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "60 kg",
+          "weightBefore" : "60 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-14",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "40 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "41 kg",
+          "weightBefore" : "40 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "30 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "30 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "30 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "32.5 kg",
+          "weightBefore" : "30 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "10 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "10 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "10 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "12.5 kg",
+          "weightBefore" : "10 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "40 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "40 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "40 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "50 lbs",
+          "weightBefore" : "40 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "31 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "31 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "31 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "32 kg",
+          "weightBefore" : "31 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-15",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "60 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "62.5 kg",
+          "weightBefore" : "60 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "120 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "120 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "120 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "120 kg",
+          "weightBefore" : "120 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "80 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "90 lbs",
+          "weightBefore" : "80 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 15,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "40 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "42.5 kg",
+          "weightBefore" : "40 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-18",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "67.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "67.5 kg",
+          "weightBefore" : "67.5 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "52.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "52.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "52.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "55 kg",
+          "weightBefore" : "52.5 kg"
+        },
+        {
+          "microloadAfter" : "3 kg",
+          "microloadBefore" : "2 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "2 kg",
+              "reps" : 11,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "2 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "2 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "90 lbs",
+          "weightBefore" : "90 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "22.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "22.5 kg",
+          "weightBefore" : "22.5 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 5,
+              "weight" : "12.5 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "12.5 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "12.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "12.5 kg",
+          "weightBefore" : "12.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-19",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "85 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "85 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "85 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "85 kg",
+          "weightBefore" : "85 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "70 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "72.5 kg",
+          "weightBefore" : "70 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "80 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "80 lbs",
+          "weightBefore" : "80 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 14,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "60 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "60 kg",
+          "weightBefore" : "60 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-21",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 5,
+              "weight" : "41 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "41 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "41 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "41 kg",
+          "weightBefore" : "41 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "32.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "32.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "32.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "32.5 kg",
+          "weightBefore" : "32.5 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "12.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "12.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "12.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "12.5 kg",
+          "weightBefore" : "12.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 13,
+              "weight" : "50 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "50 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "50 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "50 lbs",
+          "weightBefore" : "50 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "32 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "32 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "32 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "33 kg",
+          "weightBefore" : "32 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-22",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 5,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "62.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "62.5 kg",
+          "weightBefore" : "62.5 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "120 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "120 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "120 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "125 kg",
+          "weightBefore" : "120 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "90 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "90 lbs",
+          "weightBefore" : "90 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "42.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "42.5 kg",
+          "weightBefore" : "42.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-25",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "67.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "70 kg",
+          "weightBefore" : "67.5 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "55 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "55 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "55 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "55 kg",
+          "weightBefore" : "55 kg"
+        },
+        {
+          "microloadAfter" : "4 kg",
+          "microloadBefore" : "3 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "3 kg",
+              "reps" : 11,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "3 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "3 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "90 lbs",
+          "weightBefore" : "90 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "22.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "22.5 kg",
+          "weightBefore" : "22.5 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 7,
+              "weight" : "12.5 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "12.5 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "12.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "12.5 kg",
+          "weightBefore" : "12.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-26",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 7,
+              "weight" : "85 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "85 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "85 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "85 kg",
+          "weightBefore" : "85 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "72.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "72.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "72.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "72.5 kg",
+          "weightBefore" : "72.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "80 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "90 lbs",
+          "weightBefore" : "80 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 15,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "60 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "62.5 kg",
+          "weightBefore" : "60 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-28",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "41 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "41 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "41 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "42 kg",
+          "weightBefore" : "41 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "32.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "32.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "32.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "35 kg",
+          "weightBefore" : "32.5 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "12.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "12.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "12.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "15 kg",
+          "weightBefore" : "12.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "50 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "50 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "50 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "60 lbs",
+          "weightBefore" : "50 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "33 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "33 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "33 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "34 kg",
+          "weightBefore" : "33 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-05-29",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "62.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "65 kg",
+          "weightBefore" : "62.5 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "125 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "125 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "125 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "125 kg",
+          "weightBefore" : "125 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "90 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "100 lbs",
+          "weightBefore" : "90 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 13,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "42.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "42.5 kg",
+          "weightBefore" : "42.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-01",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "70 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "70 kg",
+          "weightBefore" : "70 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "55 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "55 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "55 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "57.5 kg",
+          "weightBefore" : "55 kg"
+        },
+        {
+          "microloadAfter" : "0.5 kg",
+          "microloadBefore" : "4 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "4 kg",
+              "reps" : 11,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "4 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "4 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "100 lbs",
+          "weightBefore" : "90 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 11,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "22.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "22.5 kg",
+          "weightBefore" : "22.5 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "12.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "12.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "12.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "15 kg",
+          "weightBefore" : "12.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-02",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "85 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "85 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "85 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "90 kg",
+          "weightBefore" : "85 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "72.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "72.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "72.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "72.5 kg",
+          "weightBefore" : "72.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "90 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "90 lbs",
+          "weightBefore" : "90 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "62.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "62.5 kg",
+          "weightBefore" : "62.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-04",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "42 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "42 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "42 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "43 kg",
+          "weightBefore" : "42 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "35 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "35 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "35 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "35 kg",
+          "weightBefore" : "35 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "15 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "15 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "15 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "15 kg",
+          "weightBefore" : "15 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 13,
+              "weight" : "60 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "60 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "60 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "60 lbs",
+          "weightBefore" : "60 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "34 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "34 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "34 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "35 kg",
+          "weightBefore" : "34 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-05",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "65 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "65 kg",
+          "weightBefore" : "65 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "125 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "125 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "125 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "130 kg",
+          "weightBefore" : "125 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "100 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "100 lbs",
+          "weightBefore" : "100 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 15,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "42.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "45 kg",
+          "weightBefore" : "42.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-08",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "70 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "72.5 kg",
+          "weightBefore" : "70 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "57.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "57.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "57.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "57.5 kg",
+          "weightBefore" : "57.5 kg"
+        },
+        {
+          "microloadAfter" : "1.5 kg",
+          "microloadBefore" : "0.5 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0.5 kg",
+              "reps" : 11,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "0.5 kg",
+              "reps" : 10,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "0.5 kg",
+              "reps" : 10,
+              "weight" : "100 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "100 lbs",
+          "weightBefore" : "100 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "22.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "22.5 kg",
+          "weightBefore" : "22.5 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 7,
+              "weight" : "15 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "15 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "15 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "15 kg",
+          "weightBefore" : "15 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-09",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "90 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "90 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "90 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "90 kg",
+          "weightBefore" : "90 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "72.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "72.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "72.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "75 kg",
+          "weightBefore" : "72.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "90 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "100 lbs",
+          "weightBefore" : "90 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 14,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "62.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "62.5 kg",
+          "weightBefore" : "62.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-11",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "43 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "43 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "43 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "44 kg",
+          "weightBefore" : "43 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 11,
+              "weight" : "35 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "35 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "35 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "35 kg",
+          "weightBefore" : "35 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "15 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "15 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "15 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "17.5 kg",
+          "weightBefore" : "15 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 13,
+              "weight" : "60 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "60 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "60 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "60 lbs",
+          "weightBefore" : "60 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "35 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "35 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "35 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "36 kg",
+          "weightBefore" : "35 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-12",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "65 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "67.5 kg",
+          "weightBefore" : "65 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "130 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "130 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "130 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "130 kg",
+          "weightBefore" : "130 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "100 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "110 lbs",
+          "weightBefore" : "100 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 11,
+              "weight" : "45 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "45 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "45 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "45 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "45 kg",
+          "weightBefore" : "45 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-22",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "72.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "72.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "72.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "72.5 kg",
+          "weightBefore" : "72.5 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "57.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "57.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "57.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "57.5 kg",
+          "weightBefore" : "57.5 kg"
+        },
+        {
+          "microloadAfter" : "1.5 kg",
+          "microloadBefore" : "1.5 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "1.5 kg",
+              "reps" : 10,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "1.5 kg",
+              "reps" : 9,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "1.5 kg",
+              "reps" : 9,
+              "weight" : "100 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "100 lbs",
+          "weightBefore" : "100 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 11,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "22.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "22.5 kg",
+          "weightBefore" : "22.5 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 7,
+              "weight" : "15 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "15 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "15 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "15 kg",
+          "weightBefore" : "15 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-23",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "90 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "90 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "90 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "95 kg",
+          "weightBefore" : "90 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "75 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "75 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "75 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "75 kg",
+          "weightBefore" : "75 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "100 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "100 lbs",
+          "weightBefore" : "100 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 15,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "62.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "65 kg",
+          "weightBefore" : "62.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-25",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "44 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "44 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "44 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "45 kg",
+          "weightBefore" : "44 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "35 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "35 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "35 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "37.5 kg",
+          "weightBefore" : "35 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "17.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "17.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "17.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "17.5 kg",
+          "weightBefore" : "17.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "60 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "60 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "60 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "70 lbs",
+          "weightBefore" : "60 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "36 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "36 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "36 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "37 kg",
+          "weightBefore" : "36 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-26",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "67.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "67.5 kg",
+          "weightBefore" : "67.5 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "130 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "130 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "130 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "135 kg",
+          "weightBefore" : "130 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "110 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "110 lbs",
+          "weightBefore" : "110 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 15,
+              "weight" : "45 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "45 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "45 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "45 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "47.5 kg",
+          "weightBefore" : "45 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-29",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "72.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "72.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "72.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "75 kg",
+          "weightBefore" : "72.5 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "57.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "57.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "57.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "60 kg",
+          "weightBefore" : "57.5 kg"
+        },
+        {
+          "microloadAfter" : "2.5 kg",
+          "microloadBefore" : "1.5 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "1.5 kg",
+              "reps" : 12,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "1.5 kg",
+              "reps" : 12,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "1.5 kg",
+              "reps" : 12,
+              "weight" : "100 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "100 lbs",
+          "weightBefore" : "100 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "22.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "25 kg",
+          "weightBefore" : "22.5 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "15 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "15 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "15 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "17.5 kg",
+          "weightBefore" : "15 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-06-30",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "95 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "95 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "95 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "95 kg",
+          "weightBefore" : "95 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "75 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "75 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "75 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "75 kg",
+          "weightBefore" : "75 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "100 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "110 lbs",
+          "weightBefore" : "100 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "65 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "65 kg",
+          "weightBefore" : "65 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-02",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "45 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "45 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "45 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "46 kg",
+          "weightBefore" : "45 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "37.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "37.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "37.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "37.5 kg",
+          "weightBefore" : "37.5 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "17.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "17.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "17.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "20 kg",
+          "weightBefore" : "17.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "70 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "70 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "70 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "70 lbs",
+          "weightBefore" : "70 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "37 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "37 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "37 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "38 kg",
+          "weightBefore" : "37 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-03",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "67.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "67.5 kg",
+          "weightBefore" : "67.5 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "135 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "135 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "135 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "135 kg",
+          "weightBefore" : "135 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 14,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 13,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 13,
+              "weight" : "110 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "110 lbs",
+          "weightBefore" : "110 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "47.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "47.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "47.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "47.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "47.5 kg",
+          "weightBefore" : "47.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-06",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "75 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "75 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "75 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "75 kg",
+          "weightBefore" : "75 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "60 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "60 kg",
+          "weightBefore" : "60 kg"
+        },
+        {
+          "microloadAfter" : "3.5 kg",
+          "microloadBefore" : "2.5 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "2.5 kg",
+              "reps" : 11,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "2.5 kg",
+              "reps" : 10,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "2.5 kg",
+              "reps" : 10,
+              "weight" : "100 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "100 lbs",
+          "weightBefore" : "100 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "25 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "25 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "25 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "25 kg",
+          "weightBefore" : "25 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "17.5 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "17.5 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "17.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "17.5 kg",
+          "weightBefore" : "17.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-07",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "95 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "95 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "95 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "100 kg",
+          "weightBefore" : "95 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "75 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "75 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "75 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "77.5 kg",
+          "weightBefore" : "75 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 9,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 9,
+              "weight" : "110 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "110 lbs",
+          "weightBefore" : "110 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 13,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "65 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "65 kg",
+          "weightBefore" : "65 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-09",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "46 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "46 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "46 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "47 kg",
+          "weightBefore" : "46 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "37.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "37.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "37.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "40 kg",
+          "weightBefore" : "37.5 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "20 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "20 kg",
+          "weightBefore" : "20 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "70 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "70 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "70 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "80 lbs",
+          "weightBefore" : "70 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "38 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "38 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "38 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "39 kg",
+          "weightBefore" : "38 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-10",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 7,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "67.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "67.5 kg",
+          "weightBefore" : "67.5 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "135 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "135 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "135 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "140 kg",
+          "weightBefore" : "135 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "110 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "120 lbs",
+          "weightBefore" : "110 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 14,
+              "weight" : "47.5 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "47.5 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "47.5 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "47.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "47.5 kg",
+          "weightBefore" : "47.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-13",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "75 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "75 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "75 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "77.5 kg",
+          "weightBefore" : "75 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "60 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "60 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "62.5 kg",
+          "weightBefore" : "60 kg"
+        },
+        {
+          "microloadAfter" : "4.5 kg",
+          "microloadBefore" : "3.5 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "3.5 kg",
+              "reps" : 11,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "3.5 kg",
+              "reps" : 10,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "3.5 kg",
+              "reps" : 10,
+              "weight" : "100 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "100 lbs",
+          "weightBefore" : "100 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 11,
+              "weight" : "25 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "25 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "25 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "25 kg",
+          "weightBefore" : "25 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 7,
+              "weight" : "17.5 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "17.5 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "17.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "17.5 kg",
+          "weightBefore" : "17.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-14",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 4,
+              "weight" : "100 kg"
+            },
+            {
+              "reps" : 3,
+              "weight" : "100 kg"
+            },
+            {
+              "reps" : 3,
+              "weight" : "100 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "100 kg",
+          "weightBefore" : "100 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "77.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "77.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "77.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "77.5 kg",
+          "weightBefore" : "77.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "110 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "120 lbs",
+          "weightBefore" : "110 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 15,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "65 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "67.5 kg",
+          "weightBefore" : "65 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-16",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "47 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "47 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "47 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "48 kg",
+          "weightBefore" : "47 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "40 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "40 kg",
+          "weightBefore" : "40 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "20 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "20 kg",
+          "weightBefore" : "20 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "80 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "80 lbs",
+          "weightBefore" : "80 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "39 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "39 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "39 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "40 kg",
+          "weightBefore" : "39 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-17",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "67.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "70 kg",
+          "weightBefore" : "67.5 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "140 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "140 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "140 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "140 kg",
+          "weightBefore" : "140 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "120 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "120 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "120 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "120 lbs",
+          "weightBefore" : "120 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 15,
+              "weight" : "47.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "47.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "47.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "47.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "50 kg",
+          "weightBefore" : "47.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-20",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "77.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "77.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "77.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "77.5 kg",
+          "weightBefore" : "77.5 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "62.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "62.5 kg",
+          "weightBefore" : "62.5 kg"
+        },
+        {
+          "microloadAfter" : "4.5 kg",
+          "microloadBefore" : "4.5 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "4.5 kg",
+              "reps" : 9,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "4.5 kg",
+              "reps" : 8,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "4.5 kg",
+              "reps" : 8,
+              "weight" : "100 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "100 lbs",
+          "weightBefore" : "100 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 11,
+              "weight" : "25 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "25 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "25 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "25 kg",
+          "weightBefore" : "25 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "17.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "17.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "17.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "20 kg",
+          "weightBefore" : "17.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-21",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "100 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "100 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "100 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "105 kg",
+          "weightBefore" : "100 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "77.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "77.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "77.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "80 kg",
+          "weightBefore" : "77.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "120 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "120 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "120 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "120 lbs",
+          "weightBefore" : "120 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "67.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "67.5 kg",
+          "weightBefore" : "67.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-27",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "77.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "77.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "77.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "80 kg",
+          "weightBefore" : "77.5 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "62.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "62.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "65 kg",
+          "weightBefore" : "62.5 kg"
+        },
+        {
+          "microloadAfter" : "1 kg",
+          "microloadBefore" : "4.5 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "4.5 kg",
+              "reps" : 12,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "4.5 kg",
+              "reps" : 12,
+              "weight" : "100 lbs"
+            },
+            {
+              "microload" : "4.5 kg",
+              "reps" : 12,
+              "weight" : "100 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "110 lbs",
+          "weightBefore" : "100 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 11,
+              "weight" : "25 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "25 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "25 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "25 kg",
+          "weightBefore" : "25 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 5,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "20 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "20 kg",
+          "weightBefore" : "20 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-28",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "105 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "105 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "105 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "105 kg",
+          "weightBefore" : "105 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "80 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "80 kg",
+          "weightBefore" : "80 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "120 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "120 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "120 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "130 lbs",
+          "weightBefore" : "120 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 14,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 13,
+              "weight" : "67.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "67.5 kg",
+          "weightBefore" : "67.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-30",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 5,
+              "weight" : "48 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "48 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "48 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "48 kg",
+          "weightBefore" : "48 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "40 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "42.5 kg",
+          "weightBefore" : "40 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "20 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "22.5 kg",
+          "weightBefore" : "20 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "80 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "80 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "90 lbs",
+          "weightBefore" : "80 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "40 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "40 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "41 kg",
+          "weightBefore" : "40 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-07-31",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 4,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 3,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 3,
+              "weight" : "70 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "70 kg",
+          "weightBefore" : "70 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 11,
+              "weight" : "140 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "140 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "140 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "140 kg",
+          "weightBefore" : "140 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "120 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "120 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "120 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "130 lbs",
+          "weightBefore" : "120 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "50 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "50 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "50 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "50 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "50 kg",
+          "weightBefore" : "50 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-08-03",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "oneOff" : true,
+              "reps" : 10,
+              "weight" : "72.5 kg"
+            },
+            {
+              "oneOff" : true,
+              "reps" : 9,
+              "weight" : "72.5 kg"
+            },
+            {
+              "oneOff" : true,
+              "reps" : 9,
+              "weight" : "72.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "80 kg",
+          "weightBefore" : "80 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "65 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "65 kg",
+          "weightBefore" : "65 kg"
+        },
+        {
+          "microloadAfter" : "1 kg",
+          "microloadBefore" : "1 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "1 kg",
+              "reps" : 9,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "1 kg",
+              "reps" : 8,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "1 kg",
+              "reps" : 8,
+              "weight" : "110 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "110 lbs",
+          "weightBefore" : "110 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "25 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "25 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "25 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "27.5 kg",
+          "weightBefore" : "25 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "20 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "20 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "22.5 kg",
+          "weightBefore" : "20 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-08-04",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "105 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "105 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "105 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "110 kg",
+          "weightBefore" : "105 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "80 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "80 kg",
+          "weightBefore" : "80 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "130 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 9,
+              "weight" : "130 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 9,
+              "weight" : "130 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "130 lbs",
+          "weightBefore" : "130 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 15,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "67.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "70 kg",
+          "weightBefore" : "67.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-08-06",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "48 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "48 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "48 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "49 kg",
+          "weightBefore" : "48 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "42.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "42.5 kg",
+          "weightBefore" : "42.5 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 7,
+              "weight" : "22.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "22.5 kg",
+          "weightBefore" : "22.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 13,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "90 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "90 lbs",
+          "weightBefore" : "90 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "41 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "41 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "41 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "42 kg",
+          "weightBefore" : "41 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-08-07",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 7,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "70 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "70 kg",
+          "weightBefore" : "70 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "140 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "140 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "140 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "140 kg",
+          "weightBefore" : "140 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "130 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "130 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 11,
+              "weight" : "130 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "130 lbs",
+          "weightBefore" : "130 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 15,
+              "weight" : "50 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "50 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "50 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "50 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "52.5 kg",
+          "weightBefore" : "50 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-08-10",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "80 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "80 kg",
+          "weightBefore" : "80 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "65 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "65 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "67.5 kg",
+          "weightBefore" : "65 kg"
+        },
+        {
+          "microloadAfter" : "2 kg",
+          "microloadBefore" : "1 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "1 kg",
+              "reps" : 12,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "1 kg",
+              "reps" : 12,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "1 kg",
+              "reps" : 12,
+              "weight" : "110 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "110 lbs",
+          "weightBefore" : "110 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "27.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "27.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "27.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "27.5 kg",
+          "weightBefore" : "27.5 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+
+          ],
+          "state" : "skipped",
+          "thresholdReps" : 8,
+          "weightAfter" : "22.5 kg",
+          "weightBefore" : "22.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-08-11",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 5,
+              "weight" : "110 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "110 kg"
+            },
+            {
+              "reps" : 4,
+              "weight" : "110 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "110 kg",
+          "weightBefore" : "110 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "80 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "82.5 kg",
+          "weightBefore" : "80 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "130 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "130 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 12,
+              "weight" : "130 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "140 lbs",
+          "weightBefore" : "130 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "70 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "70 kg",
+          "weightBefore" : "70 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-08-13",
+      "day" : "Upper B",
+      "exercises" : [
+        {
+          "name" : "Overhead press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 6,
+              "weight" : "49 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "49 kg"
+            },
+            {
+              "reps" : 5,
+              "weight" : "49 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 5,
+          "weightAfter" : "50 kg",
+          "weightBefore" : "49 kg"
+        },
+        {
+          "name" : "Dumbbell row",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "42.5 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "42.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "45 kg",
+          "weightBefore" : "42.5 kg"
+        },
+        {
+          "name" : "Weighted dip",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "22.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "25 kg",
+          "weightBefore" : "22.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Face pull",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 14,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 13,
+              "weight" : "90 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 13,
+              "weight" : "90 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "90 lbs",
+          "weightBefore" : "90 lbs"
+        },
+        {
+          "name" : "Barbell curl",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "42 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "42 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "42 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "43 kg",
+          "weightBefore" : "42 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-08-14",
+      "day" : "Lower B",
+      "exercises" : [
+        {
+          "name" : "Front squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "70 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "72.5 kg",
+          "weightBefore" : "70 kg"
+        },
+        {
+          "name" : "Leg press",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "140 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "140 kg"
+            },
+            {
+              "reps" : 12,
+              "weight" : "140 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "145 kg",
+          "weightBefore" : "140 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg extension",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "130 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "130 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 15,
+              "weight" : "130 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "140 lbs",
+          "weightBefore" : "130 lbs"
+        },
+        {
+          "name" : "Seated calf raise",
+          "plannedSets" : 4,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 12,
+              "weight" : "52.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "52.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "52.5 kg"
+            },
+            {
+              "reps" : 11,
+              "weight" : "52.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "52.5 kg",
+          "weightBefore" : "52.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-08-17",
+      "day" : "Upper A",
+      "exercises" : [
+        {
+          "name" : "Smith machine bench press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 11,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "80 kg"
+            },
+            {
+              "reps" : 10,
+              "weight" : "80 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "80 kg",
+          "weightBefore" : "80 kg"
+        },
+        {
+          "name" : "Barbell row",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "67.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "67.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "67.5 kg",
+          "weightBefore" : "67.5 kg"
+        },
+        {
+          "microloadAfter" : "3 kg",
+          "microloadBefore" : "2 kg",
+          "name" : "Lat pulldown",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "microload" : "2 kg",
+              "reps" : 11,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "2 kg",
+              "reps" : 10,
+              "weight" : "110 lbs"
+            },
+            {
+              "microload" : "2 kg",
+              "reps" : 10,
+              "weight" : "110 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "110 lbs",
+          "weightBefore" : "110 lbs"
+        },
+        {
+          "name" : "Dumbbell shoulder press",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 10,
+              "weight" : "27.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "27.5 kg"
+            },
+            {
+              "reps" : 9,
+              "weight" : "27.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "27.5 kg",
+          "weightBefore" : "27.5 kg"
+        },
+        {
+          "name" : "Weighted chin-up",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 7,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "22.5 kg"
+            },
+            {
+              "reps" : 6,
+              "weight" : "22.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "22.5 kg",
+          "weightBefore" : "22.5 kg"
+        }
+      ]
+    },
+    {
+      "date" : "2026-08-18",
+      "day" : "Lower A",
+      "exercises" : [
+        {
+          "name" : "Barbell back squat",
+          "plannedSets" : 3,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 8,
+              "weight" : "110 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "110 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "110 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 8,
+          "weightAfter" : "115 kg",
+          "weightBefore" : "110 kg"
+        },
+        {
+          "name" : "Romanian deadlift",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "reps" : 9,
+              "weight" : "82.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "82.5 kg"
+            },
+            {
+              "reps" : 8,
+              "weight" : "82.5 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 10,
+          "weightAfter" : "82.5 kg",
+          "weightBefore" : "82.5 kg"
+        },
+        {
+          "microloadAfter" : "0 kg",
+          "microloadBefore" : "0 kg",
+          "name" : "Leg curl",
+          "plannedSets" : 3,
+          "progressed" : false,
+          "sets" : [
+            {
+              "microload" : "0 kg",
+              "reps" : 10,
+              "weight" : "140 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 9,
+              "weight" : "140 lbs"
+            },
+            {
+              "microload" : "0 kg",
+              "reps" : 9,
+              "weight" : "140 lbs"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 12,
+          "weightAfter" : "140 lbs",
+          "weightBefore" : "140 lbs"
+        },
+        {
+          "name" : "Standing calf raise",
+          "plannedSets" : 4,
+          "progressed" : true,
+          "sets" : [
+            {
+              "reps" : 15,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "70 kg"
+            },
+            {
+              "reps" : 15,
+              "weight" : "70 kg"
+            }
+          ],
+          "state" : "completed",
+          "thresholdReps" : 15,
+          "weightAfter" : "72.5 kg",
+          "weightBefore" : "70 kg"
+        }
+      ]
+    }
+  ]
+}

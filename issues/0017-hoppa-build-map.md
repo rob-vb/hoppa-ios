@@ -150,6 +150,22 @@ real**, and nothing after that is worth doing before it.
   splits into [Lift the rules into HoppaRules](0023-lift-the-rules-into-hopparules.md) and
   [The Logbook on disk](0025-the-logbook-on-disk.md).
 
+- **[Lift the rules into HoppaRules](0023-lift-the-rules-into-hopparules.md)** — **`app/HoppaRules`
+  is built and 46 tests are green on the VPS**, in five layers: nine defect tests, twenty invariants,
+  the nine walkthroughs, a committed `Logbook` round-trip and a committed 56-Workout snapshot. Each
+  defect test was proved load-bearing by re-breaking its rule. Three findings outrank the code.
+  **Ticket 20's signature could not stand**: progression writes to the *Program*, so `reduce` takes
+  and returns the whole `Logbook` — everything else about the boundary held. **§8.2 listed eight
+  defects and there are nine**: the prototype rounds the pin *up*, drawing a weight the user is not
+  lifting; `SPEC.md` gained the row. And **`gen-fixture.mjs`'s 0.25 kg Microplate did not port** —
+  it was chosen to keep sixteen weeks under one Stack Step, so the Swift run uses the 1 kg plate and
+  the pin moves twice, which is the whole point of committing a snapshot. Inside the lift:
+  `ResolvedExercise` became the one place a derived unit is worked out, `currentIndex` went on the
+  `Workout` rather than into the view, and the bar is solved on the doubled total so a per-side
+  target of 20.625 never has to exist. §6.6's other Program edits are rules with nowhere to live,
+  and they graduate as
+  [Program edits, and which of them are rules](0026-program-edits-and-the-rules-boundary.md).
+
 ## Not yet specified
 
 - **Drawing the loaded bar, and the Ignition confetti, natively.** `SPEC.md` §7.5 and §6.5 specify
@@ -170,12 +186,17 @@ real**, and nothing after that is worth doing before it.
   It is a merge conflict waiting to happen, in a file no one wants to hand-merge. Not sharp until
   the loop has run a few times and shown which edits actually collide. The loop's **first** run
   already drew blood, though in a smaller way: see the charter bullet on the nested repo.
+  **The next run is the real test**: adding `app/HoppaRules` through *Add Local* rewrites
+  `project.pbxproj` on the Mac, and it is the first edit to that file the agent deliberately did
+  not make itself.
 - **Deleting a Program.** §6.6 specifies deleting an Exercise and a Workout Day, with two blocks.
   §2.1 allows more than one Program. Nothing says what a whole Program delete does, or whether the
   last Program is blocked the way the last Workout Day is. Found while working
   [Persistence and the data model](0019-persistence-and-the-data-model.md), which deliberately did
   not decide it: it is a gap in the spec, not a rule that is wrong. The model survives either way —
   a Workout keeps its Workout Day's Name — so this is a flows question, not a storage one.
+  [Program edits, and which of them are rules](0026-program-edits-and-the-rules-boundary.md) takes
+  deleting an Exercise and a Workout Day, which §6.6 *does* specify, and leaves this one here.
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.
