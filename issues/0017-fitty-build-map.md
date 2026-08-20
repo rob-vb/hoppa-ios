@@ -92,13 +92,19 @@ real**, and nothing after that is worth doing before it.
   Anton and IBM Plex Sans are bundled and confirmed rendering on the device. No ticket has to plan
   around re-installing weekly.
 
+- **[The rules module and its oracle](0020-the-rules-module-and-its-oracle.md)** — the rules become
+  **`app/HoppaRules`**, a local Swift package that **imports nothing** (no SwiftUI, no SwiftData,
+  **no Foundation**); the clock enters as a `Timestamp` argument on `reduce`, never inside an action.
+  It owns the domain value types, so **storage maps to the rules**. **Swift becomes the only
+  implementation** — no JavaScript oracle, because `fixture.json` predates the roll-up and is not a
+  valid golden file. Proof is four layers: eight red tests for the §8.2 defects, hand-written
+  invariant tests, the nine walkthroughs, and a committed 56-Workout snapshot. Swift Testing. The
+  build splits into [Swift on the VPS](0022-swift-on-the-vps.md) and
+  [Lift the rules into HoppaRules](0023-lift-the-rules-into-hopparules.md), because **there is no
+  Swift toolchain on the VPS** and untested rules are this map's worst failure mode.
+
 ## Not yet specified
 
-- **How the logging screen's state machine becomes SwiftUI.** The prototype's `Fitty` module is a
-  reducer with `initialState`/`reduce`. Whether that shape survives as an `@Observable` store, one
-  store per screen, or something else is a real decision — and it hangs on what
-  [The rules module and its oracle](0020-the-rules-module-and-its-oracle.md) decides the module's
-  boundary is.
 - **Drawing the loaded bar, and the Ignition confetti, natively.** `SPEC.md` §7.5 and §6.5 specify
   both exactly, and both exist as working HTML. SwiftUI `Canvas`, plain shapes, SpriteKit or
   Core Animation — not sharp until there is a project to run them in.
@@ -106,7 +112,9 @@ real**, and nothing after that is worth doing before it.
   whether light mode exists. On iOS that is a decision with real work behind it, not a default.
 - **The Rest Timer across backgrounding.** §6.4 gives a count-up stopwatch that auto-starts after
   each Set. What it does when the phone locks, the app backgrounds, or a call comes in is an iOS
-  question the spec never had to answer.
+  question the spec never had to answer. `restStartedAt` is a pure `Timestamp` on the `Workout`
+  after ticket 20, so the *state* is settled; only the iOS behaviour is still fog.
+  [The view layer around the rules](0024-the-view-layer-around-the-rules.md) may sharpen it.
 - **Build order across the five flows, and what "done" means for each.** Probably logging first,
   because it is the screen with the most rules behind it — but that is a guess until the model
   exists.
