@@ -103,6 +103,20 @@ real**, and nothing after that is worth doing before it.
   [Lift the rules into HoppaRules](0023-lift-the-rules-into-hopparules.md), because **there is no
   Swift toolchain on the VPS** and untested rules are this map's worst failure mode.
 
+- **[Persistence and the data model](0019-persistence-and-the-data-model.md)** — **one JSON
+  document**, `Logbook`, holding the value types `HoppaRules` already owns. No SwiftData: it needs
+  `@Model` classes, which cannot be those value types, so it buys convenience with a second model.
+  Five findings mattered more than the choice. A Workout now stores **what progression did**, because
+  §6.7's green dots and Set grid were being solved live off an editable Rep Range — §2.5's defect in
+  a second place. **A weight is `Int` hundredths carrying its own unit**, never a `Double`, so
+  `≈ CLOSEST` stays exact and the committed snapshot stays byte-stable. The active One-off Weight and
+  `restStartedAt` had **no field at all** and were lost on a relaunch. The Weight Unit of a
+  plate-loaded Exercise is now **derived** from the Plate Inventory, not stored twice. Ids are a
+  counter, not `UUID`, because the snapshot must be deterministic. `SPEC.md` gained §2.8 and a §2.4
+  row; the glossary gained **Logbook**, **Performed Exercise** and **Progression Outcome**. The build
+  splits into [Lift the rules into HoppaRules](0023-lift-the-rules-into-hopparules.md) and
+  [The Logbook on disk](0025-the-logbook-on-disk.md).
+
 ## Not yet specified
 
 - **Drawing the loaded bar, and the Ignition confetti, natively.** `SPEC.md` §7.5 and §6.5 specify
@@ -123,6 +137,12 @@ real**, and nothing after that is worth doing before it.
   It is a merge conflict waiting to happen, in a file no one wants to hand-merge. Not sharp until
   the loop has run a few times and shown which edits actually collide. The loop's **first** run
   already drew blood, though in a smaller way: see the charter bullet on the nested repo.
+- **Deleting a Program.** §6.6 specifies deleting an Exercise and a Workout Day, with two blocks.
+  §2.1 allows more than one Program. Nothing says what a whole Program delete does, or whether the
+  last Program is blocked the way the last Workout Day is. Found while working
+  [Persistence and the data model](0019-persistence-and-the-data-model.md), which deliberately did
+  not decide it: it is a gap in the spec, not a rule that is wrong. The model survives either way —
+  a Workout keeps its Workout Day's Name — so this is a flows question, not a storage one.
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.

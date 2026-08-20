@@ -21,8 +21,26 @@ deliverable is not a paste: it is a package that `swift test` proves on the VPS 
 - Local Swift package `app/HoppaRules`. Target `HoppaRules`, test target `HoppaRulesTests`.
 - **`HoppaRules` imports nothing.** `Timestamp` is a `Double` of seconds since epoch, defined in the
   target. `Rules.reduce(_ workout: Workout, _ action: Action, at: Timestamp) -> Workout`.
-- It owns `Program`, `WorkoutDay`, `Exercise`, `Set`, `PlateInventory`, `Workout` and the enums
-  `EquipmentType`, `ProgressionMode`, `WeightUnit`.
+- It owns `Logbook`, `Program`, `WorkoutDay`, `Exercise`, `LoggedSet`, `PlateInventory`,
+  `Workout`, `PerformedExercise`, `ProgressionOutcome`, `Weight` and the enums `EquipmentType`,
+  `ProgressionMode`, `WeightUnit`. **[Persistence and the data
+  model](0019-persistence-and-the-data-model.md) fixed their shape — zoom it and treat it as given.**
+  The parts that change how you write the code:
+  - **A weight is `struct Weight { let hundredths: Int; let unit: WeightUnit }`.** Never a `Double`.
+    The prototype's floats do not come across. `≈ CLOSEST` and *is the Microload one Stack Step* are
+    exact `Int` comparisons, and the committed snapshot stays byte-stable.
+  - The domain type is **`LoggedSet`**, not `Set`, which would shadow `Swift.Set`. The word **Set**
+    stays the domain term everywhere a person reads it.
+  - A `LoggedSet` carries **no id**; its position is its identity. Ids are typed and come from a
+    counter the app owns, so `reduce` never sees one.
+  - `Workout` carries `restStartedAt: Timestamp?`; `PerformedExercise` carries `oneOffWeight:
+    Weight?` and `outcome: ProgressionOutcome?`, written at Finish.
+  - `baseWeight` and `stackStep` are stored flat but read through accessors that return `nil` on a
+    type that has none. `microload` is a real `Weight?`. `weightUnit` is **derived** for Barbell,
+    Smith, Plate-loaded and Bodyweight: `weightUnit(in: inventory)`.
+- **Every type is `Codable`, and every enum has an explicit `String` raw value.** `Codable` is in the
+  standard library, so this costs the zero-import rule nothing. A Swift case name must never be the
+  data on Rob's phone.
 - `screen`, `overlay`, `draft`, the keypad buffer and `events` do **not** come across.
 - `HoppaRulesTests` may import Foundation. Framework is Swift Testing.
 
@@ -37,7 +55,10 @@ deliverable is not a paste: it is a package that `swift test` proves on the VPS 
    data — including the one it calls "the case that broke".
 3. **The nine walkthroughs** from `design/0007-logging/fitty-workout-logging.html` (`SCENARIOS`),
    minus their keypad and overlay steps. These are the acceptance tests of the logging flow.
-4. **The 56-Workout snapshot.** Port the deterministic lifter simulation from
+4. **The `Logbook` round-trip fixture.** One full `Logbook` — a Program, a Plate Inventory, a few
+   Workouts — encoded, decoded and re-encoded, asserted identical, and **committed**. An accidental
+   key rename then fails in review instead of on the phone.
+5. **The 56-Workout snapshot.** Port the deterministic lifter simulation from
    `design/0015-history/gen-fixture.mjs` — the seeded LCG and `repsFor` — into the test target. Run
    four Workout Days, 18 Exercises, 16 weeks forward. Assert the invariants at every progression.
    Write `HoppaRulesTests/Snapshots/history.json` and commit it. One flag re-records.

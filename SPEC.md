@@ -128,6 +128,19 @@ One performance of a Workout Day.
 | Exercise States | Open / Completed / Skipped, per Exercise. Every Exercise starts Open. |
 | Sets | Logged per Exercise. |
 | Names | The Workout Day's Name and each performed Exercise's Name, **as they read at the time**. A fallback only: Fitty shows the live Name while the thing still exists, and reaches for this copy after a delete (§6.6). |
+| Progression outcome | Per performed Exercise, **what progression did**: the planned Sets and the threshold that applied, and whether the Exercise went up. Written at Finish, never recomputed. |
+
+**The outcome is stored because the question it answers moves.** §6.7 draws a green dot for a
+session that progressed, a steel one for a session that stayed, and a Set grid with one cell per
+Set filled where that Set met the threshold of its Progression Mode. The threshold is the top or
+the bottom of the Rep Range, and the Rep Range is editable. Solve those cells live, and changing
+`8–12` to `6–10` today silently re-fills every grid and moves every dot in the whole history. That
+is §2.5's defect in a second place: a record of the past that a later edit rewrites. So the Workout
+keeps the planned Sets, the threshold reps and the progressed flag as **facts**, exactly as the Set
+keeps its weight.
+
+> Found while building. Decision record:
+> [Persistence and the data model](issues/0019-persistence-and-the-data-model.md).
 
 ### 2.5 Set
 
@@ -199,6 +212,34 @@ This left it open whether charts could group by name anyway. They do not: §6.7 
 joining two Exercises that progress apart produces a line where no point is true.
 
 > Decision record: [Exercise name suggestions](issues/0010-exercise-name-suggestions.md).
+
+### 2.8 What storage must guarantee
+
+§10 keeps the build itself out of this spec, and that stands: **how** the app writes to disk is the
+build's business. But §2 does impose requirements on any store, and they are the part a build can
+get wrong quietly. They are gathered here so nothing has to be re-derived from three sections.
+
+- **A Set is a value, not a view of the Exercise.** Nothing may reach a stored Set from a distance
+  and move its numbers (§2.5).
+- **Identity is a stored id.** A Name never identifies anything (§2.7). An id is never reused after
+  a delete, so a dead Exercise can never be confused with a new one.
+- **The Name is read live and kept as a fallback.** History points at the id and carries the Name as
+  it read; the store must let that link survive the deletion of its target (§2.4, §6.6).
+- **A Workout keeps what progression did**, because the Rep Range and the planned Sets change
+  afterwards (§2.4).
+- **A weight is exact, and it carries its unit.** A weight is a whole number of hundredths of its
+  unit, so `≈ CLOSEST` and *is the Microload now one Stack Step* stay exact comparisons (§5.4,
+  §4.2). The unit rides on the number, so *units never convert* (§5.1) is something no rule can
+  break by accident.
+- **The Weight Unit of a plate-loaded Exercise is not stored on it.** Barbell, Smith, Plate-loaded
+  and Bodyweight read it from the Plate Inventory, so a stale copy cannot exist (§5.1, §6.6).
+- **A Base Weight and a Stack Step survive a change of Equipment Type; a Microload does not survive
+  a change of unit.** The first is a fact about a machine in the gym and §2.3 refuses to re-ask it.
+  The second is a state that belongs to a unit, and §6.6 destroys it and recreates it at zero.
+
+> Decision record: [Persistence and the data model](issues/0019-persistence-and-the-data-model.md).
+
+---
 
 ---
 

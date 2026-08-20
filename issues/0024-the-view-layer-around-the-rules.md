@@ -22,18 +22,23 @@ What ticket 20 settled, and this ticket must not reopen: `HoppaRules` is a pure 
 `Workout`, importing nothing. `screen`, `overlay`, `draft` and the keypad buffer were **deliberately
 left out** of it and have to live somewhere. That somewhere is this ticket.
 
+### Two of these are already answered
+
+[Persistence and the data model](0019-persistence-and-the-data-model.md) closed while this ticket
+was blocked, and it settled two of the questions this ticket was written to ask. Do not reopen them.
+
+- **One store, not one per screen.** `@Observable final class LogbookStore` holds the whole
+  `Logbook`. It loads, migrates, calls `Rules.reduce` and saves, and it owns the id counter and the
+  clock. [The Logbook on disk](0025-the-logbook-on-disk.md) builds it.
+- **A reduce becomes a save immediately.** Every mutation writes the file atomically. The file is
+  small, and the view state below is deliberately kept out of it, so mutations stay coarse.
+
 ### What to settle
 
-- **One `@Observable` store, or one per screen?** The reducer takes a whole `Workout` and returns a
-  new one. A single store holding the Open Workout is the obvious read; five screens each with their
-  own store is the other. Weigh it against the fact that only one Workout is Open at a time
-  (`CONTEXT.md`).
+
 - **Where does the view state actually go?** The keypad buffer, the lowering prompt, which overlay
   is up, which Exercise is selected. Inside the store beside the `Workout`, or in `@State` on the
   view that owns it? The prototype kept them together; ticket 20 split them apart on purpose.
-- **When does a reduce become a save?** Every action, at Finish only, or debounced. This is where
-  the store meets [Persistence and the data model](0019-persistence-and-the-data-model.md), which is
-  why this ticket is blocked on it as well.
 - **The Rest Timer.** `restStartedAt` is a `Timestamp` on the `Workout`, so it is pure and it
   survives a reduce. Turning it into a ticking count-up on screen is a view problem, and what it
   does across a lock, a background and a phone call is still fog on the map. Decide only the part
