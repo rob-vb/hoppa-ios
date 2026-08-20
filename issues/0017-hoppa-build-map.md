@@ -1,13 +1,13 @@
 ---
 id: 17
-title: Fitty build map
+title: Hoppa build map
 labels: [wayfinder:map]
 status: open
 ---
 
 ## Destination
 
-**Fitty on Rob's own phone, logging his real Upper / Lower program in his own gym.** A native
+**Hoppa on Rob's own phone, logging his real Upper / Lower program in his own gym.** A native
 SwiftUI app built from [`SPEC.md`](../SPEC.md): the five flows, the domain model, the progression
 rules and the Plate Rack language, running on a real device and used for real training.
 
@@ -78,9 +78,11 @@ real**, and nothing after that is worth doing before it.
   - ~~The app is called **Fitty** here, as a working name. The definitive name is out of scope, as
     it was on the design map.~~ **Superseded.** Rob named the app **Hoppa** while answering
     [An empty app on the phone](0018-an-empty-app-on-the-phone.md); the Xcode project, the target
-    and the bundle id `com.robvb.hoppa` are already Hoppa, and the rest of the repo catches up in
-    [The app is called Hoppa](0021-the-app-is-called-hoppa.md). This map keeps its own title until
-    that ticket runs.
+    and the bundle id `com.robvb.hoppa` are already Hoppa, and the rest of the repo caught up at
+    [The app is called Hoppa](0021-the-app-is-called-hoppa.md), which is where this map took its
+    own title. **`Fitty` still appears, and where it does it is correct**: it names the prototype's
+    JavaScript module, the `design/*/fitty-*.html` files, and the closed design-map issues. It is an
+    artefact name, not the product's.
 
 ## Decisions so far
 
@@ -102,6 +104,18 @@ real**, and nothing after that is worth doing before it.
   build splits into [Swift on the VPS](0022-swift-on-the-vps.md) and
   [Lift the rules into HoppaRules](0023-lift-the-rules-into-hopparules.md), because **there is no
   Swift toolchain on the VPS** and untested rules are this map's worst failure mode.
+
+- **[The app is called Hoppa](0021-the-app-is-called-hoppa.md)** — the repo says **Hoppa** for the
+  product and **`Fitty` only for artefacts that still carry that name**. That split was the whole
+  ticket: of 41 files holding the word, two thirds name the prototype module, the `fitty-*.html`
+  paths, the design map's title or a published artboard, and a blanket `sed` would have broken five
+  live links and made §8 describe a module that is not there. Swept: `SPEC.md` (57), `CONTEXT.md`
+  (23), the build-map issues, and the wizard. `SPEC.md` §10 lost **"the definitive app name"** —
+  it is decided — and gained **whether `Hoppa` survives an App Store name check**, which is the part
+  still out of scope. Rob's three scope calls: the closed design-map issues `0001`–`0016` stay
+  untouched as a record; **both GitHub repos keep their names** (this one is `rob-vb/hoppa-ios`, the
+  Expo test app keeps the plain `rob-vb/hoppa`); and the VPS folder stays `/home/henk/fitty`,
+  because a folder name is not a product name.
 
 - **[Persistence and the data model](0019-persistence-and-the-data-model.md)** — **one JSON
   document**, `Logbook`, holding the value types `HoppaRules` already owns. No SwiftData: it needs

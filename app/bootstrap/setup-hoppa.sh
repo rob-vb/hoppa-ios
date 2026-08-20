@@ -210,7 +210,7 @@ say "Nothing to decide here. The wizard reads what you already have."
 printf '\n'
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
-  warn "This is not macOS. Run this wizard on the Mac, inside the fitty repo."
+  warn "This is not macOS. Run this wizard on the Mac, inside the Hoppa repo."
   exit 1
 fi
 

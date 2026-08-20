@@ -1,10 +1,10 @@
-# Fitty — Specification
+# Hoppa — Specification
 
 **Status**: complete for the flows this map charted. Build-ready.
 **Produced by**: [Fitty prototype map](issues/0001-fitty-prototype-map.md), ticket [Assemble the spec](issues/0008-assemble-the-spec.md).
 **Date**: 2026-08-19.
 
-This document is the handoff from the design effort to the build effort. It states what Fitty
+This document is the handoff from the design effort to the build effort. It states what Hoppa
 does and how it looks, with the reasoning compressed out; every section links the ticket that
 holds the argument, the options rejected, and the trade-offs the user accepted by name. Read a
 ticket when you want to know *why*; read this document when you want to know *what*.
@@ -24,7 +24,7 @@ and this document wins on *what the app does*.
 
 ## 1. The product
 
-Fitty is a public iOS app for tracking strength-training workouts. It follows a lifter through a
+Hoppa is a public iOS app for tracking strength-training workouts. It follows a lifter through a
 Program they wrote themself, logs the Sets they perform, and moves the weight up when they earn
 it.
 
@@ -36,12 +36,12 @@ next one the same way: **when in doubt, ask the user rather than infer.**
 
 Three consequences run through every screen:
 
-1. **Fitty states, it never offers.** Progression is applied, not suggested. There is no Accept
+1. **Hoppa states, it never offers.** Progression is applied, not suggested. There is no Accept
    and no Undo (§4.1, §6.5).
-2. **Fitty shows what happened; it does not scold and it does not console.** Skipped Exercises
+2. **Hoppa shows what happened; it does not scold and it does not console.** Skipped Exercises
    are listed plain. Reps over the range are printed plain. A zero-progress day gets a calm
    screen, not encouragement (§3.3, §6.5).
-3. **Fitty never acts by itself.** It never picks a Workout Day, never starts a Workout, never
+3. **Hoppa never acts by itself.** It never picks a Workout Day, never starts a Workout, never
    finishes one, never deloads, and never jumps to the next Exercise (§3.1, §4.4).
 
 ### 1.1 What this spec covers
@@ -127,7 +127,7 @@ One performance of a Workout Day.
 | State | Open until Finish or Discard. **One Open Workout at a time.** |
 | Exercise States | Open / Completed / Skipped, per Exercise. Every Exercise starts Open. |
 | Sets | Logged per Exercise. |
-| Names | The Workout Day's Name and each performed Exercise's Name, **as they read at the time**. A fallback only: Fitty shows the live Name while the thing still exists, and reaches for this copy after a delete (§6.6). |
+| Names | The Workout Day's Name and each performed Exercise's Name, **as they read at the time**. A fallback only: Hoppa shows the live Name while the thing still exists, and reaches for this copy after a delete (§6.6). |
 | Progression outcome | Per performed Exercise, **what progression did**: the planned Sets and the threshold that applied, and whether the Exercise went up. Written at Finish, never recomputed. |
 
 **The outcome is stored because the question it answers moves.** §6.7 draws a green dot for a
@@ -188,10 +188,10 @@ Seven types, in two groups.
 - **Cable** — same display as Machine (stack).
 
 **Microloading is available on every one of the seven.** The user notes that people tie
-microplates to dumbbells, so Fitty blocks no type. One combination has nowhere to put the plate
+microplates to dumbbells, so Hoppa blocks no type. One combination has nowhere to put the plate
 and is refused: **Microloading on a Dumbbell whose Weight Unit differs from the Plate
 Inventory's**. A Dumbbell has no pin and no Stack Step, so there is neither somewhere to hang a
-Microload nor anything to roll it into (§4.2). Fitty states this on the Exercise sheet, where the
+Microload nor anything to roll it into (§4.2). Hoppa states this on the Exercise sheet, where the
 user stands, in the manner §5.2 already uses for an empty Microplate group: *a dumbbell has
 nowhere to hang a plate — set this exercise in kg, or use progressive overload.* A Dumbbell in the
 **same** unit as the Inventory microloads normally: the plate ties on and raises the Working
@@ -200,7 +200,7 @@ Weight.
 ### 2.7 The Name is a label, not an identity
 
 `Barbell Bench Press` in Day A and in Day C are **two Exercises** with two Working Weights, and
-Fitty never ties them together through their names. A lifter deliberately presses heavier on one
+Hoppa never ties them together through their names. A lifter deliberately presses heavier on one
 day than the other, and progression is per Exercise.
 
 Two things follow, and a build must not undo them:
@@ -249,7 +249,7 @@ get wrong quietly. They are gathered here so nothing has to be re-derived from t
 
 ### 3.1 Picking and starting
 
-- **Free pick, always.** Fitty never chooses the Workout Day and never pre-selects one. No
+- **Free pick, always.** Hoppa never chooses the Workout Day and never pre-selects one. No
   rotation, no suggestion.
 - The Workout Day list shows **when the user last did each Day** — "Push — 4 days ago". That is
   information, not advice.
@@ -284,8 +284,8 @@ conflate:
   ends Completed or Skipped.
 - **Discard** sits in a menu, never beside Finish, and asks for confirmation. A Workout with no
   logged Sets discards without a question.
-- Fitty **never ends a Workout by itself**, at any time interval.
-- An Open Workout from an earlier day is **not** closed silently. On next open Fitty asks:
+- Hoppa **never ends a Workout by itself**, at any time interval.
+- An Open Workout from an earlier day is **not** closed silently. On next open Hoppa asks:
   resume, finish, or discard.
 
 ---
@@ -298,7 +298,7 @@ conflate:
 
 ### 4.1 The rule
 
-Fitty evaluates progression **per Exercise, never per Workout**, and applies the result **at
+Hoppa evaluates progression **per Exercise, never per Workout**, and applies the result **at
 Finish**. There is no pending suggestion and no acceptance step; the Workout Summary announces
 the change as old → new.
 
@@ -309,7 +309,7 @@ An Exercise progresses only when **both** hold:
 2. **Every** Set met the threshold of the Exercise's Progression Mode — the **top** of the Rep
    Range under Progressive Overload, the **bottom** under Microloading.
 
-**Fitty reads the Exercise as it stands at Finish** — the Mode, the planned Sets and the Rep
+**Hoppa reads the Exercise as it stands at Finish** — the Mode, the planned Sets and the Rep
 Range. An edit made at the rack therefore counts for the Workout it was made in (§6.6), and
 *at least* rather than *exactly* keeps that from producing arithmetic surprises: drop the planned
 Sets from 4 to 3 with three logged at the top, and the Exercise progresses, because three Sets at
@@ -324,7 +324,7 @@ Two consequences the user accepted with the trade-off named:
 - **A user who progressed by luck must lower the weight themself next time.** That makes the
   manual weight change the escape hatch, so it must be fast (§4.3).
 
-Fitty **never lowers a Working Weight by itself**, ever.
+Hoppa **never lowers a Working Weight by itself**, ever.
 
 ### 4.2 What moves, and by how much
 
@@ -333,7 +333,7 @@ Fitty **never lowers a Working Weight by itself**, ever.
 | Progressive Overload | every Set reaches the **top** of the Rep Range | Working Weight, by the Increment |
 | Microloading | every Set reaches the **bottom** of the Rep Range | Working Weight by the Microloading Increment — **or** the Microload on a mixed-unit stack, which rolls into the pin at one Stack Step |
 
-**Microloading moves a weight, like every other progression.** Fitty stores a weight and never a
+**Microloading moves a weight, like every other progression.** Hoppa stores a weight and never a
 count of plates. This is the single model; an earlier prototype held a second one (a microplate
 counter) and it is deleted — see §8.2.
 
@@ -344,7 +344,7 @@ takes one plate, so the same Increment moves it by 0.25. The picker states both:
 
 **The mixed-unit case is the only two-number case.** On a Machine (stack) or Cable whose Weight
 Unit differs from the Plate Inventory's, Microloading moves the **Microload** instead, and the
-screen stacks two numbers that never convert: `100 LBS` over `+1 KG`. Fitty does the mixed-unit
+screen stacks two numbers that never convert: `100 LBS` over `+1 KG`. Hoppa does the mixed-unit
 arithmetic itself and never shows the result of it; the user never types 2.76 lbs.
 
 #### The roll-up: a Microload is never bigger than one Stack Step
@@ -357,7 +357,7 @@ A Microload that only ever grows reaches a weight no hook carries — with a 1 k
 **At every Microloading progression on a mixed-unit stack:**
 
 1. The Microload goes up by one Microplate, as always.
-2. **While** the Microload is at or past one Stack Step, Fitty adds one Stack Step to the
+2. **While** the Microload is at or past one Stack Step, Hoppa adds one Stack Step to the
    **Working Weight** and keeps the remainder as the new Microload, **rounded up** to a weight the
    Plate Inventory can build.
 
@@ -370,8 +370,8 @@ Two invariants follow, and they are the whole rule:
   never meets a weight they did not choose, and far better than a progression that silently
   drops.
 
-**Comparing a Stack Step to a Microload is a conversion, and Fitty does it — internally.** That is
-already this section's rule: Fitty does the mixed-unit arithmetic itself and never shows the
+**Comparing a Stack Step to a Microload is a conversion, and Hoppa does it — internally.** That is
+already this section's rule: Hoppa does the mixed-unit arithmetic itself and never shows the
 result. Nothing converted reaches the screen. The Workout Summary states the roll-up the way it
 states every other progression, two numbers with their own labels and no total (§5.5):
 
@@ -400,7 +400,7 @@ stand when they find out the weight is wrong.
 - **Raising always sticks**, with no question. The sheet closes at once.
 - **Lowering asks once**: *"Just today, or from now on?"*
   - *From now on* writes the new Working Weight.
-  - *Just today* creates a **One-off Weight**: Fitty logs its Sets, but it never becomes the
+  - *Just today* creates a **One-off Weight**: Hoppa logs its Sets, but it never becomes the
     Working Weight and it never progresses.
 - The prompt appears **only on the way down**, which is the rare direction, so the common edit
   still costs one tap. A bad day is real: without the prompt, dropping 100 → 90 because of
@@ -411,9 +411,9 @@ stand when they find out the weight is wrong.
 
 ### 4.4 Edges, settled
 
-| Case | Fitty does |
+| Case | Hoppa does |
 | --- | --- |
-| A long gap between Workouts | **Nothing.** No deload, no prompt, no confirmation round. The Working Weight after six weeks off is the Working Weight from before. Fitty has no data to pick the right deload; that is a coaching decision. The Day list already says "6 weeks ago". |
+| A long gap between Workouts | **Nothing.** No deload, no prompt, no confirmation round. The Working Weight after six weeks off is the Working Weight from before. Hoppa has no data to pick the right deload; that is a coaching decision. The Day list already says "6 weeks ago". |
 | Progression Mode changed on the Program | Changes the **default only**. Exercises with an override keep theirs — an override is a deliberate act. Exercises moving to Microloading get the default Microloading Increment filled in. |
 | Progression Mode changed at all | **Never** changes the current Working Weight. It changes only the rule for next time. |
 | Microloading Increment changed | Plain field, no migration, no warning. The next progression uses the new plate. |
@@ -456,7 +456,7 @@ every Exercise with a Plate Breakdown.
 - A list of plate sizes: a colour chip sized to the plate, the weight, an on/off toggle.
 - **Microplates are a second group** under their own label.
 - **On/off only — no count of pairs.** A pairs count was drawn and rejected as too much setup.
-  Fitty accepts that it can propose a load the user cannot build from the plates they physically
+  Hoppa accepts that it can propose a load the user cannot build from the plates they physically
   own.
 - Footer, which is Program-level and knows no Exercise's Mode, so it states both — but **only
   what is true**. With no Microplate switched on it reads `Smallest jump on the bar: 2.5 kg`, and
@@ -485,16 +485,16 @@ as a sheet, in place**. The user switches on what they own and lands back where 
 Microloading Increment field, while empty, reads `NO MICROPLATES · SET UP YOUR RACK` and taps
 through to the same sheet.
 
-**Fitty never blocks the Mode and never disables the option.** A disabled control makes the user
-hunt for the reason, which is the one thing Fitty does nowhere else — every other screen states
+**Hoppa never blocks the Mode and never disables the option.** A disabled control makes the user
+hunt for the reason, which is the one thing Hoppa does nowhere else — every other screen states
 its condition in place.
 
-The one combination Fitty does refuse — Microloading on a Dumbbell in the other unit (§2.6) — is
+The one combination Hoppa does refuse — Microloading on a Dumbbell in the other unit (§2.6) — is
 refused the same way, not by greying a control: it states that a dumbbell has nowhere to hang a
 plate and names both ways out. The rule is that the user always learns the reason where they
 stand; it is not that every choice must be available.
 
-**Fitty holds one Plate Inventory.** Several saved racks, one per gym, is out of scope (§10).
+**Hoppa holds one Plate Inventory.** Several saved racks, one per gym, is out of scope (§10).
 
 **Editing the Inventory once Exercises exist** reaches across every Program at once. Both cases
 are specified in §6.6: switching a Microplate **off** strands the Exercises using it as their
@@ -506,7 +506,7 @@ Exercise there is.
 
 ### 5.3 The solver
 
-Fitty solves the Plate Breakdown **greedily, from the biggest plate down**, against the Plate
+Hoppa solves the Plate Breakdown **greedily, from the biggest plate down**, against the Plate
 Inventory.
 
 **The Progression Mode decides which plates the solver may use:**
@@ -526,12 +526,12 @@ Consequences, accepted knowingly:
   rack cannot build, so `≈ CLOSEST` appears. That is correct; the user rounds the weight
   themself if they want to.
 
-Because Fitty stores a weight and solves it greedily, **identical plates are never stacked and
+Because Hoppa stores a weight and solves it greedily, **identical plates are never stacked and
 there is nothing to roll up**: 1.25 kg of Microload draws as one 1.25 kg plate, never as five
 0.25 microplates. Four progressions at +0.25 land on +1 kg (one microplate); the fifth lands on
 +1.25 kg (one normal plate).
 
-**The pin follows the Working Weight, and the Microload rolls into it.** Fitty does not choose the
+**The pin follows the Working Weight, and the Microload rolls into it.** Hoppa does not choose the
 pin: the user sets the Working Weight and the pin takes the largest Stack Step at or under it,
 with the remainder hanging on it as Microplates.
 
@@ -544,7 +544,7 @@ Stack Step at all times.
 
 ### 5.4 The unreachable weight
 
-The big number is **always the Working Weight Fitty tracks**. It never changes to fit the plate
+The big number is **always the Working Weight Hoppa tracks**. It never changes to fit the plate
 rack. Sets are logged against it, not against the load actually on the bar.
 
 When the exact weight cannot be built, one extra caption line appears under the bar drawing:
@@ -554,11 +554,11 @@ When the exact weight cannot be built, one extra caption line appears under the 
 20 + 1.25                    21.25 kg per side
 ```
 
-- The closest buildable load wins, **up or down**. On a tie, Fitty rounds **down**.
+- The closest buildable load wins, **up or down**. On a tie, Hoppa rounds **down**.
 - The `≈ CLOSEST` chip is **steel** (`#3A3E42` border, `#9BA1A7` text), never a plate colour.
 
 Two alternatives were drawn and rejected: A, round the target down to buildable; B, move the
-target to the closest either way. Both change the number Fitty tracks, and the rack must not do
+target to the closest either way. Both change the number Hoppa tracks, and the rack must not do
 that. The rejected artboards stay in `design/0005-plate-display/` as the record.
 
 ### 5.5 What each Equipment Type draws
@@ -591,11 +591,11 @@ anywhere on the screen.**
 > Decision record: [Program onboarding flow prototype](issues/0006-program-onboarding-flow-prototype.md).
 > Artboards: `design/0006-onboarding/`.
 
-**Fitty starts empty.** No starter skeleton, no template, no Workout Days invented for the user.
+**Hoppa starts empty.** No starter skeleton, no template, no Workout Days invented for the user.
 
 Three steps to owning a Program:
 
-1. **Name the Program.** Under the name field, one card shows the three decisions Fitty makes at
+1. **Name the Program.** Under the name field, one card shows the three decisions Hoppa makes at
    Program level — Weight Unit `KG`, Progression Mode `Progressive Overload`, Plate Rack
    `standard kg`. They are **pre-answered and visible**, each one tap from being changed. Nothing
    else is asked at Program level.
@@ -661,7 +661,7 @@ underneath. A name in both appears once.
 - **Free text always wins.** `Smith incline 30°` is a keepable name.
 - **A suggestion sets the Name and nothing else** — never the Equipment Type, never the Increment.
   The catalogue is a typing aid, not an inference engine. This holds on the edit sheet too.
-- **The own-names source is derived live, never stored**: Fitty reads the names off the Exercises
+- **The own-names source is derived live, never stored**: Hoppa reads the names off the Exercises
   that exist right now, across **all** of the user's Programs. Correct a typo and the wrong name
   is gone at once; delete an Exercise and its name goes with it — one retype, and no cleanup
   screen is ever needed. The scope is all Programs because a second Program is exactly where old
@@ -730,7 +730,7 @@ chip on every Set row logged under it.
 
 **Completing an Exercise costs no tap; moving on costs one.** The last Set completes the Exercise
 by itself, and the bottom button then becomes `NEXT: BARBELL ROW`, or `FINISH WORKOUT` when
-nothing is Open. **Fitty does not jump by itself.**
+nothing is Open. **Hoppa does not jump by itself.**
 
 **The exercise counter is the navigation.** `3 / 5 ▾` opens a full-screen list where every
 Exercise carries its state as a pill, under the line *"Leaving an open Exercise means later,
@@ -770,7 +770,7 @@ bar with duration, Sets and volume; then a single `DONE` button.
 
 **The count is the hero because the count is exactly what the confetti scales to.**
 
-**There is no Accept and no Undo anywhere on the screen.** Fitty applied the new Working Weight
+**There is no Accept and no Undo anywhere on the screen.** Hoppa applied the new Working Weight
 at Finish, so the green number is a statement of fact. That is the whole mechanism; nothing else
 was needed to make it read that way.
 
@@ -912,7 +912,7 @@ The same rule at full blast radius. One switch:
 - creates or destroys a Microload on every Machine (stack) and Cable Exercise, which are the only
   two that can carry one (§2.3).
 
-So Fitty warns with the count — `THIS CLEARS THE WEIGHT ON 12 EXERCISES` — and the confirm leads
+So Hoppa warns with the count — `THIS CLEARS THE WEIGHT ON 12 EXERCISES` — and the confirm leads
 to **one Re-weigh list**: every affected Exercise on one screen, each with an empty weight field.
 
 The user throws this switch when they change gym or country, so it is rare and deliberate. Paying
@@ -926,14 +926,14 @@ into the empty state §6.2 already draws: `NO MICROPLATES · SET UP YOUR RACK`, 
 the Inventory. Such an Exercise **does not progress** until a plate is picked, and the Summary
 states that condition in place of the green line.
 
-Fitty never re-points to the nearest remaining Microplate, which would change the steel the user
+Hoppa never re-points to the nearest remaining Microplate, which would change the steel the user
 hangs on the bar without telling them. It never blocks the switch either, which would lock a rack
-the user owns out of their own settings. §5.2's principle holds: Fitty states its condition where
+the user owns out of their own settings. §5.2's principle holds: Hoppa states its condition where
 the user stands.
 
 #### Deleting
 
-| Action | Fitty does |
+| Action | Hoppa does |
 | --- | --- |
 | Delete an Exercise | It leaves the Program from today forward. Past Workouts keep their Sets, labelled by the Name stored at the time (§2.4). The Name leaves the suggestions — a cost §6.3 already accepted. |
 | Delete a Workout Day | The same, and the Workout keeps the Day's name too. |
@@ -956,11 +956,11 @@ the user stands.
 > Artboards: [Fitty History and Charts](https://claude.ai/code/artifact/a6451a92-3c59-4d4c-a1ce-7a3c81112989),
 > source in `design/0015-history/`.
 
-Fitty moves the weight up at every Finish. This is where the climb is visible.
+Hoppa moves the weight up at every Finish. This is where the climb is visible.
 
 #### Two doors, no tab bar
 
-Fitty has **no tab bar**. History is reached from the two places the user already stands:
+Hoppa has **no tab bar**. History is reached from the two places the user already stands:
 
 | Door | Opens |
 | --- | --- |
@@ -971,8 +971,8 @@ Nothing permanent is added to the logging screen.
 
 #### The per-Exercise chart
 
-The line is the **Working Weight** — what Fitty tracks and what progression moves. Estimated 1RM
-and volume per session are not offered: both are computed guesses about a lift Fitty does not
+The line is the **Working Weight** — what Hoppa tracks and what progression moves. Estimated 1RM
+and volume per session are not offered: both are computed guesses about a lift Hoppa does not
 track, and volume *falls* when the weight rises and the reps reset, so a progression would read as
 a loss.
 
@@ -984,7 +984,7 @@ a loss.
 | A **One-off Weight** | Hollow marker **off** the line, at the weight actually lifted, tied to its session by a dotted drop, labelled `ONE-OFF`. The line itself never dips — a One-off never became the Working Weight (§4.3) |
 | A **Skipped** Exercise | Nothing at all. No point, no gap marker |
 | The x axis | **Real time**, not the session number, using the date the Workout started (§2.4). A missed week is therefore already visible as a wider gap |
-| The **NEXT** step | Where the last session progressed, a **dashed green step** from the last point to a hollow marker at the current Working Weight. **Solid is lifted; dashed is applied but not yet performed.** Without it the hero number contradicts the end of the line, because Fitty applies the weight at Finish (§4.1) |
+| The **NEXT** step | Where the last session progressed, a **dashed green step** from the last point to a hollow marker at the current Working Weight. **Solid is lifted; dashed is applied but not yet performed.** Without it the hero number contradicts the end of the line, because Hoppa applies the weight at Finish (§4.1) |
 
 **The reps are a Set grid, not figures on the points.** Under the line sits one column per
 session and one cell per Set, filled where that Set met the threshold of its Progression Mode.
@@ -1032,7 +1032,7 @@ current run as a figure: `9` · `WEEKS IN A ROW`.
 A week with no Workout is a **darker block, and nothing else**. No flame, no warning, no
 notification, no "streak lost", and — deliberately — **no best-ever number**, which would make the
 current run read as a shortfall. The strip is the record and the figure is a fact about it. This
-is the one view that could have broken §7.6's rule that Fitty states and never advises; the
+is the one view that could have broken §7.6's rule that Hoppa states and never advises; the
 absence of a comparison is what keeps it whole.
 
 #### Deleting a past Workout
@@ -1042,12 +1042,12 @@ Delete lives behind the Workout's `•••` menu.
 | | |
 | --- | --- |
 | What it removes | Every Set of that Workout |
-| What it does **not** touch | Every **Working Weight**. Fitty applied the progression at Finish and never lowers a weight by itself (§4.1); recomputing the chain would also reach past any weight the user later set by hand (§4.3) |
+| What it does **not** touch | Every **Working Weight**. Hoppa applied the progression at Finish and never lowers a weight by itself (§4.1); recomputing the chain would also reach past any weight the user later set by hand (§4.3) |
 | The confirm | States both halves: what is removed, and that the working weights stay. The user restores a weight by hand if they want to |
 
 The confirm's **DELETE** button uses the 25 kg plate red `#C8322B`. This is allowed, and it fixes
 the boundary of §7.1's first rule: **a plate colour is a plate only inside a Plate Breakdown.**
-Outside one, the palette is simply Fitty's palette.
+Outside one, the palette is simply Hoppa's palette.
 
 #### Empty state
 
@@ -1078,7 +1078,7 @@ directions stay on the canvas as the record.
    a later gym brings (§9).
 
 **Both rules are rules about the Plate Breakdown.** A plate colour is a plate **only inside one**.
-Outside a Plate Breakdown the palette is simply Fitty's palette: the destructive **DELETE** button
+Outside a Plate Breakdown the palette is simply Hoppa's palette: the destructive **DELETE** button
 wears the 25 kg red (§6.7) and no reader takes it for a plate, because nothing near it is a
 drawing of a bar. Charts hold the same boundary from the other side — a chart draws **no** plate,
 so its line is steel and its only colour is green, which §7.3 already gives a second meaning.
@@ -1246,15 +1246,19 @@ flows this spec validates, so each is a later effort rather than a resumption of
 - **Equipment profiles shared across Exercises** — "Smith machine at my gym, 7 kg base". Base
   Weight is typed by hand on every Smith and plate-loaded Exercise with no default, so a profile
   is exactly what would replace that repetition.
-- **Warm-up sets**: whether Fitty shows them and computes their plates.
+- **Warm-up sets**: whether Hoppa shows them and computes their plates.
 - **Bodyweight rep-progression before added weight** — chin-ups without a belt.
-- **Deload guidance after repeated failure.** Fitty deliberately does nothing today (§4.4), and
+- **Deload guidance after repeated failure.** Hoppa deliberately does nothing today (§4.4), and
   the reason stands: it has no data to pick the right deload.
-- **Several Plate Inventories, one per gym.** Fitty holds one (§5.2). Changing its unit is
+- **Several Plate Inventories, one per gym.** Hoppa holds one (§5.2). Changing its unit is
   therefore a gym move that clears and re-asks every plate-loaded weight (§6.6), which is the
   honest cost of one Inventory. Saved racks would remove it, and that is a feature.
-- **The definitive app name.** "Fitty" is the working name, and the map's charter always put the
-  final name outside this effort.
+- **Whether the name `Hoppa` survives an App Store name check.** The app **is** called Hoppa —
+  Rob named it at [An empty app on the phone](issues/0018-an-empty-app-on-the-phone.md), and the
+  bundle id `com.robvb.hoppa` is fixed. What is out of scope is the *public* name: the App Store
+  requires a unique app name, and at least one established `Hoppa` exists already. That rides with
+  the App Store effort. It does not threaten the bundle id, which only has to be globally unique
+  and is never shown to a user.
 
 ---
 

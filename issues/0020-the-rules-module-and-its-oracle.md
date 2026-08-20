@@ -10,9 +10,9 @@ blocked-by: []
 
 ## Question
 
-**Where do Fitty's rules live in Swift, and what proves they are right?**
+**Where do Hoppa's rules live in Swift, and what proves they are right?**
 
-Fitty is a rules engine with a screen on it. Progression, the Plate Breakdown, the roll-up, the
+Hoppa is a rules engine with a screen on it. Progression, the Plate Breakdown, the roll-up, the
 Exercise States and the Finish gate are the app; the views only show their output. Those rules are
 also the part this project has been wrong about most often — the design map found four defects in
 its own rules, and **every one was found by executing them, never by reading them**.

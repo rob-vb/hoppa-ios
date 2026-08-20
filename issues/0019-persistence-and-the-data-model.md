@@ -28,7 +28,7 @@ storage requirements in disguise. Those three are the test any answer has to pas
 2. **A Set stores no Plate Breakdown (§2.5).** It is a solve, not a fact. Storing the picture would
    make every Plate Inventory edit a history migration.
 3. **The Name is looked up live, and stored only as a fallback (§2.4, §2.7).** A Workout keeps the
-   Name of its Workout Day and every Exercise, but Fitty shows the **live** Name while the Exercise
+   Name of its Workout Day and every Exercise, but Hoppa shows the **live** Name while the Exercise
    exists and falls back to the kept one **only after a delete** — so a rename still fixes a typo
    everywhere in history. That is a relationship that must survive the deletion of its target,
    which is exactly where an ORM's cascade rules bite.
