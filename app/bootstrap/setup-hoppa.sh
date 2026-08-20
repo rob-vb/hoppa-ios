@@ -271,6 +271,8 @@ step "Template:        iOS  >  App"
 step "Product Name:    Hoppa"
 step "Team:            your Apple Developer team (or your personal team)"
 step "Organization Identifier:  com.robvb"
+note "Xcode pre-fills this with your name. Clear it and type com.robvb."
+note "If you leave it, stage 4 corrects it anyway."
 step "Interface:       SwiftUI"
 step "Language:        Swift"
 step "Testing System:  Swift Testing with XCTest UI Tests"
@@ -301,7 +303,7 @@ pause "Press Enter to continue."
 stage "Correct the project settings"
 say "The wizard edits project.pbxproj directly, so there is nothing to click."
 printf '\n'
-say "bundle id     $BUNDLE_ID   (Xcode derives com.robvb.Hoppa, with a capital H)"
+say "bundle id     $BUNDLE_ID   (whatever prefix Xcode chose is replaced)"
 say "min iOS       $MIN_IOS"
 say "orientation   portrait only"
 say "devices       iPhone only"
@@ -309,7 +311,8 @@ printf '\n'
 
 cp "$PBXPROJ" "$PBXPROJ.before-wizard"
 sed -i.tmp \
-  -e "s/PRODUCT_BUNDLE_IDENTIFIER = com\.robvb\.Hoppa;/PRODUCT_BUNDLE_IDENTIFIER = $BUNDLE_ID;/g" \
+  -e "s/PRODUCT_BUNDLE_IDENTIFIER = \"[A-Za-z0-9.-]*\.Hoppa\([A-Za-z]*\)\";/PRODUCT_BUNDLE_IDENTIFIER = $BUNDLE_ID\1;/g" \
+  -e "s/PRODUCT_BUNDLE_IDENTIFIER = [A-Za-z0-9.-]*\.Hoppa\([A-Za-z]*\);/PRODUCT_BUNDLE_IDENTIFIER = $BUNDLE_ID\1;/g" \
   -e "s/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = $MIN_IOS;/g" \
   -e 's/INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "[^"]*";/INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;/g' \
   -e 's/TARGETED_DEVICE_FAMILY = "[^"]*";/TARGETED_DEVICE_FAMILY = "1";/g' \
@@ -333,9 +336,22 @@ grep -q "INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrie
 
 printf '\n'
 note "The untouched original is kept at project.pbxproj.before-wizard"
-write_env BUNDLE_ID "$BUNDLE_ID"
-write_env MIN_IOS "$MIN_IOS"
-write_env ORIENTATION "portrait only, iPhone only"
+
+# Record what is actually in the file, never what we meant to put there. An
+# earlier version wrote the intended values here regardless of whether the
+# patch took, and the facts file asserted a bundle id the project never had.
+ACTUAL_BUNDLE=$(grep -o 'PRODUCT_BUNDLE_IDENTIFIER = [^;]*;' "$PBXPROJ" \
+  | sed 's/.*= //; s/;$//' | grep -vi 'tests' | head -1)
+ACTUAL_MIN=$(grep -o 'IPHONEOS_DEPLOYMENT_TARGET = [^;]*;' "$PBXPROJ" \
+  | sed 's/.*= //; s/;$//' | head -1)
+if grep -q 'INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;' "$PBXPROJ"; then
+  ACTUAL_ORIENT="portrait only, iPhone only"
+else
+  ACTUAL_ORIENT="NOT portrait-only — check the project"
+fi
+write_env BUNDLE_ID "${ACTUAL_BUNDLE:-unknown}"
+write_env MIN_IOS "${ACTUAL_MIN:-unknown}"
+write_env ORIENTATION "$ACTUAL_ORIENT"
 pause "Press Enter to continue."
 
 # ── 5 ─────────────────────────────────────────────────────────────────────

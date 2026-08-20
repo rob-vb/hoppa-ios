@@ -100,6 +100,40 @@ the app. Two details worth keeping:
 - IBM ships only a variable `IBMPlexSans[wdth,wght].ttf` through Google Fonts. The static Regular
   and Medium came from `github.com/IBM/plex`.
 
+### What fought back: the bundle id was not what the facts file said
+
+The wizard reported the bundle id as `com.robvb.hoppa` and it was `Rob-van-Baaren.Hoppa`. Rob caught
+it in Xcode's Identity panel. Three defects stacked up, and each one alone would have been harmless:
+
+1. **Xcode pre-fills the Organization Identifier with the account holder's name.** The wizard printed
+   `com.robvb` as the value to type; the field already had `Rob-van-Baaren` in it, and a pre-filled
+   field does not read as a field waiting for input.
+2. **The `sed` was anchored on a guess.** It matched the literal `com.robvb.Hoppa`, i.e. the value it
+   expected Xcode to derive *if step 1 went as instructed*. A patch that assumes its own precondition
+   is not a patch. It now matches any prefix, and it handles the quoted form — Xcode wraps the value
+   in quotes when it contains a hyphen, which a later test showed would have defeated the first fix
+   too.
+3. **The wizard wrote its intention into the facts file, not the file's contents.** `write_env
+   BUNDLE_ID "$BUNDLE_ID"` ran whether or not the patch took, so `ticket-0018-facts.env` asserted a
+   value the project never held — and this resolution was written from it. The wizard now reads all
+   three settings back out of `project.pbxproj` and records what it finds.
+
+The check between 2 and 3 *did* fire: `grep -q` failed, the wizard warned, and it pushed a
+`bundle identifier — set it by hand` line onto its skipped list. The warning was correct and got
+lost in the run. **A warning is not a result.** The value went into the facts file anyway, and the
+facts file is what the agent trusted.
+
+All three targets now read `com.robvb.hoppa`, `com.robvb.hoppaTests` and `com.robvb.hoppaUITests`,
+patched on the VPS. Verified by re-reading the project file, not by re-running the wizard.
+
+This was cheap only because it was caught now. A bundle identifier is fixed forever once the app is
+submitted to the App Store, and Rob has said that is where this is going. `Rob-van-Baaren.Hoppa` is
+also not reverse-DNS: `com.robvb` is a domain he controls, and a personal name is not.
+
+The other three patches did take, confirmed the same way: `IPHONEOS_DEPLOYMENT_TARGET = 17.0`,
+`INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait`,
+`TARGETED_DEVICE_FAMILY = 1`.
+
 ### What fought back: the project did not travel
 
 Xcode's New Project dialog **created a git repository inside `app/Hoppa/`**, so the outer repo

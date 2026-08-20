@@ -67,7 +67,10 @@ real**, and nothing after that is worth doing before it.
     repository inside the project folder unless told not to, so `app/Hoppa` was committed as a
     gitlink (mode `160000`) with no `.gitmodules`: Rob pushed, and an empty pointer arrived. A
     push that reports success is not proof the files travelled — **check that what you need is
-    actually in the tree** before working from it.
+    actually in the tree** before working from it. The same run also proved the sharper form of
+    this: the wizard's own report said the bundle id was `com.robvb.hoppa` and the project said
+    `Rob-van-Baaren.Hoppa`. **Read the artefact, not the report about the artefact.** Rob caught it
+    by looking at Xcode; nothing on this side would have.
   - **`SPEC.md` §8.2 is the known-defect list.** The `Fitty` module in
     `design/0007-logging/fitty-workout-logging.html` predates three later tickets and is wrong in
     eight named ways. The spec is right and the code is wrong. Fix them in the lift; never port a
