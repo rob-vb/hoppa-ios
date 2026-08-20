@@ -35,6 +35,17 @@ real**, and nothing after that is worth doing before it.
 - **Standing preferences**: domain terms, code and project documents in English; conversation
   follows Rob's CLAUDE.md (Simplified Technical English, Dutch when he writes Dutch). Rob is the
   first and only user of this map's output — put choices to him as concrete options.
+- **Do not end every session with "please build this".** Rob said so plainly at
+  [The Logbook on disk](0025-the-logbook-on-disk.md): *"Ik test later wel, geen zin om telkens te
+  testen."* The VPS/Mac loop puts him in the critical path of every session that writes Swift, and
+  that is a cost the map has to carry rather than pass on. Two consequences:
+  - **Batch the Mac work.** Let hand-offs accumulate and hand over one build session covering
+    several tickets, instead of one round trip each. A ticket waiting on the Mac is not a blocked
+    map — pick up the next unblocked ticket and let the queue grow.
+  - **Prove as much as possible here first.** A file in the app target that imports no SwiftUI can
+    be type-checked on the VPS against the built modules, and so can every rules/store call a
+    SwiftUI view makes. See the charter bullet on Swift on the VPS. What reaches Rob should be
+    something that has already had every checkable thing checked.
 
 - **Charter decisions** (settled while charting, before any ticket):
   - **Local only.** No account, no sync, no server, no CloudKit. Programs and Workouts live on the
