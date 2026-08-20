@@ -186,9 +186,13 @@ real**, and nothing after that is worth doing before it.
   It is a merge conflict waiting to happen, in a file no one wants to hand-merge. Not sharp until
   the loop has run a few times and shown which edits actually collide. The loop's **first** run
   already drew blood, though in a smaller way: see the charter bullet on the nested repo.
-  **The next run is the real test**: adding `app/HoppaRules` through *Add Local* rewrites
-  `project.pbxproj` on the Mac, and it is the first edit to that file the agent deliberately did
-  not make itself.
+  **The first deliberate hand-off ran clean.** Adding `app/HoppaRules` through *Add Local* wrote
+  **23 additive lines** and changed none: a `PBXBuildFile`, one entry in each of `files`,
+  `packageProductDependencies` and `packageReferences`, and two new sections at the end. The line
+  that decides whether this file survives two machines is
+  `relativePath = ../HoppaRules` — **relative, not absolute**, so the reference needs no edit on
+  either side. One clean run is not a rule, but it narrows the question: the risk is concurrent
+  *additions* landing in the same list, not a path that only works on one machine.
 - **Deleting a Program.** §6.6 specifies deleting an Exercise and a Workout Day, with two blocks.
   §2.1 allows more than one Program. Nothing says what a whole Program delete does, or whether the
   last Program is blocked the way the last Workout Day is. Found while working
