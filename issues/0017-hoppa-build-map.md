@@ -71,6 +71,13 @@ real**, and nothing after that is worth doing before it.
     this: the wizard's own report said the bundle id was `com.robvb.hoppa` and the project said
     `Rob-van-Baaren.Hoppa`. **Read the artefact, not the report about the artefact.** Rob caught it
     by looking at Xcode; nothing on this side would have.
+  - **There is Swift on the VPS now, and it is the same 6.3.3 the Mac runs.** The charter above
+    said the agent cannot compile, and for anything touching SwiftUI, UIKit or a simulator that is
+    still true — **the Mac still builds and runs the app**. What changed at
+    [Swift on the VPS](0022-swift-on-the-vps.md) is that `app/HoppaRules`, which imports nothing,
+    builds and tests *here*. Run `swift test` before every push; do not send unproven rules to the
+    Mac to find out whether they parse. `swift` is on `PATH` via `/usr/local/bin`, and
+    `.swift-version` pins the toolchain.
   - **`SPEC.md` §8.2 is the known-defect list.** The `Fitty` module in
     `design/0007-logging/fitty-workout-logging.html` predates three later tickets and is wrong in
     eight named ways. The spec is right and the code is wrong. Fix them in the lift; never port a
@@ -104,6 +111,18 @@ real**, and nothing after that is worth doing before it.
   build splits into [Swift on the VPS](0022-swift-on-the-vps.md) and
   [Lift the rules into HoppaRules](0023-lift-the-rules-into-hopparules.md), because **there is no
   Swift toolchain on the VPS** and untested rules are this map's worst failure mode.
+
+- **[Swift on the VPS](0022-swift-on-the-vps.md)** — **Swift 6.3.3 is installed here, and the drift
+  the ticket braced for is zero**: the same point release the Mac runs, so `swift-tools-version: 6.0`
+  straddles nothing. Installed with swiftly, symlinked into `/usr/local/bin` because a plain
+  `bash -c` never reads `/root/.profile`. The install re-proved this map's own lesson: a clean
+  `swift --version` printed **`libc not found … C stdlib may be unavailable`** and reported its
+  version anyway — **a version string is not proof, a green test is**. Two facts ticket 0023 now
+  depends on: **a red test exits `1`** (its eight deliberately-red §8.2 tests would otherwise pass
+  in silence), and `swift test`'s **`Executed 0 tests`** line is the idle XCTest harness, not a
+  failure. Disk: 1.2 GB free at 97%, and the bulk was in **henk's** npm cache (8.0 GB), not root's
+  where the ticket pointed; `npm cache clean` on both users reclaimed 9.9 GB and touched nothing
+  else. 7.3 GB free after the 3.3 GB toolchain.
 
 - **[The app is called Hoppa](0021-the-app-is-called-hoppa.md)** — the repo says **Hoppa** for the
   product and **`Fitty` only for artefacts that still carry that name**. That split was the whole
