@@ -126,6 +126,9 @@ facts file is what the agent trusted.
 All three targets now read `com.robvb.hoppa`, `com.robvb.hoppaTests` and `com.robvb.hoppaUITests`,
 patched on the VPS. Verified by re-reading the project file, not by re-running the wizard.
 
+Rob rebuilt from the corrected project and confirmed the app launches on the phone under the new
+identifier, so automatic signing registered the new App ID without complaint.
+
 This was cheap only because it was caught now. A bundle identifier is fixed forever once the app is
 submitted to the App Store, and Rob has said that is where this is going. `Rob-van-Baaren.Hoppa` is
 also not reverse-DNS: `com.robvb` is a domain he controls, and a personal name is not.
