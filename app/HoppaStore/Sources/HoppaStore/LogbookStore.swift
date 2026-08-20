@@ -73,13 +73,12 @@ public final class LogbookStore {
     /// what keeps a fresh install from putting a file on disk before there is anything
     /// in it.
     ///
-    /// > The first guard is the one that matters and the one no test can currently fail:
-    /// > `Logbook.empty` is a **fixed point under every action there is** — all twelve
-    /// > need an Open Workout or a Program, and an empty Logbook has neither — so a store
-    /// > that fell back to `.empty` on `.unreadable` would still write nothing today. It
-    /// > stops being harmless the moment ticket 26 lands an action that creates a
-    /// > Program: then the fallback writes a brand-new Program over a logbook Hoppa
-    /// > merely failed to *read*. The guard is here for that day.
+    /// > The first guard is the one that matters, and **that day has come**. It was
+    /// > written when `Logbook.empty` was a fixed point under every action there was —
+    /// > all twelve needed an Open Workout or a Program, and an empty Logbook has
+    /// > neither — so no test could fail it. §6.6's `createProgram` ends that: a store
+    /// > that fell back to `.empty` on `.unreadable` now writes a brand-new Program over
+    /// > a logbook Hoppa merely failed to *read*. `StoreTests` fails it on purpose.
     public func send(_ action: Action) {
         guard let current = logbook else { return }
         let next = Rules.reduce(current, action, at: now())

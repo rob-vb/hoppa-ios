@@ -66,10 +66,10 @@ struct StoreTests {
         #expect(try Data(contentsOf: temp.logbook) == bytes)
     }
 
-    /// Today this passes for a second reason as well: `Logbook.empty` is a fixed point
-    /// under every action, so even a store that wrongly fell back to it would write
-    /// nothing. What the test does pin down is `logbook == nil`, which is load-bearing —
-    /// re-breaking it fails six tests.
+    /// This once passed for a second reason as well: `Logbook.empty` was a fixed point
+    /// under every action, so even a store that wrongly fell back to it would have
+    /// written nothing. **`createProgram` ended that**, and the next test is the one the
+    /// guard was written for.
     @Test("An unreadable store refuses to send, so nothing can write over the file")
     func unreadableRefusesToSend() throws {
         let temp = TempDirectory("refuse")
@@ -83,6 +83,40 @@ struct StoreTests {
         #expect(store.logbook == nil)
         #expect(try Data(contentsOf: temp.logbook) == bytes)
         #expect(temp.contents == ["logbook.json"])
+    }
+
+    /// **The guard ticket 25 could not fail, now failing.**
+    ///
+    /// `send`'s first line is `guard let current = logbook else { return }`, and until
+    /// §6.6's Program edits existed nothing could get past a store that ignored it: every
+    /// action needed an Open Workout or a Program, and `Logbook.empty` has neither. A
+    /// store that fell back to `.empty` on `.unreadable` would now write a brand-new
+    /// Program over a logbook Hoppa merely failed to **read** — weeks of training, gone
+    /// because one byte on disk was wrong.
+    @Test("A create over an unreadable file writes nothing — the guard, at last provable")
+    func unreadableRefusesToCreateAProgram() throws {
+        let temp = TempDirectory("refuse-create")
+        let bytes = Data("not a logbook".utf8)
+        try bytes.write(to: temp.logbook)
+
+        let store = LogbookStore(url: temp.logbook, now: fixedClock())
+        store.send(.createProgram(name: "Upper / Lower", defaultWeightUnit: .kg, mode: .progressiveOverload))
+
+        #expect(store.logbook == nil)
+        #expect(try Data(contentsOf: temp.logbook) == bytes, "the unreadable file was written over")
+        #expect(temp.contents == ["logbook.json"])
+    }
+
+    @Test("The same create on a fresh install does land, so the test above proves the guard")
+    func aCreateOnAFreshInstallLands() throws {
+        let temp = TempDirectory("create")
+        let store = LogbookStore(url: temp.logbook, now: fixedClock())
+        store.send(.createProgram(name: "Upper / Lower", defaultWeightUnit: .kg, mode: .progressiveOverload))
+
+        #expect(store.logbook?.programs.count == 1)
+        #expect(temp.contents == ["logbook.json"])
+        let written = try LogbookFile.decode(try Data(contentsOf: temp.logbook))
+        #expect(written.programs.first?.name == "Upper / Lower")
     }
 
     // MARK: - Layer 3: writing

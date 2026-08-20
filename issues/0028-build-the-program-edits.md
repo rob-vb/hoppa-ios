@@ -3,8 +3,8 @@ id: 28
 title: Build the Program edits
 parent: 17
 labels: [wayfinder:task]
-status: open
-assignee:
+status: closed
+assignee: agent
 blocked-by: [26]
 ---
 
@@ -75,3 +75,95 @@ this package is that it imports nothing.
 
 Two things this ticket does **not** touch: the screens (ticket 24 owns those, and this is what sits
 under them), and deleting a whole Program (still fog on the map — §6.6 never specified it).
+
+
+---
+
+## Resolution
+
+**All five pieces are built, and `swift test` is green on the VPS: 98 tests in `HoppaRules`, 25 in
+`HoppaStore`.** Every guard the ticket added was re-broken one at a time and put back —
+**36 of 36 turned a suite red**, so not one of them rests on a test that would pass without it. The
+committed 56-Workout snapshot did not move a byte, which is the evidence that widening two fields to
+`Optional` changed no behaviour anywhere it was already set.
+
+Four findings outrank the code.
+
+### §6.6 says "four Equipment Types that carry their own unit" and names Bodyweight. There are three
+
+The sentence has been wrong since the spec was assembled, and nothing else in the spec agrees with
+it: §2.3 **locks** the Weight Unit row for Bodyweight, §5.1 gives it the Plate Inventory's unit
+because its added weight is a plate off that same rack, §6.6's own next paragraph clears it *with*
+the three rack types, and the Microload table two paragraphs below calls the Dumbbell **"the only
+other type that can change unit"**. A Bodyweight Exercise has no unit of its own to change.
+
+It surfaced because the code had to answer *which* Exercises a unit change clears, and the two
+answers in §6.6 disagreed. `SPEC.md` now says three, with the four places that always said so.
+
+### A change of Equipment Type is a change of unit, and §6.6 never said it
+
+§6.6 puts the clearing rule under *"changing a Weight Unit"*, which reads as the unit control on the
+sheet. But the unit is **derived** (§5.1): a Dumbbell in lbs that the user turns into a Barbell now
+reads its unit off a kg rack, and its `100` means something it was never typed to mean — the exact
+harm the clearing rule exists to prevent, arrived by a different door. So the rule watches the unit
+the Exercise **resolves to**, before and after, however the user changed it. `SPEC.md` §6.6 gained
+the paragraph, and `EditTests` has the case.
+
+The mirror of that is the field this must *not* touch. §2.3 refuses to re-ask a fact about a
+machine, so a Base Weight and a Stack Step survive a change of Equipment Type — but a sheet on a
+Barbell shows no Base Weight row, so its draft carries `nil`. The draft is written back **only where
+the new Equipment Type shows the row**, which is what keeps `nil means the row was absent` from
+being read as `nil means the user cleared it`.
+
+### `isStranded` is a fact about the Increment, so it must not be read as a fact about progression
+
+Ticket 26 defined a stranded Exercise as one whose Microloading Increment is not in
+`enabledMicroplates`, and said `progressionMove` returns `nil` for it. Read literally, that stops a
+**Progressive Overload** Exercise progressing because a Microplate it is not using was switched off
+— and every Exercise in the fixture names a Microplate, so this was not a corner. The guard belongs
+*inside* the Microloading branch: `isStranded` states the fact, and only Microloading acts on it.
+Both directions are tests.
+
+### Three of §6.3's rules had no answer until the code needed one
+
+- **Trained means at least one logged Set.** The recency sort reads "the newest Workout that
+  performed them"; a Workout the user opened and walked away from, and one where the Exercise was
+  Skipped, performed nothing. Neither lifts a name to the top. `SPEC.md` §6.3 gained the line.
+- **The fold drops a combining mark**, or "accent-insensitive" is only half true. `İ`.lowercased()
+  is `i` + `COMBINING DOT ABOVE`, and the decomposed spelling of `é` is `e` + `COMBINING ACUTE
+  ACCENT` — both keep a scalar with no `LETTER` in its Unicode name, so the base-letter rule alone
+  leaves them unfolded and `é` matches `e` in one spelling and not the other.
+- **A word-start match is a match at a word start, not a match of one word.** `bench p` finds
+  `Barbell Bench Press`: the folded query is looked for at position 0 and after every space or
+  hyphen, which is the same rule for one word and for several.
+
+### What is in the code
+
+1. **`Weight?`** on `Exercise.workingWeight` and `.increment`, through `ResolvedExercise`,
+   `progressionMove` (no weight *or* no Increment → no move) and `logSet` (no weight → no Set). The
+   solver kept its concrete `Weight`: `breakdown(for:at:inventory:)` takes one and
+   `breakdown(for:performedAt:inventory:)` unwraps once and returns `nil`. No `schemaVersion` bump —
+   and a committed v1 Exercise, weights present, decodes in a test beside one that carries neither.
+2. **Stranding**, as `ResolvedExercise.isStranded`, derived and reversible: switch the plate back on
+   and the Exercise progresses with the plate the user picked.
+3. **`Rules+Edit.swift`** — fourteen `Action` cases, `ExerciseDraft`, `DeleteBlock` and the four pure
+   queries. `reduce` routes to it by listing every edit case rather than by `default:`, so a new one
+   cannot land unhandled. The diff rules live in `edited(_:with:inventory:)`.
+4. **The mirroring**: added in place and Open, reordered with `currentIndex` following the
+   `ExerciseID`, deleted without shrinking the list and without holding the Finish gate.
+5. **§6.3**: `ExerciseCatalogue.swift` and its four tests moved into `HoppaRules` unchanged, joined
+   by `Suggestions.swift` — `fold`, `matches`, `ownNames`, `nameSuggestions`. No `project.pbxproj`
+   edit: both packages are path references and SPM globs their sources, so a file moving **between**
+   two linked packages is invisible to Xcode.
+
+**Ticket 25's sixth guard is paid off.** `send`'s no-`Logbook` guard now has the test its comment
+promised: a `createProgram` sent at an `.unreadable` store leaves the bytes on disk untouched, and
+the same action on a fresh install lands — so the first test is proving the guard and not the
+absence of an effect.
+
+### What the Mac still has to say
+
+One `#expect`, and it is the one ticket 27 flagged: `fold("é") == "e"` proves Apple ships the
+Unicode name tables. It is green on Linux. **Red on Darwin means drop folding and keep
+`lowercased()`** — ten lines, one test file, and §6.3's accent clause loses its second half. It is on
+the map's Mac hand-off queue rather than holding this ticket open.

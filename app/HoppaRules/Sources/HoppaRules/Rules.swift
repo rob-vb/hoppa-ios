@@ -70,7 +70,10 @@ public enum Rules {
 
             // The weight sits on the Set, not on the Exercise: §6.4 lets the user raise
             // it part-way through, and the Sets before the raise were lifted lighter.
-            let weight = performed.oneOffWeight ?? exercise.workingWeight
+            // **No weight, no Set** (§2.8): an Exercise the user has not weighed yet, or
+            // one §6.6 has just cleared, has no number to write down.
+            guard let weight = performed.oneOffWeight ?? exercise.workingWeight
+            else { return logbook }
             performed.sets.append(LoggedSet(
                 reps: max(0, reps),
                 weight: weight,
@@ -148,6 +151,15 @@ public enum Rules {
             guard book.openWorkout != nil else { return logbook }
             book.openWorkout = nil
             return book
+
+        // Flow 5 (§6.6), in `Rules+Edit.swift`. One door, two files: a `default:` here
+        // would let a new edit case land unhandled, so they are listed one by one and the
+        // compiler checks the list.
+        case .createProgram, .renameProgram, .setProgramDefaultWeightUnit, .setProgramMode,
+             .addWorkoutDay, .renameWorkoutDay, .moveWorkoutDay, .deleteWorkoutDay,
+             .addExercise, .saveExercise, .moveExercise, .deleteExercise,
+             .setPlateInventoryUnit, .setPlate:
+            return applyEdit(logbook, action, at: now)
         }
     }
 

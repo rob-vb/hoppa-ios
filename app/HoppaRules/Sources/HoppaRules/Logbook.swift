@@ -49,6 +49,12 @@ public struct Logbook: Codable, Sendable, Hashable {
         programs.first { $0.id == id }
     }
 
+    /// Every Exercise there is, in Program order: Programs, then Days, then position.
+    /// The order the §6.6 lists are drawn in.
+    public var allExercises: [Exercise] {
+        programs.flatMap { $0.days.flatMap(\.exercises) }
+    }
+
     public func exercise(_ id: ExerciseID) -> Exercise? {
         for program in programs {
             if let match = program.exercise(id) { return match }

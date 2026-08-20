@@ -53,9 +53,12 @@ extension Rules {
         var move: ProgressionMove?
         if progressed {
             move = progressionMove(for: exercise, inventory: inventory)
-            // Nowhere to put the plate is not a progression. The one refused combination
-            // (Microloading on a Dumbbell in the other unit, §2.6) lands here, as does an
-            // Exercise on Microloading with no Microplate switched on yet (§5.2).
+            // Nowhere to put the plate is not a progression. Four cases land here, and
+            // the Summary states one condition for all four: an Exercise with **no
+            // Working Weight** (§6.6), a **stranded** one whose Microplate is switched
+            // off (§6.6), the one refused combination (Microloading on a Dumbbell in the
+            // other unit, §2.6), and an Exercise on Microloading with no Microplate
+            // switched on yet (§5.2).
             if move == nil { progressed = false }
         }
 
@@ -76,21 +79,31 @@ extension Rules {
         for exercise: ResolvedExercise,
         inventory: PlateInventory
     ) -> ProgressionMove? {
+        // No Working Weight, nowhere to move from. This is the Re-weigh list's own
+        // condition (`SPEC.md` §6.6): the Exercise waits for a number, and does not
+        // progress until it has one.
+        guard let workingWeight = exercise.workingWeight else { return nil }
+
         switch exercise.mode {
         case .progressiveOverload:
+            guard let increment = exercise.increment else { return nil }
             return ProgressionMove(
-                workingWeight: exercise.workingWeight + exercise.increment,
+                workingWeight: workingWeight + increment,
                 microload: exercise.microload)
 
         case .microloading:
             guard let increment = exercise.microloadingIncrement else { return nil }
+            // A Microplate switched off strands the Exercise, and a stranded Exercise
+            // does not progress (§6.6). Without this the weight climbs by steel the user
+            // does not own.
+            guard !exercise.isStranded else { return nil }
 
             // The mixed-unit case is the only two-number case: the Microload moves, and
             // rolls into the pin at one Stack Step (§4.2).
             if exercise.isMixedUnitPin {
                 guard let stackStep = exercise.stackStep, stackStep.hundredths > 0 else { return nil }
                 return rollUp(
-                    workingWeight: exercise.workingWeight,
+                    workingWeight: workingWeight,
                     microload: exercise.microload ?? .zero(inventory.unit),
                     increment: increment,
                     stackStep: stackStep,
@@ -103,7 +116,7 @@ extension Rules {
             guard exercise.unit == exercise.inventoryUnit else { return nil }
             let plates = exercise.equipment.platesPerProgression
             return ProgressionMove(
-                workingWeight: exercise.workingWeight + increment.scaled(by: plates),
+                workingWeight: workingWeight + increment.scaled(by: plates),
                 microload: exercise.microload)
         }
     }

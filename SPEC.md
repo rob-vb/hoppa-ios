@@ -729,17 +729,23 @@ underneath. A name in both appears once.
   Exercises: **a suggestion copies the name at the moment it is picked**, and no link survives.
 
 Writing the ~150 names is content work for the build (§10). **It is done**: the list lives in
-`ExerciseCatalogue.swift`, as a plain array of strings, and the two conventions above — the
-curated order and the equipment-prefix rule — are checked mechanically, so a name added later
-cannot quietly break either.
+`app/HoppaRules/Sources/HoppaRules/ExerciseCatalogue.swift`, as a plain array of strings, and the
+two conventions above — the curated order and the equipment-prefix rule — are checked mechanically,
+so a name added later cannot quietly break either.
 
 **The matching and the ranking are rules, and they live in `HoppaRules` with everything else.**
 They were once recorded as needing Foundation to fold accents, which `HoppaRules` does not import.
 That was wrong: `lowercased()` is standard library, Swift compares `é` and `e`+combining-acute
 as equal already, and the base letter behind an accent is readable from the Unicode character names
-the standard library ships. So folding costs about ten lines and no import. The catalogue moves
-down into `HoppaRules` beside the rule that reads it. See
-[Name suggestions, and where a rule that needs Foundation lives](issues/0027-name-suggestions-and-foundation.md).
+the standard library ships. So folding costs about ten lines and no import. The catalogue moved down
+into `HoppaRules` beside the rule that reads it, and both are built: `Rules.nameSuggestions(in:query:)`
+and `Rules.fold(_:)` in `Suggestions.swift`. See
+[Name suggestions, and where a rule that needs Foundation lives](issues/0027-name-suggestions-and-foundation.md)
+and [Build the Program edits](issues/0028-build-the-program-edits.md).
+
+**Trained means at least one logged Set.** The recency sort reads the Workouts that *performed* an
+Exercise, and a Workout the user opened and walked away from, or one where the Exercise was Skipped,
+performed nothing. Neither lifts a name to the top of the list.
 
 ### 6.4 Flow 2 — Logging a Workout
 
@@ -936,10 +942,17 @@ a free pick with no rotation (§3.1).
 
 #### Changing a Weight Unit clears the weights
 
-For the four Equipment Types that carry their own unit — Dumbbell, Machine (stack), Cable,
-Bodyweight — changing the Weight Unit **clears the Working Weight, the Increment and the Stack
-Step**, and the same sheet asks for them again in the new unit. The Microloading Increment
-survives untouched, because it keeps the Plate Inventory's unit whatever the Exercise does (§5.1).
+For the three Equipment Types that carry their own unit — Dumbbell, Machine (stack) and Cable —
+changing the Weight Unit **clears the Working Weight, the Increment and the Stack Step**, and the
+same sheet asks for them again in the new unit. The Microloading Increment survives untouched,
+because it keeps the Plate Inventory's unit whatever the Exercise does (§5.1).
+
+> This paragraph said **four**, and named Bodyweight among them. That was wrong and the rest of the
+> spec never agreed with it: §2.3 locks the Weight Unit row for Bodyweight, §5.1 gives it the Plate
+> Inventory's unit because its added weight is a plate off that same rack, the next paragraph here
+> clears it *with* the other three rack types, and the Microload table below calls the Dumbbell "the
+> only other type that can change unit". A Bodyweight Exercise has no unit of its own to change.
+> Found while building.
 
 Converting was rejected: it produces numbers no machine can make. `100 lbs` on a 10 lbs stack
 becomes `45.4 kg` in steps of `4.54 kg`, with an Increment of `2.27 kg`. **The rule *units never
@@ -947,6 +960,11 @@ convert* now covers the stored number, not only the display.**
 
 **Cleared means unset, not zero** (§2.8): the field is empty, and the Exercise does not progress
 until the user types a number.
+
+**Changing the Equipment Type across the rack boundary is the same event**, and clears the same
+three fields. A Dumbbell in lbs that becomes a Barbell now reads its unit off a kg rack (§5.1), so
+its `100` means something it was never typed to mean. The unit is derived, so what the rule watches
+is the unit the Exercise *resolves to* — however the user changed it.
 
 The **Microload follows and never carries across**:
 
@@ -1020,8 +1038,9 @@ diagnose.
   group in place.
 - **Renaming** anything is free and migrates nothing (§2.7).
 
-> Sharpened while building. Decision record:
-> [Program edits, and which of them are rules](issues/0026-program-edits-and-the-rules-boundary.md).
+> Sharpened while building. Decision records:
+> [Program edits, and which of them are rules](issues/0026-program-edits-and-the-rules-boundary.md),
+> [Build the Program edits](issues/0028-build-the-program-edits.md).
 
 ### 6.7 Flow 4 — History and the progression chart
 

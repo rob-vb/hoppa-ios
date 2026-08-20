@@ -3,14 +3,13 @@
 ///
 /// **A plain array of strings, and nothing else.** A suggestion sets the Name and never
 /// the Equipment Type or the Increment — the catalogue is a typing aid, not an inference
-/// engine — so there is nothing else to store. It lives here rather than in `HoppaRules`
-/// because it is content, not a rule, and rather than in a bundle because a bundle buys
-/// only a file to lose.
+/// engine — so there is nothing else to store. It is not in a bundle because a bundle
+/// buys only a file to lose.
 ///
-/// > The **matching and ranking** §6.3 also specifies — word-start, case- and
-/// > accent-insensitive, own names first, six on focus — is *not* here. It is a rule, it
-/// > needs Foundation to fold accents, and `HoppaRules` imports no Foundation, so it has
-/// > no home yet. See the map's fog, not this file.
+/// It lives in `HoppaRules` and not beside the store, because the **ranking** §6.3
+/// specifies reads both sources and de-duplicates across them: the catalogue is one half
+/// of a rule's input, so it belongs where the rule is. See `Suggestions.swift` for the
+/// other half.
 ///
 /// Two conventions the list is checked against, both from §6.3:
 ///

@@ -41,9 +41,8 @@ final class TempDirectory {
     }
 
     /// Puts a Program on disk the way a returning user has one: as a file the store
-    /// loads. There is no action that creates a Program yet — §6.6's Program edits are
-    /// [ticket 26](../../../../issues/0026-program-edits-and-the-rules-boundary.md) — so
-    /// this is also the only honest way to get one.
+    /// loads — which is what most of these tests need, rather than one built up through
+    /// `createProgram` action by action.
     @discardableResult
     func seed(_ logbook: Logbook = seedLogbook()) throws -> Logbook {
         try LogbookFile.encode(logbook).write(to: self.logbook)

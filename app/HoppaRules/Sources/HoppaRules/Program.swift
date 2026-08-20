@@ -16,9 +16,14 @@ public struct Exercise: Codable, Sendable, Hashable {
     public var ownWeightUnit: WeightUnit
     public var plannedSets: Int
     public var repRange: RepRange
-    public var workingWeight: Weight
-    /// Progressive Overload. Any number the user types.
-    public var increment: Weight
+    /// **May be unset** (`SPEC.md` §2.3, §2.8). `nil` is *the user has not typed one* — a
+    /// new Exercise, or one §6.6 has just cleared — and it is not zero, because zero is a
+    /// real weight: a Bodyweight Exercise done with no belt. An Exercise with no Working
+    /// Weight logs no Set and does not progress, and the Re-weigh list is exactly these.
+    public var workingWeight: Weight?
+    /// Progressive Overload. Any number the user types. **May be unset**, like the
+    /// Working Weight, and §6.6 clears it with it.
+    public var increment: Weight?
     /// Microloading. A Microplate the user owns, in the **Plate Inventory's** unit, even
     /// when the Exercise uses the other one. `nil` until a Microplate is switched on.
     public var microloadingIncrement: Weight?
@@ -39,8 +44,8 @@ public struct Exercise: Codable, Sendable, Hashable {
         ownWeightUnit: WeightUnit = .kg,
         plannedSets: Int,
         repRange: RepRange,
-        workingWeight: Weight,
-        increment: Weight,
+        workingWeight: Weight? = nil,
+        increment: Weight? = nil,
         microloadingIncrement: Weight? = nil,
         modeOverride: ProgressionMode? = nil,
         storedBaseWeight: Weight? = nil,

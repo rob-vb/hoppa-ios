@@ -16,8 +16,10 @@ public struct ResolvedExercise: Sendable, Hashable {
     public let mode: ProgressionMode
     public let plannedSets: Int
     public let repRange: RepRange
-    public let workingWeight: Weight
-    public let increment: Weight
+    /// `nil` when the user has not typed one (`SPEC.md` §2.3, §2.8). Unset is not zero.
+    public let workingWeight: Weight?
+    /// `nil` when the user has not typed one.
+    public let increment: Weight?
     public let microloadingIncrement: Weight?
     /// `nil` on any type that has none, whatever is stored.
     public let baseWeight: Weight?
@@ -26,6 +28,14 @@ public struct ResolvedExercise: Sendable, Hashable {
     /// A Microload exists only on a pin whose unit differs from the rack's
     /// (`SPEC.md` §2.3). `nil` everywhere else, whatever is stored.
     public let microload: Weight?
+    /// **Stranded**: the Microloading Increment names a Microplate that is switched off
+    /// in the Plate Inventory (`SPEC.md` §6.6).
+    ///
+    /// A fact about the Increment, so it is true whatever the Mode — it only *bites*
+    /// under Microloading, where `progressionMove` refuses to move steel the user does
+    /// not own. Nothing is written and nothing is cleared: switch the plate back on and
+    /// the Exercise progresses again, with the plate the user picked.
+    public let isStranded: Bool
 
     /// What a Set must reach for this Exercise's Mode.
     public var thresholdReps: Int { repRange.threshold(for: mode) }
@@ -41,6 +51,13 @@ extension Exercise {
     /// The Weight Unit of this Exercise. Derived, never stored (`SPEC.md` §2.8).
     public func weightUnit(in inventory: PlateInventory) -> WeightUnit {
         equipment.takesUnitFromInventory ? inventory.unit : ownWeightUnit
+    }
+
+    /// Whether the Microplate this Exercise names is switched off (`SPEC.md` §6.6).
+    /// False when it names none at all — that is §5.2's empty state, not a stranding.
+    public func isStranded(in inventory: PlateInventory) -> Bool {
+        guard let plate = microloadingIncrement?.relabelled(inventory.unit) else { return false }
+        return !inventory.enabledMicroplates.contains(plate)
     }
 
     public func mode(in program: Program) -> ProgressionMode {
@@ -66,12 +83,13 @@ extension Exercise {
             // A derived unit relabels the stored number; it never converts it. §6.6
             // clears the weights when the rack's unit changes, so nothing is reinterpreted
             // behind the user's back.
-            workingWeight: workingWeight.relabelled(unit),
-            increment: increment.relabelled(unit),
+            workingWeight: workingWeight?.relabelled(unit),
+            increment: increment?.relabelled(unit),
             microloadingIncrement: microloadingIncrement?.relabelled(inventory.unit),
             baseWeight: equipment.takesBaseWeight ? storedBaseWeight?.relabelled(unit) : nil,
             stackStep: equipment.hasPin ? storedStackStep?.relabelled(unit) : nil,
-            microload: mixedUnitPin ? (microload ?? .zero(inventory.unit)).relabelled(inventory.unit) : nil
+            microload: mixedUnitPin ? (microload ?? .zero(inventory.unit)).relabelled(inventory.unit) : nil,
+            isStranded: isStranded(in: inventory)
         )
     }
 }

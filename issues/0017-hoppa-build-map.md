@@ -56,6 +56,15 @@ real**, and nothing after that is worth doing before it.
     be type-checked on the VPS against the built modules, and so can every rules/store call a
     SwiftUI view makes. See the charter bullet on Swift on the VPS. What reaches Rob should be
     something that has already had every checkable thing checked.
+  - **The queue, as it stands.** One Mac session covers all of it.
+    1. [The Logbook on disk](0025-the-logbook-on-disk.md) — the **force-quit on the phone**, which
+       is the one proof this machine cannot give. That ticket is still open for it.
+    2. [Build the Program edits](0028-build-the-program-edits.md) — `#expect(Rules.fold("é") == "e")`
+       in `SuggestionTests`. Green on Linux; it proves Apple ships the Unicode name tables. **Red on
+       Darwin means drop folding, keep `lowercased()`**, and say so here.
+    3. Open the project once and check it still builds. Nothing has needed a `project.pbxproj` edit
+       since ticket 25 patched one in — a file moving *between* two linked packages is invisible to
+       Xcode, because both are path references and SPM globs their sources.
 
 - **Charter decisions** (settled while charting, before any ticket):
   - **Local only.** No account, no sync, no server, no CloudKit. Programs and Workouts live on the
@@ -277,6 +286,26 @@ real**, and nothing after that is worth doing before it.
   The build **merged into** [Build the Program edits](0028-build-the-program-edits.md) as piece 5,
   rather than taking a ticket: same package, same Mac session.
 
+- **[Build the Program edits](0028-build-the-program-edits.md)** — **§6.6 and §6.3 are built, and
+  `swift test` is green here: 98 tests in `HoppaRules`, 25 in `HoppaStore`.** Every guard was
+  re-broken and **36 of 36 turned a suite red**; the committed 56-Workout snapshot did not move a
+  byte, which is what proves widening two fields to `Optional` changed nothing that was already set.
+  Four findings outrank the code. **§6.6 says "the four Equipment Types that carry their own unit"
+  and names Bodyweight — there are three**, and §2.3, §5.1, §6.6's own next paragraph and its
+  Microload table all always said so; the code had to pick, so the spec is fixed. **A change of
+  Equipment Type is a change of unit**: the unit is derived, so a Dumbbell in lbs turned into a
+  Barbell now reads a kg rack and its `100` means something nobody typed — the clearing rule watches
+  the unit the Exercise *resolves to*, and the mirror of that is writing a Base Weight back **only
+  where the new type shows the row**, so `nil` never means *cleared* when it meant *absent*.
+  **`isStranded` is a fact about the Increment, not about progression** — ticket 26 read literally
+  stops a Progressive Overload Exercise for a Microplate it never uses, so the guard sits inside the
+  Microloading branch. And §6.3 had three rules nobody had needed until now: **trained means at
+  least one logged Set**, the fold must **drop a combining mark** or `é` matches `e` in one spelling
+  and not the other, and a word-start match is a match **at** a word start, so `bench p` finds
+  `Barbell Bench Press`. Ticket 25's sixth guard is paid off: `createProgram` at an `.unreadable`
+  store writes nothing, and the same action on a fresh install lands. `project.pbxproj` needed no
+  edit.
+
 ## Not yet specified
 
 - **Drawing the loaded bar, and the Ignition confetti, natively.** `SPEC.md` §7.5 and §6.5 specify
@@ -288,11 +317,11 @@ real**, and nothing after that is worth doing before it.
   because it is the screen with the most rules behind it. The model exists, the seam is fixed and
   [The Logbook on disk](0025-the-logbook-on-disk.md) has put a real store under a real screen — a
   harness, not Flow 2, but the wiring is proved. This is ticketable as soon as that force-quit test
-  passes on the phone. **Flow 1's entanglement is gone**: both of the tickets it waited on are
-  decided, and both build in
-  [Build the Program edits](0028-build-the-program-edits.md) — §6.6's create and edit actions as
-  pieces 1–4, §6.3's name field as piece 5. So build order is now a question about the screens
-  alone.
+  passes on the phone. **Everything under the screens is now built.**
+  [Build the Program edits](0028-build-the-program-edits.md) landed §6.6's create and edit actions
+  and §6.3's name field, so Flow 1 and Flow 5 have their rules and Flow 2 has had them since ticket
+  23. What is left is SwiftUI, which is the one thing this machine cannot prove — so the shape of
+  the next ticket is *which screen, and what does the Mac have to see*.
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
   machines edit the same Xcode project file — the agent by patching it, Xcode by regenerating it.
   It is a merge conflict waiting to happen, in a file no one wants to hand-merge. Not sharp until
@@ -312,6 +341,11 @@ real**, and nothing after that is worth doing before it.
   loop's expensive unit, and it is unverified until Rob opens the project. Whether the agent *should*
   own this file is the live half of this question, and there is now one instance of each direction
   to judge it on.
+  **A third hand-off needed no edit at all.** [Build the Program edits](0028-build-the-program-edits.md)
+  moved a source file *between* the two packages and added four more, and Xcode never has to know:
+  both are path references and SPM globs their sources, so the file list is not in `project.pbxproj`
+  to begin with. The question is narrower again — it is about **adding a package or a target**, and
+  nothing else.
 - **Deleting a Program.** §6.6 specifies deleting an Exercise and a Workout Day, with two blocks.
   §2.1 allows more than one Program. Nothing says what a whole Program delete does, or whether the
   last Program is blocked the way the last Workout Day is. Found while working

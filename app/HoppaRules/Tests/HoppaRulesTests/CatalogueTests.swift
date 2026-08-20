@@ -1,5 +1,5 @@
 import Testing
-@testable import HoppaStore
+import HoppaRules
 
 /// The Exercise Catalogue decides nothing, so what is checked is the two conventions
 /// §6.3 states — and both are checkable against the list of strings alone, which is why

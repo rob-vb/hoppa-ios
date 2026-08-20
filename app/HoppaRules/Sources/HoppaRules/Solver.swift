@@ -85,12 +85,26 @@ extension Rules {
     ///
     /// The big number is **always the Working Weight Hoppa tracks**: it never changes to
     /// fit the plate rack (`SPEC.md` §5.4). Only this drawing deals with the gap.
+    ///
+    /// `nil` when there is no weight to draw: the Working Weight is unset and no One-off
+    /// stands in for it (`SPEC.md` §2.8). The solve itself takes a concrete `Weight`; the
+    /// unwrapping happens here, once, so no rule below has to think about it.
     public static func breakdown(
         for exercise: ResolvedExercise,
         performedAt oneOffWeight: Weight? = nil,
         inventory: PlateInventory
+    ) -> PlateBreakdown? {
+        guard let performed = oneOffWeight ?? exercise.workingWeight else { return nil }
+        return breakdown(for: exercise, at: performed, inventory: inventory)
+    }
+
+    /// The solve, at a weight that is known.
+    public static func breakdown(
+        for exercise: ResolvedExercise,
+        at weight: Weight,
+        inventory: PlateInventory
     ) -> PlateBreakdown {
-        let target = (oneOffWeight ?? exercise.workingWeight).relabelled(exercise.unit)
+        let target = weight.relabelled(exercise.unit)
         let sizes = inventory.plates(for: exercise.mode)
 
         if exercise.equipment.isBarLoaded {

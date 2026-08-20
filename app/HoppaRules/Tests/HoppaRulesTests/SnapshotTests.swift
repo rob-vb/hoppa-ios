@@ -90,7 +90,7 @@ struct SnapshotTests {
             var before: [ExerciseID: (weight: Weight, microload: Weight?)] = [:]
             for performed in open.exercises {
                 let resolved = book.resolvedExercise(performed.exerciseId)!
-                before[performed.exerciseId] = (resolved.workingWeight, resolved.microload)
+                before[performed.exerciseId] = (resolved.workingWeight!, resolved.microload)
             }
 
             for index in open.exercises.indices {
@@ -106,7 +106,7 @@ struct SnapshotTests {
                 let resolved = book.resolvedExercise(id)!
                 // A One-off Weight: performed lighter for one Workout, never the Working Weight.
                 let oneOff = session.week == History.oneOffWeek && id == ExerciseID(101)
-                    ? resolved.workingWeight - kg("7.5")
+                    ? resolved.workingWeight! - kg("7.5")
                     : nil
                 if let oneOff { send(.setOneOffWeight(oneOff)) }
 
@@ -131,7 +131,7 @@ struct SnapshotTests {
 
                 if assertInvariants {
                     check(
-                        name: after.name, before: start, after: (after.workingWeight, after.microload),
+                        name: after.name, before: start, after: (after.workingWeight!, after.microload),
                         stackStep: after.stackStep, inventory: book.plateInventory,
                         progressed: outcome.progressed)
                 }
@@ -219,7 +219,7 @@ struct SnapshotTests {
         // is exactly the case `gen-fixture.mjs` engineered its way around, so a run that
         // never rolls up has quietly stopped testing the rule.
         let pulldown = result.book.resolvedExercise(ExerciseID(103))!
-        #expect(pulldown.workingWeight > lbs("90"), "the pin never moved")
+        #expect(pulldown.workingWeight! > lbs("90"), "the pin never moved")
         let step = pulldown.stackStep!.converted(to: result.book.plateInventory.unit)
         #expect(pulldown.microload!.hundredths < step.hundredths)
     }

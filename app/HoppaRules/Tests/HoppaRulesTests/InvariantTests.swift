@@ -291,7 +291,7 @@ struct InvariantTests {
         let inLbsGym = exercise.resolved(mode: .progressiveOverload, inventory: .standard(.lbs))
 
         #expect(inLbsGym.unit == .lbs)                   // the rack decides
-        #expect(inLbsGym.workingWeight.hundredths == 6000)   // relabelled, not converted
+        #expect(inLbsGym.workingWeight?.hundredths == 6000)  // relabelled, not converted
         #expect(exercise.resolved(mode: .progressiveOverload, inventory: rackKg()).unit == .kg)
     }
 
