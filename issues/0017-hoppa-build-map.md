@@ -78,6 +78,12 @@ real**, and nothing after that is worth doing before it.
     builds and tests *here*. Run `swift test` before every push; do not send unproven rules to the
     Mac to find out whether they parse. `swift` is on `PATH` via `/usr/local/bin`, and
     `.swift-version` pins the toolchain.
+    **It reaches further than "imports nothing".** At
+    [The view layer around the rules](0024-the-view-layer-around-the-rules.md) both `Foundation` and
+    `Observation` were checked here — an `@Observable` class with `withObservationTracking` and a
+    `FileManager` call compile and run under `-swift-version 6`. So a package is Mac-only when it
+    imports **SwiftUI or UIKit**, or needs a simulator or a device; not merely because it touches
+    files or state. Test that assumption before accepting it: it has now been wrong once.
   - **`SPEC.md` §8.2 is the known-defect list.** The `Fitty` module in
     `design/0007-logging/fitty-workout-logging.html` predates three later tickets and is wrong in
     eight named ways. The spec is right and the code is wrong. Fix them in the lift; never port a
@@ -166,6 +172,24 @@ real**, and nothing after that is worth doing before it.
   and they graduate as
   [Program edits, and which of them are rules](0026-program-edits-and-the-rules-boundary.md).
 
+- **[The view layer around the rules](0024-the-view-layer-around-the-rules.md)** — the seam is **one
+  package, `app/HoppaStore`**, defined by what it may not import: `HoppaRules`, `Foundation` and
+  `Observation`, and **never SwiftUI**, so view state cannot creep back into the store by discipline
+  failing. The bigger find is that **it builds and tests on the VPS** — `@Observable` and
+  `FileManager` both compile and run here, checked before the question was put — so the code that can
+  erase Rob's training is provable next to the rules it forwards to. `@MainActor LogbookStore` takes a
+  **URL** (not a protocol, so the tests run the real atomic write), owns the clock but **not the id
+  counter** — ticket 19 said it did, and ticket 23's `Logbook.nextId` had already overtaken that — and
+  exposes **one `send(Action)`**. Loading has **three** outcomes: no file is `.empty`, a corrupt file
+  **or one from a newer `schemaVersion`** is `.unreadable` with no `Logbook` at all, because an empty
+  Logbook plus a flag looks like a fresh install with everything gone. Migration is **additive by
+  default**; a numbered step works on JSON, never on frozen per-version structs, and every bump commits
+  a real old file. Views keep the keypad buffer, the sheets and the `NavigationStack` path in `@State`
+  and read `ResolvedExercise` directly — no screen projection, which would be a third model. The Rest
+  Timer is a `TimelineView` over `now − restStartedAt`, which **closes the backgrounding fog**: elapsed
+  time is subtraction, so a lock, a background and a call cost no code.
+  [The Logbook on disk](0025-the-logbook-on-disk.md) was rewritten off the Mac onto the VPS.
+
 ## Not yet specified
 
 - **Drawing the loaded bar, and the Ignition confetti, natively.** `SPEC.md` §7.5 and §6.5 specify
@@ -173,14 +197,11 @@ real**, and nothing after that is worth doing before it.
   Core Animation — not sharp until there is a project to run them in.
 - **Appearance: dark only, or a light mode too.** The whole spec is dark-first and never says
   whether light mode exists. On iOS that is a decision with real work behind it, not a default.
-- **The Rest Timer across backgrounding.** §6.4 gives a count-up stopwatch that auto-starts after
-  each Set. What it does when the phone locks, the app backgrounds, or a call comes in is an iOS
-  question the spec never had to answer. `restStartedAt` is a pure `Timestamp` on the `Workout`
-  after ticket 20, so the *state* is settled; only the iOS behaviour is still fog.
-  [The view layer around the rules](0024-the-view-layer-around-the-rules.md) may sharpen it.
 - **Build order across the five flows, and what "done" means for each.** Probably logging first,
-  because it is the screen with the most rules behind it — but that is a guess until the model
-  exists.
+  because it is the screen with the most rules behind it. The model now exists and the seam is
+  fixed, so this is close to ticketable — it waits on
+  [The Logbook on disk](0025-the-logbook-on-disk.md), which puts a real store under a real screen for
+  the first time.
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
   machines edit the same Xcode project file — the agent by patching it, Xcode by regenerating it.
   It is a merge conflict waiting to happen, in a file no one wants to hand-merge. Not sharp until
