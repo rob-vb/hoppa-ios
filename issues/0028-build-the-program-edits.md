@@ -164,6 +164,9 @@ absence of an effect.
 ### What the Mac still has to say
 
 One `#expect`, and it is the one ticket 27 flagged: `fold("é") == "e"` proves Apple ships the
-Unicode name tables. It is green on Linux. **Red on Darwin means drop folding and keep
-`lowercased()`** — ten lines, one test file, and §6.3's accent clause loses its second half. It is on
-the map's Mac hand-off queue rather than holding this ticket open.
+Unicode name tables. It was green on Linux and the risk was that Darwin ships no such table, which
+would have cost §6.3 half of its accent clause.
+
+**It is green on Darwin too** (Rob, 2026-08-20). Both suites run the same counts on the Mac — 98 and
+25 — and the Xcode project builds. So `Unicode.Scalar.Properties.name` is a fact a rule may read on
+both platforms, folding stays, and nothing this ticket wrote is Linux-only.

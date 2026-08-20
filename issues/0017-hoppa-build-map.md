@@ -59,12 +59,12 @@ real**, and nothing after that is worth doing before it.
   - **The queue, as it stands.** One Mac session covers all of it.
     1. [The Logbook on disk](0025-the-logbook-on-disk.md) — the **force-quit on the phone**, which
        is the one proof this machine cannot give. That ticket is still open for it.
-    2. [Build the Program edits](0028-build-the-program-edits.md) — `#expect(Rules.fold("é") == "e")`
-       in `SuggestionTests`. Green on Linux; it proves Apple ships the Unicode name tables. **Red on
-       Darwin means drop folding, keep `lowercased()`**, and say so here.
-    3. Open the project once and check it still builds. Nothing has needed a `project.pbxproj` edit
-       since ticket 25 patched one in — a file moving *between* two linked packages is invisible to
-       Xcode, because both are path references and SPM globs their sources.
+    2. ~~[Build the Program edits](0028-build-the-program-edits.md) — `#expect(Rules.fold("é") == "e")`
+       in `SuggestionTests`.~~ **Done, 2026-08-20: green on Darwin.** Apple ships the Unicode name
+       tables, so `Unicode.Scalar.Properties.name` is a fact a rule may read on both platforms, and
+       §6.3 keeps accent folding. This was the last thing ticket 27 left unproven.
+    3. ~~Open the project once and check it still builds.~~ **Done, 2026-08-20: it builds.** Both
+       package suites are green on the Mac too — 98 and 25, the same counts as here.
 
 - **Charter decisions** (settled while charting, before any ticket):
   - **Local only.** No account, no sync, no server, no CloudKit. Programs and Workouts live on the
