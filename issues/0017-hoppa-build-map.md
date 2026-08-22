@@ -384,6 +384,33 @@ real**, and nothing after that is worth doing before it.
   15 kg plate, the amber is the `PROTOTYPE — THROWAWAY` banner, the red pair contradicts §7.1's
   `#C8322B` DELETE, and the rest are tints of a named role.
 
+- **[Drawing the loaded bar and the Ignition confetti natively](0031-drawing-the-bar-and-the-confetti.md)**
+  — **plain `Shape`s for the bar, `Canvas` + `TimelineView` for the confetti**, which is the reverse
+  of the reflex. One fact read twice: **`Canvas` gives you a draw call and takes away layout.** The
+  bar is layout and no animation — it is an `HStack` of rounded rectangles, and §7.1 rule 2 becomes
+  a fill/stroke distinction the type system carries. The confetti is a **physics integration**
+  (gravity, drag, spin), which no animation curve expresses, so something steps state per frame
+  whichever technique wins — and then one `Canvas` draws ~75 slabs with no view identity to keep.
+  `SpriteKit` and `CAEmitterLayer` both need a bespoke image for a hollow steel particle; `Canvas`
+  strokes a rounded rect. **No Mac session of its own**: Rob folded both drawings into the existing
+  batches, so the bar rides Batch 2 and the confetti rides Batch 3. The one thing argument cannot
+  settle — whether ~75 particles hold 60 fps — is answered there for free.
+  **Reduce Motion is honoured**, unlike Appearance and Dynamic Type: the 190 ms row sequence stays
+  and the burst does not fire, because the sequence is *why* Ignition won and the cloud is the part
+  that causes trouble.
+  **Which plates a burst throws is a rule**, and the line is: the `Logbook` decides the colours, and
+  the arc is random by design. `Rules.burstSource(_:)` returns the sampling list, one entry per
+  plate, so §6.5's proportional-by-count falls out of uniform picking for free. It kills §8.2's
+  first summary defect — the prototype threw the Increment plate for every non-plate-loaded type.
+  **107 green**, up from 98. Two edges stated: everything on the pin throws, not just the Microload;
+  and an empty source throws steel, because every Went-up row must land.
+  **The steel of a drawing is one hue at seven lightnesses.** Measured: every grey in §7.2 *and*
+  both prototypes sits on **hue 210° at 4–10% saturation**, so `Steel.hex(lightness:)` derives them
+  all from §7.2's `#9BA1A7` — **zero new hues, zero findings**, the second time ticket 30's
+  escalation rule has fired nothing. It imports nothing, so it was compiled and run here, and the
+  run caught what no reading would: **`Double.rounded()` is libm, and libm is not linked without
+  Foundation.** The `is-this-a-rule` test's step 2 now bites *view* files too.
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
@@ -430,9 +457,9 @@ real**, and nothing after that is worth doing before it.
   [Build order across the flows, and what done means for a screen](0029-build-order-and-what-done-means.md).
 - **Increase Contrast, and the rest of the accessibility settings.** [Dark only, or a light mode
   too](0030-dark-only-or-a-light-mode.md) settled the two that reach every screen — Appearance and
-  Dynamic Type — and sent Reduce Motion to
-  [Drawing the loaded bar and the Ignition confetti](0031-drawing-the-bar-and-the-confetti.md),
-  which is the ticket that draws the thing it turns off. Increase Contrast is left because §7.2's
+  Dynamic Type — and **Reduce Motion is now settled too**, at
+  [Drawing the loaded bar and the Ignition confetti](0031-drawing-the-bar-and-the-confetti.md): the
+  rows still land, the particles do not. Increase Contrast is left because §7.2's
   dim text `#8D9296` on the `#0E0F10` floor is the only place it plainly bites, and nobody has
   looked at that ratio yet. Not sharp until a screen exists to look at. VoiceOver and the rest have
   not been considered at all, which is a statement of fact rather than a decision.

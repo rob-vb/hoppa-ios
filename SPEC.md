@@ -860,6 +860,10 @@ Three models were built into one watchable prototype and driven live; the user c
   nothing is fixed with more particles, never with lighter ones.
 - The sequence runs **~1.4 s**, after which the screen is quiet and every number is readable.
 - **Zero progressed fires nothing at all.**
+- **Reduce Motion is honoured** — the one system setting Hoppa does not ignore. When it is on the
+  rows still land in sequence, and no burst fires. The sequence is what makes the count *a count
+  you watch land*, which is why Ignition won; the particle cloud is the part that causes motion
+  trouble. §7.2's two locks are about a design that depends on them, and this is not that.
 
 #### Which plates a burst throws
 
@@ -1187,7 +1191,7 @@ so its line is steel and its only colour is green, which §7.3 already gives a s
 **Hoppa is dark only, and it is locked.** The app ignores the phone's Appearance setting, in both
 places that setting reaches: `.preferredColorScheme(.dark)` on the SwiftUI hierarchy and
 `UIUserInterfaceStyle = Dark` in the Info.plist, which is what the launch screen and any UIKit
-chrome obey. **It ignores Dynamic Type too**, for the same reason §7.4 fixes its sizes in points:
+chrome obey. **Reduce Motion is the one system setting it does honour** (§6.5). **It ignores Dynamic Type too**, for the same reason §7.4 fixes its sizes in points:
 a layout with a 0.78 line-height and a 50 px hit target does not survive a text scale. That is
 `.dynamicTypeSize(.large)` at the root, and every font built with `fixedSize` rather than `size`.
 A light mode is out of scope (§10).

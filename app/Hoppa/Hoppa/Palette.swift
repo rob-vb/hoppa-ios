@@ -26,3 +26,21 @@ extension Color {
     static let go = Color(hex: 0x2E9E52)      // green — done / progression
     static let stop = Color(hex: 0xC8322B)    // 25 kg red
 }
+
+// MARK: - The steel of a drawing (SPEC.md §5.5, ticket 0031)
+
+// A loaded bar and a stack draw seven things that carry no plate colour. §7.2 names one
+// of them; ticket 30 forbids a view inventing the other six. They are all one hue at
+// different lightnesses, so `Steel` derives them and this is only the naming.
+//
+// `Steel` imports nothing, so the arithmetic is checked on the VPS: it reproduces
+// §7.2's `#9BA1A7` exactly and every prototype grey within 3/255.
+extension Color {
+    static let stackEmpty = Color(hex: Steel.stackEmpty)
+    static let collar     = Color(hex: Steel.collar)
+    static let knurlLow   = Color(hex: Steel.knurlLow)
+    static let sleeveStop = Color(hex: Steel.sleeveStop)
+    static let shaft      = Color(hex: Steel.shaft)
+    static let knurlHigh  = Color(hex: Steel.knurlHigh)
+    static let pin        = Color(hex: Steel.pin)
+}
