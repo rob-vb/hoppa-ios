@@ -66,6 +66,36 @@ real**, and nothing after that is worth doing before it.
     - **Both suites run the same counts on the Mac**, 98 and 25, and the project builds — including
       the `project.pbxproj` the agent hand-patched at ticket 25. **No toolchain drift today**, which
       is what makes proving things here worth anything.
+  - **The queue from here is three hand-offs, not eight.** Set at
+    [Build order across the flows, and what done means for a screen](0029-build-order-and-what-done-means.md).
+    A batch goes over **when the queue holds a path Rob can walk end to end**, never on a count —
+    handing over a screen with no way into it wastes the expensive half of the loop.
+    **Batch 1** after [The Exercise sheet, and the name field](0035-the-exercise-sheet.md): empty app
+    to a real Program with real Exercises. **Batch 2** after
+    [The weight sheet](0037-the-weight-sheet.md): start a Workout, log Sets, change a weight.
+    **Batch 3** after [The Ignition confetti](0039-the-ignition-confetti.md): Finish, and watch the
+    Summary land. Each hand-off is **one message with a numbered list**, every item *do X → expect
+    Y*, item one always `git pull` plus a build, the last always `git push` if Xcode changed
+    anything, and a closing note on **what is not built yet** so a missing thing is never reported as
+    a defect.
+
+- **What "done" means for a screen**, from
+  [Build order across the flows, and what done means for a screen](0029-build-order-and-what-done-means.md).
+  Three rules, and every screen ticket inherits them.
+  - **The spec's numbers are the contract; the artboard is the reference.** §7.4 holds exactly —
+    padding 20, radii 2–3, hit targets 50 and 64, safe top inset 54 with nothing drawn in it, the
+    8/16 rhythm, Anton at 0.78–0.94. Arrangement, copy and palette follow the artboard. Nothing is
+    measured pixel for pixel: the artboards are HTML at a fixed width and a phone is not.
+    **`SPEC.md` beats the artboard wherever they disagree** — §8.2 already lists nine defects in the
+    logging prototype, so the artboards are a reference with known errors, not a target.
+  - **A screen ticket closes when it is pushed, not when Rob has seen it.** Written, type-checked
+    here against the built modules, pushed. Rob's verdict arrives out of band, and a complaint is a
+    **finding with its own ticket**. The cost, stated once: a closed screen ticket is not a seen
+    screen, and a screen counts toward the destination only after he looks at it.
+  - **No UI tests.** XCUITest runs only on the Mac, which is the scarce resource, and it is slow and
+    brittle. The view layer's proof is a type-check here plus Rob's eyes. If a screen grows logic
+    worth testing, that logic does not belong in the view — it belongs in `HoppaRules` or
+    `HoppaStore`, where a test is cheap and runs on this machine.
 
 - **Charter decisions** (settled while charting, before any ticket):
   - **Local only.** No account, no sync, no server, no CloudKit. Programs and Workouts live on the
@@ -309,6 +339,34 @@ real**, and nothing after that is worth doing before it.
   store writes nothing, and the same action on a fresh install lands. `project.pbxproj` needed no
   edit.
 
+- **[Build order across the flows, and what done means for a screen](0029-build-order-and-what-done-means.md)**
+  — **the way to the destination is eight tickets and three hand-offs.** Build order is
+  **shell + Flow 1 → Flow 2 → Flow 3**, the *trainable* milestone, chosen by what the destination
+  is rather than by which screen has the most rules under it: Flow 2 is the screen at the rack, but
+  it can only log against `HarnessSeed` until Flow 1 exists, and **a fake Program is not the app**.
+  Flow 4 goes last because **a chart needs weeks of Workouts to be testable at all**. The eight are
+  [the shell](0032-the-shell-and-the-first-run.md),
+  [the name and the rack](0033-the-program-name-and-the-plate-rack.md),
+  [the hub and the Day](0034-the-program-sheet-and-the-workout-day.md),
+  [the Exercise sheet](0035-the-exercise-sheet.md),
+  [the logging screen](0036-the-logging-screen.md), [the weight sheet](0037-the-weight-sheet.md),
+  [the Summary](0038-the-workout-summary.md) and [the confetti](0039-the-ignition-confetti.md) —
+  one screen plus the sheets only it opens, a linear chain because each screen needs its own way in.
+  **The whole chain is blocked today**, so the frontier is
+  [Dark only, or a light mode too](0030-dark-only-or-a-light-mode.md) and
+  [Drawing the loaded bar and the Ignition confetti](0031-drawing-the-bar-and-the-confetti.md) and
+  nothing else. Three rules now live in Notes: **`SPEC.md` beats the artboard** (§8.2 lists nine
+  defects, so an artboard is a reference with known errors), **a screen ticket closes when pushed,
+  not when Rob has seen it** — otherwise his build sessions sit on the map's critical path, the exact
+  cost he refused at ticket 25 — and **no UI tests**, because XCUITest spends the scarce resource and
+  every rule under every screen is already green. Two spec gaps closed on the way: **the first run
+  had no screen** and is now the empty picker with `CREATE A PROGRAM`, not a jump into step 1, so the
+  picker keeps one role (`SPEC.md` §6.1); and **the Program sheet is in two flows at once**, so
+  ticket 34 builds only what onboarding needs and leaves everything carrying a warning or a mirror
+  into the Open Workout to Flow 5. `AcceptanceHarness` dies at ticket 32; **`HarnessSeed` survives
+  behind a debug switch**, because Flow 4 needs sixteen weeks of history and typing that on a phone
+  is not a test.
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
@@ -346,6 +404,13 @@ real**, and nothing after that is worth doing before it.
   [Program edits, and which of them are rules](0026-program-edits-and-the-rules-boundary.md) settled
   deleting an Exercise and a Workout Day, which §6.6 *does* specify, and deliberately left this one
   here — it is a gap in the spec, so it needs a decision and not a build.
+- **Flow 5's remaining screens, and all of Flow 4.** Reorder handles, deleting an Exercise or a
+  Workout Day, the two warning dialogs and the Re-weigh list (§6.6); the history list, the streak and
+  the per-Exercise chart (§6.7). **These are fully specified and sharp enough to ticket today** —
+  they sit here as a scheduling choice, not a gap. Their slicing changes with what real training
+  teaches, and this map already expects findings from the rack; the history screen and the Program
+  edits are where those land hardest. They graduate once Rob has trained with Flow 1–3. Held at
+  [Build order across the flows, and what done means for a screen](0029-build-order-and-what-done-means.md).
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.

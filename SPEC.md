@@ -618,6 +618,13 @@ anywhere on the screen.**
 
 **Hoppa starts empty.** No starter skeleton, no template, no Workout Days invented for the user.
 
+**The first run shows the Workout Day picker, empty.** `NOTHING HERE YET`, and one
+`CREATE A PROGRAM` button. Hoppa does not jump straight into step 1. The picker (§3.1) is always
+home, and onboarding is an ordinary route to it, so the app never has to decide at launch which
+screen it opens on. §6.6 refuses to delete the last Workout Day, so this is in practice a first-run
+state. Settled at
+[Build order across the flows, and what done means for a screen](issues/0029-build-order-and-what-done-means.md).
+
 Three steps to owning a Program:
 
 1. **Name the Program.** Under the name field, one card shows the three decisions Hoppa makes at
