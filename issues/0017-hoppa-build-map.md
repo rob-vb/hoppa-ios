@@ -367,6 +367,23 @@ real**, and nothing after that is worth doing before it.
   behind a debug switch**, because Flow 4 needs sixteen weeks of history and typing that on a phone
   is not a test.
 
+- **[Dark only, or a light mode too](0030-dark-only-or-a-light-mode.md)** — **dark only, locked in
+  both places**, because `.preferredColorScheme(.dark)` pins the SwiftUI hierarchy and nothing else;
+  `UIUserInterfaceStyle = Dark` is now on both configurations so the launch screen agrees. **Dynamic
+  Type is ignored too**, and that is not free: `Font.custom(_:size:)` **scales by default** and only
+  `fixedSize` does not, so §7.4's fixed points need `.dynamicTypeSize(.large)` at the root and a
+  `Typography.swift` no view may bypass. A light mode is **out of scope, not fog** — §7.3's plate
+  colours are physical and cannot invert, so it is a design effort riding with the launch. Two
+  findings outrank the decision. **The word *steel* had two values in two files**: `PlatePalette`
+  called `#3A3E42` steel and §7.2 calls `#9BA1A7` steel — the plate one was the **chip border**. The
+  boundary that settles it is **the rules own a fact about a plate, the app owns a surface role**, so
+  `PlatePalette` is now `hex(for:)` and nothing else; a floor colour fails the `is-this-a-rule` test's
+  *must* clause, and a plate colour does not. 98 green. And **the artboard uses 38 hexes where the
+  spec names 16**, which is why §7.2 now bans a literal in a view and makes a **new hue a finding
+  with a ticket** — a rule that fires **zero times** on the logging artboard: the gold is the deleted
+  15 kg plate, the amber is the `PROTOTYPE — THROWAWAY` banner, the red pair contradicts §7.1's
+  `#C8322B` DELETE, and the rest are tints of a named role.
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
@@ -411,6 +428,14 @@ real**, and nothing after that is worth doing before it.
   teaches, and this map already expects findings from the rack; the history screen and the Program
   edits are where those land hardest. They graduate once Rob has trained with Flow 1–3. Held at
   [Build order across the flows, and what done means for a screen](0029-build-order-and-what-done-means.md).
+- **Increase Contrast, and the rest of the accessibility settings.** [Dark only, or a light mode
+  too](0030-dark-only-or-a-light-mode.md) settled the two that reach every screen — Appearance and
+  Dynamic Type — and sent Reduce Motion to
+  [Drawing the loaded bar and the Ignition confetti](0031-drawing-the-bar-and-the-confetti.md),
+  which is the ticket that draws the thing it turns off. Increase Contrast is left because §7.2's
+  dim text `#8D9296` on the `#0E0F10` floor is the only place it plainly bites, and nobody has
+  looked at that ratio yet. Not sharp until a screen exists to look at. VoiceOver and the rest have
+  not been considered at all, which is a statement of fact rather than a decision.
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.
@@ -426,6 +451,13 @@ real**, and nothing after that is worth doing before it.
   was taken at [An empty app on the phone](0018-an-empty-app-on-the-phone.md) rather than a free
   Apple ID, and it is a reason for later tickets not to paint the launch into a corner. The launch
   itself stays a fresh effort with its own map.
+- **A light mode.** Ruled out at
+  [Dark only, or a light mode too](0030-dark-only-or-a-light-mode.md), and ruled *out of scope*
+  rather than into the fog on purpose: fog gathers toward the destination, and the destination is
+  Rob training in his own gym on a dark floor. A light mode serves the second lifter in a bright
+  gym, who first appears at the launch. Rob's words were "dark locked **for now**", and what keeps
+  the "for now" honest is §7.2's one-file rule — a light mode later is a second value per role, not
+  a hunt through the screens. `SPEC.md` §10 carries it.
 - **iCloud sync, accounts and any backend.** Settled at charter: local only.
 - **User-set plate colours.** `SPEC.md` §10 attaches a deadline to it — before the app is public —
   and this map never goes public. It stays where the design map left it.

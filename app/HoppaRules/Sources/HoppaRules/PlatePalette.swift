@@ -6,13 +6,12 @@
 ///
 /// The spec paints one gym's iron rack and lists kg only. An lbs rack has no palette
 /// yet, so `hex(for:)` returns `nil` there and the view falls back to steel.
+///
+/// It holds **only** plate colours. Ticket 30 drew the boundary: the rules own a fact
+/// about a plate, and the app owns a surface role, so the steel and the green that used
+/// to sit here have gone back to `Palette.swift` where §7.2 puts them. They collided —
+/// this file called `#3A3E42` "steel" and §7.2 calls `#9BA1A7` steel.
 public enum PlatePalette {
-    /// Steel: what a stack block, a dumbbell and an unpainted plate are drawn in.
-    public static let steel = "#3A3E42"
-
-    /// Green doubles as the done / progression colour.
-    public static let progression = "#2E9E52"
-
     public static func hex(for weight: Weight) -> String? {
         guard weight.unit == .kg else { return nil }
         return switch weight.hundredths {

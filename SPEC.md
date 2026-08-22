@@ -1184,6 +1184,19 @@ so its line is steel and its only colour is green, which §7.3 already gives a s
 
 ### 7.2 Surface palette
 
+**Hoppa is dark only, and it is locked.** The app ignores the phone's Appearance setting, in both
+places that setting reaches: `.preferredColorScheme(.dark)` on the SwiftUI hierarchy and
+`UIUserInterfaceStyle = Dark` in the Info.plist, which is what the launch screen and any UIKit
+chrome obey. **It ignores Dynamic Type too**, for the same reason §7.4 fixes its sizes in points:
+a layout with a 0.78 line-height and a 50 px hit target does not survive a text scale. That is
+`.dynamicTypeSize(.large)` at the root, and every font built with `fixedSize` rather than `size`.
+A light mode is out of scope (§10).
+
+**No view holds a colour literal.** The six roles below live in one file, and a screen that needs a
+value this table does not name adds a **named role** there — or, better, derives it from a role
+that is already named, because most of what the artboards add is a tint of the floor or a pressed
+state. A genuinely **new hue** is not a role: it is a finding, and it gets a ticket.
+
 | Role | Value |
 | --- | --- |
 | Floor (background) | `#0E0F10` |
@@ -1352,6 +1365,12 @@ flows this spec validates, so each is a later effort rather than a resumption of
   depends on which rack it is, because rule 1 of §7.1 (*colour plus size means weight*) survives
   any palette that replaces this one. A second palette needs the same care as the first and
   re-opens which colour means what, which is a design effort of its own.
+- **A light mode.** §7.2 locks the app to dark. The palette is not merely a preference: §7.3's
+  plate colours are **physical** — a blue 20 kg plate is blue in the gym — so they cannot invert,
+  and the Anton hero, the steel of the loaded bar and §7.1's unfilled steel confetti particles all
+  read against a dark floor by design. A light mode is therefore a design effort of its own, not a
+  token swap, and it rides with the App Store effort where a second lifter in a bright gym first
+  appears. §7.2's one-file rule is what keeps it cheap: a second value per role, not a hunt.
 - **Template library** (5/3/1, PPL, …): how templates and manual entry meet. Onboarding was built
   empty-first on purpose (§6.1).
 - **Equipment profiles shared across Exercises** — "Smith machine at my gym, 7 kg base". Base
