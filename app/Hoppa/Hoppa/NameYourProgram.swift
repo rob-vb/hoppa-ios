@@ -134,7 +134,7 @@ struct NameYourProgram: View {
                 draft.weightUnit = draft.defaultWeightUnit(rack: rack.unit) == .kg ? .lbs : .kg
                 draft.unitChosenByHand = true
             }
-            assumptionRow("Progression", value: modeName) {
+            assumptionRow("Progression", value: draft.mode.screenName) {
                 draft.mode = draft.mode == .progressiveOverload ? .microloading : .progressiveOverload
                 // §5.2 — Hoppa never blocks the Mode and never disables the option. It
                 // opens the Microplate group in place so the user switches on what they
@@ -147,10 +147,6 @@ struct NameYourProgram: View {
                 path.append(.plateRack(draft))
             }
         }
-    }
-
-    private var modeName: String {
-        draft.mode == .microloading ? "Microloading" : "Progressive overload"
     }
 
     /// **Standard until the user edits it.** The row exists to say *Hoppa already picked
@@ -231,8 +227,20 @@ struct NameYourProgram: View {
 struct StepHeader: View {
     /// `nil` on the same screen reached outside onboarding, where there is no step 2 of
     /// anything — the chevron stays, the count goes.
-    let step: Int?
+    let label: String?
     let back: () -> Void
+
+    init(step: Int?, back: @escaping () -> Void) {
+        self.label = step.map { "Step \($0) of 3" }
+        self.back = back
+    }
+
+    /// Ticket 0034's Day screen, which draws the Program's Name where onboarding draws
+    /// the step count — the same chevron, the same band, a different word.
+    init(label: String?, back: @escaping () -> Void) {
+        self.label = label
+        self.back = back
+    }
 
     var body: some View {
         HStack(spacing: 10) {
@@ -246,10 +254,11 @@ struct StepHeader: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            if let step {
-                Text("Step \(step) of 3")
+            if let label {
+                Text(label)
                     .typography(Typography.label(11))
                     .foregroundStyle(Color.dimText)
+                    .lineLimit(1)
             }
             Spacer()
         }

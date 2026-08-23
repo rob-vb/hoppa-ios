@@ -49,6 +49,19 @@ public struct Logbook: Codable, Sendable, Hashable {
         programs.first { $0.id == id }
     }
 
+    /// The Workout Day behind an id, **with the Program that holds it**.
+    ///
+    /// Both, because a screen showing a Day needs both: §6.1's Day screen draws the
+    /// Program's Name above the Day's, and the Day's Exercises resolve against the
+    /// Program's Mode. Two lookups would walk the same Programs twice and could
+    /// disagree about which Program a Day belongs to.
+    public func workoutDay(_ id: WorkoutDayID) -> (program: Program, day: WorkoutDay)? {
+        for program in programs {
+            if let day = program.days.first(where: { $0.id == id }) { return (program, day) }
+        }
+        return nil
+    }
+
     /// Every Exercise there is, in Program order: Programs, then Days, then position.
     /// The order the §6.6 lists are drawn in.
     public var allExercises: [Exercise] {

@@ -22,8 +22,20 @@ enum Route: Hashable {
     /// identical either way — Hoppa holds **one** Plate Inventory (§5.2) — so there is
     /// one screen and not two.
     case plateRack(ProgramDraft?)
-    /// Flow 5's hub, reached from the picker's `•••` — ticket 0034.
-    case programSheet(ProgramID)
+    /// §6.1 step 3 and Flow 5's hub, which are **the same screen** — ticket 0034.
+    ///
+    /// `onboarding` is the third step of three and nothing else: it draws the step count
+    /// and it makes the bottom control read `START A WORKOUT` instead of `DONE`. It
+    /// cannot be derived from the Logbook — a Program reached from the picker and a
+    /// Program just created look identical the moment the first Day is added — and it is
+    /// the same distinction `PlateRackScreen` draws from `draft == nil`.
+    case programSheet(ProgramID, onboarding: Bool)
+    /// One Workout Day and the Exercises in it — ticket 0034, under the hub.
+    case workoutDay(WorkoutDayID)
+    /// §6.6's Program-level edits: the Name, and the three decisions step 1 pre-answered.
+    /// The hub links to it, and it is the **only** door to the Plate Inventory outside
+    /// onboarding — ticket 0034.
+    case programSettings(ProgramID)
     /// Flow 2, §6.4, the screen at the rack — ticket 0036.
     ///
     /// It carries the Workout Day it was picked from rather than reading the Open Workout,

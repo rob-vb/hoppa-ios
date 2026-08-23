@@ -50,9 +50,12 @@ struct HoppaApp: App {
             NameYourProgram(path: $path)
         case .plateRack(let draft):
             PlateRackScreen(path: $path, draft: draft)
-        case .programSheet:
-            NotBuiltYet(screen: "The Program sheet — your Workout Days, and what is in them.",
-                        ticket: "0034")
+        case .programSheet(let id, let onboarding):
+            ProgramSheet(path: $path, programId: id, onboarding: onboarding)
+        case .workoutDay(let id):
+            WorkoutDayScreen(path: $path, workoutDayId: id)
+        case .programSettings(let id):
+            ProgramSettings(path: $path, programId: id)
         case .logging:
             NotBuiltYet(screen: "The logging screen. Nothing was started: the Workout begins here, and here does not exist yet.",
                         ticket: "0036")

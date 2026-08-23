@@ -50,6 +50,21 @@ struct EditTests {
         #expect(session.book.programs[0].days[0].id.value != program.id.value)
     }
 
+    @Test("A Workout Day is found with the Program that holds it")
+    func aDayComesBackWithItsProgram() {
+        let book = Self.twoDayBook()
+        guard let found = book.workoutDay(WorkoutDayID(3)) else {
+            Issue.record("no Workout Day"); return
+        }
+
+        #expect(found.day.name == "Lower A")
+        #expect(found.program.id == Ids.program)
+        // The pair is the point: the Day screen draws the Program's Name above the Day's
+        // and resolves the Day's Exercises against the Program's Mode.
+        #expect(found.program.mode == book.programs[0].mode)
+        #expect(book.workoutDay(WorkoutDayID(999)) == nil)
+    }
+
     @Test("The Program's Weight Unit is a default for new Exercises, so it moves nothing")
     func theProgramUnitTouchesNothing() {
         var session = Session()

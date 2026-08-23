@@ -100,7 +100,7 @@ struct WorkoutDayPicker: View {
                 .foregroundStyle(Color.steel)
             Spacer(minLength: 8)
             Button {
-                path.append(.programSheet(program.id))
+                path.append(.programSheet(program.id, onboarding: false))
             } label: {
                 Text("•••")
                     .typography(Typography.body(17))

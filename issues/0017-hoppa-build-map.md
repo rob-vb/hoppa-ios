@@ -56,12 +56,14 @@ real**, and nothing after that is worth doing before it.
     be type-checked on the VPS against the built modules, and so can every rules/store call a
     SwiftUI view makes. See the charter bullet on Swift on the VPS. What reaches Rob should be
     something that has already had every checkable thing checked.
-  - **The queue holds two tickets**, both pushed 2026-08-23: [The shell and the first
-    run](0032-the-shell-and-the-first-run.md) and [The Program name, the three assumptions, and the
-    Plate Inventory screen](0033-the-program-name-and-the-plate-rack.md) — the picker, the empty
-    state, onboarding steps 1 and 2. Neither is a hand-off on its own, and together they still are
-    not: batch 1 goes over after [The Exercise sheet](0035-the-exercise-sheet.md), when there is a
-    path from an empty app to a real Program. Before that it was **empty**, cleared 2026-08-20 in one
+  - **The queue holds three tickets**, all pushed 2026-08-23: [The shell and the first
+    run](0032-the-shell-and-the-first-run.md), [The Program name, the three assumptions, and the
+    Plate Inventory screen](0033-the-program-name-and-the-plate-rack.md) and [The Program sheet hub
+    and the Workout Day screen](0034-the-program-sheet-and-the-workout-day.md) — the picker, the
+    empty state, and all three onboarding steps. **The path is one screen short**: every Day is
+    reachable and every Day is empty, because adding an Exercise is
+    [the ticket that closes batch 1](0035-the-exercise-sheet.md). It goes over then, and not
+    before. Before that it was **empty**, cleared 2026-08-20 in one
     session, which is the pattern working as intended. What it settled, because each answer outlives its ticket:
     - **The force-quit passes on the phone** — `Upper A`, `Sets logged 2`, `Current index 0` after a
       kill from the app switcher. [The Logbook on disk](0025-the-logbook-on-disk.md) is closed.
@@ -458,6 +460,28 @@ real**, and nothing after that is worth doing before it.
   **Weight unit row follows the rack** until a hand touches it, which is §6.1's Program-level
   defaulting; and **both steps draw their own back chevron** with the navigation bar hidden, because
   §7.4 leaves the safe top inset empty. §5.2 and §6.1 carry the first three.
+- [The Program sheet hub and the Workout Day screen](0034-the-program-sheet-and-the-workout-day.md)
+  — **§6.1 step 3 and the room under it are built and pushed.** `HoppaRules` **119 green**,
+  `HoppaStore` 31, and `project.pbxproj` needed no edit. Four findings. **Step 3 and Flow 5's hub
+  are one screen with two lives**, and the difference cannot be derived from the Logbook — a
+  Program made a minute ago and one trained on for a year are the same value — so
+  `Route.programSheet` carries `onboarding:`, worth exactly two words of chrome: the step count,
+  and `START A WORKOUT` against `DONE`. **Both taps go home to the picker**, because §3.1 picks a
+  Workout there and never here. **`Route.plateRack(nil)` had no door** — ticket 33 built one screen
+  for two jobs and wired only the onboarding one — so the artboard's settings row was built as a
+  real **Program settings** screen (Name, unit, Mode, rack) rather than a `NotBuiltYet`: wider than
+  the ticket's cut, recorded rather than hidden, and every one of the four is an `Action`
+  `HoppaRules` already tests. It also pays step 1's promise that *you can rename it later*.
+  **§6.7 and the Day artboard disagree about what an Exercise card opens** — the chart, or §6.2's
+  sheet — and Flow 4 is not scheduled, so the card opens the sheet, the sparkline is not drawn, and
+  the collision sits in **Not yet specified**. And **a Workout Day is named before it exists**:
+  `.addWorkoutDay` takes the name, so `ADD A DAY` opens a one-field sheet and the Day arrives named
+  — 9 taps against §6.2's 10. Three calls the ticket left open: the empty hub **states the rule**
+  (`A program needs at least one workout day.`) rather than instructing; a **stranded Exercise says
+  so on its card**, in steel and never in a warning colour; and **no SF Symbols** — the `+` is Plex,
+  because importing a symbol set is a §7 decision nobody has made. All four of ticket 32's
+  `NotBuiltYet` doors are rooms now; the only one left names ticket 35. §6.1 and §6.6 carry the
+  first two findings.
 
 ## Not yet specified
 
@@ -503,6 +527,16 @@ real**, and nothing after that is worth doing before it.
   teaches, and this map already expects findings from the rack; the history screen and the Program
   edits are where those land hardest. They graduate once Rob has trained with Flow 1–3. Held at
   [Build order across the flows, and what done means for a screen](0029-build-order-and-what-done-means.md).
+- **What an Exercise card opens, once the chart exists.** §6.7 says an Exercise card in the Program
+  sheet opens **that Exercise's chart**, and gives it a sparkline so the door announces itself. The
+  Day artboard's own caption says **tap a row to open it**, meaning §6.2's sheet, which is the only
+  room that exists today — so
+  [The Program sheet hub and the Workout Day screen](0034-the-program-sheet-and-the-workout-day.md)
+  built the card as a door to the sheet and drew no sparkline. When Flow 4 lands the card carries
+  two doors and somebody has to say which one is the whole card: the sparkline alone into the chart
+  and the rest into the sheet, a `•••`, or a swap. Not sharp until the chart is being built, and it
+  graduates with §6.7. Found while building.
+
 - **Increase Contrast, and the rest of the accessibility settings.** [Dark only, or a light mode
   too](0030-dark-only-or-a-light-mode.md) settled the two that reach every screen — Appearance and
   Dynamic Type — and **Reduce Motion is now settled too**, at

@@ -656,6 +656,16 @@ Three steps to owning a Program:
    to no Program. Found while building.
 3. **The Program sheet — the hub.** The Workout Days with their Exercise counts, `ADD A DAY`, and
    a link to Program settings.
+   **Step 3 and Flow 5's hub are one screen**, reached two ways: from step 2's confirm, and from
+   the `•••` on the picker. What it draws is identical — a Program made a minute ago and a Program
+   trained on for a year are the same thing — and only two words of chrome differ: the step count,
+   and a bottom control reading `START A WORKOUT` at the end of onboarding and `DONE` outside it.
+   Both taps do the same thing, which is go home to the picker: **a Workout is picked at the
+   picker** (§3.1), never here. Found while building.
+   **A Workout Day is named before it exists.** `ADD A DAY` opens a one-field sheet and the Day is
+   created with the name already on it, because a Day with no name would be a row the user cannot
+   read. The same sheet renames — a Name is a label (§2.7) — and the Day screen carries a `RENAME`
+   beside its title so a typo made during onboarding has somewhere to be fixed.
 
 Smart defaulting was allowed to remove input **at Program level only**: one unit, one Progression
 Mode, one plate rack, decided once and never asked again per Exercise.
@@ -1069,6 +1079,12 @@ diagnose.
   re-solves their Plate Breakdowns (§5.3), and with no Microplate on, §5.2 opens the Microplate
   group in place.
 - **Renaming** anything is free and migrates nothing (§2.7).
+
+**Program settings is a screen**, reached from the hub's own row, and it holds exactly these:
+the Name, the Weight Unit, the Progression Mode and the Plate Rack — step 1's card of three,
+plus the Name step 1 promised the user could change later. It is also **the only door to the
+Plate Inventory outside onboarding**: until it landed, the rack screen's own `DONE` branch had
+no way in. Found while building.
 
 > Sharpened while building. Decision records:
 > [Program edits, and which of them are rules](issues/0026-program-edits-and-the-rules-boundary.md),

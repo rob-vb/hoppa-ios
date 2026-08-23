@@ -230,7 +230,7 @@ struct PlateRackScreen: View {
             defaultWeightUnit: draft.defaultWeightUnit(rack: rack.unit),
             mode: draft.mode))
         guard let created = store.logbook?.programs.last?.id else { return }
-        path = [.programSheet(created)]
+        path = [.programSheet(created, onboarding: true)]
     }
 
     // MARK: - The copy of the two warnings
