@@ -25,6 +25,33 @@ extension Color {
     static let text = Color(hex: 0xF4F1EC)
     static let go = Color(hex: 0x2E9E52)      // green — done / progression
     static let stop = Color(hex: 0xC8322B)    // 25 kg red
+
+    /// Ticket 0032 — the **seventh** role, and the first time ticket 30's escalation rule
+    /// has actually added one.
+    ///
+    /// §7.2 named one text grey, and the artboards use two: `#8D9296` for a meta line a
+    /// user reads, and this for the tiny uppercase labels above a block, which are
+    /// furniture. Both onboarding (`design/0006-onboarding/Main.dc.html`) and the picker
+    /// (`design/0015-history/Home.dc.html`) use it, so it is a role and not noise.
+    ///
+    /// It is **not a new hue**: it measures hue 210° at 4.5% saturation, the same spine as
+    /// every grey in §7.2 and every grey in `Steel` — `Steel.hex(lightness: 0.349)` lands
+    /// within 2/255 of it. `SPEC.md` §7.2 carries the row.
+    static let labelText = Color(hex: 0x55595D)
+}
+
+// MARK: - The bridge to a plate colour (ticket 0030)
+
+extension Color {
+    /// `PlatePalette.hex(for:)` answers in `#RRGGBB`, because `HoppaRules` imports nothing
+    /// and cannot name a `Color`. `nil` — an lbs rack, which §7.3 does not paint — is the
+    /// caller's to answer, and §7.3 says steel.
+    init?(plateHex: String?) {
+        guard let plateHex else { return nil }
+        let digits = plateHex.hasPrefix("#") ? String(plateHex.dropFirst()) : plateHex
+        guard digits.count == 6, let value = UInt32(digits, radix: 16) else { return nil }
+        self.init(hex: value)
+    }
 }
 
 // MARK: - The steel of a drawing (SPEC.md §5.5, ticket 0031)

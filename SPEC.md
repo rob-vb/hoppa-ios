@@ -257,7 +257,11 @@ get wrong quietly. They are gathered here so nothing has to be re-derived from t
 - **Free pick, always.** Hoppa never chooses the Workout Day and never pre-selects one. No
   rotation, no suggestion.
 - The Workout Day list shows **when the user last did each Day** — "Push — 4 days ago". That is
-  information, not advice.
+  information, not advice. It reads the newest **finished** Workout on that Day, by the day it
+  **started** (§2.4); the Open Workout does not count, because it has been started and not done.
+  A Day that has never been done reads `Never` — which is every Day of a Program the user has just
+  created, so it is the common first case and not an edge. The phrasing is in **calendar days**:
+  `Today`, `Yesterday`, then `n days ago`.
 - A Workout starts on an **explicit action**, not on the first logged Set. This gives a warm-up
   window and makes the start moment unambiguous for duration.
 - One Open Workout at a time.
@@ -1196,7 +1200,7 @@ a layout with a 0.78 line-height and a 50 px hit target does not survive a text 
 `.dynamicTypeSize(.large)` at the root, and every font built with `fixedSize` rather than `size`.
 A light mode is out of scope (§10).
 
-**No view holds a colour literal.** The six roles below live in one file, and a screen that needs a
+**No view holds a colour literal.** The seven roles below live in one file, and a screen that needs a
 value this table does not name adds a **named role** there — or, better, derives it from a role
 that is already named, because most of what the artboards add is a tint of the floor or a pressed
 state. A genuinely **new hue** is not a role: it is a finding, and it gets a ticket.
@@ -1209,6 +1213,7 @@ state. A genuinely **new hue** is not a role: it is a finding, and it gets a tic
 | Steel (icons, shafts, chips) | `#9BA1A7` — chip border `#3A3E42` |
 | Dim text | `#8D9296` |
 | Text | `#F4F1EC` |
+| Label text (the small uppercase labels above a block) | `#55595D` |
 
 ### 7.3 Plate palette — the user's real rack
 

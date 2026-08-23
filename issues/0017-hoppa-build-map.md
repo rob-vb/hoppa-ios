@@ -56,8 +56,11 @@ real**, and nothing after that is worth doing before it.
     be type-checked on the VPS against the built modules, and so can every rules/store call a
     SwiftUI view makes. See the charter bullet on Swift on the VPS. What reaches Rob should be
     something that has already had every checkable thing checked.
-  - **The queue is empty**, cleared 2026-08-20 in one session, which is the pattern working as
-    intended. What it settled, because each answer outlives its ticket:
+  - **The queue holds one ticket**: [The shell and the first
+    run](0032-the-shell-and-the-first-run.md), pushed 2026-08-23. It is not a hand-off on its own —
+    batch 1 goes over after [The Exercise sheet](0035-the-exercise-sheet.md), when there is a path
+    from an empty app to a real Program. Before that it was **empty**, cleared 2026-08-20 in one
+    session, which is the pattern working as intended. What it settled, because each answer outlives its ticket:
     - **The force-quit passes on the phone** — `Upper A`, `Sets logged 2`, `Current index 0` after a
       kill from the app switcher. [The Logbook on disk](0025-the-logbook-on-disk.md) is closed.
     - **`fold("é") == "e"` is green on Darwin.** Apple ships the Unicode name tables, so
@@ -411,6 +414,31 @@ real**, and nothing after that is worth doing before it.
   run caught what no reading would: **`Double.rounded()` is libm, and libm is not linked without
   Foundation.** The `is-this-a-rule` test's step 2 now bites *view* files too.
 
+- **[The shell and the first run](0032-the-shell-and-the-first-run.md)** — **the picker is the app's
+  home and `AcceptanceHarness` is dead.** 112 green in `HoppaRules`, 31 in `HoppaStore`, and
+  `project.pbxproj` needed **no edit** — the app target is a synchronized folder group, so Xcode
+  finds four new files and one deleted one by itself. Four findings outrank the code. **"4 days ago"
+  is not a rule**: the *instant* is (`Logbook.lastTrained`), but the phrasing needs a calendar and a
+  zone, and two lifters in two zones may correctly disagree — 21:00 read at 07:00 is ten hours ago
+  and reads `Yesterday`, 00:10 read at 07:00 is seven and reads `Today`. **It still went below the
+  view**, because ticket 29 says logic worth testing belongs in a package, so `RelativeDay` sits in
+  `HoppaStore` with nine cases including the 25-hour DST day and a clock that moved back. **§3.1 had
+  no answer for a Day never done** — `Never`, and it is the common first case, not an edge, because
+  every Day of a fresh Program is in it; the spec also gained *newest **finished** Workout, by the
+  day it **started***, since counting the Open Workout would claim the user trained the moment he
+  tapped a row. And **ticket 30's escalation rule fired for the first time and added a role, not a
+  finding**: the artboards use two text greys where §7.2 named one, and `#55595D` measures hue 210°
+  at 4.5% — the same spine, within 2/255 of `Steel.hex(lightness: 0.349)`. §7.2 is seven roles now.
+  Three calls the ticket left open: a door to an unbuilt screen is **live and lands on
+  `NotBuiltYet`** rather than disabled, because a disabled row proves nothing about the spine and
+  ticket 29 wants *what is not built yet* stated; **tapping a Day does not start the Workout**, so a
+  tap cannot strand an Open Workout with no screen to end it; and the **`•••` is the door to Flow 5's
+  hub**, since §6.7's *two doors* counts the doors into History. Two things only the Mac can answer:
+  `Font.leading(.tight)` approximates §7.4's 0.78–0.94 and **ticket 33's `NAME YOUR PROGRAM` is the
+  first multi-line display heading**, and `monospacedDigit()` falls back silently if Plex has no
+  `tnum`. §3.3's *resume, finish, or discard* had no screen and graduates as
+  [The Open Workout on next open](0040-the-open-workout-on-next-open.md).
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
@@ -463,6 +491,13 @@ real**, and nothing after that is worth doing before it.
   dim text `#8D9296` on the `#0E0F10` floor is the only place it plainly bites, and nobody has
   looked at that ratio yet. Not sharp until a screen exists to look at. VoiceOver and the rest have
   not been considered at all, which is a statement of fact rather than a decision.
+- **More than one Program, and which one the picker shows.** §2.1 allows more than one and §6.3
+  reads Exercise names across all of them, but nothing says how the user holds two, switches between
+  them, or what the picker's header names. [The shell and the first
+  run](0032-the-shell-and-the-first-run.md) reads `programs.first` and is correct today, because the
+  only way to create a Program is onboarding and onboarding is only reachable from the empty state.
+  It is silently wrong the day a second one can exist. Sits beside **Deleting a Program** above —
+  both are the same gap in §2.1 seen from two sides, and they may well graduate as one ticket.
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.

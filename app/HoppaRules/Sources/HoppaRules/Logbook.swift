@@ -62,6 +62,22 @@ public struct Logbook: Codable, Sendable, Hashable {
         return nil
     }
 
+    /// When this Workout Day was **last done** — the `startedAt` of the newest finished
+    /// Workout that performed it, or `nil` if it never has been.
+    ///
+    /// §3.1 puts this on every row of the picker, as information and not advice. It is a
+    /// rule and not a view helper: two lifters holding the same `Logbook` must read the
+    /// same instant off it. **Turning that instant into "4 days ago" is not** — that
+    /// needs a calendar and a time zone, and two lifters in two zones may then correctly
+    /// disagree. The phrasing lives in the app.
+    ///
+    /// The Open Workout does not count: it has been started, not done.
+    ///
+    /// `workouts` is oldest first by `startedAt`, so the last match is the newest.
+    public func lastTrained(_ workoutDayId: WorkoutDayID) -> Timestamp? {
+        workouts.last { $0.workoutDayId == workoutDayId }?.startedAt
+    }
+
     /// The Exercise behind a Performed Exercise, with every derived value worked out.
     /// `nil` once the Exercise has been deleted — history survives that (§2.8).
     public func resolvedExercise(_ id: ExerciseID) -> ResolvedExercise? {
