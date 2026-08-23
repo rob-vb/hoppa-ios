@@ -59,6 +59,21 @@ public struct PlateInventory: Codable, Sendable, Hashable {
         plates(for: mode).last
     }
 
+    /// **The footer of the Plate Inventory** (`SPEC.md` §5.2): `Smallest jump on the bar:
+    /// 2.5 kg`, gaining `· 0.5 kg with Microloading` the moment a Microplate is on.
+    ///
+    /// A bar has two sides, so the jump is **twice** the smallest plate the Mode may
+    /// reach for (§4.2) — the standard kg rack's 1.25 kg plate is a 2.5 kg jump. It is a
+    /// rule by the map's own test: it falls out of the Logbook alone, and two lifters
+    /// holding the same rack must read the same number.
+    ///
+    /// `nil` when the Mode can reach for nothing — every plate in the group switched
+    /// off — because §5.2's footer states **only what is true**.
+    public func smallestJumpOnTheBar(for mode: ProgressionMode) -> Weight? {
+        guard let step = smallestBuildableStep(for: mode), step.hundredths > 0 else { return nil }
+        return step.scaled(by: EquipmentType.barbell.platesPerProgression)
+    }
+
     /// Rounds **up** to a weight the rack can build. This is what keeps the roll-up from
     /// ever dropping the total weight (`SPEC.md` §4.2).
     public func roundedUpToBuildable(_ weight: Weight, for mode: ProgressionMode) -> Weight {

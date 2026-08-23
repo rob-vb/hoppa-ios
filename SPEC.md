@@ -490,6 +490,11 @@ every Exercise with a Plate Breakdown.
 - Footer, which is Program-level and knows no Exercise's Mode, so it states both — but **only
   what is true**. With no Microplate switched on it reads `Smallest jump on the bar: 2.5 kg`, and
   it gains `· 0.5 kg with Microloading` the moment one is switched on.
+  **The jump is twice the smallest plate the Mode may reach for**, because a bar has two sides —
+  the shipped kg rack's 1.25 kg plate is a 2.5 kg jump. **A rack with nothing switched on has no
+  jump to state**: the footer reads `No plate is switched on.`, and with only Microplates on the
+  first half reads `nothing`. Printing `0 kg` would claim the bar moves in steps of nothing, which
+  is a different thing from saying it does not move. Found while building.
 
 **Defaults, per side. Every Microplate ships OFF, in both units.**
 
@@ -635,8 +640,20 @@ Three steps to owning a Program:
    Program level — Weight Unit `KG`, Progression Mode `Progressive Overload`, Plate Rack
    `standard kg`. They are **pre-answered and visible**, each one tap from being changed. Nothing
    else is asked at Program level.
+   **A Program must be named**, and Hoppa states that where the user taps rather than disabling
+   the button: `CONTINUE` on an empty field says `Give it a name first.` under the field, in the
+   same voice §5.2 uses for the Mode. **The Weight Unit row follows the rack** until the user taps
+   it — a lifter who sets the rack to lbs at step 2 is standing in an lbs gym, and §2.1's default
+   is for new Exercises, which is exactly what that lifter is about to add. One deliberate tap
+   ends the following.
 2. **Your plate rack.** The Plate Inventory (§5.2) with the standard defaults already correct.
    One confirm if the rack matches.
+   **The confirm is where the Program is created**, in one act carrying everything step 1
+   collected. Backing out of step 2 therefore leaves nothing behind — where creating it at step 1
+   would strand a Program with no Workout Days on the phone, and the picker shows the first
+   Program it finds, so its `CREATE A PROGRAM` button would be gone with it. The rack is the other
+   way round and writes through at once: Hoppa holds **one** Plate Inventory (§5.2) and it belongs
+   to no Program. Found while building.
 3. **The Program sheet — the hub.** The Workout Days with their Exercise counts, `ADD A DAY`, and
    a link to Program settings.
 

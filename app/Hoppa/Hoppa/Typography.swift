@@ -47,6 +47,26 @@ enum Typography {
             tracking: size * em, lineSpacing: 0, uppercase: true)
     }
 
+    /// **The name the user is typing** (ticket 0033's Program name field). Anton, tight,
+    /// and the one display role that does **not** uppercase: a field must show the
+    /// characters that were typed, because those are the characters Hoppa stores
+    /// (§2.7 — the Name is a label). Every place that *renders* a stored Name uses
+    /// `display`, which uppercases it there.
+    static func input(_ size: CGFloat, tracking em: CGFloat = 0.01) -> Role {
+        Role(
+            font: .custom(BundledFonts.display, fixedSize: size).leading(.tight),
+            tracking: size * em, lineSpacing: 0, uppercase: false)
+    }
+
+    /// A number the user reads down a list — the weight beside a plate chip. Plex at the
+    /// artboards' 500, tabular, sentence case. `meta` is the same face at 400; this is
+    /// the weight the artboards use where the number **is** the row.
+    static func listValue(_ size: CGFloat = 15) -> Role {
+        Role(
+            font: .custom(BundledFonts.bodyMedium, fixedSize: size).monospacedDigit(),
+            tracking: 0, lineSpacing: 0, uppercase: false)
+    }
+
     /// The small uppercase labels: 10–11 px, letter-spacing 0.12–0.14 em (§7.4).
     static func label(_ size: CGFloat = 10, tracking em: CGFloat = 0.14) -> Role {
         Role(

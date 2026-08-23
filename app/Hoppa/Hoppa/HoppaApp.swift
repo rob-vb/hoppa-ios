@@ -47,8 +47,9 @@ struct HoppaApp: App {
     private func destination(_ route: Route) -> some View {
         switch route {
         case .createProgram:
-            NotBuiltYet(screen: "Onboarding — name your Program, then confirm your rack.",
-                        ticket: "0033")
+            NameYourProgram(path: $path)
+        case .plateRack(let draft):
+            PlateRackScreen(path: $path, draft: draft)
         case .programSheet:
             NotBuiltYet(screen: "The Program sheet — your Workout Days, and what is in them.",
                         ticket: "0034")

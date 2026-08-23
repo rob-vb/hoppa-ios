@@ -57,7 +57,7 @@ struct WorkoutDayPicker: View {
                 .typography(Typography.display(26))
                 .foregroundStyle(Color.text)
             Spacer()
-            primaryButton("Create a program") { path.append(.createProgram) }
+            PrimaryButton("Create a program") { path.append(.createProgram) }
         }
     }
 
@@ -194,19 +194,5 @@ struct WorkoutDayPicker: View {
         .frame(minHeight: 50)
         .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
         .contentShape(Rectangle())
-    }
-
-    /// §7.4's 64 pt bottom control, in the artboard's inverted fill.
-    private func primaryButton(_ title: String, _ action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(title)
-                .typography(Typography.display(20, tracking: 0.06))
-                .foregroundStyle(Color.floor)
-                .frame(maxWidth: .infinity)
-                .frame(height: 64)
-                .background(Color.text)
-                .clipShape(RoundedRectangle(cornerRadius: 3))
-        }
-        .buttonStyle(.plain)
     }
 }

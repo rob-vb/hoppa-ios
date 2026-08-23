@@ -12,8 +12,16 @@ import HoppaRules
 /// Every screen the app can push. One case per screen ticket, so a ticket that lands its
 /// screen swaps one `case` in `HoppaApp`'s `navigationDestination` and touches nothing else.
 enum Route: Hashable {
-    /// Flow 1, §6.1 steps 1–3 — ticket 0033 and ticket 0034.
+    /// Flow 1, §6.1 step 1 — name the Program and read the three assumptions.
     case createProgram
+    /// §5.2's Plate Inventory, which is **two things behind one screen**.
+    ///
+    /// With a draft it is §6.1 **step 2**: the confirm creates the Program the draft
+    /// describes and lands on step 3. Without one it is the rack on its own, reached
+    /// from Flow 5, and the confirm only leaves. The rack itself is Logbook-level and
+    /// identical either way — Hoppa holds **one** Plate Inventory (§5.2) — so there is
+    /// one screen and not two.
+    case plateRack(ProgramDraft?)
     /// Flow 5's hub, reached from the picker's `•••` — ticket 0034.
     case programSheet(ProgramID)
     /// Flow 2, §6.4, the screen at the rack — ticket 0036.

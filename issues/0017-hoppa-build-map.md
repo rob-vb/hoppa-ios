@@ -56,10 +56,12 @@ real**, and nothing after that is worth doing before it.
     be type-checked on the VPS against the built modules, and so can every rules/store call a
     SwiftUI view makes. See the charter bullet on Swift on the VPS. What reaches Rob should be
     something that has already had every checkable thing checked.
-  - **The queue holds one ticket**: [The shell and the first
-    run](0032-the-shell-and-the-first-run.md), pushed 2026-08-23. It is not a hand-off on its own —
-    batch 1 goes over after [The Exercise sheet](0035-the-exercise-sheet.md), when there is a path
-    from an empty app to a real Program. Before that it was **empty**, cleared 2026-08-20 in one
+  - **The queue holds two tickets**, both pushed 2026-08-23: [The shell and the first
+    run](0032-the-shell-and-the-first-run.md) and [The Program name, the three assumptions, and the
+    Plate Inventory screen](0033-the-program-name-and-the-plate-rack.md) — the picker, the empty
+    state, onboarding steps 1 and 2. Neither is a hand-off on its own, and together they still are
+    not: batch 1 goes over after [The Exercise sheet](0035-the-exercise-sheet.md), when there is a
+    path from an empty app to a real Program. Before that it was **empty**, cleared 2026-08-20 in one
     session, which is the pattern working as intended. What it settled, because each answer outlives its ticket:
     - **The force-quit passes on the phone** — `Upper A`, `Sets logged 2`, `Current index 0` after a
       kill from the app switcher. [The Logbook on disk](0025-the-logbook-on-disk.md) is closed.
@@ -438,6 +440,24 @@ real**, and nothing after that is worth doing before it.
   first multi-line display heading**, and `monospacedDigit()` falls back silently if Plex has no
   `tnum`. §3.3's *resume, finish, or discard* had no screen and graduates as
   [The Open Workout on next open](0040-the-open-workout-on-next-open.md).
+- [The Program name, the three assumptions, and the Plate Inventory screen](0033-the-program-name-and-the-plate-rack.md)
+  — **onboarding steps 1 and 2 are built and pushed.** `HoppaRules` **118 green**, `HoppaStore` 31.
+  Four findings. **§5.2's footer is a rule** — `Smallest jump on the bar` falls out of the rack alone
+  and every lifter holding that rack must read the same number, so it is
+  `PlateInventory.smallestJumpOnTheBar(for:)` with six tests, and **the jump is twice the plate**
+  because a bar has two sides. **§5.2 had no answer for a rack with nothing switched on**, which the
+  screen can reach: the footer reads `No plate is switched on.`, never `0 kg`, which would claim the
+  bar moves in steps of nothing. **The Program is created at step 2's confirm, not step 1's
+  `CONTINUE`** — creating it early strands a Program with no Days the moment the user backs out, and
+  the picker's `CREATE A PROGRAM` is gone with it; the rack goes the other way and writes through at
+  once, because it is Logbook-level and belongs to no Program. And **§7.1's size law does not bind
+  this screen**: it states its own boundary — *both rules are rules about the Plate Breakdown* — and
+  a toggle list is not one, so the chips scale by **rank inside their group** rather than at §7.3's
+  quarter-of-the-smallest, which in a row would be 3 pt of colour. Three calls the ticket left open:
+  a Program **must be named** and `CONTINUE` says so under the field rather than going grey; the
+  **Weight unit row follows the rack** until a hand touches it, which is §6.1's Program-level
+  defaulting; and **both steps draw their own back chevron** with the navigation bar hidden, because
+  §7.4 leaves the safe top inset empty. §5.2 and §6.1 carry the first three.
 
 ## Not yet specified
 
@@ -498,6 +518,18 @@ real**, and nothing after that is worth doing before it.
   only way to create a Program is onboarding and onboarding is only reachable from the empty state.
   It is silently wrong the day a second one can exist. Sits beside **Deleting a Program** above —
   both are the same gap in §2.1 seen from two sides, and they may well graduate as one ticket.
+- **The lbs rack, which nothing has painted and nothing has walked.** Two facts have now piled up
+  behind the `KG | LBS` toggle, and neither is sharp enough to ticket. **§7.3 paints one gym's iron
+  rack in kg only**, so `PlatePalette.hex(for:)` answers `nil` for every lbs plate and the Plate
+  Inventory draws ten steel chips — the colour half of §7.1's first rule is simply absent there, and
+  only the height ramp survives. And **`2.5 lbs` sits in both the normal and the Microplate group**
+  of the shipped rack; `PlateInventory` documents it and `plates(for:)` de-duplicates it for the
+  solver, but `setPlate` switches a size *in whichever group holds it*, so tapping one of those two
+  rows moves both. That is arguably right — it is one physical plate — which is exactly why it is a
+  question and not a defect. Both found while building [The Program name, the three assumptions, and
+  the Plate Inventory screen](0033-the-program-name-and-the-plate-rack.md), and neither costs
+  anything today: Rob's rack is kg. This graduates if the destination ever moves to a second lifter,
+  which today it does not.
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.

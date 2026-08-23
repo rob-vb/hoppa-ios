@@ -38,6 +38,13 @@ extension Color {
     /// every grey in §7.2 and every grey in `Steel` — `Steel.hex(lightness: 0.349)` lands
     /// within 2/255 of it. `SPEC.md` §7.2 carries the row.
     static let labelText = Color(hex: 0x55595D)
+
+    /// §7.2's Steel row carries **two** values — `#9BA1A7` for the mark itself and
+    /// `#3A3E42` for the border of a chip. `steel` is the first; this is the second,
+    /// and it is a name for a value the table already holds, not a new role and not a
+    /// new hue. First needed by ticket 0033: the unswitched half of the `KG | LBS`
+    /// toggle and the off state of a plate switch are both chip borders.
+    static let chipBorder = Color(hex: 0x3A3E42)
 }
 
 // MARK: - The bridge to a plate colour (ticket 0030)
