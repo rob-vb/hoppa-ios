@@ -5,9 +5,12 @@ import HoppaStore
 // Ticket 0034 — one Workout Day, and the Exercises in it.
 //
 // The room under the hub. It draws the Day's Exercise list, `ADD AN EXERCISE`, and the
-// way back. **Reorder handles and deleting an Exercise are not here** — both mirror into
-// an Open Workout, and `HoppaRules` has held those rules since ticket 0028 waiting for
-// Flow 5's own screen.
+// way back. **Reorder handles are not here** — they mirror into an Open Workout, and
+// `HoppaRules` has held that rule since ticket 0028 waiting for Flow 5's own screen.
+// Deleting an Exercise **is** here as of ticket 0035, on the sheet the artboard draws it
+// on: `REMOVE EXERCISE` is the Exercise sheet's own bottom control, §6.6 gives the delete
+// no block to state, and a card that opens a sheet with no way to remove what it opened
+// is a door with half a room behind it.
 //
 // Two things the artboard draws that this does not, and both are named in the hand-off so
 // they are never read as defects:
@@ -62,15 +65,59 @@ struct WorkoutDayScreen: View {
                 store.send(.renameWorkoutDay(workoutDayId, name: name))
             }
         }
-        // Ticket 0035 lands §6.2's full sheet here, and this is the only line that
-        // changes: **add and edit are the same sheet**, so one presentation serves both.
+        // Ticket 0035 landed §6.2's full sheet here, and ticket 0034's line held: **add
+        // and edit are the same sheet**, so one presentation serves both.
         .sheet(item: $sheetTarget) { target in
-            NotBuiltYet(
-                screen: target.exercise == nil
-                    ? "The Exercise sheet — every field of a new exercise, picked by hand."
-                    : "The Exercise sheet. Add and edit are the same sheet, and neither is built.",
-                ticket: "0035")
+            if let found {
+                ExerciseSheet(
+                    target: target,
+                    initial: initialDraft(target, found.program, found.day),
+                    carriedOver: target.exercise == nil
+                        && carrySource(found.program, found.day, at: target.at) != nil)
+            }
         }
+    }
+
+    // MARK: - What the sheet opens on (§6.2)
+
+    /// An edit opens on the Exercise; an add opens on **the two fields §6.2 carries
+    /// over** and nothing else.
+    ///
+    /// The carry-over is a **pre-filled field and not a rule**: it decides nothing that is
+    /// stored, the user changes it with two taps, and it is gone the moment the sheet
+    /// saves. Where it comes from is the whole of it — see `carrySource`.
+    private func initialDraft(
+        _ target: ExerciseSheetTarget, _ program: Program, _ day: WorkoutDay
+    ) -> ExerciseDraft {
+        if let id = target.exercise, let exercise = program.exercise(id) {
+            return ExerciseDraft(exercise)
+        }
+        let previous = carrySource(program, day, at: target.at)
+        return ExerciseDraft(
+            name: "",
+            // Nothing is lit until the user picks one — `ExerciseSheet` holds *unpicked*
+            // in view state, because a draft is the value a rule consumes and a rule is
+            // never handed half an Exercise.
+            equipment: .barbell,
+            ownWeightUnit: program.defaultWeightUnit,
+            // The first Exercise of the first Day has nothing behind it. Three sets of
+            // 8–12 is the artboard's own row and §4's worked example; the sheet says
+            // `CARRIED OVER` only where something really was.
+            plannedSets: previous?.plannedSets ?? 3,
+            repRange: previous?.repRange ?? RepRange(8, 12))
+    }
+
+    /// The Exercise before this one: the one above it in the Day, or — for the first
+    /// Exercise of a Day — the last Exercise of the Day before it. A second Workout Day
+    /// usually opens on the same kind of work as the first, and asking for `3 × 8–12`
+    /// again at the top of every Day is four of the 400 taps for nothing.
+    private func carrySource(_ program: Program, _ day: WorkoutDay, at index: Int) -> Exercise? {
+        if index > 0, index <= day.exercises.count { return day.exercises[index - 1] }
+        guard let position = program.days.firstIndex(where: { $0.id == day.id }) else { return nil }
+        for earlier in program.days[..<position].reversed() {
+            if let last = earlier.exercises.last { return last }
+        }
+        return nil
     }
 
     @ViewBuilder

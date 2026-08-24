@@ -696,7 +696,32 @@ Behaviour of the sheet:
   With no Microplate switched on, that second row reads `NO MICROPLATES · SET UP YOUR RACK` and
   taps through to the Microplate group of the Plate Inventory (§5.2).
 - The Weight Unit is **locked** for the four types loaded off the user's own rack — Barbell,
-  Smith, Plate-loaded and Bodyweight — with a steel lock line saying why.
+  Smith, Plate-loaded and Bodyweight — with a steel lock line saying why. The other three carry
+  their own, and the row flips it in one tap: two values do not need a picker (§5.2).
+
+**Five things the sheet does that no artboard shows.** Found while building
+([The Exercise sheet, and the name field](issues/0035-the-exercise-sheet.md)):
+
+- **The two lives leave differently, and each says so where the user taps.** An **edit** sheet has
+  an Exercise behind it, so **closing is the save** — the one act §6.2 allows — and a line under
+  the fields states it. There is no *cancel*: half this sheet opens at the rack mid-Workout, where
+  §6.6 already refuses to ask twice about a change the user made and watched land. An **add** sheet
+  has nothing behind it: its save is the control that says so (`SAVE AND ADD ANOTHER`, which reopens
+  it empty), and the `✕` **asks before it discards** a filled-in sheet. Neither reading survives a
+  swipe-down, so the sheet has one visible way out and interactive dismissal is off.
+- **`REMOVE EXERCISE` is on the sheet**, where the artboard draws it. §6.6 gives deleting an
+  Exercise no block to state, so the whole control is one confirm and one action.
+- **The Equipment Type really does start empty**, so no chip is lit on a new Exercise and the save
+  refuses until one is picked. The seven chips are in §2.6's order — the four that read the rack,
+  then the three that carry their own unit — which is the lock rule made visible.
+- **The carry-over crosses Workout Days.** The previous Exercise is the one above it in the Day, or
+  — for the first Exercise of a Day — the last Exercise of the Day before it: a second Day usually
+  opens on the same kind of work, and re-asking at the top of every Day is taps for nothing. The
+  very first Exercise of a Program has nothing behind it and starts at **3 × 8–12**, and only a real
+  carry-over is marked `CARRIED OVER`.
+- **The Increment chips are offers, not defaults** — 1.25 / 2.5 / 5 in kg, 2.5 / 5 / 10 in lbs, and
+  `…` types any number (§2.3). Nothing is pre-selected: an Increment the user did not pick is a
+  weight Hoppa invented.
 
 **The tap budget — the ticket's core question. 14 taps per Exercise is the floor, 400 for the
 Program:**
@@ -1002,6 +1027,15 @@ convert* now covers the stored number, not only the display.**
 
 **Cleared means unset, not zero** (§2.8): the field is empty, and the Exercise does not progress
 until the user types a number.
+
+> **The same sheet cannot yet ask for them again.** `Rules.edited` clears the three fields *at the
+> save*, comparing the unit the Exercise resolved to before against the one it resolves to now — so
+> a number the user types into the emptied field, in that same visit, is cleared with them. Proved
+> on both paths: a Dumbbell flipped to kg and retyped, and a Dumbbell turned into a Barbell over a
+> kg rack. The Exercise sheet empties the fields where the user can see it and does **not** work
+> around the rule; the fix belongs to the rule, which cannot today tell a stale number from a
+> retyped one. Found while building:
+> [A weight retyped after a unit change](issues/0041-a-weight-retyped-after-a-unit-change.md).
 
 **Changing the Equipment Type across the rack boundary is the same event**, and clears the same
 three fields. A Dumbbell in lbs that becomes a Barbell now reads its unit off a kg rack (§5.1), so

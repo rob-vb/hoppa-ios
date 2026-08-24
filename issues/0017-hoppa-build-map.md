@@ -56,14 +56,15 @@ real**, and nothing after that is worth doing before it.
     be type-checked on the VPS against the built modules, and so can every rules/store call a
     SwiftUI view makes. See the charter bullet on Swift on the VPS. What reaches Rob should be
     something that has already had every checkable thing checked.
-  - **The queue holds three tickets**, all pushed 2026-08-23: [The shell and the first
+  - **The queue holds batch 1, and it is ready to go over**: [The shell and the first
     run](0032-the-shell-and-the-first-run.md), [The Program name, the three assumptions, and the
-    Plate Inventory screen](0033-the-program-name-and-the-plate-rack.md) and [The Program sheet hub
-    and the Workout Day screen](0034-the-program-sheet-and-the-workout-day.md) — the picker, the
-    empty state, and all three onboarding steps. **The path is one screen short**: every Day is
-    reachable and every Day is empty, because adding an Exercise is
-    [the ticket that closes batch 1](0035-the-exercise-sheet.md). It goes over then, and not
-    before. Before that it was **empty**, cleared 2026-08-20 in one
+    Plate Inventory screen](0033-the-program-name-and-the-plate-rack.md), [The Program sheet hub
+    and the Workout Day screen](0034-the-program-sheet-and-the-workout-day.md) — all pushed
+    2026-08-23 — and [The Exercise sheet, and the name field](0035-the-exercise-sheet.md), pushed
+    2026-08-24. The path is whole: empty app → Program → rack → Days → real Exercises, with
+    `HarnessSeed` still off. **The hand-off is written and waiting**, one numbered list, and until
+    Rob has walked it the map keeps picking up unblocked tickets rather than waiting on him.
+    Before that it was **empty**, cleared 2026-08-20 in one
     session, which is the pattern working as intended. What it settled, because each answer outlives its ticket:
     - **The force-quit passes on the phone** — `Upper A`, `Sets logged 2`, `Current index 0` after a
       kill from the app switcher. [The Logbook on disk](0025-the-logbook-on-disk.md) is closed.
@@ -482,6 +483,28 @@ real**, and nothing after that is worth doing before it.
   because importing a symbol set is a §7 decision nobody has made. All four of ticket 32's
   `NotBuiltYet` doors are rooms now; the only one left names ticket 35. §6.1 and §6.6 carry the
   first two findings.
+- [The Exercise sheet, and the name field](0035-the-exercise-sheet.md) — **§6.2 and §6.3 are built
+  and pushed, and batch 1 is a path Rob can walk end to end.** `HoppaRules` 119 green, `HoppaStore`
+  31, `project.pbxproj` untouched. **One finding outranks the screen**: §6.6 promises that *the same
+  sheet asks for the cleared weights again in the new unit*, and it cannot — `Rules.edited` clears
+  them **at the save**, so the number typed into the field the sheet just emptied is cleared with
+  the stale ones. Proved on both paths, and it graduates as
+  [A weight retyped after a unit change](0041-a-weight-retyped-after-a-unit-change.md); the sheet
+  does not work around it, and the **add** life never meets it, so onboarding is untouched. Five
+  calls the ticket left open, all now in §6.2. **The two lives leave differently**: an edit sheet
+  has an Exercise behind it, so **closing is the save** — no *cancel*, because the same sheet opens
+  at the rack where §6.6 refuses to ask twice — while an add sheet's save is the control that says
+  so and its `✕` asks before discarding; a swipe-down serves neither, so it is off.
+  **`REMOVE EXERCISE` is built** on the sheet the artboard draws it on, wider than ticket 0034's cut
+  and recorded rather than hidden: §6.6 gives it no block to state, and a card that opens a sheet
+  with no way to remove what it opened is half a room. **The Equipment Type really starts empty** —
+  `ExerciseDraft` cannot hold *unpicked*, so the question lives in view state and the save refuses
+  until it is answered — and the chips wrap in a small `Layout`, because SwiftUI ships no wrapping
+  stack and equal columns clip `BODYWEIGHT`. **The carry-over crosses Workout Days**, and the first
+  Exercise of a Program starts at 3 × 8–12 with no `CARRIED OVER` mark. And **the Increment chips
+  are offers, not defaults**, because an Increment the user did not pick is a weight Hoppa invented.
+  The Microloading row's `+0.5 KG ON THE BAR` is **read out of `Rules.progressionMove`**, probed at
+  a zero Working Weight, so the doubling stays in the rule that owns it.
 
 ## Not yet specified
 
