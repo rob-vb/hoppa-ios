@@ -151,8 +151,16 @@ struct ExerciseSheet: View {
                         notes
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    // A tap beside a field puts the keyboard away. It has to sit *inside*
+                    // the ScrollView: the scroll view hit-tests its own bounds, so a tap
+                    // here never reaches the floor behind it. Buttons and fields are
+                    // children, and a child wins the tap.
+                    .contentShape(Rectangle())
+                    .onTapGesture { focus = nil }
                 }
                 .scrollBounceBehavior(.basedOnSize)
+                // And a drag down does it too, which is the gesture a number pad teaches.
+                .scrollDismissesKeyboard(.interactively)
                 Spacer(minLength: 12)
                 bottomControl
             }
@@ -692,6 +700,10 @@ struct ExerciseSheet: View {
         Button(action: act) {
             Text(title)
                 .typography(Typography.meta(13))
+                // A chip is its own width. Without this the row's `Spacer` wins the
+                // squeeze and `1.25` breaks over two lines — found on the phone.
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
                 .foregroundStyle(on ? Color.floor : Color.dimText)
                 .padding(.horizontal, 12)
                 .frame(height: 44)
@@ -879,6 +891,8 @@ struct EquipmentChips: View {
                 Button { pick(type) } label: {
                     Text(type.screenName)
                         .typography(Typography.label(11, tracking: 0.10))
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)
                         .foregroundStyle(type == chosen ? Color.floor : Color.dimText)
                         .padding(.horizontal, 14)
                         .frame(height: 44)      // §7.4's hit target; the artboard's own
