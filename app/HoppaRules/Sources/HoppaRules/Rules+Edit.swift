@@ -14,6 +14,14 @@
 ///
 /// It carries **`Weight?`** for the two typed weights, so *the user did not type one* and
 /// *the user typed zero* are different values all the way from the keypad to the disk.
+///
+/// It also carries **`shownUnit`** — the unit its numbers were typed in. Without it the
+/// clearing rule below cannot tell a stale number from a retyped one, and §6.6's promise
+/// that *the same sheet asks for them again in the new unit* cannot be kept: the retyped
+/// number arrives in the same draft as the unit change and is cleared with it. Proved on
+/// both paths while building
+/// [The Exercise sheet](../../../../issues/0035-the-exercise-sheet.md), settled at
+/// [A weight retyped after a unit change](../../../../issues/0041-a-weight-retyped-after-a-unit-change.md).
 public struct ExerciseDraft: Sendable, Hashable {
     public var name: String
     public var equipment: EquipmentType
@@ -31,6 +39,14 @@ public struct ExerciseDraft: Sendable, Hashable {
     public var baseWeight: Weight?
     /// Machine (stack) and Cable only, same rule.
     public var stackStep: Weight?
+    /// **The unit this draft's numbers are written in** — the unit the sheet showed while
+    /// the user typed, which is the unit the Exercise *resolved to* then (§5.1).
+    ///
+    /// It has no default on purpose. There are five places that build a draft, and a
+    /// default would make *in which unit are these numbers* the one thing a caller can
+    /// forget — which is exactly the bug this field closes. `ownWeightUnit` cannot stand
+    /// in for it: the four types loaded off the rack ignore that field entirely.
+    public var shownUnit: WeightUnit
 
     public init(
         name: String,
@@ -43,7 +59,8 @@ public struct ExerciseDraft: Sendable, Hashable {
         microloadingIncrement: Weight? = nil,
         modeOverride: ProgressionMode? = nil,
         baseWeight: Weight? = nil,
-        stackStep: Weight? = nil
+        stackStep: Weight? = nil,
+        shownUnit: WeightUnit
     ) {
         self.name = name
         self.equipment = equipment
@@ -56,10 +73,15 @@ public struct ExerciseDraft: Sendable, Hashable {
         self.modeOverride = modeOverride
         self.baseWeight = baseWeight
         self.stackStep = stackStep
+        self.shownUnit = shownUnit
     }
 
     /// The sheet as it reads the moment it opens on an existing Exercise.
-    public init(_ exercise: Exercise) {
+    ///
+    /// It takes the `PlateInventory` because it cannot work out `shownUnit` without one:
+    /// for Barbell, Smith, plate-loaded and Bodyweight the unit is the rack's, and
+    /// `ownWeightUnit` is ignored (§5.1).
+    public init(_ exercise: Exercise, in inventory: PlateInventory) {
         self.init(
             name: exercise.name,
             equipment: exercise.equipment,
@@ -71,25 +93,61 @@ public struct ExerciseDraft: Sendable, Hashable {
             microloadingIncrement: exercise.microloadingIncrement,
             modeOverride: exercise.modeOverride,
             baseWeight: exercise.storedBaseWeight,
-            stackStep: exercise.storedStackStep)
+            stackStep: exercise.storedStackStep,
+            shownUnit: exercise.weightUnit(in: inventory))
+    }
+
+    /// **The unit this draft resolves to** (§5.1) — the same derivation `Exercise` makes,
+    /// asked of a sheet that has not been saved yet.
+    func weightUnit(in inventory: PlateInventory) -> WeightUnit {
+        equipment.takesUnitFromInventory ? inventory.unit : ownWeightUnit
+    }
+
+    /// §6.6, and the whole of it: **a number typed in a unit the Exercise no longer
+    /// resolves to is not a number in this one**, so it goes.
+    ///
+    /// The test is `shownUnit != unit`, and **not** *did the unit move*. Those two came
+    /// apart the moment §6.6 promised the same sheet would ask for the weights again: the
+    /// sheet saves once (§6.2), so a number retyped after the flip rides in the very draft
+    /// that carries the flip. What the draft was **shown** in is the only thing that tells
+    /// a stale number from a retyped one — the number's own label cannot, because a stored
+    /// label may be stale by design (§2.8) and `ExerciseDraft(_:in:)` copies stored labels.
+    ///
+    /// **Exactly the three fields §6.6 names.** The Microloading Increment keeps the Plate
+    /// Inventory's unit whatever the Exercise does (§5.1), so it is never stale here. The
+    /// Base Weight is in the rack's unit too, and that unit moves only when the *rack*
+    /// moves — `setPlateInventoryUnit`, which does its own clearing. No edit to an
+    /// Exercise can leave a Base Weight labelled wrong.
+    func withoutStaleWeights(resolvingTo unit: WeightUnit) -> ExerciseDraft {
+        guard shownUnit != unit else { return self }
+        var kept = self
+        kept.workingWeight = nil
+        kept.increment = nil
+        kept.stackStep = nil
+        return kept
     }
 
     /// A brand-new Exercise. A Microload is created at zero where the pin needs one
     /// (§2.3); everything else is exactly what the sheet holds.
+    ///
+    /// It passes through the **same** guard as an edit. An add sheet can change its
+    /// Equipment Type after a weight is typed, and a rule that defended only the edit path
+    /// would leave the other half of the same sheet open.
     func exercise(id: ExerciseID, inventory: PlateInventory) -> Exercise {
+        let sheet = withoutStaleWeights(resolvingTo: weightUnit(in: inventory))
         var made = Exercise(
             id: id,
-            name: name,
-            equipment: equipment,
-            ownWeightUnit: ownWeightUnit,
-            plannedSets: max(1, plannedSets),
-            repRange: repRange,
-            workingWeight: workingWeight,
-            increment: increment,
-            microloadingIncrement: microloadingIncrement,
-            modeOverride: modeOverride)
-        if equipment.takesBaseWeight { made.storedBaseWeight = baseWeight }
-        if equipment.hasPin { made.storedStackStep = stackStep }
+            name: sheet.name,
+            equipment: sheet.equipment,
+            ownWeightUnit: sheet.ownWeightUnit,
+            plannedSets: max(1, sheet.plannedSets),
+            repRange: sheet.repRange,
+            workingWeight: sheet.workingWeight,
+            increment: sheet.increment,
+            microloadingIncrement: sheet.microloadingIncrement,
+            modeOverride: sheet.modeOverride)
+        if sheet.equipment.takesBaseWeight { made.storedBaseWeight = sheet.baseWeight }
+        if sheet.equipment.hasPin { made.storedStackStep = sheet.stackStep }
         made.microload = made.needsMicroload(in: inventory) ? .zero(inventory.unit) : nil
         return made
     }
@@ -379,16 +437,7 @@ extension Rules {
         new.ownWeightUnit = draft.ownWeightUnit
         new.plannedSets = max(1, draft.plannedSets)
         new.repRange = draft.repRange
-        new.workingWeight = draft.workingWeight
-        new.increment = draft.increment
-        new.microloadingIncrement = draft.microloadingIncrement
         new.modeOverride = draft.modeOverride
-
-        // Written back only where the new Equipment Type shows the row. A sheet on a
-        // Barbell shows no Base Weight, so it carries none — and §2.3 refuses to re-ask
-        // a fact about a machine, so the stored one survives the change of type (§2.8).
-        if new.equipment.takesBaseWeight { new.storedBaseWeight = draft.baseWeight }
-        if new.equipment.hasPin { new.storedStackStep = draft.stackStep }
 
         // §6.6: **changing a Weight Unit clears the weights.** Converting was rejected
         // because it produces numbers no machine in the gym can make. The unit is derived
@@ -397,10 +446,35 @@ extension Rules {
         // it was never typed in.
         let oldUnit = old.weightUnit(in: inventory)
         let newUnit = new.weightUnit(in: inventory)
-        if newUnit != oldUnit {
-            new.workingWeight = nil
-            new.increment = nil
+
+        // **Two triggers, not one.** They used to be the same `if`, and that is the bug
+        // this ticket closes.
+        //
+        // - The three typed fields go stale when **the draft was typed in another unit**.
+        //   A number retyped after the flip is a good number in the new unit, and §6.6
+        //   promises the sheet may ask for it in the same visit.
+        // - The **Microload** goes when **the Exercise's unit moves**, retyped or not. It
+        //   is not a number the sheet asks for: it is a state that belongs to a unit, and
+        //   the unit it belonged to is gone.
+        let sheet = draft.withoutStaleWeights(resolvingTo: newUnit)
+        new.workingWeight = sheet.workingWeight
+        new.increment = sheet.increment
+        new.microloadingIncrement = sheet.microloadingIncrement
+
+        // Written back only where the new Equipment Type shows the row. A sheet on a
+        // Barbell shows no Base Weight, so it carries none — and §2.3 refuses to re-ask
+        // a fact about a machine, so the stored one survives the change of type (§2.8).
+        if new.equipment.takesBaseWeight { new.storedBaseWeight = sheet.baseWeight }
+        if new.equipment.hasPin {
+            new.storedStackStep = sheet.stackStep
+        } else if newUnit != oldUnit {
+            // No pin, so no row to retype it in, and its unit has moved under it. §2.8
+            // keeps a Stack Step across a change of type; it does not keep one across a
+            // change of unit, and here both happened at once.
             new.storedStackStep = nil
+        }
+
+        if newUnit != oldUnit {
             // The Microload follows the unit and never carries across: deleted when the
             // pin joins the rack's unit, created at zero when it leaves it (§2.8). Hiding
             // it instead would bring the old Microload back on a second unit change.

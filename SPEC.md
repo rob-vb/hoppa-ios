@@ -1106,13 +1106,21 @@ convert* now covers the stored number, not only the display.**
 **Cleared means unset, not zero** (§2.8): the field is empty, and the Exercise does not progress
 until the user types a number.
 
-> **The same sheet cannot yet ask for them again.** `Rules.edited` clears the three fields *at the
-> save*, comparing the unit the Exercise resolved to before against the one it resolves to now — so
-> a number the user types into the emptied field, in that same visit, is cleared with them. Proved
-> on both paths: a Dumbbell flipped to kg and retyped, and a Dumbbell turned into a Barbell over a
-> kg rack. The Exercise sheet empties the fields where the user can see it and does **not** work
-> around the rule; the fix belongs to the rule, which cannot today tell a stale number from a
-> retyped one. Found while building:
+**What makes *the same sheet* possible: the sheet says which unit it typed in.** The sheet saves
+once (§6.2), so a number retyped after the flip arrives in the very same save as the flip. A rule
+that asks *did the unit move* clears it with the stale ones. So the sheet carries **the unit its
+numbers are written in**, and the rule clears a field when that unit is not the one the Exercise
+now resolves to. The number's own label cannot answer this: a stored label may be stale by design
+(§2.8), and the sheet opens by copying stored labels.
+
+**The Microload hangs on the other trigger.** The three typed fields go when *the draft was typed
+in another unit*; the Microload goes when *the Exercise's unit moves*, retyped or not. It is not a
+number the sheet asks for — it is a state that belongs to a unit, and that unit has left. The same
+two triggers guard adding an Exercise, because an add sheet can change its Equipment Type after a
+weight is typed.
+
+> Found while building
+> [The Exercise sheet](issues/0035-the-exercise-sheet.md), settled at
 > [A weight retyped after a unit change](issues/0041-a-weight-retyped-after-a-unit-change.md).
 
 **Changing the Equipment Type across the rack boundary is the same event**, and clears the same

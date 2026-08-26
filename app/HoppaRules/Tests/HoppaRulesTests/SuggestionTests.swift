@@ -134,7 +134,8 @@ struct SuggestionTests {
 
         #expect(!Rules.nameSuggestions(in: session.book, query: "").contains("Pull-up"))
         // Correct a typo and the wrong name is gone at once — one save, no cleanup screen.
-        var draft = ExerciseDraft(session.book.exercise(ExerciseID(4))!)
+        var draft = ExerciseDraft(
+            session.book.exercise(ExerciseID(4))!, in: session.book.plateInventory)
         draft.name = "Farmers Walk"
         session.send(.saveExercise(ExerciseID(4), draft: draft))
         let names = Rules.nameSuggestions(in: session.book, query: "")

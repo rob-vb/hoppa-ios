@@ -90,7 +90,7 @@ struct WorkoutDayScreen: View {
         _ target: ExerciseSheetTarget, _ program: Program, _ day: WorkoutDay
     ) -> ExerciseDraft {
         if let id = target.exercise, let exercise = program.exercise(id) {
-            return ExerciseDraft(exercise)
+            return ExerciseDraft(exercise, in: rack)
         }
         let previous = carrySource(program, day, at: target.at)
         return ExerciseDraft(
@@ -104,7 +104,11 @@ struct WorkoutDayScreen: View {
             // 8–12 is the artboard's own row and §4's worked example; the sheet says
             // `CARRIED OVER` only where something really was.
             plannedSets: previous?.plannedSets ?? 3,
-            repRange: previous?.repRange ?? RepRange(8, 12))
+            repRange: previous?.repRange ?? RepRange(8, 12),
+            // An add sheet opens on a Barbell, so the unit it shows is the rack's — and
+            // `ExerciseSheet` moves this with the unit row, because a number typed under
+            // one label is not a number under the other (§6.6).
+            shownUnit: rack.unit)
     }
 
     /// The Exercise before this one: the one above it in the Day, or — for the first

@@ -28,7 +28,11 @@ struct EditTests {
         return book
     }
 
-    static func draft(_ exercise: Exercise) -> ExerciseDraft { ExerciseDraft(exercise) }
+    /// The sheet as it opens: `shownUnit` is the unit the Exercise resolves to right now,
+    /// which is what the sheet would be showing. Flipping the unit on the draft afterwards
+    /// and leaving the numbers alone is exactly *the user did not retype*.
+    static func draft(_ exercise: Exercise, in inventory: PlateInventory = rackKg())
+        -> ExerciseDraft { ExerciseDraft(exercise, in: inventory) }
 
     // MARK: - Program level (§2.1, §2.7, §4.4)
 
@@ -162,7 +166,8 @@ struct EditTests {
             draft: ExerciseDraft(
                 name: "Face pull", equipment: .cable, ownWeightUnit: .lbs,
                 plannedSets: 3, repRange: RepRange(12, 15),
-                workingWeight: lbs("40"), increment: lbs("10"), stackStep: lbs("10"))))
+                workingWeight: lbs("40"), increment: lbs("10"), stackStep: lbs("10"),
+                shownUnit: .lbs)))
 
         #expect(session.book.programs[0].days[0].exercises.map(\.name)[1] == "Face pull")
         #expect(session.workout?.exercises.map(\.name)[1] == "Face pull")
@@ -277,6 +282,77 @@ struct EditTests {
         #expect(session.resolved(Ids.smith)?.baseWeight == nil)
         // The unit did not change, so the weights stayed.
         #expect(session.stored(Ids.smith)?.workingWeight == kg("72.5"))
+    }
+
+    @Test("A weight retyped in the new unit survives the same save that changed the unit")
+    func aRetypedWeightSurvives() {
+        var session = Session()
+        var draft = Self.draft(session.stored(Ids.press)!)              // Dumbbell, kg
+        draft.ownWeightUnit = .lbs
+        // The sheet emptied the fields on screen, the user typed again under the new
+        // label, and it all leaves in one save (§6.2). §6.6 promises this works.
+        draft.shownUnit = .lbs
+        draft.workingWeight = lbs("50")
+        draft.increment = lbs("5")
+        session.send(.saveExercise(Ids.press, draft: draft))
+
+        let press = session.stored(Ids.press)!
+        #expect(press.workingWeight == lbs("50"))
+        #expect(press.increment == lbs("5"))
+        #expect(press.ownWeightUnit == .lbs)
+        // And the Exercise never reaches the Re-weigh list, because it has a weight.
+        #expect(Rules.reweighList(in: session.book).isEmpty)
+    }
+
+    @Test("A retyped Stack Step survives, and the Microload dies anyway")
+    func theMicroloadGoesEvenWhenTheWeightIsRetyped() {
+        var session = Session()
+        #expect(session.stored(Ids.pulldown)?.microload == kg("1"))
+
+        var draft = Self.draft(session.stored(Ids.pulldown)!)           // stack, lbs
+        draft.ownWeightUnit = .kg                                       // the rack's unit
+        draft.shownUnit = .kg
+        draft.workingWeight = kg("45")
+        draft.stackStep = kg("5")
+        session.send(.saveExercise(Ids.pulldown, draft: draft))
+
+        let pulldown = session.stored(Ids.pulldown)!
+        // The three typed fields are the user's, retyped under the right label.
+        #expect(pulldown.workingWeight == kg("45"))
+        #expect(pulldown.storedStackStep == kg("5"))
+        // The Microload is not: it is a state that belonged to the unit that just left,
+        // and the pin now shares the rack's unit, so there is nowhere to hang one (§2.3).
+        #expect(pulldown.microload == nil)
+    }
+
+    @Test("A number typed before the flip is still cleared, retype or not")
+    func aStaleNumberStillGoes() {
+        var session = Session()
+        var draft = Self.draft(session.stored(Ids.press)!)              // Dumbbell, kg
+        // The unit moves and `shownUnit` does not: this draft's numbers were typed in kg.
+        draft.ownWeightUnit = .lbs
+        draft.workingWeight = kg("22.5")
+        session.send(.saveExercise(Ids.press, draft: draft))
+
+        #expect(session.stored(Ids.press)?.workingWeight == nil)
+    }
+
+    @Test("The add path is guarded by the same rule as the edit")
+    func addingCannotLandAWeightInTheWrongUnit() {
+        var session = Session()
+        // A sheet that typed 40 lbs on a Cable and then picked Barbell, which reads the
+        // kg rack (§5.1). The 40 was never a kg number.
+        session.send(.addExercise(
+            workoutDayId: Ids.upperA, at: 0,
+            draft: ExerciseDraft(
+                name: "Face pull", equipment: .barbell, ownWeightUnit: .lbs,
+                plannedSets: 3, repRange: RepRange(12, 15),
+                workingWeight: lbs("40"), increment: lbs("10"), shownUnit: .lbs)))
+
+        let added = session.book.programs[0].days[0].exercises[0]
+        #expect(added.name == "Face pull")
+        #expect(added.workingWeight == nil)
+        #expect(added.increment == nil)
     }
 
     @Test("A change of Equipment Type across the rack boundary is a unit change too")

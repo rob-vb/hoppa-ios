@@ -78,6 +78,12 @@ real**, and nothing after that is worth doing before it.
     becomes *an earlier day* by the calendar. The hand-off must say how to reach it — start a
     Workout, force-quit, set the date forward a day, open Hoppa — or a picker that asks nothing
     will read as a defect.
+    **Batch 4 carries a second ticket now**:
+    [A weight retyped after a unit change](0041-a-weight-retyped-after-a-unit-change.md) touches
+    `ExerciseSheet` and `WorkoutDayScreen`, so it must compile in Xcode with the rest. It needs no
+    walk of its own — its proof is 147 green rules tests — but the hand-off should name it, because
+    it changes what the Exercise sheet does after a unit flip and a silent change is the kind a
+    walk reports as a defect.
 
     Before batch 1 the queue was **empty**, cleared 2026-08-20 in one session, which is the pattern
     working as intended. What that walk settled, because each answer outlives its ticket:
@@ -622,6 +628,25 @@ real**, and nothing after that is worth doing before it.
   for the sixth time. **This opens batch 4**, and it comes with a wrinkle ticket 29's hand-off
   rule has not met before: **the trigger cannot be walked without moving the phone's clock**, so
   the hand-off has to say so rather than let a quiet picker read as a defect.
+- [A weight retyped after a unit change, on the sheet that cleared it](0041-a-weight-retyped-after-a-unit-change.md)
+  — **the draft carries the unit its numbers are written in**, and `Rules.edited` clears a field
+  when that unit is not the one the Exercise now resolves to. §6.6's promise that *the same sheet
+  asks for them again* holds from here. The number's own label was the cheapest signal and the
+  wrong one: `Weight.relabelled` exists because a stored label **may be stale by design** (§2.8),
+  and the sheet opens by copying stored labels — reading it would make a documented *may be stale*
+  load-bearing. The fix stays a rule rather than moving to the view, because it decides an outcome
+  from the `Logbook`; what is **not** in the `Logbook` is which unit the user was looking at, which
+  is why it rides in the draft — *the sheet as the user left it* — and not in the rule's arguments.
+  **One `if` became two triggers**: the three typed fields go when the draft was typed in another
+  unit, the **Microload** goes when the Exercise's unit moves, retyped or not. Exactly §6.6's three
+  fields; the Microloading Increment and the Base Weight are in the rack's unit and only the rack
+  can move them. The **add path runs the same guard**, because an add sheet can type a weight and
+  then pick another Equipment Type. `shownUnit` takes **no default** — a default makes *in which
+  unit are these numbers* the one thing a caller can forget. `HoppaRules` 143 → **147**, and every
+  existing clearing test passes **unchanged**: a draft that flips the unit and leaves the numbers
+  alone is exactly *the user did not retype*. It opened
+  [The numbers a mis-tap cleared](0043-the-numbers-a-mistap-cleared.md) — on an edit sheet closing
+  **is** the save, so one wrong tap on the unit row destroys three numbers with no way back.
 
 ## Not yet specified
 

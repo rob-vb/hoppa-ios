@@ -761,6 +761,12 @@ struct ExerciseSheet: View {
     /// a type that reads the rack, and it is written back only where the new type has the
     /// row, so it survives a change of type the way §2.3 asks.
     private func clearForUnitChange() {
+        // **The label moves first, and it moves whether or not anything was thrown away.**
+        // The draft carries the unit its numbers are written in (§6.6), and an empty sheet
+        // that has just picked a Cable in lbs is about to be typed into in lbs. Leave this
+        // under the guard below and a first number typed on a fresh sheet is cleared at
+        // the save, which is the very bug the field exists to close.
+        draft.shownUnit = unit
         guard !workingText.isEmpty || !incrementText.isEmpty || !stackText.isEmpty
                 || draft.workingWeight != nil || draft.increment != nil || draft.stackStep != nil
         else { return }
