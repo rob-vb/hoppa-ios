@@ -42,3 +42,10 @@ Three things to settle, not just to draw:
 Done, hand-off and testing follow ticket 29's rules.
 
 Consult `SPEC.md` §2.4, §3.1, §3.3 and §6.1.
+
+> **Ticket 0036 met the mid-session shape of this and answered it there.** Start Upper, press back
+> to the picker, tap Lower: `Rules.reduce` refuses the second `.startWorkout`, and the logging
+> screen now says which Day is running and offers the one door to it. That is **not this ticket** —
+> it only has to point, because the user is standing in the Workout he just left. This ticket is
+> the one that has to *ask*, about a Workout from an earlier day found at launch. Recorded so this
+> ticket does not rebuild what already exists.

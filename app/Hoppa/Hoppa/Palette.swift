@@ -78,3 +78,28 @@ extension Color {
     static let knurlHigh  = Color(hex: Steel.knurlHigh)
     static let pin        = Color(hex: Steel.pin)
 }
+
+// MARK: - The rim of a plate (SPEC.md §7.3, ticket 0036)
+
+extension Color {
+    /// §7.3 gives every plate **a 1 px rim one step lighter than its face**. It is written
+    /// there for the black family — `#33373A`, `#4E5358`, `#70767C` cannot sit flat on the
+    /// `#0E0F10` floor — and the drawing gives it to every plate, because a rim that
+    /// appeared only on three sizes would itself be a signal.
+    ///
+    /// **A derivation, not a new hue** (§7.2): each channel moves 30/255 towards white,
+    /// which is the step the black family's own three greys are spaced at. So the 5 kg's
+    /// rim lands beside the 2.5 kg's face, which is what "one step lighter" means in that
+    /// table.
+    init?(plateRimHex hex: String?) {
+        guard let hex, let face = Color.plateChannels(hex) else { return nil }
+        func lift(_ channel: UInt32) -> UInt32 { min(channel + 30, 255) }
+        self.init(hex: lift(face.r) << 16 | lift(face.g) << 8 | lift(face.b))
+    }
+
+    private static func plateChannels(_ hex: String) -> (r: UInt32, g: UInt32, b: UInt32)? {
+        let digits = hex.hasPrefix("#") ? String(hex.dropFirst()) : hex
+        guard digits.count == 6, let value = UInt32(digits, radix: 16) else { return nil }
+        return ((value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF)
+    }
+}

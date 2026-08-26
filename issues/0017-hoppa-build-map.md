@@ -56,14 +56,16 @@ real**, and nothing after that is worth doing before it.
     be type-checked on the VPS against the built modules, and so can every rules/store call a
     SwiftUI view makes. See the charter bullet on Swift on the VPS. What reaches Rob should be
     something that has already had every checkable thing checked.
-  - **The queue holds batch 1, and it is ready to go over**: [The shell and the first
-    run](0032-the-shell-and-the-first-run.md), [The Program name, the three assumptions, and the
-    Plate Inventory screen](0033-the-program-name-and-the-plate-rack.md), [The Program sheet hub
-    and the Workout Day screen](0034-the-program-sheet-and-the-workout-day.md) — all pushed
-    2026-08-23 — and [The Exercise sheet, and the name field](0035-the-exercise-sheet.md), pushed
-    2026-08-24. The path is whole: empty app → Program → rack → Days → real Exercises, with
-    `HarnessSeed` still off. **The hand-off is written and waiting**, one numbered list, and until
-    Rob has walked it the map keeps picking up unblocked tickets rather than waiting on him.
+  - **Batch 1 has been over, and the queue now holds batch 2.** Rob walked
+    [The shell and the first run](0032-the-shell-and-the-first-run.md),
+    [The Program name, the three assumptions, and the Plate Inventory
+    screen](0033-the-program-name-and-the-plate-rack.md), [The Program sheet hub and the Workout
+    Day screen](0034-the-program-sheet-and-the-workout-day.md) and [The Exercise sheet, and the
+    name field](0035-the-exercise-sheet.md) on 2026-08-26, and the three fixes it found are
+    recorded below. **Batch 2 holds [The logging screen](0036-the-logging-screen.md)**, pushed
+    2026-08-26, and it goes over after [The weight sheet](0037-the-weight-sheet.md) — which is
+    what makes the path walkable: start a Workout, log Sets, change a weight. Until then the map
+    keeps picking up unblocked tickets rather than waiting on him.
     Before that it was **empty**, cleared 2026-08-20 in one
     session, which is the pattern working as intended. What it settled, because each answer outlives its ticket:
     - **The force-quit passes on the phone** — `Upper A`, `Sets logged 2`, `Current index 0` after a
@@ -516,6 +518,24 @@ real**, and nothing after that is worth doing before it.
   the sheet cannot give. It costs one tap per Exercise (§6.2's budget is now 15 and 422), the
   carry-over is unharmed because it is read off the Day, and the lesson is worth more than the tap:
   **a tap saved that costs the user their confidence is not saved.**
+
+- **[The logging screen](0036-the-logging-screen.md)** — §6.4 is built and pushed: the screen, the
+  exercise-list drawer, the `•••` menu and the Finish gate, plus §7.5's loaded bar, the stack, the
+  dumbbell and the belt. **§7.1 rule 2 is taken at its word, and the bar does not look like the
+  prototype**: steel is a 1 px border and never a fill, so every collar, sleeve stop, knurl, stack
+  block and belt clip is a hollow outline where the prototype fills it — the first thing to look at
+  on the phone, and a finding with its own ticket if it reads as unfinished. It is also what makes
+  an **lbs plate** draw correctly for free: no palette → steel → hollow, at its right size.
+  `PlateGlyph` is shaped like `PlatePalette` — a **kg table** at ticket 0031's measured sizes plus a
+  microplate step at a quarter of the 1.25, then a **ramp with no cliff** for everything else,
+  because `2.5 lbs` is both a normal plate and a Microplate and no weight alone can say which is on
+  the bar. It **imports only `HoppaRules`, so it was compiled and run here**. §7.3's rim is real and
+  derived (+30/255 per channel), so ticket 0030's escalation rule fires nothing for the third time.
+  The **rep counter is view state**, the **Rest Timer holds no clock**, and the **rule chip asks
+  `Rules.evaluateProgression`** — including the four cases where a Completed Exercise does not move.
+  Three things the ticket did not name are built anyway: the menu (§3.3 puts Discard in one), the
+  pop to the picker (ticket 0038 takes it), and a screen for **one Open Workout at a time reached
+  mid-session** — which is not ticket 0040 and now says so on ticket 0040.
 
 ## Not yet specified
 

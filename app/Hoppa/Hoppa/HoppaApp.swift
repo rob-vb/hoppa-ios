@@ -56,9 +56,8 @@ struct HoppaApp: App {
             WorkoutDayScreen(path: $path, workoutDayId: id)
         case .programSettings(let id):
             ProgramSettings(path: $path, programId: id)
-        case .logging:
-            NotBuiltYet(screen: "The logging screen. Nothing was started: the Workout begins here, and here does not exist yet.",
-                        ticket: "0036")
+        case .logging(let id):
+            LoggingScreen(path: $path, workoutDayId: id)
         case .history:
             NotBuiltYet(screen: "History — the streak, the Workout list and the per-Exercise chart.",
                         ticket: "Flow 4, not scheduled")
