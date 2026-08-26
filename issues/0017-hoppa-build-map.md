@@ -89,6 +89,13 @@ real**, and nothing after that is worth doing before it.
     `PBXFileSystemSynchronizedRootGroup`, so `project.pbxproj` needs no edit — which is one more
     data point for the question about who owns that file.
 
+    **The hand-off is written, and it is [`HANDOFF.md`](../HANDOFF.md).** One walk over batches 2,
+    3 and 4 — 38 numbered items, every one *do X → expect Y*, item 1 a `git pull` and a build and
+    item 38 the `git push` if Xcode touched `project.pbxproj`. It is a **file and not a message**,
+    for the reason [The Ignition confetti](0039-the-ignition-confetti.md) already found: a hand-off
+    is a message, and a message does not survive the session. Written against `00321d6`; a batch
+    that goes over later rewrites it rather than adding a second one.
+
     **The frontier is empty now.** [The MICRO stepper on a mixed-unit
     pin](0042-the-micro-stepper-on-a-mixed-unit-pin.md) was the last open ticket, and it closed
     *out of scope* rather than onto the route — see **Out of scope** below. So there is no ticket to
