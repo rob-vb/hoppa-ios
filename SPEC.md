@@ -1106,6 +1106,18 @@ convert* now covers the stored number, not only the display.**
 **Cleared means unset, not zero** (§2.8): the field is empty, and the Exercise does not progress
 until the user types a number.
 
+**While the sheet is open the numbers are held, not destroyed.** Closing an edit sheet *is* the
+save (§6.2) and there is no cancel, so one wrong tap on the unit row would otherwise be the last
+word on three numbers. The sheet keeps what it took off the screen, filed under the unit it was
+typed in, and puts it back if that unit comes back — for as many flips as the user makes, and on
+the add sheet as well as the edit sheet. **Nothing is converted and nothing is merged**: a number
+retyped after a flip is filed under *its* unit, so both survive and each appears under its own
+label. This is the sheet's memory of one visit and it is not a rule: it decides nothing from the
+`Logbook`, it never reaches the save, and what the save writes is exactly what is on the screen.
+
+> Found and settled at
+> [The numbers a mis-tap cleared](issues/0043-the-numbers-a-mistap-cleared.md).
+
 **What makes *the same sheet* possible: the sheet says which unit it typed in.** The sheet saves
 once (§6.2), so a number retyped after the flip arrives in the very same save as the flip. A rule
 that asks *did the unit move* clears it with the stale ones. So the sheet carries **the unit its

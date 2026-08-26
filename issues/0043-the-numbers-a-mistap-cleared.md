@@ -3,8 +3,8 @@ id: 43
 title: The numbers a mis-tap cleared, and the unit that came back
 parent: 17
 labels: [wayfinder:task]
-status: open
-assignee:
+status: closed
+assignee: agent
 blocked-by: [41]
 ---
 
@@ -43,3 +43,60 @@ restore has to move that label back with them.
 
 Consult `SPEC.md` §6.2 and §6.6, and `ExerciseSheet.swift` (`clearForUnitChange`, `close`,
 `unitChanged`).
+
+## Resolution
+
+**The numbers are filed under the unit they were typed in, and they come back when that
+unit does.** `UnitStash` — a plain value in the app target, importing no SwiftUI — holds
+one `TypedWeights` per unit. A unit change hands it what is on the screen and draws what
+it hands back. Tapping the unit row again is a full undo, and it costs one tap.
+
+**A file per unit, not a memory of the unit at open.** That was the shape the ticket's
+three questions all turned on, and it answers them together:
+
+- **The unit at open needs no privileged status.** An add sheet moves its unit once before
+  anything is typed, and under a per-unit stash that move carries an empty screen, so it
+  files nothing and says nothing. Every later move is the same operation as the first.
+- **A number typed after the flip survives a flip back** — under **its own** label, not the
+  other one. Both numbers live, each filed where it was typed. Nothing is converted and
+  nothing is merged, which is §5.1 holding inside the sheet as well as inside the rule.
+- **The `unitChanged` note is gone**, because it said *cleared* and nothing is. `UnitStash`
+  writes the note now, and it says where the numbers went and how to get them back. Both
+  halves can be true at once — flip, retype, flip back — and the sentence carries both.
+
+**One case the ticket did not name, found while building: the add sheet was already losing
+a weight at the save.** `WorkoutDayScreen` opened an add draft with `shownUnit: rack.unit`,
+but the sheet draws the **Program's default** until an Equipment Type is picked (§2.1, a
+ticket 0035 decision). In a Program whose default is not the rack's unit, a weight typed
+before the first pick was typed under one label and judged against another, and
+`withoutStaleWeights` threw it away. The draft now opens on `program.defaultWeightUnit` —
+**the unit the sheet actually draws at open**, which is the only thing `shownUnit` ever
+meant. Two checks cover it: a Dumbbell picked in lbs keeps the number, a Barbell files it.
+
+**Why the logic left the view.** Ticket 0029 says logic worth a test does not belong in a
+view, and this is not a rule — it decides nothing from the `Logbook`, and two lifters with
+the same `Logbook` are not owed the same answer, because it is the state of one visit to
+one sheet. So it went to neither: a plain value in the **app target** that imports no
+SwiftUI, which `swiftc` reaches here against the built `HoppaRules`. The sheet keeps none
+of the reasoning — it hands over what is on the screen and draws what comes back.
+
+**`hasContent` counts the stash.** An add sheet's `✕` asks before it throws away numbers
+held under the other unit; without it the mis-tap this ticket closed just moves to a
+different control.
+
+**The stash dies with the sheet, and never reaches the save.** What the save writes is what
+is on the screen. `Rules.edited` is untouched, and the 147 rules tests are unchanged.
+
+### What was built
+
+- `UnitStash.swift` (new): `TypedWeights`, `UnitStash.move(from:to:onScreen:)`, `forget()`,
+  `hasNumbers` and `note(showing:)`.
+- `ExerciseSheet.swift`: `clearForUnitChange` files and restores through it, `show(_:)` and
+  `weight(_:)` put a restored set on the screen, the note reads off the stash, `hasContent`
+  counts it, and `weightBox` now parses through the same `weight(_:)` a restore uses.
+- `WorkoutDayScreen.swift`: an add draft opens on `program.defaultWeightUnit`.
+- `SPEC.md` §6.6: a paragraph saying the numbers are held while the sheet is open, and that
+  this is the sheet's memory of one visit and not a rule.
+- `app/checks/UnitStash/` (new): **34 checks, all green on the VPS**, compiled against the
+  real `UnitStash.swift` and saving through `Rules.reduce`. `./run.sh` runs them; a red
+  check exits `1`, proved by breaking one.

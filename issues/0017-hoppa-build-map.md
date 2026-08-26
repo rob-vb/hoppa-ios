@@ -78,12 +78,16 @@ real**, and nothing after that is worth doing before it.
     becomes *an earlier day* by the calendar. The hand-off must say how to reach it — start a
     Workout, force-quit, set the date forward a day, open Hoppa — or a picker that asks nothing
     will read as a defect.
-    **Batch 4 carries a second ticket now**:
-    [A weight retyped after a unit change](0041-a-weight-retyped-after-a-unit-change.md) touches
-    `ExerciseSheet` and `WorkoutDayScreen`, so it must compile in Xcode with the rest. It needs no
-    walk of its own — its proof is 147 green rules tests — but the hand-off should name it, because
-    it changes what the Exercise sheet does after a unit flip and a silent change is the kind a
-    walk reports as a defect.
+    **Batch 4 carries three tickets now**:
+    [A weight retyped after a unit change](0041-a-weight-retyped-after-a-unit-change.md) and
+    [The numbers a mis-tap cleared](0043-the-numbers-a-mistap-cleared.md) both touch
+    `ExerciseSheet` and `WorkoutDayScreen`, so they must compile in Xcode with the rest. Neither
+    needs a walk of its own — their proof is 147 green rules tests plus 34 green stash checks — but
+    the hand-off should name them, because together they change what the Exercise sheet does after
+    a unit flip and a silent change is the kind a walk reports as a defect. Ticket 43 adds **one
+    new file**, `app/Hoppa/Hoppa/UnitStash.swift`, and the target is a
+    `PBXFileSystemSynchronizedRootGroup`, so `project.pbxproj` needs no edit — which is one more
+    data point for the question about who owns that file.
 
     Before batch 1 the queue was **empty**, cleared 2026-08-20 in one session, which is the pattern
     working as intended. What that walk settled, because each answer outlives its ticket:
@@ -647,6 +651,22 @@ real**, and nothing after that is worth doing before it.
   alone is exactly *the user did not retype*. It opened
   [The numbers a mis-tap cleared](0043-the-numbers-a-mistap-cleared.md) — on an edit sheet closing
   **is** the save, so one wrong tap on the unit row destroys three numbers with no way back.
+- [The numbers a mis-tap cleared, and the unit that came back](0043-the-numbers-a-mistap-cleared.md)
+  — **a file per unit, and not a memory of the unit at open.** The three fields §6.6 takes off the
+  screen go into `UnitStash` under the unit they were typed in, and come back when that unit does;
+  tapping the row again is a full undo. That one shape answered all three of the ticket's
+  questions: the add sheet's free first move carries an empty screen and so files nothing, a number
+  retyped after the flip survives **under its own label** with nothing converted or merged (§5.1
+  inside the sheet), and the note no longer says *cleared* because nothing is — it says where the
+  numbers went and how to get them back, in both directions at once. **The logic left the view**:
+  it is not a rule, since it decides nothing from the `Logbook` and is the state of one visit to
+  one sheet — so it went to neither `HoppaRules` nor the view, but to a plain value in the **app
+  target** that imports no SwiftUI and is therefore provable here. That is ticket 29's *no UI
+  tests* rule doing what it was written for, and it bought **34 checks** in
+  `app/checks/UnitStash/`, compiled against the real file and saving through `Rules.reduce`.
+  Building it found a second defect the ticket had not named: an add draft opened on `rack.unit`
+  while the sheet drew the **Program's default**, so a weight typed before the first Equipment Type
+  pick was judged against a label it was never typed under and thrown away at the save.
 
 ## Not yet specified
 
@@ -733,6 +753,13 @@ real**, and nothing after that is worth doing before it.
   one: [The MICRO stepper on a mixed-unit pin](0042-the-micro-stepper-on-a-mixed-unit-pin.md). It
   sits beside **the lbs rack** above for the same reason — Rob's rack is kg, his stacks are kg, and
   the case costs nothing today.
+- **Where a *provable* piece of a screen goes, now that there is a third place to put it.**
+  [The numbers a mis-tap cleared](0043-the-numbers-a-mistap-cleared.md) put `UnitStash` in the app
+  target with no SwiftUI import and walked it here — neither a rule nor a view, and the first time
+  this map has done that deliberately rather than as a throwaway. It is a good answer for that
+  ticket and it may be a pattern or may be a one-off; nobody has looked at the other screens to
+  see how much of them would come out the same way, and a third home is a cost as well as a gain.
+  Not sharp until a second screen wants it. Found while building.
 - **What a past Workout's Summary reads its weights off, once Flow 4 can open one.** §6.5's
   Went-up row is `72.5 KG → 75 KG`, and [The Workout Summary](0038-the-workout-summary.md) reads
   the `from` off the last logged Set — a record, safe forever — and the `to` off the Exercise's

@@ -11,11 +11,13 @@ import HoppaStore
 // Three things this sheet does **not** decide, because rules already do:
 //
 // - **The clearing rule.** A change of Equipment Type across the rack boundary is a
-//   change of unit (§6.6), and `Rules.edited` clears the Working Weight, the Increment
-//   and the Stack Step when the unit the Exercise *resolves to* moves. The sheet clears
-//   the same three the moment the unit on screen changes, so the user is never typing
-//   under a label that has moved under him — it agrees with the rule rather than working
-//   around it.
+//   change of unit (§6.6), and `Rules.edited` drops the Working Weight, the Increment and
+//   the Stack Step when the draft was typed in a unit the Exercise no longer resolves to
+//   (ticket 0041). The sheet takes the same three off the screen the moment the unit on
+//   screen changes, so the user is never typing under a label that has moved under him —
+//   it agrees with the rule rather than working around it. **The sheet keeps them**
+//   (ticket 0043): they go into a per-unit stash and come back if the unit does, because
+//   closing an edit sheet is the save and a mis-tap must not be the last word.
 // - **What a Microloading Increment moves.** `Rules.progressionMove` owns the doubling on
 //   a bar and the roll-up on a pin; the row below reads the move out of it rather than
 //   multiplying by two itself, exactly as ticket 0034's Exercise card does.
@@ -57,9 +59,10 @@ struct ExerciseSheet: View {
 
     @State private var nameIsMissing = false
     @State private var equipmentIsMissing = false
-    /// Set when the unit on screen moved under a typed number, so the sheet can say why
-    /// the fields went empty. Cleared by the next thing the user does to them.
-    @State private var unitChanged = false
+    /// **The sheet's memory of the numbers a unit change took off the screen** (ticket
+    /// 0043). It is a plain value in `UnitStash.swift`, which imports no SwiftUI, so the
+    /// whole of it is provable off the Mac.
+    @State private var stash = UnitStash()
 
     @State private var progressionDialog = false
     @State private var removeDialog = false
@@ -593,8 +596,8 @@ struct ExerciseSheet: View {
     @ViewBuilder
     private var notes: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if unitChanged {
-                note("The unit is now \(unit.rawValue). The weight, the increment and the stack step are cleared — a number typed in the other unit is not a number in this one.")
+            if let text = stash.note(showing: unit) {
+                note(text)
             }
             if unitIsLocked {
                 // The artboard's lock line, without its padlock: no SF Symbols (ticket
@@ -646,9 +649,7 @@ struct ExerciseSheet: View {
         _ text: Binding<String>, field: Field, width: CGFloat, keep: @escaping (Weight?) -> Void
     ) -> some View {
         typedBox(text, field: field, width: width, decimal: true) { value in
-            // **An unset weight is `nil`, not zero** (§2.8): an empty field is *the user
-            // has not typed one*, and zero is a real Bodyweight lift.
-            keep(value.isEmpty ? nil : Weight(decimalString: value, unit: unit))
+            keep(weight(value))
         }
     }
 
@@ -674,7 +675,7 @@ struct ExerciseSheet: View {
                 .focused($focus, equals: field)
                 .tint(Color.go)
                 .onChange(of: text.wrappedValue) {
-                    unitChanged = false
+                    stash.forget()
                     read(text.wrappedValue)
                 }
         }
@@ -756,28 +757,54 @@ struct ExerciseSheet: View {
         }
     }
 
-    /// §6.6, where the user can see it: a change of unit clears the Working Weight, the
-    /// Increment and the Stack Step. The Base Weight is not cleared here — it belongs to
-    /// a type that reads the rack, and it is written back only where the new type has the
-    /// row, so it survives a change of type the way §2.3 asks.
+    /// §6.6, where the user can see it: a change of unit takes the Working Weight, the
+    /// Increment and the Stack Step off the screen. The Base Weight is not touched here —
+    /// it belongs to a type that reads the rack, and it is written back only where the new
+    /// type has the row, so it survives a change of type the way §2.3 asks.
+    ///
+    /// **The numbers are put away, not destroyed** (ticket 0043). An edit sheet has no
+    /// cancel — closing *is* the save (§6.2) — so one mis-tap on the unit row used to
+    /// destroy three numbers with no way back. `UnitStash` files them under the unit they
+    /// were typed in and hands back whatever was filed under the unit arriving; tapping
+    /// the row again is a full undo. The sheet keeps none of that reasoning — it hands
+    /// over what is on the screen and draws what comes back.
     private func clearForUnitChange() {
-        // **The label moves first, and it moves whether or not anything was thrown away.**
+        // **The label moves first, and it moves whether or not anything was put away.**
         // The draft carries the unit its numbers are written in (§6.6), and an empty sheet
         // that has just picked a Cable in lbs is about to be typed into in lbs. Leave this
-        // under the guard below and a first number typed on a fresh sheet is cleared at
-        // the save, which is the very bug the field exists to close.
+        // under a guard and a first number typed on a fresh sheet is cleared at the save,
+        // which is the very bug the field exists to close.
+        let leaving = draft.shownUnit
         draft.shownUnit = unit
-        guard !workingText.isEmpty || !incrementText.isEmpty || !stackText.isEmpty
-                || draft.workingWeight != nil || draft.increment != nil || draft.stackStep != nil
-        else { return }
-        workingText = ""
-        incrementText = ""
-        stackText = ""
-        draft.workingWeight = nil
-        draft.increment = nil
-        draft.stackStep = nil
-        incrementTyped = false
-        unitChanged = true
+        guard leaving != unit else { return }
+
+        show(stash.move(
+            from: leaving, to: unit,
+            onScreen: TypedWeights(
+                working: workingText, increment: incrementText, stack: stackText,
+                incrementTyped: incrementTyped)))
+    }
+
+    /// Put a filed set of numbers on the screen, in the unit the sheet now shows. The
+    /// text is copied back as typed; the draft's `Weight`s are re-read from it under the
+    /// **current** unit, which is the unit that text was typed under — that is what the
+    /// key means.
+    private func show(_ typed: TypedWeights) {
+        workingText = typed.working
+        incrementText = typed.increment
+        stackText = typed.stack
+        incrementTyped = typed.incrementTyped
+        draft.workingWeight = weight(typed.working)
+        draft.increment = weight(typed.increment)
+        draft.stackStep = weight(typed.stack)
+    }
+
+    /// A typed field as a `Weight` in the unit the sheet is showing. **An unset weight
+    /// is `nil`, not zero** (§2.8): an empty field is *the user has not typed one*, and
+    /// zero is a real Bodyweight lift. Both the keypad and the stash read a field through
+    /// here, so a restored number is parsed exactly as a typed one.
+    private func weight(_ text: String) -> Weight? {
+        text.isEmpty ? nil : Weight(decimalString: text, unit: unit)
     }
 
     // MARK: - Saving, which happens once (§6.2)
@@ -817,11 +844,15 @@ struct ExerciseSheet: View {
         dismiss()
     }
 
-    /// Whether anything on an add sheet would be lost by closing it.
+    /// Whether anything on an add sheet would be lost by closing it. **The stash counts**
+    /// (ticket 0043): numbers held under the other unit are one tap from the screen, and a
+    /// `✕` that dismissed them without asking is the mis-tap that ticket closed, moved to
+    /// a different control.
     private var hasContent: Bool {
         !draft.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             || equipmentChosen || !workingText.isEmpty || !incrementText.isEmpty
             || !baseText.isEmpty || !stackText.isEmpty
+            || stash.hasNumbers
     }
 
     /// One action carrying the whole sheet (§6.2, ticket 0026) — never ten field writes,

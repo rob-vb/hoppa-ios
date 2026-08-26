@@ -105,10 +105,16 @@ struct WorkoutDayScreen: View {
             // `CARRIED OVER` only where something really was.
             plannedSets: previous?.plannedSets ?? 3,
             repRange: previous?.repRange ?? RepRange(8, 12),
-            // An add sheet opens on a Barbell, so the unit it shows is the rack's — and
-            // `ExerciseSheet` moves this with the unit row, because a number typed under
-            // one label is not a number under the other (§6.6).
-            shownUnit: rack.unit)
+            // **The unit the sheet draws at open**, which on an add is the Program's
+            // default: no Equipment Type is picked yet, so there is nothing to resolve and
+            // §2.1's default is what the row shows. Not `rack.unit` — that is what the
+            // *first pick* will resolve to, and the two come apart in a Program whose
+            // default is not the rack's unit, where a weight typed before the pick would
+            // then be thrown away at the save (ticket 0043).
+            //
+            // `ExerciseSheet` moves this with the unit row from here, because a number
+            // typed under one label is not a number under the other (§6.6).
+            shownUnit: program.defaultWeightUnit)
     }
 
     /// The Exercise before this one: the one above it in the Day, or — for the first
