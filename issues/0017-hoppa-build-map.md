@@ -506,6 +506,17 @@ real**, and nothing after that is worth doing before it.
   The Microloading row's `+0.5 KG ON THE BAR` is **read out of `Rules.progressionMove`**, probed at
   a zero Working Weight, so the doubling stays in the rule that owns it.
 
+- **What the phone said about the sheet** (2026-08-26, after batch 1 — three fixes, no ticket,
+  because none of them touched a rule). A chip could **wrap**: in the Increment row the label takes
+  its ideal width and the `Spacer` gives the rest away, so `1.25` broke as `1.` / `25`; chips are
+  text and their widths are their own. A tap beside a field **left the keyboard up**: the catcher
+  has to live *inside* the `ScrollView`, which hit-tests its own bounds, so a tap never reaches the
+  floor behind it. And **`SAVE AND ADD ANOTHER` became `SAVE`, which closes the sheet** — the
+  reopened empty sheet read as work thrown away, and the Day screen behind it is the confirmation
+  the sheet cannot give. It costs one tap per Exercise (§6.2's budget is now 15 and 422), the
+  carry-over is unharmed because it is read off the Day, and the lesson is worth more than the tap:
+  **a tap saved that costs the user their confidence is not saved.**
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two

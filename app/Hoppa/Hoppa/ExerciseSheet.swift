@@ -32,9 +32,9 @@ struct ExerciseSheet: View {
     let target: ExerciseSheetTarget
 
     /// Whether the Sets and the Rep Range arrived from the Exercise before this one
-    /// (§6.2). Only the add life carries anything over, so only it draws `CARRIED OVER` —
-    /// and after the first `SAVE AND ADD ANOTHER` there is always something behind it.
-    @State private var carriedOver: Bool
+    /// (§6.2). Only the add life carries anything over, so only it draws `CARRIED OVER`.
+    /// The Day screen decides it, because it is the one that knows what is behind.
+    private let carriedOver: Bool
 
     @State private var draft: ExerciseDraft
     /// **The Equipment Type starts empty on an add** (§6.2). `ExerciseDraft` cannot hold
@@ -42,9 +42,6 @@ struct ExerciseSheet: View {
     /// Exercise — so the sheet keeps the question in view state and refuses to save until
     /// it is answered.
     @State private var equipmentChosen: Bool
-    /// How many Exercises `SAVE AND ADD ANOTHER` has already added on this visit. It
-    /// moves the header count and the insertion point; nothing else.
-    @State private var added = 0
 
     // The typed fields, held as text and parsed on every keystroke. A `Weight` cannot
     // hold `72.` and the user has to be able to type it, so the text is the truth while
@@ -75,7 +72,7 @@ struct ExerciseSheet: View {
 
     init(target: ExerciseSheetTarget, initial: ExerciseDraft, carriedOver: Bool) {
         self.target = target
-        _carriedOver = State(initialValue: carriedOver)
+        self.carriedOver = carriedOver
         _draft = State(initialValue: initial)
         // An edit opens on an Exercise that already has one; an add asks for it.
         _equipmentChosen = State(initialValue: target.exercise != nil)
@@ -121,14 +118,14 @@ struct ExerciseSheet: View {
     }
 
     /// The number in the header. An edit reads the Exercise's own place in the Day; an
-    /// add counts the position it will land at, which `SAVE AND ADD ANOTHER` moves.
+    /// add counts the position it will land at.
     private var position: Int {
         if let id = target.exercise,
            let day = store.logbook?.workoutDay(target.day)?.day,
            let index = day.exercises.firstIndex(where: { $0.id == id }) {
             return index + 1
         }
-        return target.at + added + 1
+        return target.at + 1
     }
 
     var body: some View {
@@ -208,7 +205,7 @@ struct ExerciseSheet: View {
             Button("Discard", role: .destructive) { dismiss() }
             Button("Keep editing", role: .cancel) {}
         } message: {
-            Text("Nothing is saved until you tap save and add another.")
+            Text("Nothing is saved until you tap save.")
         }
         .confirmationDialog(
             "Remove this exercise?", isPresented: $removeDialog, titleVisibility: .visible
@@ -628,7 +625,7 @@ struct ExerciseSheet: View {
     @ViewBuilder
     private var bottomControl: some View {
         if isAdd {
-            PrimaryButton("Save and add another", action: saveAndAddAnother)
+            PrimaryButton("Save", action: save)
         } else {
             Button { removeDialog = true } label: {
                 Text("Remove exercise")
@@ -802,26 +799,16 @@ struct ExerciseSheet: View {
         discardDialog = true
     }
 
-    private func saveAndAddAnother() {
+    /// The add life's save. **It closes the sheet**, and the Day screen behind it shows
+    /// the Exercise that just landed — the confirmation the sheet itself cannot give.
+    ///
+    /// It costs one tap per Exercise over `SAVE AND ADD ANOTHER`, which reopened the sheet
+    /// empty. Rob asked for the tap back on the phone: a sheet that empties itself reads
+    /// like a sheet that threw the work away. The carry-over is unharmed — the next
+    /// `ADD AN EXERCISE` reads it off the Exercise this one just saved.
+    private func save() {
         guard commit() else { return }
-        // The sheet opens again, empty — with the two fields §6.2 carries over already
-        // filled in, which is where the 14-tap floor comes from.
-        added += 1
-        carriedOver = true
-        draft = ExerciseDraft(
-            name: "",
-            equipment: draft.equipment,
-            ownWeightUnit: draft.ownWeightUnit,
-            plannedSets: draft.plannedSets,
-            repRange: draft.repRange)
-        equipmentChosen = false
-        workingText = ""
-        incrementText = ""
-        baseText = ""
-        stackText = ""
-        incrementTyped = false
-        unitChanged = false
-        focus = .name
+        dismiss()
     }
 
     /// Whether anything on an add sheet would be lost by closing it.
@@ -859,8 +846,7 @@ struct ExerciseSheet: View {
         if let id = target.exercise {
             store.send(.saveExercise(id, draft: saved))
         } else {
-            store.send(.addExercise(
-                workoutDayId: target.day, at: target.at + added, draft: saved))
+            store.send(.addExercise(workoutDayId: target.day, at: target.at, draft: saved))
         }
         return true
     }

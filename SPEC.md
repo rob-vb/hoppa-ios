@@ -706,8 +706,16 @@ Behaviour of the sheet:
   an Exercise behind it, so **closing is the save** — the one act §6.2 allows — and a line under
   the fields states it. There is no *cancel*: half this sheet opens at the rack mid-Workout, where
   §6.6 already refuses to ask twice about a change the user made and watched land. An **add** sheet
-  has nothing behind it: its save is the control that says so (`SAVE AND ADD ANOTHER`, which reopens
-  it empty), and the `✕` **asks before it discards** a filled-in sheet. Neither reading survives a
+  has nothing behind it: its save is the control that says so — `SAVE`, which **closes the sheet**
+  — and the `✕` **asks before it discards** a filled-in sheet.
+
+  > **`SAVE AND ADD ANOTHER` was tried first, and it was wrong on the phone.** It reopened the
+  > sheet empty and saved a tap, and Rob read the empty sheet as work thrown away: nothing on
+  > screen said the Exercise had landed. The Day screen behind it is the confirmation, so the
+  > save now closes and the next Exercise starts at `ADD AN EXERCISE`. The carry-over is
+  > untouched — it is read off the Day, not held by the sheet — and the cost is one tap per
+  > Exercise, priced into the budget below. **A tap saved that costs the user their confidence
+  > is not saved.** Neither reading survives a
   swipe-down, so the sheet has one visible way out and interactive dismissal is off.
 - **`REMOVE EXERCISE` is on the sheet**, where the artboard draws it. §6.6 gives deleting an
   Exercise no block to state, so the whole control is one confirm and one action.
@@ -723,18 +731,18 @@ Behaviour of the sheet:
   `…` types any number (§2.3). Nothing is pre-selected: an Increment the user did not pick is a
   weight Hoppa invented.
 
-**The tap budget — the ticket's core question. 14 taps per Exercise is the floor, 400 for the
-Program:**
+**The tap budget — the ticket's core question. 15 taps per Exercise is the floor, 422 for the
+Program** — 14 and 400 until `SAVE AND ADD ANOTHER` became `SAVE`, above:
 
 | Step | Taps |
 | --- | --- |
 | Program name and the three assumptions | 16 |
 | Plate rack — standard kg, one confirm | 3 |
 | 4 Workout Days, named | 40 |
-| 22 Exercises at 14 taps each | 308 |
+| 22 Exercises at 15 taps each | 330 |
 | Base Weight on the 5 machine Exercises | 15 |
 | Rep Range changed on 6 of them | 18 |
-| **Total** | **400** |
+| **Total** | **422** |
 
 Model A's artboards stay in `design/0006-onboarding/` (`DayA`, `DayAFilled`, `DetailA`, `DayB`),
 off the canvas, as the record of the choice.
