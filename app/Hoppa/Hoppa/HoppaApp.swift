@@ -58,6 +58,8 @@ struct HoppaApp: App {
             ProgramSettings(path: $path, programId: id)
         case .logging(let id):
             LoggingScreen(path: $path, workoutDayId: id)
+        case .summary(let id):
+            SummaryScreen(path: $path, workoutId: id)
         case .history:
             NotBuiltYet(screen: "History — the streak, the Workout list and the per-Exercise chart.",
                         ticket: "Flow 4, not scheduled")

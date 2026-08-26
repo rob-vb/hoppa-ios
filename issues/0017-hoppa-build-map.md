@@ -66,7 +66,10 @@ real**, and nothing after that is worth doing before it.
     screen](0036-the-logging-screen.md) and [The weight sheet](0037-the-weight-sheet.md), both
     pushed 2026-08-26, and together they are the walkable path — start a Workout, log Sets, change
     a weight. It is Rob's to walk when he wants it; the map keeps picking up unblocked tickets
-    rather than waiting on him.
+    rather than waiting on him. **[The Workout Summary](0038-the-workout-summary.md) is pushed too**
+    and it is batch 3's first half — the path now runs to Finish and the Summary lands — but batch 3
+    goes over after [The Ignition confetti](0039-the-ignition-confetti.md), because handing over a
+    Summary the confetti has not reached yet invites a report of the one thing that is not built.
     Before that it was **empty**, cleared 2026-08-20 in one
     session, which is the pattern working as intended. What it settled, because each answer outlives its ticket:
     - **The force-quit passes on the phone** — `Upper A`, `Sets logged 2`, `Current index 0` after a
@@ -552,6 +555,26 @@ real**, and nothing after that is worth doing before it.
   map's own test, so it is now `Rules.weightEdit`, and §8.2 carries it as row ten of twelve. 128 + 31
   green; the Xcode project needed no edit for the third time.
 
+- **[The Workout Summary](0038-the-workout-summary.md)** — §6.5 is built and pushed, without ticket
+  39's confetti, and **count-first so the confetti has something to scale to**. The whole screen is
+  a rule with a drawing on it: `Rules.summary(of:in:)` decides the three sections, the added plate
+  and every condition line, the view holds no arithmetic, and **fifteen tests reproduce the four
+  artboards** — so a screen was checked here for the first time end to end, and a throwaway renderer
+  printed all four as text before anything was drawn. §2.5's defect is headed off in the second
+  place ticket 38 warned about: the condition line reads the **recorded** outcome, and a test edits
+  the Rep Range after Finish to prove it does not move. Three things the spec did not decide, and
+  `SPEC.md` §6.5 now does. **"The added plate" is half the Increment on a bar** — a 2.5 kg Increment
+  is a 1.25 kg plate — so the `Main` artboard's red chips do not port; they are §8.2's *invented
+  colours*, and the Microloading row's steel is §8.2's first summary defect showing up on the chip
+  instead of the burst. **"Nowhere to put the plate" is not one sentence**: `Progression.swift`
+  recorded an assumption that the Summary states one condition for all four, and §6.6 says the
+  opposite, so there are **six named blockers** and writing them out found the sixth. And **volume
+  prints whole** — a converted volume lands on hundredths and every artboard shows an integer.
+  Two colour roles were needed and both **derive** off `Steel`'s ramp, so ticket 30's escalation
+  rule fires nothing for the fourth time. Finish now **replaces** the path rather than popping it,
+  and tells Finish from Discard by the finished list growing rather than by the `Action`. 143 + 31
+  green; the Xcode project needed no edit for the fourth time.
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
@@ -637,6 +660,19 @@ real**, and nothing after that is worth doing before it.
   one: [The MICRO stepper on a mixed-unit pin](0042-the-micro-stepper-on-a-mixed-unit-pin.md). It
   sits beside **the lbs rack** above for the same reason — Rob's rack is kg, his stacks are kg, and
   the case costs nothing today.
+- **What a past Workout's Summary reads its weights off, once Flow 4 can open one.** §6.5's
+  Went-up row is `72.5 KG → 75 KG`, and [The Workout Summary](0038-the-workout-summary.md) reads
+  the `from` off the last logged Set — a record, safe forever — and the `to` off the Exercise's
+  **live** Working Weight. That is exactly right for the screen this map built, which appears
+  between Finish and `DONE` with nothing able to edit an Exercise in between. It is **silently wrong
+  the day a Workout from three weeks ago can be reopened**, which is §6.7's Workout list: by then
+  the live weight has moved on and the row would claim a progression that never happened. The fix is
+  probably one field on `ProgressionOutcome` — it already stores the planned Sets and the threshold
+  for the same reason — but whether the same is true of the condition line's `→ 75 KG`, which is a
+  statement about the *future* and may want to stay live, is the part that is not sharp. It
+  graduates with §6.7, and it sits beside **Flow 5's remaining screens, and all of Flow 4** above.
+  Found while building.
+
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.

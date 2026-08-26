@@ -77,6 +77,15 @@ extension Color {
     static let shaft      = Color(hex: Steel.shaft)
     static let knurlHigh  = Color(hex: Steel.knurlHigh)
     static let pin        = Color(hex: Steel.pin)
+
+    /// Ticket 0038 — the name on a `STAYED` row (§6.5). Quieter than `text`, louder than
+    /// `steel`: the row is read, not shouted, and the loud section above it is `WENT UP`.
+    static let rowText = Color(hex: Steel.rowName)
+
+    /// Ticket 0038 — the divider between `STAYED` rows, one step under `line`. The
+    /// artboards separate the two sections by the weight of their rules as well as their
+    /// type, and a `line` here would make the quiet section as loud as the loud one.
+    static let hairline = Color(hex: Steel.hairline)
 }
 
 // MARK: - The rim of a plate (SPEC.md §7.3, ticket 0036)

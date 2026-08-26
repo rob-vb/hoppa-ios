@@ -910,7 +910,52 @@ it with the steel `ONE-OFF · 22.5 KG STAYS` chip, because nothing was ever goin
 its meta line shows the weight actually lifted, not the Working Weight.
 
 **Mixed units**: per-Exercise lines never convert. **Total volume is the one number that does**,
-to the Program's default unit, labelled `KG VOLUME`. Dumbbell Sets count both dumbbells.
+to the Program's default unit, labelled `KG VOLUME`. Dumbbell Sets count both dumbbells. It is
+printed **whole**, grouped with a thin space — `8 023`. A converted volume lands on hundredths, and
+volume is a rough progress number rather than a loading instruction, so the decimal is noise; the
+rounding is the screen's and the stored number stays exact.
+
+#### The added plate, which is what the chip is painted with
+
+> Settled while building, at [The Workout Summary](issues/0038-the-workout-summary.md).
+
+A Went-up row's chip is **the plate the progression puts on**, and ticket 39 fires its burst from
+that rectangle.
+
+- **Under Microloading the Increment already is a plate**, on every Equipment Type (§4.2). The chip
+  is that Microplate.
+- **Under Progressive Overload the Increment is a total.** A bar takes a pair, so a Barbell, Smith
+  or Plate-loaded Exercise adds **half** the Increment per side and the chip is that half — a
+  2.5 kg Increment is a 1.25 kg plate, light grey and not the mid grey of the 2.5. Every other
+  Equipment Type takes one plate and the Increment is it.
+- **Where the rack has no colour the chip is steel**, hollow, per §7.1 rule 2 — an lbs plate (§7.3
+  paints kg only), a pin Increment that is no plate size, and an Increment that does not halve.
+
+The prototype's chips do not port: `design/0009-summary/canvas/Main.dc.html` paints every bar row
+red, which is §8.2's *invented colours* defect, and its Microloading row steel, which is §8.2's
+first summary defect seen on the chip instead of the burst.
+
+#### Nowhere to put the plate
+
+§4.1 counts four ways a completed Exercise that met its condition still does not move, and §6.6
+asks the Summary to state that condition "in place of the green line". They are **not one
+sentence** — an Exercise waiting for a weight and one stranded by a switched-off Microplate send
+the user to two different screens, and §5.2's principle is that Hoppa states its condition where
+the user stands. The rep condition still reads; only the `→ 75 KG` is replaced:
+
+`ALL 3 SETS AT 12 · NO MICROPLATES · SET UP YOUR RACK`
+
+| Blocker | The row says |
+| --- | --- |
+| No Working Weight (§6.6's Re-weigh list) | `no weight yet` |
+| Progressive Overload with no Increment | `no increment yet` |
+| Microloading with no Microplate picked (§5.2) | `no microplates · set up your rack` |
+| Stranded — the Microplate is switched off (§6.6) | `microplate switched off · set up your rack` |
+| The one refused combination (§2.6) | `microplate is in the other unit` |
+| A mixed-unit pin with no Stack Step to roll into (§4.2) | `no stack step yet` |
+
+An Exercise **deleted mid-Workout** has no Rep Range left to state a condition from, so its row
+keeps the Name it was logged under (§2.7) and reads `REMOVED FROM THE PROGRAM`.
 
 #### Confetti — "Ignition"
 
@@ -972,7 +1017,8 @@ count fine, but the motion floats free of the list.
 #### The zero-progressed screen — approved unchanged
 
 No confetti. The hero becomes `NOTHING WENT UP` in text colour, with
-`n Exercises performed. Every Set is logged.` under it. What keeps it worth reading is the
+`n Exercises performed. Every Set is logged.` under it — and `No exercises performed.` where every
+Exercise was skipped, because there is then no Set to call logged. What keeps it worth reading is the
 `STAYED` section stating the condition for every Exercise. **It is a fact, not encouragement, so
 the screen neither scolds nor consoles.**
 
@@ -1275,7 +1321,7 @@ a layout with a 0.78 line-height and a 50 px hit target does not survive a text 
 `.dynamicTypeSize(.large)` at the root, and every font built with `fixedSize` rather than `size`.
 A light mode is out of scope (§10).
 
-**No view holds a colour literal.** The seven roles below live in one file, and a screen that needs a
+**No view holds a colour literal.** The nine roles below live in one file, and a screen that needs a
 value this table does not name adds a **named role** there — or, better, derives it from a role
 that is already named, because most of what the artboards add is a tint of the floor or a pressed
 state. A genuinely **new hue** is not a role: it is a finding, and it gets a ticket.
@@ -1289,6 +1335,13 @@ state. A genuinely **new hue** is not a role: it is a finding, and it gets a tic
 | Dim text | `#8D9296` |
 | Text | `#F4F1EC` |
 | Label text (the small uppercase labels above a block) | `#55595D` |
+| Row text (a name read down a quiet list — §6.5's `STAYED` rows) | `#C9CCCF` |
+| Hairline (a divider inside a quiet section, one step under Line) | `#1E2123` |
+
+The last two arrived with §6.5's Summary and are **derivations, not new hues**: both sit on the
+same hue 210° / 6.4% ramp as every grey above, at lightness 0.800 and 0.1275. They exist because
+the Summary draws two sections of different weight — `WENT UP` is the loud one — and a name or a
+divider borrowed from `Text` or `Line` makes the quiet section as loud as the loud one.
 
 ### 7.3 Plate palette — the user's real rack
 

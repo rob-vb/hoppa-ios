@@ -106,7 +106,8 @@ struct LoggingScreen: View {
             stopped("That day is gone.", detail: nil)
         } else {
             // Two states, and both are one frame long: before `.task` has started the
-            // Workout, and after Finish cleared it while the pop lands. Neither is worth
+            // Workout, and after Finish cleared it while the path swaps this screen for
+            // §6.5's Summary — or, on a Discard, pops it. Neither is worth
             // a screen, and **neither is "that day is gone"** — a Day that still exists
             // must never say it does not, least of all in the frame before it appears.
             Color.clear
@@ -549,11 +550,25 @@ struct LoggingScreen: View {
         }
     }
 
+    /// Finish, Skip-and-finish and Discard all end the Workout, and they do not end it
+    /// in the same place: **a Finish lands on §6.5's Summary and a Discard lands on the
+    /// picker**, because a discarded Workout has nothing to summarise.
+    ///
+    /// The two are told apart by the finished list growing, not by the `Action` — a
+    /// Finish the rules refuse (the gate still holds) must not push a Summary either,
+    /// and this covers both.
     private func finish(_ action: Action) {
+        let before = store.logbook?.workouts.count ?? 0
         store.send(action)
-        // Ticket 0038 lands the Workout Summary and takes this line: Finish goes to the
-        // Summary, not to the picker. Until then the picker is the only place to land.
-        if store.logbook?.openWorkout == nil { path.removeAll() }
+        guard store.logbook?.openWorkout == nil else { return }
+        if let finished = store.logbook?.workouts.last,
+           (store.logbook?.workouts.count ?? 0) > before {
+            // **Replacing** the path, not pushing onto it: §6.5 has no way back, and a
+            // finished Workout has no logging screen to go back to.
+            path = [.summary(finished.id)]
+        } else {
+            path.removeAll()
+        }
     }
 
     // MARK: - The sheets

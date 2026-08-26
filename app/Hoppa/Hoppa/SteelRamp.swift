@@ -45,4 +45,16 @@ enum Steel {
     static let shaft      = hex(lightness: 0.631)   // the shaft itself — §7.2's steel
     static let knurlHigh  = hex(lightness: 0.671)   // the light stripe of the knurl
     static let pin        = hex(lightness: 0.784)   // the pin through the stack
+
+    // Ticket 0038 adds two more, both **derivations and not new hues** — ticket 30's
+    // rule, and the same one `labelText` was added under. §6.5's summary artboards use
+    // a name grey quieter than `text` and a divider quieter than `line`, and both sit on
+    // this ramp: `#C9CDD1` lands within 2/255 of `rowName`, and `hairline` reproduces
+    // `#1E2123` exactly.
+
+    /// A name the user reads down a list, quieter than the hero — §6.5's `STAYED` rows.
+    static let rowName    = hex(lightness: 0.800)
+
+    /// A divider inside a quiet section, one step under `line` `#26292C`.
+    static let hairline   = hex(lightness: 0.1275)
 }

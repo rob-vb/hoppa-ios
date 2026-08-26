@@ -43,6 +43,12 @@ enum Route: Hashable {
     /// `.startWorkout`, so that a tap here cannot strand an Open Workout on the phone with
     /// no screen to finish or discard it.
     case logging(WorkoutDayID)
+    /// Flow 3, §6.5 — ticket 0038, and ticket 39 adds the confetti to it.
+    ///
+    /// It carries the **finished** Workout's id and not the Day's: the Summary is a
+    /// statement about one performance, and by the time it is on screen there is no Open
+    /// Workout left to read.
+    case summary(WorkoutID)
     /// Flow 4, §6.7 — not scheduled. Held in the map's **Not yet specified**.
     case history
 }
