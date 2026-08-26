@@ -265,6 +265,12 @@ get wrong quietly. They are gathered here so nothing has to be re-derived from t
 - A Workout starts on an **explicit action**, not on the first logged Set. This gives a warm-up
   window and makes the start moment unambiguous for duration.
 - One Open Workout at a time.
+  **While one is Open, its Day's line reads `Running`** in place of the last-trained line —
+  that line reads the newest *finished* Workout, and running now is the more useful of the two
+  facts while it is true. **The other Days stay tappable.** The rules refuse a second start,
+  and the logging screen meets that arrival with a screen naming the Day that is running and
+  one door back to it. A dead row would refuse in silence, and silence explains nothing.
+  Found while building; decision record in §3.3.
 
 ### 3.2 Exercise States
 
@@ -307,6 +313,24 @@ conflate:
 - Hoppa **never ends a Workout by itself**, at any time interval.
 - An Open Workout from an earlier day is **not** closed silently. On next open Hoppa asks:
   resume, finish, or discard.
+  **An earlier day is a calendar day**, the same test §3.1's picker line uses, and not an
+  elapsed gap. The word in this spec is *day*, and a Workout carries one clock — Started at
+  (§2.4) — because a Set holds no timestamp, so *hours since the last Set* is not a question
+  the model can answer. The cost is one case and it is accepted: a Workout started at 22:00
+  and opened at 01:00 in the same session is on a new calendar day, so Hoppa asks. The
+  question destroys nothing and **resume** is one tap.
+  **The question lives on the picker**, as a sheet over it: the picker is home (§6.1), so
+  *on next open* is *on the picker*, and a sheet keeps the Program behind the question.
+  **Finish takes the gate's shortcut in place.** A forgotten Workout almost always has Open
+  Exercises, so the Finish answer carries *"3 Exercises are still open · will be skipped"*
+  where the user taps, and one tap finishes. Discard asks its confirmation exactly as above.
+  A Finish lands on the Workout Summary (§6.5); a Discard stays on the picker.
+  **The question comes back at the next launch, not at every glance.** Hoppa never ends a
+  Workout by itself, so dismissing the sheet is not an answer — but it is not a trap either:
+  the picker keeps showing which Day is running (§3.1) and the question returns next launch.
+
+> Found while building. Decision record:
+> [The Open Workout on next open](issues/0040-the-open-workout-on-next-open.md).
 
 ---
 

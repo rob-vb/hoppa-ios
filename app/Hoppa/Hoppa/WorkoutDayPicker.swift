@@ -17,6 +17,16 @@ struct WorkoutDayPicker: View {
     @Environment(LogbookStore.self) private var store
     @Binding var path: [Route]
 
+    /// §3.3's last line, and ticket 0040's whole screen. `nil` is the ordinary picker.
+    @State private var sheet: PickerSheet?
+    /// **Once per launch, not once per appearance.** Hoppa never ends a Workout by itself
+    /// (§3.3), so a swipe is not an answer and the question comes back — but it comes back
+    /// at the next launch, not every time the user pops home from the Program sheet. It is
+    /// set when the sheet is *shown*, so a swipe cannot re-raise it inside the same run.
+    @State private var asked = false
+
+    private var openWorkout: Workout? { store.logbook?.openWorkout }
+
     var body: some View {
         ZStack {
             Color.floor.ignoresSafeArea()
@@ -33,6 +43,114 @@ struct WorkoutDayPicker: View {
         // phone actually has, which on every portrait iPhone this app targets is 54 or more.
         // A phone with a smaller one would be a finding, and Rob's iPhone 16 reports 59.
         .toolbar(.hidden, for: .navigationBar)
+        .task { askAboutAnEarlierDay() }
+        .sheet(item: $sheet) { which in
+            sheetBody(which)
+                .presentationBackground(Color.floor)
+        }
+    }
+
+    // MARK: - The Open Workout from an earlier day (§3.3) — ticket 0040
+
+    /// > An Open Workout from an earlier day is **not** closed silently. On next open
+    /// > Hoppa asks: resume, finish, or discard.
+    ///
+    /// *On next open* means *on the picker*, because the picker is home (§6.1) and the app
+    /// never decides at launch which screen it opens on. Everything this needs is already
+    /// in hand: `RelativeDay.isEarlierDay` is the calendar test, and `startedAt` is the one
+    /// clock a Workout carries.
+    private func askAboutAnEarlierDay() {
+        guard !asked, let open = openWorkout else { return }
+        asked = true
+        guard RelativeDay.isEarlierDay(open.startedAt, than: Date().timeIntervalSince1970)
+        else { return }
+        sheet = .earlierDay
+    }
+
+    @ViewBuilder
+    private func sheetBody(_ which: PickerSheet) -> some View {
+        if let open = openWorkout {
+            switch which {
+            case .earlierDay: earlierDaySheet(open)
+            case .discard: discardSheet()
+            }
+        }
+    }
+
+    /// The three answers §3.3 names, and no fourth. `Resume` is the primary because it is
+    /// the common one — the user came back to train — and Discard carries the stop tone
+    /// because it is the one that keeps nothing.
+    private func earlierDaySheet(_ open: Workout) -> some View {
+        SheetStack(
+            heading: "\(open.workoutDayName) is still open",
+            note: "You started it \(started(open)). Hoppa never ends a workout by itself."
+        ) {
+            SheetPrimary("Resume") {
+                sheet = nil
+                path.append(.logging(open.workoutDayId))
+            }
+            SheetRow("Finish it", sub: finishSub(open)) {
+                sheet = nil
+                // §3.3's shortcut, said where the user taps rather than in a second sheet:
+                // one tap skips what is still Open and finishes, and nothing is ambiguous
+                // — every Exercise still ends Completed or Skipped.
+                end(open.canFinish ? .finish : .skipRemainingAndFinish)
+            }
+            SheetRow("Discard it", sub: nil, tone: .stop) {
+                // A Workout with no logged Sets discards without a question (§3.3).
+                if open.hasLoggedAnything {
+                    // **Not** `sheet = nil` first: dismissing and presenting in one tick
+                    // loses the second. `.sheet(item:)` swaps one for the other.
+                    sheet = .discard
+                } else {
+                    sheet = nil
+                    end(.discard)
+                }
+            }
+        }
+    }
+
+    /// Word for word the logging screen's, because it is the same question about the same
+    /// Workout and two wordings would be two promises.
+    private func discardSheet() -> some View {
+        SheetStack(
+            heading: "Discard this workout?",
+            note: "Every logged set goes. Hoppa keeps nothing."
+        ) {
+            SheetRow("Discard", sub: nil, tone: .stop, centred: true) {
+                sheet = nil
+                end(.discard)
+            }
+            SheetRow("Keep it", sub: nil, centred: true) { sheet = nil }
+        }
+    }
+
+    /// `3 exercises still open · will be skipped`, or the count of what a Finish keeps.
+    private func finishSub(_ open: Workout) -> String {
+        let stillOpen = open.openExerciseCount
+        guard stillOpen > 0 else {
+            let sets = open.loggedSetCount
+            return sets == 1 ? "1 set logged" : "\(sets) sets logged"
+        }
+        return "\(stillOpen) exercise\(stillOpen == 1 ? "" : "s") still open · will be skipped"
+    }
+
+    private func started(_ open: Workout) -> String {
+        RelativeDay.text(open.startedAt, now: Date().timeIntervalSince1970).lowercased()
+    }
+
+    /// **A Finish lands on §6.5's Summary and a Discard lands on the picker** — the same
+    /// rule the logging screen follows, and told apart the same way: by the finished list
+    /// growing, not by the `Action`. The picker is already home, so a Discard pushes
+    /// nothing and the row it came from goes back to reading its last-trained line.
+    private func end(_ action: Action) {
+        let before = store.logbook?.workouts.count ?? 0
+        store.send(action)
+        guard store.logbook?.openWorkout == nil else { return }
+        if let finished = store.logbook?.workouts.last,
+           (store.logbook?.workouts.count ?? 0) > before {
+            path = [.summary(finished.id)]
+        }
     }
 
     @ViewBuilder
@@ -122,9 +240,20 @@ struct WorkoutDayPicker: View {
                     Text(day.name)
                         .typography(Typography.display(15))
                         .foregroundStyle(Color.text)
-                    Text(RelativeDay.text(store.logbook?.lastTrained(day.id), now: now))
-                        .typography(Typography.meta())
-                        .foregroundStyle(Color.dimText)
+                    if isRunning(day) {
+                        // Ticket 0040. `Rules.reduce` refuses a second `.startWorkout`, so
+                        // a row that says nothing is a row that lies about what a tap does.
+                        // It replaces the last-trained line rather than joining it: §3.1's
+                        // line reads the newest **finished** Workout, and *running now* is
+                        // the more useful of the two facts while it is true.
+                        Text("Running")
+                            .typography(Typography.meta())
+                            .foregroundStyle(Color.go)
+                    } else {
+                        Text(RelativeDay.text(store.logbook?.lastTrained(day.id), now: now))
+                            .typography(Typography.meta())
+                            .foregroundStyle(Color.dimText)
+                    }
                 }
             }
         }
@@ -195,4 +324,21 @@ struct WorkoutDayPicker: View {
         .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
         .contentShape(Rectangle())
     }
+
+    private func isRunning(_ day: WorkoutDay) -> Bool {
+        openWorkout?.workoutDayId == day.id
+    }
+}
+
+/// Which sheet is up on the picker. **Every other row stays tappable** while a Workout is
+/// Open: the rules refuse the second `.startWorkout`, and the logging screen already meets
+/// that with a screen naming the Day that is running and one door back to it. A dead row
+/// would refuse in silence, and silence explains nothing.
+enum PickerSheet: String, Identifiable {
+    /// §3.3's three answers, asked once per launch.
+    case earlierDay
+    /// Its confirmation, which §3.3 requires of a Discard that would throw away a Set.
+    case discard
+
+    var id: String { rawValue }
 }

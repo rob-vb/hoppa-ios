@@ -71,6 +71,13 @@ real**, and nothing after that is worth doing before it.
     now runs to Finish and the Summary lands with its burst. **All three hand-offs are now queued
     and the trainable milestone is written**, so the next session's job is Rob's walk and the
     findings it produces, not another screen.
+    **Batch 4 has opened anyway**, with [The Open Workout on next
+    open](0040-the-open-workout-on-next-open.md) — the map picks up unblocked tickets rather than
+    waiting, and this one is the shell's last unbuilt sentence. It carries a wrinkle no earlier
+    batch had: **its trigger needs the phone's clock moved**, because an Open Workout only
+    becomes *an earlier day* by the calendar. The hand-off must say how to reach it — start a
+    Workout, force-quit, set the date forward a day, open Hoppa — or a picker that asks nothing
+    will read as a defect.
 
     Before batch 1 the queue was **empty**, cleared 2026-08-20 in one session, which is the pattern
     working as intended. What that walk settled, because each answer outlives its ticket:
@@ -594,6 +601,27 @@ real**, and nothing after that is worth doing before it.
   written `Rules.burstSource(_:)` and its nine tests — so 143 + 31 green, unchanged, and the Xcode
   project needed no edit for the fifth time. What no type-check can judge is now the whole of batch
   3: **whether ~75 particles hold 60 fps on the phone**, and whether the burst reads as plates.
+
+- **[The Open Workout on next open](0040-the-open-workout-on-next-open.md)** — §3.3's last line
+  has a screen, and it is a sheet over the picker. **An *earlier day* is a calendar day**, and
+  it is `RelativeDay.isEarlierDay` beside the picker line rather than a second day rule: the
+  ticket asked whether it wants the same answer as `RelativeDay` and it does. What settled it was
+  a fact about the model, not a preference — **a `Workout` carries one clock, `startedAt`,
+  because a `LoggedSet` has no timestamp**, so *hours since the last Set* is not a question this
+  model can answer. The one cost is written down as a test rather than discovered later: a
+  session across midnight is a new calendar day, so Hoppa asks, and *resume* is one tap.
+  `HoppaStore` 31 → **36**, `HoppaRules` 143 unchanged. On the picker the running Day's line
+  reads `Running` **in place of** its last-trained line, and **the other rows stay tappable** —
+  ticket 36 already built the arrival that explains, and a dead row would refuse in silence.
+  Two things the question forced that the ticket had not listed: **Finish takes §3.3's shortcut
+  in place**, carrying *"3 exercises still open · will be skipped"* as the row's own subtitle so
+  one tap finishes and no second sheet stacks on the picker; and the question **returns at the
+  next launch, not at every glance** home from the Program sheet, because Hoppa never ends a
+  Workout by itself but must not stand in the way of an edit either. No rule and no `Action` was
+  added — the three answers have existed since ticket 20 — and the Xcode project needed no edit
+  for the sixth time. **This opens batch 4**, and it comes with a wrinkle ticket 29's hand-off
+  rule has not met before: **the trigger cannot be walked without moving the phone's clock**, so
+  the hand-off has to say so rather than let a quiet picker read as a defect.
 
 ## Not yet specified
 

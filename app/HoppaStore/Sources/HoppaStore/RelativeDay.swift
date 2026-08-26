@@ -44,3 +44,31 @@ public enum RelativeDay {
         return calendar.dateComponents([.day], from: from, to: to).day ?? 0
     }
 }
+
+// MARK: - §3.3's *an earlier day* — ticket 0040
+
+extension RelativeDay {
+
+    /// §3.3: *An Open Workout from an earlier day is not closed silently.* This is the
+    /// test behind that sentence, and it deliberately lives **beside** the picker line
+    /// rather than in `HoppaRules`.
+    ///
+    /// It is the same calendar question, so it is the same code: `daysBetween` already
+    /// starts each day in the phone's zone, and *earlier day* is that count reaching one.
+    /// Two lifters in two zones may correctly disagree about the same instant, which is
+    /// the whole of why neither half of this file is a rule.
+    ///
+    /// **A calendar boundary, not an elapsed gap.** Ticket 0040 weighed the two: the word
+    /// in `SPEC.md` is *day*, and a Workout carries one clock — `startedAt` — because a
+    /// `LoggedSet` has no timestamp, so *hours since the last set* is not a question this
+    /// model can answer. The cost is one case, and it is accepted: a Workout started at
+    /// 22:00 and opened at 01:00 in the same session is on a new calendar day, so Hoppa
+    /// asks. The prompt destroys nothing and *resume* is one tap.
+    ///
+    /// A clock that moved back reads `false`, for the same reason the line reads `Today`.
+    public static func isEarlierDay(
+        _ then: Timestamp, than now: Timestamp, calendar: Calendar = .current
+    ) -> Bool {
+        daysBetween(then, and: now, calendar: calendar) >= 1
+    }
+}
