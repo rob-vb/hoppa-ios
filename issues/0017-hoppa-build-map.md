@@ -89,6 +89,16 @@ real**, and nothing after that is worth doing before it.
     `PBXFileSystemSynchronizedRootGroup`, so `project.pbxproj` needs no edit — which is one more
     data point for the question about who owns that file.
 
+    **The frontier is empty now.** [The MICRO stepper on a mixed-unit
+    pin](0042-the-micro-stepper-on-a-mixed-unit-pin.md) was the last open ticket, and it closed
+    *out of scope* rather than onto the route — see **Out of scope** below. So there is no ticket to
+    take, and that is not the map stalling: **what the map is waiting on is Rob's walk**. Batches 2,
+    3 and 4 are pushed and unwalked, and the fog that graduates next — Flow 4, the rest of Flow 5,
+    the history screen — is held on exactly that walk by
+    [Build order across the flows](0029-build-order-and-what-done-means.md). A session that opens
+    this map with no frontier should hand over the queued batches, not chart new tickets to stay
+    busy.
+
     Before batch 1 the queue was **empty**, cleared 2026-08-20 in one session, which is the pattern
     working as intended. What that walk settled, because each answer outlives its ticket:
     - **The force-quit passes on the phone** — `Upper A`, `Sets logged 2`, `Current index 0` after a
@@ -749,10 +759,6 @@ real**, and nothing after that is worth doing before it.
   the Plate Inventory screen](0033-the-program-name-and-the-plate-rack.md), and neither costs
   anything today: Rob's rack is kg. This graduates if the destination ever moves to a second lifter,
   which today it does not.
-- **A weight sheet for a mixed-unit pin.** Now a sharp enough question to be a ticket, and it is
-  one: [The MICRO stepper on a mixed-unit pin](0042-the-micro-stepper-on-a-mixed-unit-pin.md). It
-  sits beside **the lbs rack** above for the same reason — Rob's rack is kg, his stacks are kg, and
-  the case costs nothing today.
 - **Where a *provable* piece of a screen goes, now that there is a third place to put it.**
   [The numbers a mis-tap cleared](0043-the-numbers-a-mistap-cleared.md) put `UnitStash` in the app
   target with no SwiftUI import and walked it here — neither a rule nor a view, and the first time
@@ -795,6 +801,16 @@ real**, and nothing after that is worth doing before it.
   gym, who first appears at the launch. Rob's words were "dark locked **for now**", and what keeps
   the "for now" honest is §7.2's one-file rule — a light mode later is a second value per role, not
   a hunt through the screens. `SPEC.md` §10 carries it.
+- **A weight sheet for a mixed-unit pin.** Ruled out at
+  [The MICRO stepper on a mixed-unit pin](0042-the-micro-stepper-on-a-mixed-unit-pin.md), which
+  was charted as a ticket and turned out to sit past the destination. **Rob's rack is kg and his
+  stacks are kg**, so the case is unreachable for him, and answering it means inventing a
+  **roll-down** — the first thing in Hoppa that would lower a Working Weight without asking. It sits
+  beside **the lbs rack** in *Not yet specified* above, and it is the same boundary seen from a
+  second side: both arrive with the second lifter, and the second lifter arrives at the launch. The
+  ticket carries the answer anyway, so a later effort does not re-derive it (`−` refuses at zero; the
+  pin is the way down), and **`SPEC.md` §6.4 is corrected** — it claimed a `MICRO` stepper on every
+  stack, and the built sheet has never drawn one on a mixed-unit pin.
 - **iCloud sync, accounts and any backend.** Settled at charter: local only.
 - **User-set plate colours.** `SPEC.md` §10 attaches a deadline to it — before the app is public —
   and this map never goes public. It stays where the design map left it.

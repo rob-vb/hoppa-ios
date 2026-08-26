@@ -151,12 +151,14 @@ struct WeightSheet: View {
     /// **A stack grows a second stepper**, because a stack moves in pin steps and not in
     /// Increments (§6.4). Everything else keeps the single `−` / `+`.
     ///
-    /// The MICRO row is absent on a **mixed-unit pin**, and that is a gap and not a
-    /// choice: there the Microplates are a Microload — a second stored number in the
-    /// rack's unit, which the Working Weight can never absorb because units never
-    /// convert (§5.1). Stepping it is a different write with a different rule, and
-    /// [The MICRO stepper on a mixed-unit pin](0042-the-micro-stepper-on-a-mixed-unit-pin.md)
-    /// owns it.
+    /// The MICRO row is absent on a **mixed-unit pin**, and §6.4 now says so — this is a
+    /// decision, not a gap. There the Microplates are a Microload — a second stored number
+    /// in the rack's unit, which the Working Weight can never absorb because units never
+    /// convert (§5.1). Stepping it by hand is a different write with a different rule, and
+    /// a `−` past zero would be a roll-down that §4.2 does not have. **The pin is the way
+    /// down**, and it already asks what §4.3 asks. Ruled out of scope at
+    /// [The MICRO stepper on a mixed-unit pin](../../../issues/0042-the-micro-stepper-on-a-mixed-unit-pin.md),
+    /// which records the answer should a mixed-unit rack ever arrive.
     @ViewBuilder
     private var steppers: some View {
         if exercise.equipment.hasPin {

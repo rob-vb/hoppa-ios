@@ -873,6 +873,16 @@ steps and not in Increments: `PIN` steps by the Stack Step (`− 100 LBS +`), `M
 Microloading Increment (`− +1 KG +`), and the keypad stays under them. The big number is still
 the Working Weight. A bar keeps the single `−`/`+` at the Increment.
 
+**Except on a mixed-unit pin, where there is no `MICRO` row — only `PIN`.** A Machine (stack) or
+Cable whose Weight Unit differs from the Plate Inventory's carries its Microplates as a
+**Microload**, a second stored number in the rack's unit that the Working Weight can never absorb,
+because units never convert (§5.1). Stepping it by hand is a different write with a different
+rule: `+` is §4.2's roll-up, and `−` past zero would be a **roll-down**, which §4.2 does not have and
+which would be the first thing in Hoppa to lower a Working Weight without asking (§4.3). The pin is
+the way down there, and it already asks what §4.3 asks. Ruled **out of scope** rather than built:
+see [The MICRO stepper on a mixed-unit pin](issues/0042-the-micro-stepper-on-a-mixed-unit-pin.md),
+which records the answer should a mixed-unit rack ever arrive — `−` refuses at zero.
+
 **A One-off Weight is marked twice**: a steel chip `ONE-OFF · 72.5 KG STAYS` beside the unit — it
 names the Working Weight that survives, not just the fact of the one-off — and a plain `ONE-OFF`
 chip on every Set row logged under it.

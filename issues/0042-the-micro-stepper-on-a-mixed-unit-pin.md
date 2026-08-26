@@ -3,8 +3,8 @@ id: 42
 title: The MICRO stepper on a mixed-unit pin, and what a `−` means there
 parent: 17
 labels: [wayfinder:grilling]
-status: open
-assignee:
+status: closed
+assignee: agent
 blocked-by: []
 ---
 
@@ -47,3 +47,38 @@ same reason.
 Consult `SPEC.md` §2.3, §4.2, §4.3, §5.1, §5.3 and §6.4, `Progression.swift` (`rollUp`),
 `WeightSheet.swift` (`steppers`, `microStep`), and
 [Microplate accumulation](0011-microplate-accumulation.md), which is where the roll-up was decided.
+
+## Resolution
+
+**Out of scope. Closed without building it, and `SPEC.md` §6.4 now says so.**
+
+The destination of this map is Rob on his own phone in his own gym. **His rack is kg and his stacks
+are kg**, so a mixed-unit pin cannot arise for him — the case is unreachable, not merely rare.
+Answering it means inventing a **roll-down**, a rule §4.2 does not have and the first thing in Hoppa
+that would lower a Working Weight without asking (§4.3). That is a real design risk taken for a
+lifter who does not exist yet. This sits beside **the lbs rack** in the map's fog for exactly the
+same reason, and it leaves the fog the same way that one will: with the second lifter, as a fresh
+effort, not as a step on this route.
+
+**Ruling it out of scope is not the same as leaving a gap.** Two things were fixed on the way out.
+
+- **`SPEC.md` §6.4 was wrong, and it is corrected.** It said the sheet grows a `MICRO` stepper on
+  *every* stack, unconditionally. The built sheet draws `PIN` and no `MICRO` on a mixed-unit pin
+  (`WeightSheet.swift`, `microStep`), which was right and undocumented — the spec and the code
+  disagreed. §6.4 now states the exception, with the reason and a pointer here.
+- **The answer is recorded, so a later effort does not re-derive it.** Should a mixed-unit rack ever
+  arrive: **`−` refuses at zero.** MICRO clamps and never goes below it; **the pin is the way down**,
+  and stepping `PIN` down already raises §4.3's *"Just today, or from now on?"*. No roll-down, no new
+  rule, and nothing that lowers a weight the user did not choose. `+` was never in question — it is
+  `Rules.rollUp` with the Microplate as its increment, which is built and green.
+
+**What stayed unasked**, and stays unasked on purpose: whether a hand-stepped Microload needs its own
+`Action` beside `setWorkingWeight` and `setOneOffWeight`, and whether a One-off Weight carries a
+Microload at all. Both only exist if the `MICRO` row does. They are named here so a later effort
+finds them already phrased.
+
+**Nothing is built or unbuilt by this.** `Action` gains no case, `WeightSheet` loses no code, and the
+147 rules tests and 36 store tests are untouched. The only edits are `SPEC.md` §6.4, this ticket, one
+doc comment in `WeightSheet.swift`, and the map.
+
+*Decided with Rob, 2026-08-26.*
