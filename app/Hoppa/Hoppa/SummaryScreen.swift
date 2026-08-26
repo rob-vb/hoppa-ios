@@ -2,10 +2,17 @@ import SwiftUI
 import HoppaRules
 import HoppaStore
 
-// Ticket 0038 — §6.5's Workout Summary, without ticket 39's confetti.
+// Ticket 0038 — §6.5's Workout Summary. Ticket 0039 lit it.
 //
 // **The count is the hero because the count is exactly what the confetti scales to**, so
-// it is built that way now and ticket 39 adds motion to a screen that already reads.
+// it was built that way first and the motion was added to a screen that already read.
+//
+// Ignition (§6.5), which is the whole of ticket 0039 on this file: each Went-up row lands
+// 190 ms after the row above it and throws ~15 particles from its own plate chip, the
+// sequence runs ~1.4 s, and then the screen is quiet. The physics is `ParticleField`, the
+// drawing is `Confetti.swift`, and **which plates fly is `Rules.burstSource(_:)`** — a
+// rule, because two lifters with the same `Logbook` must watch the same colours come off
+// the same row. What is left here is the order and the timing.
 //
 // The view holds no arithmetic. `Rules.summary(of:in:)` decides the three sections, the
 // added plate and every condition line; this file is the English (§7.6) and the drawing.
@@ -13,8 +20,23 @@ import HoppaStore
 
 struct SummaryScreen: View {
     @Environment(LogbookStore.self) private var store
+    /// **The one system setting Hoppa does not ignore** (§6.5, §7.2). With it on the rows
+    /// still land in sequence and no burst fires.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Binding var path: [Route]
     let workoutId: WorkoutID
+
+    /// How many Went-up rows have landed. A row below this is not drawn yet.
+    @State private var landedRows = 0
+    /// The particle clock. False before the first burst and false again once the air is
+    /// clear, because a `TimelineView` left running redraws an empty canvas forever.
+    @State private var burstsAreFlying = false
+    @State private var ignition = IgnitionField()
+
+    /// The space a chip rectangle is read in, so the canvas and the chips agree.
+    private static let summarySpace = "summary"
+
+    private var rack: PlateInventory { store.logbook?.plateInventory ?? .standard(.kg) }
 
     private var summary: WorkoutSummary? {
         guard let logbook = store.logbook,
@@ -30,11 +52,88 @@ struct SummaryScreen: View {
                 .padding(.horizontal, 20)
                 .padding(.bottom, 20)
         }
+        // The canvas is laid over this `ZStack` and matches it exactly, so a chip
+        // rectangle read here is the rectangle the burst comes from — no safe-area
+        // arithmetic in between, and a particle leaves the screen where the screen ends.
+        .coordinateSpace(.named(Self.summarySpace))
+        .overlayPreferenceValue(ChipFrames.self) { frames in
+            IgnitionCanvas(field: ignition, running: burstsAreFlying)
+                .onAppear { ignition.chipFrames = frames }
+                .onChange(of: frames) { _, moved in ignition.chipFrames = moved }
+        }
+        .task { await ignite() }
+        .onDisappear {
+            burstsAreFlying = false
+            ignition.clear()
+        }
         // §7.4: nothing is drawn in the safe top inset. **And there is no way back** —
         // §6.5 has no Accept and no Undo, and a chevron to a finished Workout would be a
         // third thing to argue with. `DONE` is the only exit.
         .toolbar(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden(true)
+    }
+
+    // MARK: - Ignition (§6.5)
+
+    /// The sequence: one row at a time, 190 ms apart, each throwing from its own chip.
+    ///
+    /// **Zero progressed fires nothing at all** — no sequence, no clock, no canvas — and
+    /// there is no `WENT UP` section to land in that case anyway.
+    private func ignite() async {
+        guard let summary, !summary.wentUp.isEmpty else { return }
+
+        // A chip cannot throw before it has been laid out. This waits for the first
+        // layout pass to report the rectangles, which in practice is the first frame;
+        // the bound is there so a Summary that never reports cannot hang the sequence.
+        var frames = 0
+        while ignition.chipFrames.isEmpty, frames < 30 {
+            try? await Task.sleep(nanoseconds: 16_000_000)
+            frames += 1
+        }
+
+        burstsAreFlying = !reduceMotion
+        for (index, row) in summary.wentUp.enumerated() {
+            if index > 0 {
+                try? await Task.sleep(
+                    nanoseconds: UInt64(ParticleField.rowInterval * 1_000_000_000))
+            }
+            // The land: 14 pt up and into view, on the artboard's own curve.
+            withAnimation(.timingCurve(0.2, 0.8, 0.3, 1, duration: 0.42)) {
+                landedRows = index + 1
+            }
+            // **Reduce Motion keeps the sequence and drops the particles.** The sequence
+            // is what makes the count *a count you watch land*, which is why Ignition won
+            // (§6.5); the cloud is the part that causes motion trouble.
+            if !reduceMotion {
+                ignition.burst(from: row.exerciseId, throwing: slabs(for: row))
+            }
+        }
+
+        // Then the screen goes quiet, and the clock stops with it. **The cancellation
+        // check is not politeness**: a cancelled `Task.sleep` returns at once, and the
+        // canvas that empties the field stops rendering when the screen goes, so without
+        // it a dismissed Summary spins here forever.
+        while burstsAreFlying, !ignition.isQuiet, !Task.isCancelled {
+            try? await Task.sleep(nanoseconds: 100_000_000)
+        }
+        burstsAreFlying = false
+    }
+
+    /// **The burst throws what the Plate Breakdown draws** (§6.5) — one rule, on every
+    /// Equipment Type, and `Rules.burstSource(_:)` holds it. This only paints the answer:
+    /// §7.3 has colours for the kg rack, and anything else throws steel, which is the
+    /// same fallback the chip beside it makes.
+    ///
+    /// Solved at **the new Working Weight the row already carries** (§4.1) rather than at
+    /// whatever the Exercise holds now, so an edit made after Finish cannot repaint a
+    /// statement about what happened.
+    private func slabs(for row: SummaryWentUp) -> [ConfettiSlab] {
+        guard let exercise = store.logbook?.resolvedExercise(row.exerciseId) else {
+            // Deleted mid-Workout (§2.7). The row stands, so the row still lands.
+            return [.steel]
+        }
+        let breakdown = Rules.breakdown(for: exercise, at: row.to.weight, inventory: rack)
+        return Rules.burstSource(breakdown).map(ConfettiSlab.init)
     }
 
     @ViewBuilder
@@ -132,7 +231,16 @@ struct SummaryScreen: View {
                 if !summary.wentUp.isEmpty {
                     section("Went up") {
                         VStack(spacing: 0) {
-                            ForEach(summary.wentUp) { wentUpRow($0) }
+                            ForEach(Array(summary.wentUp.enumerated()), id: \.element.id) {
+                                index, row in
+                                wentUpRow(row)
+                                    // Ignition: a row below the front of the sequence is
+                                    // not there yet. The named trade-off, accepted at
+                                    // §6.5 — the list is not fully readable until the
+                                    // last row lands.
+                                    .opacity(index < landedRows ? 1 : 0)
+                                    .offset(y: index < landedRows ? 0 : 14)
+                            }
                         }
                         .overlay(alignment: .bottom) { hairline(Color.line) }
                     }
@@ -175,11 +283,13 @@ struct SummaryScreen: View {
     /// The plate chip, the name, `72.5 KG → 75 KG` and a small steel `NEXT TIME`.
     ///
     /// The chip is **the plate the progression put on** — `Rules.addedPlate(for:)` —
-    /// and ticket 39 fires its burst from exactly this rectangle.
+    /// and the burst comes from exactly this rectangle, which is why it reports its
+    /// frame.
     private func wentUpRow(_ row: SummaryWentUp) -> some View {
         HStack(alignment: .top, spacing: 12) {
             PlateChip(plate: row.addedPlate)
                 .padding(.top, 3)
+                .reportsChipFrame(row.exerciseId, in: Self.summarySpace)
             VStack(alignment: .leading, spacing: 7) {
                 Text(row.name)
                     .typography(Typography.display(17, tracking: 0.02))
