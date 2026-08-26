@@ -56,7 +56,7 @@ real**, and nothing after that is worth doing before it.
     be type-checked on the VPS against the built modules, and so can every rules/store call a
     SwiftUI view makes. See the charter bullet on Swift on the VPS. What reaches Rob should be
     something that has already had every checkable thing checked.
-  - **Batch 1 has been over, and the queue now holds batch 2.** Rob walked
+  - **Batch 1 has been over, and the queue now holds batches 2 and 3.** Rob walked
     [The shell and the first run](0032-the-shell-and-the-first-run.md),
     [The Program name, the three assumptions, and the Plate Inventory
     screen](0033-the-program-name-and-the-plate-rack.md), [The Program sheet hub and the Workout
@@ -67,11 +67,13 @@ real**, and nothing after that is worth doing before it.
     pushed 2026-08-26, and together they are the walkable path — start a Workout, log Sets, change
     a weight. It is Rob's to walk when he wants it; the map keeps picking up unblocked tickets
     rather than waiting on him. **[The Workout Summary](0038-the-workout-summary.md) is pushed too**
-    and it is batch 3's first half — the path now runs to Finish and the Summary lands — but batch 3
-    goes over after [The Ignition confetti](0039-the-ignition-confetti.md), because handing over a
-    Summary the confetti has not reached yet invites a report of the one thing that is not built.
-    Before that it was **empty**, cleared 2026-08-20 in one
-    session, which is the pattern working as intended. What it settled, because each answer outlives its ticket:
+    and so is [The Ignition confetti](0039-the-ignition-confetti.md), which closes it — the path
+    now runs to Finish and the Summary lands with its burst. **All three hand-offs are now queued
+    and the trainable milestone is written**, so the next session's job is Rob's walk and the
+    findings it produces, not another screen.
+
+    Before batch 1 the queue was **empty**, cleared 2026-08-20 in one session, which is the pattern
+    working as intended. What that walk settled, because each answer outlives its ticket:
     - **The force-quit passes on the phone** — `Upper A`, `Sets logged 2`, `Current index 0` after a
       kill from the app switcher. [The Logbook on disk](0025-the-logbook-on-disk.md) is closed.
     - **`fold("é") == "e"` is green on Darwin.** Apple ships the Unicode name tables, so
@@ -574,6 +576,24 @@ real**, and nothing after that is worth doing before it.
   rule fires nothing for the fourth time. Finish now **replaces** the path rather than popping it,
   and tells Finish from Discard by the finished list growing rather than by the `Action`. 143 + 31
   green; the Xcode project needed no edit for the fourth time.
+
+- **[The Ignition confetti](0039-the-ignition-confetti.md)** — §6.5's burst is built and pushed, and
+  **batch 3 is closed**: Finish, and watch the Summary land. The split is the map's own trick pushed
+  one step further — **`ParticleField.swift` imports `Foundation` and nothing else**, so gravity,
+  drag, spin, the sampling, the fade and the cull were *run* on the VPS, and `Confetti.swift` is left
+  with the two lines §7.1 rule 2 turns on. Measured here, not argued: `20 + 10` per side throws
+  **3021 blue / 2979 green** over 6000 particles and `20 + 10 + 2.5 + 2.5` throws half grey, which
+  are §6.5's own two worked examples; the screen goes quiet at **1.27 s at one Went-up row and
+  1.75 s at five**, so the spec's "~1.4 s" is right at the small counts and stretches at the big
+  ones. Two things in the prototype do not port. **Its constants are per frame and its browser ran
+  at 60 Hz**, so the field steps a fixed 1/60 s off the real clock — a 120 Hz phone must not fall
+  twice as fast. And **its 34 x 12 spawn box is variant B's jitter left in place**; §6.5 fires from
+  the row's own chip, so the particles spawn across the chip's 9 x 34 rectangle. The chip hands its
+  rectangle to the canvas through a `PreferenceKey` in a shared coordinate space, because
+  `onGeometryChange` is iOS 18 and this app is iOS 17. **No rule was added** — ticket 31 had already
+  written `Rules.burstSource(_:)` and its nine tests — so 143 + 31 green, unchanged, and the Xcode
+  project needed no edit for the fifth time. What no type-check can judge is now the whole of batch
+  3: **whether ~75 particles hold 60 fps on the phone**, and whether the burst reads as plates.
 
 ## Not yet specified
 
