@@ -62,10 +62,11 @@ real**, and nothing after that is worth doing before it.
     screen](0033-the-program-name-and-the-plate-rack.md), [The Program sheet hub and the Workout
     Day screen](0034-the-program-sheet-and-the-workout-day.md) and [The Exercise sheet, and the
     name field](0035-the-exercise-sheet.md) on 2026-08-26, and the three fixes it found are
-    recorded below. **Batch 2 holds [The logging screen](0036-the-logging-screen.md)**, pushed
-    2026-08-26, and it goes over after [The weight sheet](0037-the-weight-sheet.md) — which is
-    what makes the path walkable: start a Workout, log Sets, change a weight. Until then the map
-    keeps picking up unblocked tickets rather than waiting on him.
+    recorded below. **Batch 2 is complete and waiting**: [The logging
+    screen](0036-the-logging-screen.md) and [The weight sheet](0037-the-weight-sheet.md), both
+    pushed 2026-08-26, and together they are the walkable path — start a Workout, log Sets, change
+    a weight. It is Rob's to walk when he wants it; the map keeps picking up unblocked tickets
+    rather than waiting on him.
     Before that it was **empty**, cleared 2026-08-20 in one
     session, which is the pattern working as intended. What it settled, because each answer outlives its ticket:
     - **The force-quit passes on the phone** — `Upper A`, `Sets logged 2`, `Current index 0` after a
@@ -96,8 +97,8 @@ real**, and nothing after that is worth doing before it.
     padding 20, radii 2–3, hit targets 50 and 64, safe top inset 54 with nothing drawn in it, the
     8/16 rhythm, Anton at 0.78–0.94. Arrangement, copy and palette follow the artboard. Nothing is
     measured pixel for pixel: the artboards are HTML at a fixed width and a phone is not.
-    **`SPEC.md` beats the artboard wherever they disagree** — §8.2 already lists nine defects in the
-    logging prototype, so the artboards are a reference with known errors, not a target.
+    **`SPEC.md` beats the artboard wherever they disagree** — §8.2 now lists **twelve** defects in
+    the logging prototype, so the artboards are a reference with known errors, not a target.
   - **A screen ticket closes when it is pushed, not when Rob has seen it.** Written, type-checked
     here against the built modules, pushed. Rob's verdict arrives out of band, and a complaint is a
     **finding with its own ticket**. The cost, stated once: a closed screen ticket is not a seen
@@ -537,6 +538,20 @@ real**, and nothing after that is worth doing before it.
   pop to the picker (ticket 0038 takes it), and a screen for **one Open Workout at a time reached
   mid-session** — which is not ticket 0040 and now says so on ticket 0040.
 
+- **[The weight sheet](0037-the-weight-sheet.md)** — §6.4's sheet is built and pushed, and
+  **batch 2 is closed**: start a Workout, log Sets, change a weight. The keypad buffer is a `String`
+  in `@State` and becomes a `Weight` once, so **no `Double` reaches the way in**; a third decimal
+  keystroke never reaches the buffer at all. §5.4's `≈ CLOSEST` came out of `PlateBreakdownView` as
+  `ClosestLine` and now runs live against the number being typed — **one copy of §5.4, two callers**.
+  **The `−` / `+` step by what `Rules.progressionMove` moves, probed at zero**, not by the Increment
+  field: a bar under Microloading has no Increment and moves by *twice* its Microplate (§4.2), and
+  probing keeps the stepper and the rule chip above it printing the same number. And the big finding:
+  **§4.3's decision was in a view, and the view had it wrong** — deciding *raise or lower* against
+  the performed weight lets a number typed above a standing One-off Weight take the Working Weight
+  *down* with no question asked, which is the exact case §4.3 exists to prevent. It is a rule by the
+  map's own test, so it is now `Rules.weightEdit`, and §8.2 carries it as row ten of twelve. 128 + 31
+  green; the Xcode project needed no edit for the third time.
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
@@ -618,6 +633,10 @@ real**, and nothing after that is worth doing before it.
   the Plate Inventory screen](0033-the-program-name-and-the-plate-rack.md), and neither costs
   anything today: Rob's rack is kg. This graduates if the destination ever moves to a second lifter,
   which today it does not.
+- **A weight sheet for a mixed-unit pin.** Now a sharp enough question to be a ticket, and it is
+  one: [The MICRO stepper on a mixed-unit pin](0042-the-micro-stepper-on-a-mixed-unit-pin.md). It
+  sits beside **the lbs rack** above for the same reason — Rob's rack is kg, his stacks are kg, and
+  the case costs nothing today.
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.

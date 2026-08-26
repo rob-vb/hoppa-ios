@@ -289,8 +289,14 @@ struct LoggingScreen: View {
         .buttonStyle(.plain)
     }
 
+    /// The weight this Exercise is performed at: a One-off Weight wins over the Working
+    /// Weight for as long as it stands (§4.3).
+    ///
+    /// **Relabelled, never converted** (§2.8): the Weight Unit is derived, so a One-off
+    /// stored before a unit change carries a stale label — and every comparison and
+    /// subtraction below traps on a unit mismatch rather than converting behind the user.
     private func performedWeight(_ performed: PerformedExercise, _ exercise: ResolvedExercise) -> Weight? {
-        performed.oneOffWeight ?? exercise.workingWeight
+        (performed.oneOffWeight ?? exercise.workingWeight)?.relabelled(exercise.unit)
     }
 
     /// **The chip states the rule, never an offer** (§7.6). Every branch below asks
@@ -564,10 +570,18 @@ struct LoggingScreen: View {
             case .discard:
                 discardSheet()
             case .weight:
-                NotBuiltYet(
-                    screen: "The weight sheet — the keypad, the − / + stepping, and "
-                        + "\"just today, or from now on?\" on the way down.",
-                    ticket: "0037")
+                if let stored = logbook?.exercise(performed.exerciseId) {
+                    WeightSheet(
+                        exercise: exercise,
+                        stored: stored,
+                        inventory: rack,
+                        current: performedWeight(performed, exercise),
+                        oneOffIsStanding: performed.oneOffWeight != nil,
+                        commit: { commitWeight($0, performed: performed, exercise: exercise) },
+                        cancel: { sheet = nil })
+                }
+            case .lower(let weight):
+                lowerSheet(weight, exercise)
             }
         }
     }
@@ -636,6 +650,52 @@ struct LoggingScreen: View {
         }
     }
 
+    // MARK: - Changing the weight (§4.3)
+
+    /// **Raising always sticks; lowering asks once** (§4.3). `Rules.weightEdit` is the
+    /// rule — including the case the prototype gets wrong, where a number above a standing
+    /// One-off Weight would still take the Working Weight down. A view that decided this
+    /// itself would be a second copy of §4.3, and it would be the wrong copy: the rule was
+    /// in a view in the prototype, which is exactly how the defect survived.
+    private func commitWeight(
+        _ typed: Weight, performed: PerformedExercise, exercise: ResolvedExercise
+    ) {
+        switch Rules.weightEdit(typed, performed: performed, exercise: exercise) {
+        case .unchanged:
+            // Nothing moved. Writing it would clear a standing One-off for no reason.
+            sheet = nil
+        case .sticks:
+            setWeight(.setWorkingWeight(typed))
+        case .asks:
+            // **Not** `sheet = nil` first: `.sheet(item:)` swaps one for the other, and
+            // dismissing and presenting in one tick loses the second.
+            sheet = .lower(typed)
+        }
+    }
+
+    /// *Just today, or from now on?* — the one question §4.3 asks, and it asks it once.
+    private func lowerSheet(_ weight: Weight, _ exercise: ResolvedExercise) -> some View {
+        SheetStack(
+            heading: "Down to \(weight.decimalString) \(exercise.unit.rawValue)",
+            note: "Just today, or from now on?"
+        ) {
+            SheetRow("Just today", sub: "a one-off weight · never written back") {
+                setWeight(.setOneOffWeight(weight))
+            }
+            SheetRow("From now on", sub: "this becomes the working weight") {
+                setWeight(.setWorkingWeight(weight))
+            }
+            SheetRow("Cancel", sub: nil, centred: true) { sheet = nil }
+        }
+    }
+
+    /// A weight change leaves `pendingReps` alone: it is the *reps* the next Set will
+    /// carry, and the user adjusted those on this Exercise, for this Exercise.
+    private func setWeight(_ action: Action) {
+        store.send(action)
+        sheet = nil
+    }
+
     private func act(_ action: Action) {
         store.send(action)
         pendingReps = nil
@@ -687,9 +747,23 @@ struct LoggingScreen: View {
 
 /// Which sheet is up. The exercise list is **not** here: §6.4 makes it a full-screen list
 /// and not a sheet, because it is navigation and it replaces the screen.
-enum LoggingSheet: String, Identifiable {
+enum LoggingSheet: Identifiable {
     case menu, gate, discard, weight
-    var id: String { rawValue }
+    /// §4.3's question, carrying the number that raised it. It is on the enum and not in
+    /// `WeightSheet` because the weight sheet must be **gone** by the time it is asked:
+    /// the two are one flow with one outcome, and a sheet stacked on a sheet would let
+    /// the user step the number behind the question.
+    case lower(Weight)
+
+    var id: String {
+        switch self {
+        case .menu: "menu"
+        case .gate: "gate"
+        case .discard: "discard"
+        case .weight: "weight"
+        case .lower(let weight): "lower-\(weight.hundredths)-\(weight.unit.rawValue)"
+        }
+    }
 }
 
 // MARK: - The exercise counter as navigation (§6.4)

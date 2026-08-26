@@ -1379,10 +1379,18 @@ before or during the lift — **the spec above is right and the code is wrong**:
 | A logged Set holds the rep count only, and the weight is read live off the Exercise | A Set stores its own reps, weight, Weight Unit, Microload and One-off mark (§2.5) |
 | Progression tests the logged Sets for **equality** with the planned Sets | The test is **at least** the planned Sets (§4.1) |
 | `breakdown()` puts the pin at `Math.round(w / blockSize)`, which can place it **above** the Working Weight | The pin takes the largest Stack Step **at or under** the Working Weight, and the remainder hangs on the pin (§5.3, §5.5) |
+| `SUBMIT_WEIGHT` decides *raise or lower* against the **performed** weight, so a number above a standing One-off Weight reads as a raise — and a raise sticks by writing the Working Weight, which takes the record down with no question asked | The question guards the **Working Weight**: it is asked whenever the write would move the Working Weight down (§4.3) |
+| The weight sheet's `−` / `+` step by `blockSize` under Microloading, whatever the Equipment Type — the Stack Step, on a bar | The step is **what the rule moves the Working Weight by**: the Increment under Progressive Overload, the Microplate doubled on a bar under Microloading (§4.2). A stack grows the PIN and MICRO steppers instead (§6.4) |
+| The `NUDGE` and `KEY` reducers, and the keypad buffer, sit **inside** `Fitty.reduce` beside the real rules | The buffer is view state; only the finished `Weight` reaches a rule (§6.4) |
 
 The ninth row was found during the lift itself, at
-[Lift the rules into HoppaRules](issues/0023-lift-the-rules-into-hopparules.md). Every row above is
-now a named, green test in `app/HoppaRules`.
+[Lift the rules into HoppaRules](issues/0023-lift-the-rules-into-hopparules.md), and the last three
+while building the weight sheet, at [The weight sheet](issues/0037-the-weight-sheet.md). Every row
+above is now a named, green test in `app/HoppaRules` — except the last, which is proven by where
+the code **is not**: `HoppaRules` has no keypad in it.
+
+The tenth is the one worth reading twice, because it is what the twelfth row causes: **§4.3's
+decision lived in a view**, so nothing could fail a test on it. It is `Rules.weightEdit` now.
 
 The prototype's Workout Summary is a deliberate placeholder; the real one is §6.5.
 

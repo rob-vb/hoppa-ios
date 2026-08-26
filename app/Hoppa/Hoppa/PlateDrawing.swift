@@ -36,7 +36,7 @@ struct PlateBreakdownView: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 118)
             caption
-            if let closest { closestLine(closest) }
+            ClosestLine(breakdown: breakdown, performedAt: performedWeight)
         }
     }
 
@@ -119,40 +119,54 @@ struct PlateBreakdownView: View {
         }
     }
 
-    // MARK: - The unreachable weight (§5.4)
+    private var performedWeight: Weight {
+        performedAt ?? exercise.workingWeight ?? .zero(exercise.unit)
+    }
+}
 
-    /// **The big number never moves to fit the rack** (§5.4). Only this line deals with
-    /// the gap, and its chip is steel and never a plate colour.
-    private var closest: (loaded: Weight, difference: Weight)? {
+// MARK: - The unreachable weight (§5.4)
+
+/// **The big number never moves to fit the rack** (§5.4). Only this line deals with the
+/// gap, and its chip is steel and never a plate colour.
+///
+/// Its own view since ticket 0037, because the weight sheet needs it too: the number
+/// being typed there is not yet the Working Weight, and the one thing the user must be
+/// told about it is that the rack cannot build it. One copy of §5.4, two callers.
+///
+/// Draws nothing at all when the rack builds the weight exactly, which is the common case.
+struct ClosestLine: View {
+    let breakdown: PlateBreakdown
+    /// The weight the breakdown was solved at. A `StackLoad` does not carry it back, and
+    /// the gap has to be named against the number the user is actually lifting.
+    let performedAt: Weight
+
+    var body: some View {
+        if let gap {
+            HStack(spacing: 9) {
+                Chip("≈ closest", tone: .steel)
+                Text(text(gap))
+                    .typography(Typography.meta(11))
+                    .foregroundStyle(Color.dimText)
+            }
+        }
+    }
+
+    private var gap: (loaded: Weight, difference: Weight)? {
         switch breakdown {
         case .bar(let load):
             return load.isExact ? nil : (load.loadedTotal, load.difference)
         case .stack(let load):
             guard !load.isExact else { return nil }
             let loaded = load.pinRemainder.reduce(load.pinWeight, +)
-            return (loaded, loaded - performedWeight)
+            return (loaded, loaded - performedAt.relabelled(loaded.unit))
         case .dumbbell, .bodyweight:
             return nil
         }
     }
 
-    private var performedWeight: Weight {
-        performedAt ?? exercise.workingWeight ?? .zero(exercise.unit)
-    }
-
-    private func closestLine(_ gap: (loaded: Weight, difference: Weight)) -> some View {
-        HStack(spacing: 9) {
-            Chip("≈ closest", tone: .steel)
-            Text(closestText(gap))
-                .typography(Typography.meta(11))
-                .foregroundStyle(Color.dimText)
-        }
-    }
-
-    private func closestText(_ gap: (loaded: Weight, difference: Weight)) -> String {
+    private func text(_ gap: (loaded: Weight, difference: Weight)) -> String {
         let over = gap.difference.hundredths > 0
-        let size = Weight(
-            hundredths: abs(gap.difference.hundredths), unit: gap.difference.unit)
+        let size = Weight(hundredths: abs(gap.difference.hundredths), unit: gap.difference.unit)
         return "you load \(gap.loaded.decimalString) \(gap.loaded.unit.rawValue) · "
             + "\(size.decimalString) \(over ? "over" : "under")"
     }
