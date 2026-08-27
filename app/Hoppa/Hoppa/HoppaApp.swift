@@ -64,10 +64,8 @@ struct HoppaApp: App {
             ReweighScreen(path: $path)
         case .history:
             HistoryScreen(path: $path)
-        case .pastWorkout:
-            NotBuiltYet(screen: "A past Workout, opened from the history list — every Set as "
-                        + "performed, and the delete behind its ••• menu.",
-                        ticket: "0048")
+        case .pastWorkout(let id):
+            PastWorkoutScreen(path: $path, workoutId: id)
         }
     }
 }

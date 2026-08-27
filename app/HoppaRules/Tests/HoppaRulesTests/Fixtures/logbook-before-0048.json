@@ -291,11 +291,7 @@
           "outcome" : {
             "plannedSets" : 3,
             "progressed" : true,
-            "thresholdReps" : 12,
-            "workingWeightAfter" : {
-              "hundredths" : 7500,
-              "unit" : "kg"
-            }
+            "thresholdReps" : 12
           },
           "sets" : [
             {
@@ -331,11 +327,7 @@
           "outcome" : {
             "plannedSets" : 3,
             "progressed" : false,
-            "thresholdReps" : 10,
-            "workingWeightAfter" : {
-              "hundredths" : 6000,
-              "unit" : "kg"
-            }
+            "thresholdReps" : 10
           },
           "sets" : [
             {
@@ -365,17 +357,9 @@
             "unit" : "lbs"
           },
           "outcome" : {
-            "microloadAfter" : {
-              "hundredths" : 100,
-              "unit" : "kg"
-            },
             "plannedSets" : 3,
             "progressed" : false,
-            "thresholdReps" : 10,
-            "workingWeightAfter" : {
-              "hundredths" : 10000,
-              "unit" : "lbs"
-            }
+            "thresholdReps" : 10
           },
           "sets" : [
             {
@@ -423,11 +407,7 @@
           "outcome" : {
             "plannedSets" : 3,
             "progressed" : false,
-            "thresholdReps" : 12,
-            "workingWeightAfter" : {
-              "hundredths" : 2250,
-              "unit" : "kg"
-            }
+            "thresholdReps" : 12
           },
           "sets" : [
 
@@ -440,11 +420,7 @@
           "outcome" : {
             "plannedSets" : 3,
             "progressed" : false,
-            "thresholdReps" : 8,
-            "workingWeightAfter" : {
-              "hundredths" : 1500,
-              "unit" : "kg"
-            }
+            "thresholdReps" : 8
           },
           "sets" : [
 

@@ -158,9 +158,16 @@ extension Rules {
                     from: SummaryWeight(
                         weight: last.weight.relabelled(exercise.unit),
                         microload: exercise.isMixedUnitPin ? last.microload : nil),
+                    // **The recorded weight, not the live one** (§2.4, ticket 0048).
+                    // On this screen they are the same number — the Summary stands
+                    // between Finish and `DONE` and nothing can edit an Exercise in
+                    // between — so the fallback is only for a Workout finished by a
+                    // build that recorded none.
                     to: SummaryWeight(
-                        weight: working,
-                        microload: exercise.isMixedUnitPin ? exercise.microload : nil)))
+                        weight: performed.outcome?.workingWeightAfter ?? working,
+                        microload: exercise.isMixedUnitPin
+                            ? (performed.outcome?.microloadAfter ?? exercise.microload)
+                            : nil)))
                 continue
             }
 

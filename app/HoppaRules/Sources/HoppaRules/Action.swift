@@ -40,6 +40,17 @@ public enum Action: Sendable, Hashable {
     case skipRemainingAndFinish
     /// Ends the Workout and keeps nothing.
     case discard
+    /// **The one delete in Hoppa that destroys something** (§6.7, ticket 0048): a
+    /// finished Workout leaves history with every Set in it.
+    ///
+    /// It touches **no Working Weight**. Hoppa applied the progression at Finish and
+    /// never lowers a weight by itself (§4.1), and recomputing the chain would reach
+    /// past any weight the user has since set by hand (§4.3). The confirm states both
+    /// halves before the tap, which is §6.6's own rule about a destructive edit.
+    ///
+    /// It cannot touch the Open Workout: that one is not in `workouts`, and `.discard`
+    /// is its own way out.
+    case deleteWorkout(WorkoutID)
 
     // MARK: - Flow 5, editing a Program (`SPEC.md` §6.6)
     //

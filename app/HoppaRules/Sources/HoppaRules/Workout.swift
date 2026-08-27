@@ -26,15 +26,42 @@ public struct LoggedSet: Codable, Sendable, Hashable {
 /// The threshold and the planned Sets are stored because both are editable, and §6.7
 /// draws its dots and its Set grid off them. Solve those live and one edit to a Rep Range
 /// rewrites the whole history (`SPEC.md` §2.4).
+///
+/// **The weight the Exercise stood at when this Workout ended is stored for the same
+/// reason** — ticket 0048. The Summary reads a Working Weight live and is right to: it
+/// appears between Finish and `DONE`, and nothing can edit an Exercise in between. §6.7
+/// opens a Workout from three weeks ago, where the live weight has moved on, so a row
+/// reading it would claim a progression that never happened. It is not derivable either:
+/// re-adding the Increment reaches an Increment that is editable (§2.8), and any weight
+/// the user has since set by hand (§4.3) is past recomputing altogether.
 public struct ProgressionOutcome: Codable, Sendable, Hashable {
     public var plannedSets: Int
     public var thresholdReps: Int
     public var progressed: Bool
+    /// The Working Weight **as it stood when this Workout ended** — after the progression,
+    /// where there was one. Recorded for every performed Exercise and not only for the
+    /// ones that went up, because §6.7's One-off row states the Working Weight that
+    /// survived and that number goes stale exactly as fast.
+    ///
+    /// `nil` on an Exercise that had no Working Weight, and on **every Workout finished
+    /// by a build older than ticket 0048** — an absent key decodes to `nil`, so old
+    /// history reads back with its verdict and without its number.
+    public var workingWeightAfter: Weight?
+    /// The Microload after Finish, on a mixed-unit pin. `nil` everywhere else.
+    public var microloadAfter: Weight?
 
-    public init(plannedSets: Int, thresholdReps: Int, progressed: Bool) {
+    public init(
+        plannedSets: Int,
+        thresholdReps: Int,
+        progressed: Bool,
+        workingWeightAfter: Weight? = nil,
+        microloadAfter: Weight? = nil
+    ) {
         self.plannedSets = plannedSets
         self.thresholdReps = thresholdReps
         self.progressed = progressed
+        self.workingWeightAfter = workingWeightAfter
+        self.microloadAfter = microloadAfter
     }
 }
 

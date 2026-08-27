@@ -127,10 +127,13 @@ real**, and nothing after that is worth doing before it.
     build-everything-first answer above. **The fog it was waiting on has now graduated**: seven
     tickets, `0044`–`0050`, and they are the rest of the app.
 
-    **Flow 4 has started.** [The history screen](0047-the-history-screen.md) closed 2026-08-27 and
-    took the streak, the Workout list and the picker's door with it; `HANDOFF.md` grew items 76–86.
-    Three Flow 4 tickets are left, and [a past Workout opened and
-    deleted](0048-a-past-workout-opened-and-deleted.md) is now unblocked.
+    **Flow 4 is more than half built.** [The history screen](0047-the-history-screen.md) closed
+    2026-08-27 with the streak, the Workout list and the picker's door (`HANDOFF.md` items 76–86),
+    and [a past Workout opened and deleted](0048-a-past-workout-opened-and-deleted.md) closed the
+    same day with the detail screen and the one destructive delete (items 87–97). **Two tickets are
+    left in the whole map**, both about the chart: [the per-Exercise
+    chart](0049-the-per-exercise-chart.md), which is unblocked, and [the Exercise card's two
+    doors](0050-the-exercise-cards-two-doors.md) behind it.
 
     **The route from here**, and it is the order ticket 29 set, unchanged:
     **Flow 5 first, because its rules are already built** —
@@ -808,6 +811,28 @@ real**, and nothing after that is worth doing before it.
   `Rules.reduce`**, so Flow 4 can be looked at against a real climb — the thing ticket 29 kept that
   file alive for. 156 → **168**, HoppaStore 36 → **49**, and a new `app/checks/History` at **33**
   which compiles and runs the seed itself.
+- [A past Workout opened and deleted, and the Summary's weights that go stale doing
+  it](0048-a-past-workout-opened-and-deleted.md) — **a different view, and the artboard settled
+  it**, which is the answer the ticket guessed at. §6.7's detail is a *record* — every Exercise in
+  the order performed, every Set with its own number, a verdict on the right — where §6.5 is a
+  *verdict on a session that has just ended*. That split the staleness in two and answered the
+  halves separately. **A past Workout states no future**: `NEXT TIME` and the condition line are
+  both about the *next* session, and three weeks later that session has happened, so §6.7 prints
+  neither and nothing on the screen can go out of date. What was left was one fact about the past
+  that genuinely had nowhere to live, so `ProgressionOutcome` gained **`workingWeightAfter`** — the
+  weight the Exercise ended on, recorded at Finish for **every performed Exercise and not only the
+  ones that went up**, because a One-off row states the Working Weight that survived and that
+  number drifts just as fast. It is not derivable: the Increment is editable and a weight set by
+  hand (§4.3) is past recomputing. The Summary reads it too, so there is one rule and not two, and
+  **old history still decodes** — an absent key is `nil` and the row says `WENT UP` without
+  inventing a weight, proved against a committed pre-change fixture. `Action.deleteWorkout` is
+  **two lines and no `updateExercise` call**, which is what makes the confirm's second sentence
+  true. Four judgment calls on the walk list, and the first is the interesting one: **this one
+  confirm is drawn rather than a system dialog**, because §6.7 paints its `DELETE` the 25 kg red to
+  fix §7.1's boundary and a system dialog cannot carry that colour. The VPS caught the fourth
+  before a phone did — `.dateTime.day().month().year()` orders itself by locale and answers
+  `Aug 3, 2026` on a US one. 168 → **187**, and a new `app/checks/Past` at **66** which reads all
+  thirty seeded Workouts back through the screen's own English.
 
 ## Not yet specified
 

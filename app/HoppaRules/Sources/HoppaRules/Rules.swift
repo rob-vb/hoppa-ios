@@ -152,6 +152,14 @@ public enum Rules {
             book.openWorkout = nil
             return book
 
+        case .deleteWorkout(let id):
+            // §6.7, ticket 0048. **The Sets go and the weights stay**: nothing else in
+            // this case, and that is the whole rule. `updateExercise` is not called, so
+            // no Working Weight can move by accident.
+            guard book.workouts.contains(where: { $0.id == id }) else { return logbook }
+            book.workouts.removeAll { $0.id == id }
+            return book
+
         // Flow 5 (§6.6), in `Rules+Edit.swift`. One door, two files: a `default:` here
         // would let a new edit case land unhandled, so they are listed one by one and the
         // compiler checks the list.
@@ -184,13 +192,21 @@ public enum Rules {
                 performed: performed,
                 exercise: exercise,
                 inventory: book.plateInventory)
-            workout.exercises[index].outcome = result.outcome
+            var outcome = result.outcome
             if let move = result.move {
                 book.updateExercise(performed.exerciseId) { stored in
                     stored.workingWeight = move.workingWeight
                     if exercise.isMixedUnitPin { stored.microload = move.microload }
                 }
             }
+            // **The weight this Workout ended on, written down** (§2.4, ticket 0048).
+            // Read back out of the book rather than off the move, so the number recorded
+            // is the number stored — the two differ on a mixed-unit pin, where the move
+            // carries a Microload the Exercise does not keep.
+            let after = book.resolvedExercise(performed.exerciseId)
+            outcome.workingWeightAfter = after?.workingWeight
+            outcome.microloadAfter = after?.microload
+            workout.exercises[index].outcome = outcome
         }
 
         workout.state = .finished

@@ -19,9 +19,9 @@ import HoppaStore
 //   `AUG` and no year. A Workout eight months back would then read the same as one from
 //   this month, so the year joins the label the moment the date leaves the current one —
 //   `18` over `AUG 25`. Nothing is invented for the common case.
-// - **The rows are doors and the room is not built.** Ticket 0048 opens a past Workout;
-//   until it lands, a row pushes `NotBuiltYet`, which is ticket 0032's own answer to a
-//   door with no room — a disabled row proves nothing about the spine.
+// - **The rows are doors.** Ticket 0048 built the room behind them: `PastWorkoutScreen`,
+//   which reads its header line off this row's own `HistoryRow` so the list and the screen
+//   it opens can never state two different numbers.
 //
 // Artboards: `design/0015-history/History.dc.html` and `Empty.dc.html`.
 

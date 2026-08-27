@@ -128,7 +128,7 @@ One performance of a Workout Day.
 | Exercise States | Open / Completed / Skipped, per Exercise. Every Exercise starts Open. |
 | Sets | Logged per Exercise. |
 | Names | The Workout Day's Name and each performed Exercise's Name, **as they read at the time**. A fallback only: Hoppa shows the live Name while the thing still exists, and reaches for this copy after a delete (§6.6). |
-| Progression outcome | Per performed Exercise, **what progression did**: the planned Sets and the threshold that applied, and whether the Exercise went up. Written at Finish, never recomputed. |
+| Progression outcome | Per performed Exercise, **what progression did**: the planned Sets and the threshold that applied, whether the Exercise went up, and **the Working Weight it ended on**. Written at Finish, never recomputed. |
 
 **The outcome is stored because the question it answers moves.** §6.7 draws a green dot for a
 session that progressed, a steel one for a session that stayed, and a Set grid with one cell per
@@ -139,8 +139,17 @@ is §2.5's defect in a second place: a record of the past that a later edit rewr
 keeps the planned Sets, the threshold reps and the progressed flag as **facts**, exactly as the Set
 keeps its weight.
 
+**The weight it ended on is stored for the same reason**, and §6.7's Workout detail is what
+found it. The Summary (§6.5) reads a Working Weight live and is right to: it stands between
+Finish and `DONE`, and nothing can edit an Exercise in between. Open a Workout from three weeks
+ago and the live weight has moved on, so a row reading it claims a progression that never
+happened. Nor can it be recomputed: adding the Increment back reaches an Increment that is
+editable (§2.8), and any weight the user has since set by hand (§4.3) is past recomputing
+altogether. So the Workout keeps it, and the row states a fact.
+
 > Found while building. Decision record:
-> [Persistence and the data model](issues/0019-persistence-and-the-data-model.md).
+> [Persistence and the data model](issues/0019-persistence-and-the-data-model.md), and
+> [A past Workout opened and deleted](issues/0048-a-past-workout-opened-and-deleted.md).
 
 ### 2.5 Set
 
@@ -1374,6 +1383,28 @@ Reverse date order. Each row: the date, the Workout Day's Name, the count of Exe
 any skips, and — when there were any — how many Exercises went up, in green. Opening a row shows
 every Set as performed, from the Set's own stored numbers (§2.5), with the progression each
 Exercise earned stated beside its name.
+
+#### The Workout detail is not the Summary
+
+> Settled while building, at [A past Workout opened and deleted](issues/0048-a-past-workout-opened-and-deleted.md).
+
+§6.5 is a **verdict on a session that has just ended**: a count as the hero, three sections, a
+condition line under every stayed Exercise and `NEXT TIME` beside every green one. This is a
+**record**: one Exercise after another in the order performed, every Set with the weight it was
+lifted at, and the progression it earned on the right — `STAYED`, or a green `25 → 27.5 KG`.
+
+**A past Workout states no future.** `NEXT TIME` and `ALL 3 SETS AT 12 → 75 KG` are both about
+the session *after* this one, and three weeks later that session has already happened. Printing
+neither is what keeps the screen from going stale, and it is why the two screens are two screens.
+
+| Element | Rule |
+| --- | --- |
+| The reps | Green where the Set met the recorded threshold — **the same fact the chart's Set grid fills a cell with**, so the two views can never disagree. **Never green on a One-off**, whatever the reps (the grid rule, from the other side) |
+| The weight on a Set row | The Set's own stored number and its own unit (§2.5). Not relabelled to the Exercise's unit the way §6.5 relabels: the Summary is looking at the minute the Set was logged, this is looking at three weeks ago, and a unit may have moved since (§6.6) |
+| A **One-off** | Replaces the verdict with the steel chip, in the past tense: `ONE-OFF · 80 KG STAYED`. It states the Working Weight that survived, read off the record (§2.4) |
+| A **Skipped** Exercise | Listed plain with `SKIPPED` and no Set rows — §6.5's own rule about a skip |
+| An Exercise deleted **mid-Workout** | Finish wrote no outcome, so there is no verdict: the row reads `REMOVED FROM THE PROGRAM`. An Exercise deleted *after* the Workout keeps its outcome and reads normally (§2.8) |
+| The header | The list row's own line — the date, the Exercises, the Sets, the skips — so the list and the screen it opens can never state two different numbers, and the delete confirm counts what the header counts |
 
 #### The streak
 

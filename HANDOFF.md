@@ -6,8 +6,8 @@ grows until then — every screen ticket appends its own items and its own *what
 answer*, and the **What is not built yet** section at the bottom shrinks as tickets land.
 
 Items 1–38 below cover what was batches 2, 3 and 4, written 2026-08-26 against `00321d6`. Items 39
-onward are appended by each screen ticket as it lands. Still to be appended: the rest of Flow 4 — a
-past Workout opened and deleted, the per-Exercise chart, and the Exercise card's doors.
+onward are appended by each screen ticket as it lands. Still to be appended: the rest of Flow 4 —
+the per-Exercise chart, and the Exercise card's doors.
 
 **Judgment calls are marked, not asked.** Under the 2026-08-27 rule a session that would have put a
 UI question to Rob decides it instead, records why on its ticket, and lists it here as something to
@@ -444,8 +444,7 @@ Item 84 is the optional way to see sixteen weeks of it, and it costs you the app
     → You cannot check this today unless you have a Workout from 2025. It is here so it is not
     reported as a defect later.
 
-83. Tap any row. → `NOT BUILT YET`, naming ticket 0048. **That is the door, not the room**: opening
-    a past Workout and deleting one is the next ticket. Tap `‹` back.
+83. Tap any row. → The Workout opens. This is ticket 0048's screen; items 87–97 walk it.
 
 84. **Optional, and it wipes the app's data — sixteen weeks in one build.** Delete Hoppa from the
     phone. In `HarnessSeed.swift` set **both** `isEnabled` and `seedsHistory` to `true`, build and
@@ -469,14 +468,91 @@ Item 84 is the optional way to see sixteen weeks of it, and it costs you the app
 
 ---
 
+## Flow 4 — a past Workout, opened and deleted (ticket 0048, §6.7)
+
+Items 87–97. Open History from the foot of the picker, then tap the newest row. **Do items 87–95
+before item 96**, because 96 destroys the Workout you were reading.
+
+87. Read the top of the screen.
+    → `‹ History` on the left and `•••` on the right, then the Day's Name big, then one meta line:
+    `3 AUG 2026 · 5 exercises · 15 sets`, and `· 1 skipped` only where there was one.
+    → **The counts are the list row's own counts.** Go back and compare them with the row you
+    tapped. If they disagree, that is a finding — they come from the same value on purpose.
+
+88. Read one Exercise block.
+    → The name in Anton, and on the same line at the right either nothing, a steel `STAYED`, or a
+    green `72.5 KG → 75 KG`. Under it one row per Set: the number, the reps big, `REPS`, and the
+    weight at the right — `72.5 kg`, in **sentence case**, because it is a number in a table.
+
+89. **Look at which rep numbers are green.** A Set's reps go green where that Set met the
+    threshold — the top of the Rep Range under Progressive Overload, the bottom under Microloading.
+    → An Exercise that went up has every rep green. One that stayed has some or none.
+    → This is the same fact the chart's Set grid will fill a cell with (ticket 0049), so if it
+    looks wrong here it is wrong in two places.
+
+90. **The number this whole ticket was written for.** Find an Exercise that went up in an *older*
+    Workout — one you have trained past since. The row must read the weights **as they were then**,
+    not the weight the Exercise stands at today.
+    → e.g. a Workout from three weeks ago reads `72.5 KG → 75 KG` while the Exercise now sits at
+    `80 KG`. **A row that reads `77.5 KG → 80 KG` on an old Workout is the defect this ticket
+    exists to prevent** — report it.
+    → It is stored at Finish now (§2.4). **Workouts you finished before this build did not store
+    it**, so they read a green `WENT UP` with no weights. That is not a defect; it is the old data.
+    Every Workout finished from here on carries its number.
+
+91. **A One-off Workout**, if you have one. The verdict beside the name is replaced by a chip under
+    it: `ONE-OFF · 80 KG STAYED`.
+    → The Set rows show the weight you actually lifted, and **none of the reps is green**, whatever
+    you hit. A One-off never progresses (§4.3), so a green column would be a lie.
+
+92. **A skipped Exercise.** → The name, a steel `SKIPPED` on the right, and no Set rows at all.
+    → **A judgment call**: the artboard has no skipped Exercise in it. This is §6.5's rule — listed
+    plain, no warning colour, no icon, no invitation to fix. Say whether it reads right in place.
+
+93. Tap `•••`.
+    → A menu with one item: `Delete workout`, in red.
+    → **A judgment call**: §6.7 gives the menu nothing else, and it stayed a menu rather than
+    becoming a `DELETE` button, because a destructive action one tap away from a scrolling list is
+    not what the rest of the app does. Say if a menu of one reads as fussy.
+
+94. Tap `Delete workout`.
+    → A sheet from the bottom, in Hoppa's own dark: `DELETE THIS WORKOUT?`, then
+    *This removes 5 exercises and 15 sets from your history.*, then in steel *Your working weights
+    stay where they are.*, then `CANCEL` and a **red** `DELETE`.
+    → **The red is the 25 kg plate red `#C8322B`, and that is deliberate** (§6.7). A plate colour is
+    a plate only inside a Plate Breakdown; nothing near this button is a drawing of a bar. Look at
+    it and say whether it reads as a plate. If it does, that is the finding.
+    → **A judgment call**: every other confirm in Hoppa is a system dialog. This one is drawn,
+    because §6.7 paints its button and a system dialog cannot carry that colour. Say whether the
+    two kinds of confirm sitting in one app is worse than the colour is worth.
+
+95. Tap `CANCEL`. → The sheet goes and the Workout is still there.
+
+96. Tap `•••` → `Delete workout` → `DELETE`.
+    → The screen closes back to History, and **the row is gone** and the count above the list is
+    one lower.
+    → Now go to your Program and **check the working weights of the Exercises in that Workout**.
+    They must be **exactly where they were**. Hoppa applied the progression at Finish and never
+    lowers a weight by itself (§4.1); recomputing the chain would also reach past any weight you
+    have set by hand (§4.3). **A weight that moved is a serious finding.**
+    → Restore one by hand if you want it back. That is the trade the confirm states.
+
+97. Force-quit and reopen. → The deleted Workout is still gone, and the streak strip above the list
+    has redrawn without it.
+
+---
+
 ## What is not built yet
 
 None of this is a defect.
 
-- **Flow 4, apart from the history screen.** The streak and the Workout list landed at ticket 0047.
-  **Opening a row** of that list — every Set as performed, and the delete behind its `•••` menu —
-  is ticket 0048 and says so on screen. The **per-Exercise chart** is ticket 0049, and an Exercise
-  card in the Program sheet still opens the Exercise **sheet** and draws no sparkline (ticket 0050).
+- **Flow 4's chart.** The streak and the Workout list landed at ticket 0047, and opening a row of
+  that list — every Set as performed, and the delete behind its `•••` menu — at ticket 0048. The
+  **per-Exercise chart** is ticket 0049, and an Exercise card in the Program sheet still opens the
+  Exercise **sheet** and draws no sparkline (ticket 0050).
+- **The weights on a Workout you finished before this build.** Ticket 0048 started storing the
+  weight a progression ended on; Workouts already on the phone have none, so an old Went-up row
+  reads a green `WENT UP` and no numbers. Old data, not a defect — see item 90.
 - **Flow 5 is complete.** The two warning dialogs and the Re-weigh list landed at ticket 0046,
   reorder handles at 0044, deleting an **Exercise** on its own sheet since 0035, and deleting a
   **Workout Day** at 0045.
@@ -498,9 +574,10 @@ So a failure on the Mac is toolchain drift and not code.
 
 | Suite | Count |
 | --- | --- |
-| `app/HoppaRules` — `swift test` | 168 |
+| `app/HoppaRules` — `swift test` | 187 |
 | `app/HoppaStore` — `swift test` | 49 |
 | `app/checks/UnitStash/run.sh` | 34 |
 | `app/checks/Reorder/run.sh` | 25 |
 | `app/checks/Reweigh/run.sh` | 34 |
 | `app/checks/History/run.sh` | 33 |
+| `app/checks/Past/run.sh` | 66 |
