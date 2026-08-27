@@ -422,6 +422,92 @@ check(
     "And the screen says why the line drops",
     mixedUnitNote(pulldown).contains("drops back"))
 
+// MARK: - The ring: the Exercise card's two doors (ticket 0050)
+
+/// The sparkline as `Sparkline.swift`'s `Canvas` draws it, on a grid of characters.
+///
+/// **A copy, and it can rot** — the same bargain the plot above takes. What it copies is
+/// only the flip and the inset: every point is `ExerciseChart.sparkline`, which is the
+/// shipping rule, linked from the built package.
+func spark(_ chart: ExerciseChart, width: Int = 22, height: Int = 5) -> [String] {
+    let marks = chart.sparkline
+    guard !marks.isEmpty else { return Array(repeating: String(repeating: " ", count: width), count: height) }
+
+    var grid = Array(repeating: Array(repeating: Character(" "), count: width), count: height)
+    func at(_ mark: SparkPoint) -> (x: Int, y: Int) {
+        (Int((mark.x * Double(width - 1)).rounded()),
+         Int(((1 - mark.y) * Double(height - 1)).rounded()))
+    }
+    for (a, b) in zip(marks, marks.dropFirst()) {
+        let (x0, y0) = at(a), (x1, y1) = at(b)
+        guard x1 > x0 else { continue }
+        for x in x0...x1 {
+            let t = Double(x - x0) / Double(x1 - x0)
+            grid[Int((Double(y0) + t * Double(y1 - y0)).rounded())][x] = "─"
+        }
+    }
+    // The one filled dot the mark ends on: *here is where you are now*.
+    let last = at(marks[marks.count - 1])
+    grid[last.y][last.x] = "●"
+    return grid.map { String($0) }
+}
+
+extension String {
+    func rightPadded(to width: Int) -> String {
+        count >= width ? self : self + String(repeating: " ", count: width - count)
+    }
+}
+
+/// One Exercise card as `WorkoutDayScreen` draws it: the Name, the meta line, the Working
+/// Weight — and, **only where `hasSpark`**, the sparkline that is the second door.
+func card(_ chart: ExerciseChart, _ exercise: ResolvedExercise) -> [String] {
+    let inner = 62, markWidth = 22, textWidth = inner - markWidth - 2
+    let weight = exercise.workingWeight.map {
+        "\($0.decimalString) \(exercise.unit.rawValue)"
+    } ?? "—"
+    let text = [exercise.name.uppercased(), "", weight, "", ""]
+    let mark = chart.hasSpark
+        ? spark(chart, width: markWidth, height: text.count)
+        : Array(repeating: "", count: text.count)
+    let door = chart.hasSpark ? " → chart " : " no door — nothing plotted yet "
+
+    var lines = ["  ┌" + String(repeating: "─", count: inner) + "┐"]
+    for (line, marked) in zip(text, mark) {
+        lines.append("  │ " + line.rightPadded(to: textWidth)
+                     + marked.rightPadded(to: markWidth) + " │")
+    }
+    lines.append("  └" + String(repeating: "─", count: max(0, inner - door.count))
+                 + door + "┘")
+    return lines
+}
+
+print("")
+print("=== The Day screen's cards, and which of them carry a second door ===")
+print("    The sparkline **is** the door (ticket 0050): no mark, no way to the chart.")
+
+for exercise in book.allExercises {
+    let chart = Rules.exerciseChart(exercise.id, in: book)!
+    for line in card(chart, book.resolvedExercise(exercise.id)!) { print(line) }
+}
+
+print("")
+check(
+    "Every trained Exercise carries a door",
+    book.allExercises.allSatisfy { Rules.exerciseChart($0.id, in: book)!.hasSpark })
+check(
+    "The mark plots the chart's own points, one for one",
+    book.allExercises.allSatisfy {
+        let chart = Rules.exerciseChart($0.id, in: book)!
+        return chart.sparkline.count == chart.points.count
+    })
+check(
+    "Nothing on a mark falls outside its box",
+    book.allExercises.allSatisfy {
+        Rules.exerciseChart($0.id, in: book)!.sparkline.allSatisfy {
+            $0.x >= 0 && $0.x <= 1 && $0.y >= 0 && $0.y <= 1
+        }
+    })
+
 // MARK: - Before there is a line
 
 print("")
@@ -437,6 +523,16 @@ for line in plot(cold) { print(line) }
 let onceBook = HarnessSeed.trained(bare, weeks: 1, endingOn: at("2026-08-26 18:00"))
 let once = Rules.exerciseChart(bare.allExercises[0].id, in: onceBook)!
 check("One session is a dot, not a climb", once.points.count == 1 && !once.hasLine)
+
+// Ticket 0050's gate, from both sides. **No sparkline, no door** — and the two gates are
+// deliberately not one gate: two sessions make a *line*, one makes a *screen worth
+// reaching*, which still states the hero, the chip and the condition for the next step.
+check("An Exercise nobody has trained carries no door", !cold.hasSpark)
+check("So the card draws no mark at all", cold.sparkline.isEmpty)
+for line in card(cold, bare.resolvedExercise(bare.allExercises[0].id)!) { print(line) }
+check("One session opens the door, though there is still no line", once.hasSpark && !once.hasLine)
+check("And the mark is the one dot", once.sparkline.count == 1 && once.sparkline[0].x == 1)
+for line in card(once, onceBook.resolvedExercise(bare.allExercises[0].id)!) { print(line) }
 
 print("")
 print(failures == 0 ? "All checks passed." : "\(failures) check(s) FAILED.")

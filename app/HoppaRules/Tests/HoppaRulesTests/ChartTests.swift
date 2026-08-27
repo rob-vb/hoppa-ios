@@ -411,3 +411,110 @@ struct ChartHistoryTests {
         }
     }
 }
+
+/// Ticket 0050 — the mark an Exercise card carries, and the door it **is**.
+///
+/// §6.7: *the card carries a sparkline, so the door announces itself.* The decision taken
+/// at ticket 0050 reads that literally — the announcement and the door are one object, so
+/// `hasSpark` is the whole of whether the card has a second door, and `sparkline` is the
+/// whole of what it draws. Both are here rather than in the view for the reason the series
+/// itself is: two lifters holding the same `Logbook` must see the same mark.
+@Suite("SPEC.md §6.7 — the sparkline, and the door it is")
+struct SparklineTests {
+
+    // MARK: - The door
+
+    @Test("An Exercise nobody has trained draws no mark, so its card has no second door")
+    func nothingToPlotIsNoDoor() {
+        let chart = Rules.exerciseChart(Ids.smith, in: upperALogbook())!
+        #expect(chart.points.isEmpty)
+        #expect(chart.hasSpark == false)
+        #expect(chart.sparkline.isEmpty)
+    }
+
+    @Test("One session opens the door, though the chart still has no line")
+    func oneSessionIsADoor() {
+        var session = Session()
+        session.start()
+        session.logSets(3, reps: 9)
+        session.send(.skipRemainingAndFinish)
+
+        let chart = Rules.exerciseChart(Ids.smith, in: session.book)!
+        // The two gates are deliberately not the same gate: **two** sessions make a line
+        // (§6.7's empty state), **one** makes a screen worth reaching.
+        #expect(chart.hasLine == false)
+        #expect(chart.hasSpark)
+        #expect(chart.sparkline.count == 1)
+        // A single session has no span to divide by, so it lands at the end of the box,
+        // where the newest session belongs.
+        #expect(chart.sparkline[0].x == 1)
+    }
+
+    @Test("A Skipped Exercise makes no mark, exactly as it makes no point")
+    func aSkipIsNotAMark() {
+        var session = Session()
+        session.start()
+        session.logSets(3)
+        session.goTo(Ids.row)
+        session.send(.skip)
+        session.send(.skipRemainingAndFinish)
+
+        #expect(Rules.exerciseChart(Ids.smith, in: session.book)!.hasSpark)
+        #expect(Rules.exerciseChart(Ids.row, in: session.book)!.hasSpark == false)
+    }
+
+    // MARK: - The mark
+
+    @Test("The mark is the chart's own line — same points, same scale, no extras")
+    func theMarkIsTheLine() {
+        let chart = Rules.exerciseChart(ChartHistoryTests.smith, in: ChartHistoryTests.book)!
+        let spark = chart.sparkline
+
+        #expect(spark.count == chart.points.count)
+        // Every y is the chart's own `ChartScale.fraction`, so the card and the screen
+        // draw one climb and not two.
+        for (mark, point) in zip(spark, chart.points) {
+            #expect(mark.y == chart.scale!.fraction(of: point.line))
+        }
+        // The One-off in week 13 is on the chart and **not** on the mark: the line never
+        // dips through one (§4.3), and the hollow marker is not drawn at this size.
+        #expect(chart.points.contains { $0.oneOff != nil })
+    }
+
+    @Test("The x axis is real time on the card as well, so a missed week is a wider gap")
+    func realTimeOnTheCardToo() {
+        let chart = Rules.exerciseChart(ChartHistoryTests.smith, in: ChartHistoryTests.book)!
+        let spark = chart.sparkline
+
+        #expect(spark.first!.x == 0)
+        #expect(spark.last!.x == 1)
+        #expect(spark.map(\.x) == spark.map(\.x).sorted())
+
+        // The fixture misses a week. Real time makes that gap wider than a weekly one; a
+        // session-numbered axis would space every session identically.
+        let gaps = zip(spark, spark.dropFirst()).map { $1.x - $0.x }
+        #expect(gaps.max()! > gaps.min()! * 1.5)
+    }
+
+    @Test("Nothing on the mark is drawn outside its box")
+    func nothingLeavesTheBox() {
+        for spec in History.specs {
+            let chart = Rules.exerciseChart(spec.id, in: ChartHistoryTests.book)!
+            for mark in chart.sparkline {
+                #expect(mark.x >= 0 && mark.x <= 1, "\(spec.name)")
+                #expect(mark.y >= 0 && mark.y <= 1, "\(spec.name)")
+            }
+        }
+    }
+
+    @Test("A mixed-unit pin still gets a door, and its mark is the number that moves")
+    func theMixedUnitPinKeepsItsDoor() {
+        let chart = Rules.exerciseChart(ChartHistoryTests.pulldown, in: ChartHistoryTests.book)!
+        // The card prints the pin and the mark plots the Microload — the two are not the
+        // same number, and only the chart has room to label them. Suppressing the mark
+        // would leave this Exercise's chart with no way in at all, which is worse.
+        #expect(chart.isMixedUnitPin)
+        #expect(chart.hasSpark)
+        #expect(chart.sparkline.count == chart.points.count)
+    }
+}

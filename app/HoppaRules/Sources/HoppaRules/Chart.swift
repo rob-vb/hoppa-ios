@@ -388,3 +388,63 @@ extension Rules {
         return rounded * step
     }
 }
+
+// MARK: - The sparkline on an Exercise card (§6.7, ticket 0050)
+
+/// One point of the mark an Exercise card carries, in fractions of its box.
+///
+/// **Fractions and not points**, for the reason `ChartScale.fraction(of:)` answers in
+/// fractions: a `Weight` is exact and a pixel is not, so the rule stops at the last
+/// number that is still a fact about the Logbook, and the view multiplies it by a box it
+/// owns. The one place a `Double` is allowed near a weight, twice over.
+public struct SparkPoint: Sendable, Hashable {
+    /// `0` at the first session, `1` at the last. **Real time** (§6.7), the same axis the
+    /// chart's own line runs on — so a missed week is a wider gap on the card too.
+    public var x: Double
+    /// `0` at the bottom of the plot, `1` at the top, on **the chart's own `ChartScale`**.
+    public var y: Double
+}
+
+extension ExerciseChart {
+
+    /// §6.7's sparkline: *the card carries a sparkline, so the door announces itself.*
+    ///
+    /// **It is the chart's own line, and nothing else.** Same points, same real-time x
+    /// axis, same padded `ChartScale` — so the mark on the card is a small true copy of
+    /// the line on the screen it opens, and the two can never draw two different climbs.
+    /// The view scales it into 44 × 16 and strokes it 2 px steel.
+    ///
+    /// **What it leaves out, and why** (ticket 0050). The One-off markers, the dashed
+    /// NEXT step and the gridlines are all on the chart and none of them is here. A
+    /// hollow marker at this size is a smudge; the step's destination is already the big
+    /// number printed beside the mark on the same card, so drawing it twice would be the
+    /// only thing on the card stated twice. What is left is the one thing a sparkline is
+    /// for: the shape of the climb.
+    public var sparkline: [SparkPoint] {
+        guard let scale, let first = points.first?.startedAt, let last = points.last?.startedAt
+        else { return [] }
+        let span = last - first
+        return points.map {
+            SparkPoint(
+                // A single session, or several inside one day, have no span to divide by.
+                // They land at the end of the box, where the newest session belongs.
+                x: span > 0 ? ($0.startedAt - first) / span : 1,
+                y: scale.fraction(of: $0.line))
+        }
+    }
+
+    /// **Does this Exercise card carry a door to its chart?**
+    ///
+    /// The judgment call of ticket 0050, and it is one word: *no sparkline, no door.* The
+    /// card's second door **is** the sparkline (§6.7), so an Exercise with nothing to
+    /// plot draws no mark and offers no way in — which is §6.7's own empty-state rule,
+    /// one room further out. Everything else about the card is unchanged, so the door
+    /// costs nothing on a Program the user is still building.
+    ///
+    /// **One session is enough**, though it is only a dot. §6.7's *two sessions* is the
+    /// rule for the **line**, not for the screen: at one session the chart still states
+    /// the hero, the chip and the condition for the next step, which is the whole of what
+    /// a lifter one session in can be told. Gating the door at two would build a screen
+    /// with no way to reach it.
+    public var hasSpark: Bool { !points.isEmpty }
+}

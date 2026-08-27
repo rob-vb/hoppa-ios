@@ -132,8 +132,13 @@ real**, and nothing after that is worth doing before it.
     and [a past Workout opened and deleted](0048-a-past-workout-opened-and-deleted.md) closed the
     same day with the detail screen and the one destructive delete (items 87–97), and
     [the per-Exercise chart](0049-the-per-exercise-chart.md) the same day again (items 98–110).
-    **One ticket is left in the whole map**: [the Exercise card's two
-    doors](0050-the-exercise-cards-two-doors.md), now unblocked — the chart has a room and no door.
+    **The map is finished.** [The Exercise card's two
+    doors](0050-the-exercise-cards-two-doors.md) closed 2026-08-27 with items 111–118 — the chart
+    now has a door, every screen in `SPEC.md` exists, and no ticket is open. **What is left is not
+    a ticket: it is the walk.** [`HANDOFF.md`](../HANDOFF.md) is complete at 118 items, and Rob's
+    verdict on it is the only thing between here and the destination — so the walk **is** the
+    frontier now, as [The walk, and the findings it produces](0051-the-walk.md), the one ticket on
+    this map only Rob can close. Its findings are what the fog's last entry has been waiting for.
 
     **The route from here**, and it is the order ticket 29 set, unchanged:
     **Flow 5 first, because its rules are already built** —
@@ -853,6 +858,22 @@ real**, and nothing after that is worth doing before it.
   for. Stated on the screen in a sentence rather than smoothed away, and recorded in §6.7 as open.
   `HarnessSeed` gained a **One-off week** so the marker has something to draw on a phone.
   187 → **211**, and a new `app/checks/Chart` at **34**.
+- [The Exercise card's two doors, and the sparkline that announces one of them](0050-the-exercise-cards-two-doors.md)
+  — **the sparkline *is* the door**, and the rest of the card still opens §6.2's Exercise sheet.
+  §6.7's own sentence makes the mark the announcement, so the announcement and the door are one
+  object and no third affordance has to be explained; an Exercise card is edited far more often
+  than it is charted, so the frequent path keeps the whole card. The ticket's own objection — *a
+  sparkline with no data announces a door to an empty room* — is answered by **not drawing one**:
+  `hasSpark` is `!points.isEmpty`, so the door appears the first time the Exercise is trained and
+  never before it. **Two gates, deliberately not one**: two sessions make a *line* (§6.7's empty
+  state), one makes a *screen worth reaching*, because gating the door at two would leave ticket
+  0049's one-session screen with no way in. The `•••` was refused as a menu of one, and the swap
+  as spending the frequent path's target on the rare one. The mark is the chart's own line, on the
+  chart's own scale and real-time x axis, **2 px steel** — §7.1 does not stop at the chart's edge —
+  and it draws no One-off marker and no `NEXT` step, because the step's destination is already the
+  big number beside it. §6.7 said *the Program sheet* and the room is the **Workout Day screen**;
+  the artboard settles it and the spec carries the correction. 211 → **218**, and `app/checks/Chart`
+  34 → **41**, which now prints the Day's cards and which of them carry a door.
 
 ## Not yet specified
 

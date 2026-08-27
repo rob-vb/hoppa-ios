@@ -1,13 +1,14 @@
 # Hand-off — the whole app, one walk
 
-**This document is not finished.** On 2026-08-27 Rob ended the batching rule: *"Ik wil alles op het
-eind testen, en ik wil eerst alles bouwen."* So there is **one walk, at the end**, and this file
-grows until then — every screen ticket appends its own items and its own *what only the phone can
-answer*, and the **What is not built yet** section at the bottom shrinks as tickets land.
+**Every ticket has landed.** On 2026-08-27 Rob ended the batching rule: *"Ik wil alles op het
+eind testen, en ik wil eerst alles bouwen."* So there is **one walk, at the end** — every screen
+ticket appended its own items and its own *what only the phone can answer*, and the **What is not
+built yet** section at the bottom shrank as they landed. This is that walk.
 
 Items 1–38 below cover what was batches 2, 3 and 4, written 2026-08-26 against `00321d6`. Items 39
-onward are appended by each screen ticket as it lands. Still to be appended: the Exercise card's
-doors and its sparkline (ticket 0050), which is the last ticket on the map.
+onward are appended by each screen ticket as it lands. **It is finished as of ticket 0050**, the
+last on the build map: items 111–118 are the Exercise card's two doors, and with them every screen
+in `SPEC.md` exists and every door between them is open. **This document is now the walk.**
 
 **Judgment calls are marked, not asked.** Under the 2026-08-27 rule a session that would have put a
 UI question to Rob decides it instead, records why on its ticket, and lists it here as something to
@@ -545,8 +546,8 @@ before item 96**, because 96 destroys the Workout you were reading.
 
 ## Flow 4 — the per-Exercise chart (ticket 0049, §6.7)
 
-**The door to this screen is ticket 0050's**, so walk items 98–110 after that ticket lands. The
-screen itself is built and it is `Route.exerciseChart`.
+**The door to this screen landed at ticket 0050** — items 111–118. Walk those first: they are how
+you get here.
 
 **And this is the screen the whole map has the least confidence in**, for a reason worth stating
 before the first tap: §6.7 needs weeks of Workouts before it says anything, and your Logbook has
@@ -630,14 +631,81 @@ phone cannot show you what fifteen look like.
 
 ---
 
+## Flow 4 — the Exercise card's two doors (ticket 0050, §6.7)
+
+**This is the last ticket on the build map.** With it, every screen in `SPEC.md` exists and every
+door between them is open. **One new file**, `app/Hoppa/Hoppa/Sparkline.swift`; the app target is a
+file-system synchronised group, so it arrives with no project edit — and if Xcode asks about it,
+that is itself the finding (item 1).
+
+§6.7 gives an Exercise card a door to that Exercise's chart, and the card already had one to §6.2's
+Exercise sheet. **Which one is the whole card was a judgment call, taken here rather than asked**,
+under the map's build-everything-first rule. Item 113 is where you overrule it.
+
+111. On the **Workout Day** screen, look at an Exercise you have **never trained** — one you have
+     just added.
+     → The card is exactly what it was: the name, `barbell · 3 × 8–12 · +2.5`, the Working Weight
+     or a `—`. **No sparkline.** Tap anywhere on it and the Exercise sheet opens, as before.
+
+112. Now look at an Exercise you have trained **at least once**.
+     → A small steel line sits between the Working Weight and the card's trailing edge, ending in a
+     filled dot. That is the sparkline, and it is **the door**.
+
+113. **Tap the sparkline.** Then tap the card anywhere else.
+     → The mark opens that Exercise's **chart**; everywhere else still opens the **Exercise sheet**.
+     → **This is the judgment call.** Three reasons it went this way: an Exercise card is edited far
+     more often than it is charted, so the frequent path keeps the whole card; §6.7's own sentence
+     is *the card carries a sparkline, so the door announces itself*, which makes the announcement
+     and the door one object; and a card with nothing to plot draws no mark, so a door to an empty
+     room is never offered. **Two shapes were refused** — a `•••` holding one item, and the swap
+     that makes the chart the whole card. Say if either is what you wanted.
+
+114. **Try to hit the mark with a thumb, standing up.** The mark itself is 44 × 16 pt; the target
+     around it is the whole trailing column, 66 × 62.
+     → It should not take two goes. If it does, say so — the column can widen without moving
+     anything else.
+
+115. **Drag the same card by its grip.** Then tap the mark again.
+     → The reorder handle, the sheet and the chart are three regions side by side, none over
+     another. A drag must never open either screen, and a tap must never start a drag.
+
+116. **Look at what the mark plots.** It is the chart's own line, on the chart's own scale and its
+     own real-time x axis — so a missed week is a wider gap on the card too.
+     → Open the chart and compare the two shapes. They must be the same climb.
+     → It draws **no** One-off marker and **no** dashed `NEXT` step, on purpose: a hollow marker is
+     a smudge at that size, and the step's destination is the big number already printed beside the
+     mark on the same card.
+
+117. **One session is a dot.** An Exercise trained exactly once draws a single dot and still opens.
+     → The chart then says `NOTHING HERE YET` and keeps its heroes and its chip. **The two gates
+     are deliberately not one gate**: two sessions make a *line*, one makes a *screen worth
+     reaching*. Say if you would rather the door waited for the second session.
+
+118. **The caption under the Day name still reads `5 exercises · tap a row to open it`.**
+     → Deliberate: §7.6 keeps Hoppa from instructing, and §6.7's mark is meant to announce itself.
+     Say if you want a word about the chart there.
+
+### What only the phone can answer
+
+- **Whether a 44 × 16 mark reads at arm's length** in gym light, and whether it reads as a *door*
+  rather than as decoration. Nothing on the VPS can answer that; `app/checks/Chart/run.sh` prints
+  the same cards as text and proves only which of them carry a mark and what it plots.
+- **Whether the door appearing after the first session is a pleasant surprise or a jumpy card.**
+  The card changes shape the first time an Exercise is trained, and that has never been watched.
+- **The mixed-unit pin.** There the card prints the pin and the mark plots the Microload — two
+  different numbers side by side, and only the chart has room to label them. Suppressing the mark
+  would leave that chart with no way in at all, which is worse. **Unreachable on your phone**: your
+  rack is kg and your stacks are kg, same class as item 109.
+
+---
+
 ## What is not built yet
 
 None of this is a defect.
 
-- **The door to Flow 4's chart.** The streak and the Workout list landed at ticket 0047, opening a
-  row of that list at 0048, and the **per-Exercise chart itself** at 0049 — items 98–110. Until
-  ticket 0050 lands, an Exercise card in the Program sheet still opens the Exercise **sheet** and
-  draws no sparkline, so the chart has a room and no door.
+- **Flow 4 is complete, and so is the build map.** The streak and the Workout list landed at ticket
+  0047, opening a row of that list at 0048, the **per-Exercise chart** at 0049 and **its door** at
+  0050 — items 76–118. Every screen in `SPEC.md` now exists and every door between them is open.
 - **The weights on a Workout you finished before this build.** Ticket 0048 started storing the
   weight a progression ended on; Workouts already on the phone have none, so an old Went-up row
   reads a green `WENT UP` and no numbers. Old data, not a defect — see item 90.
@@ -662,11 +730,11 @@ So a failure on the Mac is toolchain drift and not code.
 
 | Suite | Count |
 | --- | --- |
-| `app/HoppaRules` — `swift test` | 211 |
+| `app/HoppaRules` — `swift test` | 218 |
 | `app/HoppaStore` — `swift test` | 49 |
 | `app/checks/UnitStash/run.sh` | 34 |
 | `app/checks/Reorder/run.sh` | 25 |
 | `app/checks/Reweigh/run.sh` | 34 |
 | `app/checks/History/run.sh` | 33 |
 | `app/checks/Past/run.sh` | 66 |
-| `app/checks/Chart/run.sh` | 34 |
+| `app/checks/Chart/run.sh` | 41 |

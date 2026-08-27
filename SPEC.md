@@ -1326,9 +1326,35 @@ Hoppa has **no tab bar**. History is reached from the two places the user alread
 | Door | Opens |
 | --- | --- |
 | A **HISTORY** row at the foot of the Workout Day picker | The history screen: the streak, then the Workout list |
-| Any **Exercise card** in the Program sheet | That Exercise's chart. The card carries a sparkline, so the door announces itself |
+| Any **Exercise card** in the Workout Day screen | That Exercise's chart. The card carries a sparkline, so the door announces itself |
 
 Nothing permanent is added to the logging screen.
+
+**The sparkline *is* the door**, and the rest of the card still opens §6.2's Exercise sheet.
+Settled while building, at
+[The Exercise card's two doors](issues/0050-the-exercise-cards-two-doors.md): §6.7's own
+sentence makes the mark the announcement, so the announcement and the door are one object
+and no third affordance has to be explained. An Exercise card is edited far more often than
+it is charted — every Exercise is opened while the Program is being built, and none of them
+has a chart then — so the frequent path keeps the whole card.
+
+**No sparkline, no door.** The mark is drawn only where the Exercise has been performed at
+least once, so a card with nothing to plot offers no way into an empty room. That is this
+section's own empty state, one room further out — and note the two gates are **not** the
+same gate: two sessions make a *line*, one makes a *screen worth reaching*, because at one
+session the chart still states the hero, the chip and the condition for the next step.
+
+**The mark is the chart's own line**, on the chart's own scale and its own real-time x axis,
+in **2 px steel** — §7.1's rule that no plate colour enters a chart does not stop at the
+chart's edge. It draws no One-off marker and no `NEXT` step: a hollow marker is a smudge at
+that size, and the step's destination is already the big number printed beside it on the
+same card.
+
+> **This row said *the Program sheet* and the room is the Workout Day screen.** In this app
+> the Program sheet lists Workout Days; Exercise cards live one room down. The artboard
+> settles it — `design/0015-history/Program.dc.html` is headed
+> `‹ Upper / Lower · Upper A · 5 exercises`, which is the Workout Day screen. Corrected at
+> ticket 0050.
 
 #### The per-Exercise chart
 
