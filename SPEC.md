@@ -1222,6 +1222,24 @@ A block is stated **before** the user commits: the delete control refuses with i
 user taps it. A confirm that quietly does nothing is not a block, it is a bug the user gets to
 diagnose.
 
+**Where the control lives, and how it refuses — settled while building** at
+[Deleting an Exercise or a Workout Day](issues/0045-deleting-and-the-two-blocks.md). Each delete
+sits at the foot of **the room for the thing it deletes**: `REMOVE EXERCISE` on the Exercise sheet,
+`REMOVE DAY` on the Workout Day screen. Not a swipe and not a `•••` on a row — a swipe hides the
+control, a row already carries a reorder grip and a tap through its middle, and a block has to be
+**read** before it can do its job. A word in a room has space for a sentence beside it.
+
+The blocked control is **never disabled**. It stays live, and the tap prints the reason under it in
+the stop red; the reason is read off the rule on every pass, so it appears and goes as the rule
+starts and stops refusing, with no second tap. This is §5.2's principle applied to a button, the
+same shape `CONTINUE` has at step 1: Hoppa never disables the control and never hides the reason.
+
+**An Exercise deleted from under the user mid-Workout** leaves the logging screen with a card that
+names nothing. The screen says so — *that exercise is gone; what you logged is kept* — and offers
+the bottom row's own control, `NEXT: …` while an Open Exercise is left and `FINISH WORKOUT` when
+none is. Hoppa still does not jump by itself (§6.4); it offers the jump, because a dead card whose
+only way on was Finish would strand the user behind §3.3's gate.
+
 #### Program-level edits, which follow from rules already fixed
 
 - The Program's **Weight Unit** is a default for new Exercises only (§2.1), so changing it touches

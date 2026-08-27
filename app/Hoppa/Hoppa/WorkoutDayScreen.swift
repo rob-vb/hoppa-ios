@@ -13,6 +13,10 @@ import HoppaStore
 // on: `REMOVE EXERCISE` is the Exercise sheet's own bottom control, §6.6 gives the delete
 // no block to state, and a card that opens a sheet with no way to remove what it opened
 // is a door with half a room behind it.
+// **Deleting the Day landed at ticket 0045**, and it is the one delete with blocks to
+// state: `REMOVE DAY` sits at the foot of this screen, above `DAY DONE`, because this is
+// the room for one Day exactly as the sheet is the room for one Exercise. It is never
+// disabled — see `removeRow` for why, and for where the two refusals are printed.
 //
 // Two things the artboard draws that this does not, and both are named in the hand-off so
 // they are never read as defects:
@@ -33,6 +37,14 @@ struct WorkoutDayScreen: View {
     let workoutDayId: WorkoutDayID
 
     @State private var renaming = false
+    /// Ticket 0045's confirm. Plain, with **no** count of destroyed Sets, because nothing
+    /// is destroyed (§6.6).
+    @State private var removeDialog = false
+    /// Set by a `REMOVE DAY` that the rule refused, cleared the moment the rule stops
+    /// refusing. §5.2's principle, the same shape `NameYourProgram` gives `CONTINUE`:
+    /// **Hoppa never disables the control and never hides the reason** — it states the
+    /// condition where the user taps, before he commits to anything.
+    @State private var refused = false
     /// Ticket 0035's sheet. `nil` while it is closed; the Exercise it opens on when it is
     /// an edit, and `.some(nil)` — a target with no Exercise — when it is an add.
     @State private var sheetTarget: ExerciseSheetTarget? = nil
@@ -66,6 +78,16 @@ struct WorkoutDayScreen: View {
             ) { name in
                 store.send(.renameWorkoutDay(workoutDayId, name: name))
             }
+        }
+        .confirmationDialog(
+            "Remove this day?", isPresented: $removeDialog, titleVisibility: .visible
+        ) {
+            Button("Remove", role: .destructive) { remove() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            // §6.6, and the same sentence the Exercise sheet's own confirm prints, with
+            // the one clause a Day adds: the Workout keeps the Day's Name too (§2.4).
+            Text("It leaves the program from today. Finished workouts keep their name and the sets you logged.")
         }
         // Ticket 0035 landed §6.2's full sheet here, and ticket 0034's line held: **add
         // and edit are the same sheet**, so one presentation serves both.
@@ -144,8 +166,68 @@ struct WorkoutDayScreen: View {
             Spacer().frame(height: 16)
             list(program, day)
             Spacer(minLength: 12)
+            removeRow
+            Spacer().frame(height: 10)
             PrimaryButton("Day done") { if !path.isEmpty { path.removeLast() } }
         }
+    }
+
+    // MARK: - Removing the Day (§6.6)
+
+    /// Why this Day cannot be deleted, or `nil` when it can. **The rule, asked before the
+    /// tap** — `Rules.deleteBlock` is the very same call `Action.deleteWorkoutDay` guards
+    /// itself with, so the sentence under the control and the refusal inside the rule can
+    /// never come apart.
+    private var block: DeleteBlock? {
+        guard let logbook = store.logbook else { return nil }
+        return Rules.deleteBlock(forWorkoutDay: workoutDayId, in: logbook)
+    }
+
+    /// `REMOVE DAY`, and the reason it refused.
+    ///
+    /// **Where it lives**: here, on the room for one Day — the mirror of `REMOVE EXERCISE`
+    /// on the Exercise sheet, which is the room for one Exercise. Not a swipe and not a
+    /// `•••` on the hub's row: a swipe hides the control, a `•••` puts it on a row that
+    /// already has a grip on its leading edge and a tap through its middle, and §6.6's
+    /// block has to be **read** before it can do its job. A word in a room has space for a
+    /// sentence beside it; a gesture has none.
+    ///
+    /// **How it refuses**: it stays live and answers in place. The line under it is the
+    /// reason, in the stop red, and it goes the moment the rule stops refusing — which
+    /// happens elsewhere, at Finish or at `ADD A DAY`, so it is read off the rule on every
+    /// pass rather than remembered.
+    @ViewBuilder
+    private var removeRow: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Button {
+                if block == nil { removeDialog = true } else { refused = true }
+            } label: {
+                Text("Remove day")
+                    .typography(Typography.label(11))
+                    .foregroundStyle(Color.steel)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            if refused, let block {
+                Text(block.reason)
+                    .typography(Typography.body(12, lineSpacing: 3))
+                    .foregroundStyle(Color.stop)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        // A Day whose block has just ended stops shouting about it without a tap.
+        .onChange(of: block) { if block == nil { refused = false } }
+    }
+
+    /// The Day is gone, so the room for it is gone: this screen pops to the hub that drew
+    /// the row. The rule guards itself, so a refusal that reached here would leave the
+    /// user on a Day that still exists — which is why the tap above never sends one.
+    private func remove() {
+        store.send(.deleteWorkoutDay(workoutDayId))
+        if !path.isEmpty { path.removeLast() }
     }
 
     /// The Name, and the one way to correct it. A Name is a label (§2.7), so renaming is

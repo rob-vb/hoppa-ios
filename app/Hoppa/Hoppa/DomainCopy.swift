@@ -48,3 +48,19 @@ extension WorkoutDay {
         }
     }
 }
+
+extension DeleteBlock {
+    /// Why the delete refused (`SPEC.md` §6.6). One sentence, written once, because both
+    /// blocks are stated in the same slot under the same control — and because a block
+    /// the user cannot read is the bug the paragraph rules out.
+    ///
+    /// The first is the spec's own `FINISH YOUR WORKOUT FIRST`. The second is the line
+    /// `ProgramSheet` already prints over an empty Day list, said again at the other end
+    /// of the same rule: **it states the condition, not what the user should do** (§7.6).
+    var reason: String {
+        switch self {
+        case .openWorkoutRunsOnIt: "Finish your workout first."
+        case .lastDayInProgram: "A program needs at least one workout day."
+        }
+    }
+}

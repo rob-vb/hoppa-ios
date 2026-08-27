@@ -742,6 +742,25 @@ real**, and nothing after that is worth doing before it.
   preview against **remove-then-insert**, the two lines the rule runs, for all 25 pairs in a
   five-row list. A preview that disagreed with the rule would show one order and write another, and
   no rules test could catch it, because a preview is not a rule.
+- [Deleting an Exercise or a Workout Day, and the two blocks stated where you tap](0045-deleting-and-the-two-blocks.md)
+  — **no rule moved: 151 stayed 151.** Every delete rule landed at ticket 28 and the Exercise's own
+  control at ticket 35, so this ticket owed a screen and three sentences. `REMOVE DAY` sits at the
+  foot of the **Workout Day screen**, which gives both deletes one rule: *each delete sits at the
+  foot of the room for the thing it deletes.* A swipe and a `•••` on the hub's row were both
+  rejected on §6.6's own argument — **a block has to be read before it can work**, and a row that
+  already carries a grip and a tap has no space for a sentence while a room does. The blocked
+  control is **never disabled**: it stays live and prints its reason under itself in the stop red,
+  read off `Rules.deleteBlock` on every pass so it leaves when the rule stops refusing, with no
+  second tap. That is `NameYourProgram`'s `CONTINUE` shape, already written down for §5.2.
+  Disabled-with-the-reason-beside-it was rejected because it would paint a red line permanently on
+  every one-Day Program, which is every Program on the day it is made. The third question turned
+  out to be half-answered already: the logging screen **said** *that exercise is gone* since ticket
+  36, but its only control was `FINISH WORKOUT`, walking the user into §3.3's gate with nothing
+  else drawn — it now shows the bottom row's own `NEXT: …`, factored out as `moveOn(_:)`.
+  `currentIndex` was deliberately left alone: §6.4 keeps the user on the Exercise, so **Hoppa
+  offers the jump and does not take it**. No new `app/checks/` harness — a copy switch and a
+  one-line guard over a three-times-tested rule do not earn a fourth — but every call the two views
+  added was type-checked here against the built `HoppaRules` with `DomainCopy.swift` beside it.
 
 ## Not yet specified
 
@@ -780,6 +799,12 @@ real**, and nothing after that is worth doing before it.
   [Program edits, and which of them are rules](0026-program-edits-and-the-rules-boundary.md) settled
   deleting an Exercise and a Workout Day, which §6.6 *does* specify, and deliberately left this one
   here — it is a gap in the spec, so it needs a decision and not a build.
+  **One half of it is no longer open.** [Deleting an Exercise or a Workout
+  Day](0045-deleting-and-the-two-blocks.md) fixed where a delete control lives — *the foot of the
+  room for the thing it deletes* — so a Program delete already has its address, Program settings,
+  and its refusal shape if the last Program turns out to be blocked. What stays open is the only
+  part that was ever the hard part: **what a whole Program delete does to the Workouts behind it**,
+  and whether the last one is blocked at all.
 
 - **Increase Contrast, and the rest of the accessibility settings.** [Dark only, or a light mode
   too](0030-dark-only-or-a-light-mode.md) settled the two that reach every screen — Appearance and

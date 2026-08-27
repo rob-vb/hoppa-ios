@@ -245,15 +245,80 @@ down precisely so it is not reported as one.
 
 ---
 
+## Flow 5 — deleting a Workout Day (ticket 0045)
+
+Deleting an **Exercise** has been on the Exercise sheet since ticket 0035 and is not new here.
+What is new is the Day, and **the hard half is the block, not the delete**.
+
+**Two judgment calls, decided and not asked**, under the 2026-08-27 rule. Both are worth most of
+the walk:
+
+- **Where `REMOVE DAY` lives**: at the foot of the Workout Day screen, above `DAY DONE` — the room
+  for one Day, the mirror of `REMOVE EXERCISE` in the room for one Exercise. §6.6 does not say. Not
+  a swipe and not a `•••` on the hub's row: a swipe hides the control, the hub's row already has a
+  grip on its leading edge and a tap through its middle, and a block has to be **read** before it
+  can work. A word in a room has space for a sentence beside it; a gesture has none.
+- **How a blocked control refuses**: it stays live and answers in place. It is never greyed out.
+  §5.2 and `NameYourProgram`'s `CONTINUE` set the shape — *Hoppa never disables the control and
+  never hides the reason.*
+
+51. Open a Program with **one** Day, open that Day, and scroll to the foot. → `REMOVE DAY`, drawn
+    exactly like `REMOVE EXERCISE`: steel text in a 50 pt outlined box, above the black
+    `DAY DONE`.
+
+52. Tap it. → **No confirm appears.** A red line appears under the button:
+    `A program needs at least one workout day.` The button is **not** greyed out, and tapping it
+    again says the same thing. A greyed-out button, or a confirm that appears and does nothing, is
+    the defect §6.6 is written against.
+
+53. Go back, `ADD A DAY`, then open the first Day again and tap `REMOVE DAY`.
+    → The red line is **gone before you tap** — the rule stopped refusing, so the reason stopped
+    being printed — and the tap now opens *Remove this day?* with `REMOVE` and `CANCEL`.
+
+54. Read the confirm's message. → *It leaves the program from today. Finished workouts keep their
+    name and the sets you logged.* **No count of destroyed sets**, because nothing is destroyed
+    (§6.6).
+
+55. `CANCEL`. → Nothing happens, and you are still on the Day.
+
+56. Tap `REMOVE DAY` again and confirm. → The Day screen closes and you land on the Program, with
+    that Day gone from the list and the summary line recounted.
+
+57. **The other block.** Start a Workout on a Day, leave the logging screen with `‹`, walk to that
+    same Day through the Program, and tap `REMOVE DAY`.
+    → `Finish your workout first.` in red, no confirm. This is the one a user meets by accident.
+
+58. Finish or discard that Workout, come back to the same Day, tap `REMOVE DAY`.
+    → It asks. The block cleared itself with no tap of its own.
+
+59. **A Day deleted from under a finished Workout.** After item 56 or 58, look at a finished
+    Workout that ran on the deleted Day — for now the Summary is the only place a Workout is read,
+    so this is a Flow 4 item and it is listed under *not built yet*. What you **can** check today:
+    the app does not crash and the Program screen is correct.
+
+60. **An Exercise deleted while you stand on it.** In an Open Workout, open the card's Exercise
+    sheet and `REMOVE EXERCISE`. → The sheet closes and the card reads *That exercise is gone. It
+    was removed from the program. What you logged is kept.*
+    **Changed at ticket 0045**: the button under it is now `NEXT: <the next exercise>` when
+    something is still Open, and `FINISH WORKOUT` only when nothing is. Before this it was always
+    `FINISH WORKOUT`, which put the user behind the §3.3 gate with no drawn way past it.
+    → The counter `n / m ▾` still reads the same `m`: the Workout's list does not shrink, on
+    purpose (§6.4). **That is not a defect.**
+
+61. In that same Open Workout, tap `NEXT` from the gone card. → You land on the next Open Exercise
+    and the counter moves. Log a Set there to prove nothing came unhooked.
+
+---
+
 ## What is not built yet
 
 None of this is a defect.
 
 - **Flow 4 entirely** — the history list, the streak, the per-Exercise chart. An Exercise card in
   the Program sheet opens the Exercise **sheet**, and it draws no sparkline.
-- **The rest of Flow 5** — deleting a Workout Day, the two warning dialogs, and the Re-weigh list
-  after a Plate Inventory unit change. Reorder handles landed at ticket 0044; deleting an
-  **Exercise** has been on its own sheet since ticket 0035.
+- **The rest of Flow 5** — the two warning dialogs and the Re-weigh list after a Plate Inventory
+  unit change. Reorder handles landed at ticket 0044, deleting an **Exercise** has been on its own
+  sheet since ticket 0035, and deleting a **Workout Day** landed at ticket 0045.
 - **Autoscroll while dragging a card past the edge of the list.** Deliberate: a list that fits on
   one screen does not need it (item 49).
 - **Deleting a whole Program**, and holding more than one. The picker reads the first Program;

@@ -151,8 +151,8 @@ struct LoggingScreen: View {
                 bottomRow(workout, performed, exercise)
             }
         } else {
-            // The Exercise was deleted mid-Workout (§6.6). History survives it; the screen
-            // has nothing to stand on, so it offers the only two ways out.
+            // The Exercise was deleted mid-Workout (§6.6). History survives it; the card
+            // does not, so the screen says so and hands the user the way on.
             VStack(alignment: .leading, spacing: 16) {
                 header(workout)
                 Spacer()
@@ -163,8 +163,29 @@ struct LoggingScreen: View {
                     .typography(Typography.body(13, lineSpacing: 4))
                     .foregroundStyle(Color.dimText)
                 Spacer()
-                PrimaryButton("Finish workout") { attemptFinish() }
+                // Ticket 0045: **the same control the bottom row draws when an Exercise
+                // is done** — `NEXT: …`, or `FINISH WORKOUT` when nothing is Open. The
+                // rule leaves `currentIndex` where it was on purpose (§6.4: Hoppa keeps
+                // him on the Exercise, not the position), and a dead card whose only
+                // drawn way on was Finish would strand him behind the gate §3.3 puts
+                // there. **Hoppa still does not jump by itself**; it offers the jump.
+                moveOn(workout)
             }
+        }
+    }
+
+    /// `NEXT: …` while an Open Exercise is left, `FINISH WORKOUT` when none is. Written
+    /// once, because the bottom row and the deleted-Exercise card ask the same question.
+    @ViewBuilder
+    private func moveOn(_ workout: Workout) -> some View {
+        if let next = workout.nextOpenIndex(after: workout.currentIndex),
+           next != workout.currentIndex {
+            PrimaryButton("Next: \(workout.exercises[next].name)") {
+                store.send(.nextOpen)
+                pendingReps = nil
+            }
+        } else {
+            PrimaryButton("Finish workout") { attemptFinish() }
         }
     }
 
@@ -505,14 +526,8 @@ struct LoggingScreen: View {
                 PrimaryButton("Log \(reps) reps") { log(reps) }
                 adjust("+") { pendingReps = reps + 1 }
             }
-        } else if let next = workout.nextOpenIndex(after: workout.currentIndex),
-                  next != workout.currentIndex {
-            PrimaryButton("Next: \(workout.exercises[next].name)") {
-                store.send(.nextOpen)
-                pendingReps = nil
-            }
         } else {
-            PrimaryButton("Finish workout") { attemptFinish() }
+            moveOn(workout)
         }
     }
 
