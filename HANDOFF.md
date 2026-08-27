@@ -5,9 +5,10 @@ eind testen, en ik wil eerst alles bouwen."* So there is **one walk, at the end*
 grows until then — every screen ticket appends its own items and its own *what only the phone can
 answer*, and the **What is not built yet** section at the bottom shrinks as tickets land.
 
-Items 1–38 below cover what was batches 2, 3 and 4, written 2026-08-26 against `00321d6`. Still to
-be appended: Flow 5's reorder handles, deleting, and the Re-weigh list; and all of Flow 4 — the
-history screen, a past Workout, the per-Exercise chart and the Exercise card's doors.
+Items 1–38 below cover what was batches 2, 3 and 4, written 2026-08-26 against `00321d6`. Items 39
+onward are appended by each screen ticket as it lands. Still to be appended: Flow 5's deleting and
+the Re-weigh list; and all of Flow 4 — the history screen, a past Workout, the per-Exercise chart
+and the Exercise card's doors.
 
 **Judgment calls are marked, not asked.** Under the 2026-08-27 rule a session that would have put a
 UI question to Rob decides it instead, records why on its ticket, and lists it here as something to
@@ -192,14 +193,69 @@ down precisely so it is not reported as one.
 
 ---
 
+## Flow 5 — the reorder handles (ticket 0044)
+
+39. Open the Program sheet. → **Every Workout Day row has a grip on its leading edge** — three
+    short bars — and the position number now sits to the right of it. Two files are new,
+    `ReorderColumn` and `ReorderDrag`; the app target is a file-system synchronised group, so both
+    should arrive with no project edit. **If Xcode asks about either file, that is the finding.**
+
+40. Tap a Day row anywhere **except** the grip. → It opens the Day, exactly as before. The grip
+    and the tap target are siblings, not stacked, so this must not have changed. A row that stopped
+    opening is a defect.
+
+41. Drag a Day by its grip, one row down, and let go.
+    → The card follows your thumb, the row it passes slides up, **the numbers renumber while you
+    are still holding it**, and the drop confirms what was already on the screen. A number that only
+    corrects itself after the drop is a defect.
+
+42. **Say whether a 36 pt grip beside a 62 pt card is enough thumb and not too much furniture.**
+    A judgment call, taken and not asked. No measurement can answer it; that is why this item is
+    here. Nothing else on the screen can be shrunk to pay for it, so if it reads wrong the fallback
+    is a narrower grip, not a rearranged row.
+
+43. Drag a card **slowly** and stop with it about a third of the way over its neighbour, then let
+    go. → It goes back where it was. Cross **half** a row and it takes the new place. The tipping
+    point is half a row on purpose; if it feels late or twitchy, say so.
+
+44. Drag a card down past three rows in one go. → Exactly **one** hole opens, and it travels with
+    your thumb. Three rows sliding at once is a defect.
+
+45. Try to **scroll** the list with your finger on a grip, then with your finger on the card.
+    → The grip drags and does not scroll. The card scrolls and does not drag. Neither steals the
+    other.
+
+46. Open a Day with several Exercises. → The same grips, on the Exercise cards. Reorder two.
+    → The order sticks, and reopening the Day shows it.
+
+47. **Start a Workout**, walk to exercise `3 / 5`, then leave the logging screen, open that same
+    Day and drag exercise 1 down to the end.
+    → Come back to the Workout: **you are still on the same exercise**, and the counter reads
+    `2 / 5`. §6.4's promise is that a drag never changes the card under your thumb — only its
+    number. 151 rules tests say the rule holds; this item is the one that says the screen agrees.
+
+48. In that same Open Workout, drag **the exercise you are standing on** somewhere else.
+    → You go with it. The counter changes, the card does not.
+
+49. **The list does not scroll while you drag a card past the top or bottom edge.** No autoscroll
+    was built, because five to eight rows fit on a screen. **This is not a defect.** If one of your
+    Days is long enough that it bites, say so and it becomes a ticket.
+
+50. `git push` if Xcode changed anything.
+
+---
+
 ## What is not built yet
 
 None of this is a defect.
 
 - **Flow 4 entirely** — the history list, the streak, the per-Exercise chart. An Exercise card in
   the Program sheet opens the Exercise **sheet**, and it draws no sparkline.
-- **The rest of Flow 5** — reorder handles, deleting an Exercise or a Workout Day, the two warning
-  dialogs, and the Re-weigh list after a Plate Inventory unit change.
+- **The rest of Flow 5** — deleting a Workout Day, the two warning dialogs, and the Re-weigh list
+  after a Plate Inventory unit change. Reorder handles landed at ticket 0044; deleting an
+  **Exercise** has been on its own sheet since ticket 0035.
+- **Autoscroll while dragging a card past the edge of the list.** Deliberate: a list that fits on
+  one screen does not need it (item 49).
 - **Deleting a whole Program**, and holding more than one. The picker reads the first Program;
   today onboarding is the only way to make one, so there is only ever one.
 - **A light mode.** Dark only, on purpose.
@@ -216,6 +272,7 @@ So a failure on the Mac is toolchain drift and not code.
 
 | Suite | Count |
 | --- | --- |
-| `app/HoppaRules` — `swift test` | 147 |
+| `app/HoppaRules` — `swift test` | 151 |
 | `app/HoppaStore` — `swift test` | 36 |
 | `app/checks/UnitStash/run.sh` | 34 |
+| `app/checks/Reorder/run.sh` | 25 |

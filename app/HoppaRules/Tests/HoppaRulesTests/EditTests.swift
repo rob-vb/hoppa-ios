@@ -378,6 +378,65 @@ struct EditTests {
         #expect(session.workout?.current?.exerciseId == Ids.pulldown)   // not the position
     }
 
+    @Test("The Exercise that moves carries the user with it, when it is the one he is on")
+    func theStandingExerciseTakesTheUserWithIt() {
+        var session = Session()
+        session.start()                                                 // standing at the Smith
+
+        session.send(.moveExercise(Ids.smith, to: 2))
+
+        #expect(session.book.programs[0].days[0].exercises.map(\.id)
+                == [Ids.row, Ids.pulldown, Ids.smith, Ids.press, Ids.chin])
+        #expect(session.workout?.exercises.map(\.exerciseId)
+                == [Ids.row, Ids.pulldown, Ids.smith, Ids.press, Ids.chin])
+        #expect(session.workout?.current?.exerciseId == Ids.smith)      // the same card
+        #expect(session.workout?.currentIndex == 2)                     // a new number on it
+    }
+
+    @Test("An Exercise dragged past the user renumbers him and never moves him")
+    func draggingPastTheUserOnlyRenumbersHim() {
+        var session = Session()
+        session.start()
+        session.goTo(Ids.pulldown)                                      // `3 / 5`
+        #expect(session.workout?.currentIndex == 2)
+
+        session.send(.moveExercise(Ids.smith, to: 4))                   // from above him to the end
+
+        #expect(session.workout?.exercises.map(\.exerciseId)
+                == [Ids.row, Ids.pulldown, Ids.press, Ids.chin, Ids.smith])
+        #expect(session.workout?.current?.exerciseId == Ids.pulldown)   // the card under his thumb
+        #expect(session.workout?.currentIndex == 1)                     // `2 / 5` — the counter renumbers
+    }
+
+    @Test("Reordering a Day the Open Workout does not run on leaves the Workout alone")
+    func anotherDaysReorderDoesNotReachTheWorkout() {
+        var session = Session(Self.twoDayBook())
+        session.start(WorkoutDayID(3))                                  // running on Lower A
+        let before = session.workout?.exercises.map(\.exerciseId)
+
+        session.send(.moveExercise(Ids.chin, to: 0))                    // an Upper A drag
+
+        #expect(session.book.programs[0].days[0].exercises.first?.id == Ids.chin)
+        #expect(session.workout?.exercises.map(\.exerciseId) == before)
+        #expect(session.workout?.currentIndex == 0)
+    }
+
+    @Test("A drop past the end of the list lands on the end, and a drop on the same place does nothing")
+    func aDropIsClampedAndAnIdleDropIsFree() {
+        var session = Session()
+        session.start()
+        session.goTo(Ids.press)
+
+        session.send(.moveExercise(Ids.smith, to: 99))                  // the view hands over a position
+        #expect(session.book.programs[0].days[0].exercises.last?.id == Ids.smith)
+
+        let settled = session.book
+        session.send(.moveExercise(Ids.smith, to: 4))                   // already there
+        #expect(session.book.programs[0].days[0].exercises.map(\.id)
+                == settled.programs[0].days[0].exercises.map(\.id))
+        #expect(session.workout?.current?.exerciseId == Ids.press)
+    }
+
     @Test("A deleted Exercise keeps its Sets and stops holding the Finish gate")
     func deletingReleasesTheGate() {
         var session = Session()

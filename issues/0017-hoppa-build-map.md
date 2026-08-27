@@ -724,6 +724,24 @@ real**, and nothing after that is worth doing before it.
   Building it found a second defect the ticket had not named: an add draft opened on `rack.unit`
   while the sheet drew the **Program's default**, so a weight typed before the first Equipment Type
   pick was judged against a label it was never typed under and thrown away at the save.
+- [The reorder handles, and the card that stays under your thumb](0044-the-reorder-handles.md)
+  — **the rule already held; the handle was missing, and so was a way to run the drag.** Four new
+  tests say `moveExercise` keeps the user on his Exercise and not on his position (§6.4), in every
+  direction — the Exercise he stands on carrying him with it, one dragged past him renumbering the
+  counter only, another Day's drag never reaching the Workout, a drop clamped at the end. All four
+  pass **unchanged**: 147 → **151**. The handle is `ReorderColumn`, one card column serving both
+  lists, with the grip **beside** the row's Button and not over it — so the grip drags, the card
+  taps, the ScrollView keeps the rest, and no gesture is given priority over another. Three
+  judgment calls, taken and not asked: **not `List` + `.onMove`** (its grabber needs
+  `EditMode.active`, and a row in edit mode stops answering taps, which costs both lists *tap a row
+  to open it*; long-press reordering has no visible handle at all, and this app already refused
+  that trade at `RENAME`), **no edit mode** (Hoppa has none, so one here would need a meaningless
+  `DONE`), and **leading, not trailing** (the trailing edge already carries the row's hero). The
+  drag's arithmetic left the view the way `UnitStash` did — `ReorderDrag` imports nothing, so
+  `app/checks/Reorder/` runs **25 checks** here, the sharpest of them comparing the on-screen
+  preview against **remove-then-insert**, the two lines the rule runs, for all 25 pairs in a
+  five-row list. A preview that disagreed with the rule would show one order and write another, and
+  no rules test could catch it, because a preview is not a rule.
 
 ## Not yet specified
 

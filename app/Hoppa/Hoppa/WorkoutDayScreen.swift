@@ -5,8 +5,10 @@ import HoppaStore
 // Ticket 0034 — one Workout Day, and the Exercises in it.
 //
 // The room under the hub. It draws the Day's Exercise list, `ADD AN EXERCISE`, and the
-// way back. **Reorder handles are not here** — they mirror into an Open Workout, and
-// `HoppaRules` has held that rule since ticket 0028 waiting for Flow 5's own screen.
+// way back. **Reorder handles are here as of ticket 0044**, on `ReorderColumn`: the drop
+// sends `.moveExercise`, and the rule that mirrors it into an Open Workout — keeping the
+// user on the Exercise he was standing at and not on the position (§6.4) — has been in
+// `HoppaRules` since ticket 0028 and is proved by four tests written for 0044.
 // Deleting an Exercise **is** here as of ticket 0035, on the sheet the artboard draws it
 // on: `REMOVE EXERCISE` is the Exercise sheet's own bottom control, §6.6 gives the delete
 // no block to state, and a card that opens a sheet with no way to remove what it opened
@@ -179,7 +181,11 @@ struct WorkoutDayScreen: View {
     private func list(_ program: Program, _ day: WorkoutDay) -> some View {
         ScrollView {
             VStack(spacing: 6) {
-                ForEach(day.exercises, id: \.id) { exercise in
+                // §6.6: the handles reorder the **Day**, and the Open Workout follows.
+                // The rule owns all of that; this hands it an id and a position.
+                ReorderColumn(items: day.exercises, id: \.id) { (id: ExerciseID, to: Int) in
+                    store.send(.moveExercise(id, to: to))
+                } row: { (exercise: Exercise, _: Int) in
                     row(exercise.resolved(in: program, inventory: rack))
                 }
                 AddRow("Add an exercise") {
@@ -190,6 +196,9 @@ struct WorkoutDayScreen: View {
         .scrollBounceBehavior(.basedOnSize)
     }
 
+    /// The card's content only: `ReorderColumn` owns the card itself, and the handle on
+    /// the leading edge owns the drag. So the tap target stops where the handle starts and
+    /// the two never fight — the row still opens the sheet, everywhere the grip is not.
     private func row(_ exercise: ResolvedExercise) -> some View {
         Button {
             sheetTarget = ExerciseSheetTarget(day: workoutDayId, exercise: exercise.id)
@@ -209,10 +218,8 @@ struct WorkoutDayScreen: View {
                 Spacer(minLength: 8)
                 weight(exercise)
             }
-            .padding(.horizontal, 14)
-            .frame(height: 62)
-            .background(Color.card)
-            .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
+            .padding(.trailing, 14)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

@@ -1095,6 +1095,15 @@ It follows that, mid-Workout:
 Reordering Workout Days is cosmetic: a Workout records **which** Day was performed, and picking is
 a free pick with no rotation (§3.1).
 
+**The handle itself, settled while building** at
+[The reorder handles](issues/0044-the-reorder-handles.md). A grip of three drawn bars on the
+**leading** edge of every card, on every row, always. Hoppa has no edit mode to hide it behind, and
+this app does not hide an affordance behind a long press — the same reason `RENAME` is a word on
+the Day screen. The handle and the row's tap target are **siblings and not stacked**: the grip
+drags, the rest of the card opens what it always opened, and nothing has to be given priority over
+anything. The card under the finger **renumbers before the drop**, so the list the user reads is
+the list the rule is about to write.
+
 #### Changing a Weight Unit clears the weights
 
 For the three Equipment Types that carry their own unit — Dumbbell, Machine (stack) and Cable —

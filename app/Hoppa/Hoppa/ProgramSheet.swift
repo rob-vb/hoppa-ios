@@ -10,11 +10,12 @@ import HoppaStore
 // bottom control — and nothing about what it draws, because a Program the user has just
 // made and a Program the user has trained on for a year are the same thing.
 //
-// **Scope was cut at ticket 0029 and this file keeps the cut**: the Workout Days with
-// their Exercise counts, `ADD A DAY`, and the door to Program settings. Reorder handles,
-// deleting a Day, deleting the Program and the Re-weigh list are not here. Every one of
-// them carries a warning or mirrors into an Open Workout, and none of them is needed to
-// put a first Program on the phone.
+// **Scope was cut at ticket 0029 and this file keeps most of the cut**: the Workout Days
+// with their Exercise counts, `ADD A DAY`, and the door to Program settings. Deleting a
+// Day, deleting the Program and the Re-weigh list are not here — each carries a warning of
+// its own. **Reorder handles landed at ticket 0044**, on `ReorderColumn`: reordering Days
+// is cosmetic (§3.1 picks freely, with no rotation), so it is the one Flow 5 edit with
+// neither a warning to state nor an Open Workout to reach into.
 //
 // Artboard: `design/0006-onboarding/Program.dc.html`.
 
@@ -113,7 +114,9 @@ struct ProgramSheet: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.bottom, 2)
                 }
-                ForEach(Array(program.days.enumerated()), id: \.element.id) { index, day in
+                ReorderColumn(items: program.days, id: \.id) { (id: WorkoutDayID, to: Int) in
+                    store.send(.moveWorkoutDay(id, to: to))
+                } row: { (day: WorkoutDay, index: Int) in
                     dayRow(index: index, day: day)
                 }
                 AddRow("Add a day") { newDay = true }
@@ -122,11 +125,17 @@ struct ProgramSheet: View {
         .scrollBounceBehavior(.basedOnSize)
     }
 
+    /// The card's content only: `ReorderColumn` draws the card and the handle beside it,
+    /// so the tap that opens the Day stops where the grip starts.
+    ///
+    /// `index` is **the position the row is drawn at**, which under a finger is the
+    /// previewed one — so the numbers renumber as the card is dragged, before the drop.
     private func dayRow(index: Int, day: WorkoutDay) -> some View {
         Button { path.append(.workoutDay(day.id)) } label: {
-            HStack(spacing: 14) {
+            HStack(spacing: 12) {
                 // The position, not an id. §6.6 calls reordering Days cosmetic, so this
-                // number means "third in the list" and nothing more.
+                // number means "third in the list" and nothing more. It stays now the
+                // handle is beside it: it is what the handle is seen to change.
                 Text("\(index + 1)")
                     .typography(Typography.display(17))
                     .foregroundStyle(Color.labelText)
@@ -145,10 +154,8 @@ struct ProgramSheet: View {
                     .typography(Typography.body(15))
                     .foregroundStyle(Color.labelText)
             }
-            .padding(.horizontal, 14)
-            .frame(height: 62)
-            .background(Color.card)
-            .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
+            .padding(.trailing, 14)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
