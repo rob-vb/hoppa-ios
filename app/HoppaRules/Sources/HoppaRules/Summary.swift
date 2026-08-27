@@ -251,13 +251,17 @@ extension Rules {
                     weight: move.workingWeight,
                     microload: exercise.isMixedUnitPin ? move.microload : nil))
         }
-        return .blocked(blocker(for: exercise), sets: sets, reps: reps)
+        return .blocked(progressionBlocker(for: exercise), sets: sets, reps: reps)
     }
 
     /// Which of §4.1's four — five, with a missing Increment — stopped the plate.
     ///
     /// Ordered by what the user does about it: a missing number first, then the rack.
-    private static func blocker(for exercise: ResolvedExercise) -> ProgressionBlocker {
+    ///
+    /// **Public since ticket 0049**: §6.7's chart states the same condition in place of
+    /// the same green line, and a second copy of this ordering would let the two screens
+    /// name two different reasons for one stopped plate.
+    public static func progressionBlocker(for exercise: ResolvedExercise) -> ProgressionBlocker {
         if exercise.workingWeight == nil { return .noWorkingWeight }
         switch exercise.mode {
         case .progressiveOverload:

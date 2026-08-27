@@ -1345,7 +1345,7 @@ a loss.
 | A **One-off Weight** | Hollow marker **off** the line, at the weight actually lifted, tied to its session by a dotted drop, labelled `ONE-OFF`. The line itself never dips — a One-off never became the Working Weight (§4.3) |
 | A **Skipped** Exercise | Nothing at all. No point, no gap marker |
 | The x axis | **Real time**, not the session number, using the date the Workout started (§2.4). A missed week is therefore already visible as a wider gap |
-| The **NEXT** step | Where the last session progressed, a **dashed green step** from the last point to a hollow marker at the current Working Weight. **Solid is lifted; dashed is applied but not yet performed.** Without it the hero number contradicts the end of the line, because Hoppa applies the weight at Finish (§4.1) |
+| The **NEXT** step | Where the last session progressed, a **dashed green step** from the last point to a hollow marker at the current Working Weight. **Solid is lifted; dashed is applied but not yet performed.** Without it the hero number contradicts the end of the line, because Hoppa applies the weight at Finish (§4.1). **Where the user set the weight by hand instead (§4.3), the same step is drawn in steel and labelled `NOW`** — settled while building, at [The per-Exercise chart](issues/0049-the-per-exercise-chart.md): the gap is the same gap, and green is progression everywhere |
 
 **The reps are a Set grid, not figures on the points.** Under the line sits one column per
 session and one cell per Set, filled where that Set met the threshold of its Progression Mode.
@@ -1376,6 +1376,14 @@ label, converting nothing.
 
 §6.5's precedent survives intact: a per-Exercise number never converts. No aggregate view ships,
 so the converting half of that precedent is never used.
+
+**Open, and stated on the screen rather than solved** — found while building, at
+[The per-Exercise chart](issues/0049-the-per-exercise-chart.md). The reference case is a pin that
+has *not* moved. When it does, the roll-up empties the Microload into it (§4.2) and **the line
+falls while the weight on the machine rises** — the shape this section refused volume for. The
+chart draws what it plots and the sentence under it says why the line drops; nothing is smoothed
+behind the user's back. It is unreachable on a kg rack with kg stacks, so it waits for a lifter who
+can reach it.
 
 #### The Workout list
 
@@ -1709,5 +1717,5 @@ flows this spec validates, so each is a later effort rather than a resumption of
 | 12 | [Confetti plate source](issues/0012-confetti-plate-source.md) | The burst throws what the Plate Breakdown draws; proportional sampling; steel is hollow (§6.5) |
 | 13 | [Plate Inventory shipped defaults](issues/0013-plate-inventory-shipped-defaults.md) | 25 kg is red, every Microplate ships off, the empty-Microplate path (§5.2, §7.3) |
 | 14 | [Editing a Program over time](issues/0014-editing-a-program-over-time.md) | The Set stores its own numbers, at-least-the-planned-Sets, unit changes clear the weight, the Re-weigh list, deleting (§2.4, §2.5, §3.2, §4.1, §6.6) |
-| 15 | [History and progression charts](issues/0015-history-and-progression-charts.md) | Two doors and no tab bar, the Working-Weight line with a Set grid, the NEXT step, the streak, deleting a past Workout, plate colour outside a Plate Breakdown (§6.7, §7.1) |
+| 15 | [History and progression charts](issues/0015-history-and-progression-charts.md), amended by [The per-Exercise chart](issues/0049-the-per-exercise-chart.md) | Two doors and no tab bar, the Working-Weight line with a Set grid, the NEXT step, the streak, deleting a past Workout, plate colour outside a Plate Breakdown (§6.7, §7.1) |
 | 16 | [Bounding the Microload](issues/0016-bounding-the-microload.md) | The roll-up into the pin, the Microload only where there is a Stack Step, Bodyweight takes the Inventory's unit (§2.3, §2.6, §4.2, §5.1, §5.3) |

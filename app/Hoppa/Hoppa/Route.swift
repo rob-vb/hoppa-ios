@@ -57,6 +57,13 @@ enum Route: Hashable {
     /// a row of §6.7's list is a statement about one performance, and the Day it was
     /// performed on has moved on since.
     case pastWorkout(WorkoutID)
+    /// §6.7's second door: one Exercise's progression chart — ticket 0049.
+    ///
+    /// It carries the **Exercise's** id and nothing else. The chart is a screen about an
+    /// Exercise across every Workout it has ever been in, so the Day it was opened from is
+    /// not part of the question — the screen reads the Day back off the Exercise for the
+    /// chevron's label. **The door itself is ticket 0050**: this is the room.
+    case exerciseChart(ExerciseID)
     /// §6.6's Re-weigh list — ticket 0046.
     ///
     /// It carries **nothing**, and that is the decision. The list is not a set of ids the

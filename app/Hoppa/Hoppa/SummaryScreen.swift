@@ -371,7 +371,7 @@ struct SummaryScreen: View {
         case .blocked(let blocker, let sets, let reps):
             // §6.6: the blocking condition stands **in place of the green line**, so the
             // rep condition still reads and only the target is replaced.
-            conditionText("All \(sets) sets at \(reps) · \(reason(blocker))")
+            conditionText("All \(sets) sets at \(reps) · \(blocker.reason)")
         case .gone:
             conditionText("Removed from the program")
         }
@@ -386,16 +386,6 @@ struct SummaryScreen: View {
 
     /// What the user does about it. §5.2's principle: Hoppa states its condition where
     /// the user stands, so each of these names the screen that fixes it.
-    private func reason(_ blocker: ProgressionBlocker) -> String {
-        switch blocker {
-        case .noWorkingWeight: "no weight yet"
-        case .noIncrement: "no increment yet"
-        case .noMicroplate: "no microplates · set up your rack"
-        case .stranded: "microplate switched off · set up your rack"
-        case .unitMismatch: "microplate is in the other unit"
-        case .noStackStep: "no stack step yet"
-        }
-    }
 
     // MARK: - SKIPPED
 

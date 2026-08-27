@@ -64,3 +64,22 @@ extension DeleteBlock {
         }
     }
 }
+
+extension ProgressionBlocker {
+    /// Why the plate did not move (§4.1's four, and a missing Increment). **It states the
+    /// condition, not what the user should do** (§7.6).
+    ///
+    /// Written once, since ticket 0049: §6.5's `STAYED` row and §6.7's chart chip name the
+    /// same stopped plate from the same `Rules.progressionBlocker`, and two copies of the
+    /// English could give one condition two names.
+    var reason: String {
+        switch self {
+        case .noWorkingWeight: "no weight yet"
+        case .noIncrement: "no increment yet"
+        case .noMicroplate: "no microplates · set up your rack"
+        case .stranded: "microplate switched off · set up your rack"
+        case .unitMismatch: "microplate is in the other unit"
+        case .noStackStep: "no stack step yet"
+        }
+    }
+}

@@ -116,12 +116,15 @@ extension Rules {
         // off the **Set** and not off the Exercise's live One-off choice, because the
         // Set is the record: `oneOffWeight` is cleared by an edit at the rack (§6.4) and
         // the Sets logged before that edit still were not going anywhere.
+        //
+        // `Rules.met` since ticket 0049: §6.7's Set grid fills its cells with this same
+        // fact, and two copies of it could disagree about one Set.
         let sets = performed.sets.enumerated().map { index, set in
             PastSet(
                 id: index,
                 reps: set.reps,
                 weight: PastWeight(weight: set.weight, microload: set.microload),
-                metThreshold: !set.oneOff && threshold.map { set.reps >= $0 } ?? false)
+                metThreshold: met(set, threshold: threshold))
         }
         return PastExercise(
             exerciseId: performed.exerciseId,

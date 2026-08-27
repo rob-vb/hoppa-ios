@@ -130,10 +130,10 @@ real**, and nothing after that is worth doing before it.
     **Flow 4 is more than half built.** [The history screen](0047-the-history-screen.md) closed
     2026-08-27 with the streak, the Workout list and the picker's door (`HANDOFF.md` items 76–86),
     and [a past Workout opened and deleted](0048-a-past-workout-opened-and-deleted.md) closed the
-    same day with the detail screen and the one destructive delete (items 87–97). **Two tickets are
-    left in the whole map**, both about the chart: [the per-Exercise
-    chart](0049-the-per-exercise-chart.md), which is unblocked, and [the Exercise card's two
-    doors](0050-the-exercise-cards-two-doors.md) behind it.
+    same day with the detail screen and the one destructive delete (items 87–97), and
+    [the per-Exercise chart](0049-the-per-exercise-chart.md) the same day again (items 98–110).
+    **One ticket is left in the whole map**: [the Exercise card's two
+    doors](0050-the-exercise-cards-two-doors.md), now unblocked — the chart has a room and no door.
 
     **The route from here**, and it is the order ticket 29 set, unchanged:
     **Flow 5 first, because its rules are already built** —
@@ -833,6 +833,26 @@ real**, and nothing after that is worth doing before it.
   before a phone did — `.dateTime.day().month().year()` orders itself by locale and answers
   `Aug 3, 2026` on a US one. 168 → **187**, and a new `app/checks/Past` at **66** which reads all
   thirty seeded Workouts back through the screen's own English.
+
+- [The per-Exercise chart, the Set grid under it, and the dashed step that has not been
+  lifted](0049-the-per-exercise-chart.md) — **the whole series is a rule, and that is what bought
+  the screen its only real proof.** `Rules.exerciseChart` reads points, scale, dashed step and
+  totals off the `Logbook` alone, so `app/checks/Chart` draws **sixteen weeks of it as text on the
+  VPS**, where a phone with three sessions on it could show nothing. The line is the weight
+  **performed**, never the weight earned — that step lands on the next session — and a One-off
+  holds `workingWeightAfter`, so the line walks straight through it while the hollow marker below
+  carries what was lifted. `Rules.met(_:threshold:)` is now the **one** copy of *did this Set meet
+  the threshold*, called by the Set grid and by §6.7's Workout detail, so the two can no longer
+  disagree about one Set; `Rules.progressionBlocker` went public for the same reason. Four judgment
+  calls, and the first amends the spec: **the dashed step is drawn whenever the hero and the end of
+  the line differ — green where Hoppa moved the weight, steel and `NOW` where the user did (§4.3)**,
+  because a hand edit opens the same gap and green may not claim credit for it. The mixed-unit half
+  is built and **unreachable on Rob's phone**, and walking it there found what §6.7 had not written
+  down: on the 1 kg Microplate the rules actually ship with, the roll-up empties the Microload into
+  the pin and **the line falls while the machine's weight rises** — the shape §6.7 refused *volume*
+  for. Stated on the screen in a sentence rather than smoothed away, and recorded in §6.7 as open.
+  `HarnessSeed` gained a **One-off week** so the marker has something to draw on a phone.
+  187 → **211**, and a new `app/checks/Chart` at **34**.
 
 ## Not yet specified
 

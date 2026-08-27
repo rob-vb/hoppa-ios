@@ -116,6 +116,11 @@ enum HarnessSeed {
     static let missedWeek = 6
     /// Which week skips one Exercise, so one row of the list carries `· 1 skipped`.
     static let skipWeek = 11
+    /// Ticket 0049 — which week is trained at a **One-off Weight**: a lighter bench away
+    /// from the home gym. §6.7's chart draws a hollow marker off the line for it and
+    /// leaves its Set grid column empty, and a seed with no One-off in it cannot show
+    /// either. Reachable on Rob's phone, unlike the mixed-unit half of the same screen.
+    static let oneOffWeek = 8
 
     /// Train the Program forward, Monday and Thursday, `weeks` weeks back from `endingOn`.
     ///
@@ -155,6 +160,12 @@ enum HarnessSeed {
                     }
                     guard let resolved = book.openWorkout?.current
                         .flatMap({ book.resolvedExercise($0.exerciseId) }) else { continue }
+                    // One Workout at a One-off Weight, so §6.7's chart has a hollow marker
+                    // to draw. It logs its Sets and it never progresses (§4.3).
+                    if week == oneOffWeek && index == 0 && position == 0,
+                       let working = resolved.workingWeight {
+                        send(.setOneOffWeight(working - Weight(decimalString: "7.5", unit: working.unit)!))
+                    }
                     // Every third session is short of the threshold, so the weight stays.
                     let reps = session % 3 == 2 ? resolved.repRange.bottom : resolved.targetReps
                     for _ in 0..<resolved.plannedSets { send(.logSet(reps: reps)) }

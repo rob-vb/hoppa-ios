@@ -6,8 +6,8 @@ grows until then — every screen ticket appends its own items and its own *what
 answer*, and the **What is not built yet** section at the bottom shrinks as tickets land.
 
 Items 1–38 below cover what was batches 2, 3 and 4, written 2026-08-26 against `00321d6`. Items 39
-onward are appended by each screen ticket as it lands. Still to be appended: the rest of Flow 4 —
-the per-Exercise chart, and the Exercise card's doors.
+onward are appended by each screen ticket as it lands. Still to be appended: the Exercise card's
+doors and its sparkline (ticket 0050), which is the last ticket on the map.
 
 **Judgment calls are marked, not asked.** Under the 2026-08-27 rule a session that would have put a
 UI question to Rob decides it instead, records why on its ticket, and lists it here as something to
@@ -452,7 +452,8 @@ Item 84 is the optional way to see sixteen weeks of it, and it costs you the app
     → The picker holds `Upper A` and `Lower A`, and History shows **30 Workouts**, a strip of
     **sixteen blocks with exactly one dark**, and `9 WEEKS IN A ROW`. The seed trains the Program
     forward through the shipping rules, so the weights really climbed and some rows really did not
-    move.
+    move. **Since ticket 0049 one Workout is at a One-off Weight** — week 9's Upper A, the Smith
+    bench press 7.5 kg light — so §6.7's hollow marker has something to draw.
     → **This is the only way to judge whether the strip and the list look right at length.** Say so.
     → Set both back to `false` and delete the app again before you train on it.
 
@@ -542,14 +543,101 @@ before item 96**, because 96 destroys the Workout you were reading.
 
 ---
 
+## Flow 4 — the per-Exercise chart (ticket 0049, §6.7)
+
+**The door to this screen is ticket 0050's**, so walk items 98–110 after that ticket lands. The
+screen itself is built and it is `Route.exerciseChart`.
+
+**And this is the screen the whole map has the least confidence in**, for a reason worth stating
+before the first tap: §6.7 needs weeks of Workouts before it says anything, and your Logbook has
+days. What shipped is a screen proved against a fixture, not a screen anyone has watched fill up.
+`app/checks/Chart/run.sh` draws sixteen weeks of it as text on the VPS — **run it, or read the
+output pasted into ticket 0049, before you judge the phone**, because three sessions on a real
+phone cannot show you what fifteen look like.
+
+98. Open a chart for an Exercise you have trained **twice or more**.
+    → The Day's name and a `‹` at the top, the Exercise name under it, then
+    `Smith · 3 × 8–12 · Progressive overload`, then the Working Weight as the biggest number on the
+    screen, then the rule chip — `ALL 3 SETS AT 12 → 82.5 KG` — then the plot.
+
+99. **Judgment call — there is no `•••`.** The artboard draws one at the top right. §6.7 hangs
+    delete off a *Workout* row and gives this menu nothing at all, so the control is not drawn
+    rather than drawn empty.
+    → Say whether the header looks unbalanced without it.
+
+100. **Look at the line.** 2 px steel, a filled **green** dot where that session went up and a
+     filled **steel** dot where it stayed. **No plate colour anywhere on it** (§7.1).
+     → The dot sits at the weight that was **lifted** that day, not the weight it earned. The step
+     up appears on the *next* session. This is not a defect.
+
+101. **The x axis is real time.** A week you missed is a wider gap and nothing else — no marker, no
+     dashed segment, no label.
+     → A Skipped Exercise draws **nothing at all** on that date. Also not a defect.
+
+102. **The dashed step at the right.** After a session that went up, a **dashed green** step runs
+     from the last dot to a hollow ring at the weight you carry now, labelled `NEXT`.
+     → Solid is lifted; dashed is applied but not yet performed. Without it the big number at the
+     top contradicts the end of the line, because Hoppa applies the weight at Finish.
+
+103. **Judgment call — a weight you set by hand.** Re-weigh an Exercise from the Re-weigh list or at
+     the rack, then open its chart.
+     → The same dashed step, in **steel**, labelled `NOW` instead of `NEXT`. §6.7 only wrote the
+     green case. Green means progression everywhere in Hoppa and a weight you typed is not one, so
+     the gap is still shown and the colour says who moved it. **A weight you lowered draws the step
+     downwards**, which is true and is not the *line never dips* rule (that one is about One-offs).
+
+104. **The Set grid under the plot.** One column per session, one cell per Set, filled green where
+     that Set met the threshold. `SETS` labels it on the left.
+     → Three filled cells **is** the progression rule. A column with two filled and one hollow is
+     the whole answer to *why did it not go up*, with no words and no advice.
+
+105. **A One-off session.** Find one — the seeded book has one at item 84.
+     → A **hollow** steel ring **below** the line, tied to its session by a dotted drop, labelled
+     `ONE-OFF`. **The line itself does not dip**: a One-off never became the Working Weight.
+     → Its Set grid column is **empty, whatever the reps**. A full green column beside a step that
+     never came would be a lie. Not a defect.
+
+106. **`LAST SESSIONS`.** The four newest, newest first: the date, the reps, and the weight lifted.
+     → **Judgment call — the reps are green Set by Set**, not row by row. The artboard colours the
+     whole row when every Set met the threshold; this marks each Set, which is the same fact the
+     grid column above it draws and the same fact the Workout detail (item 89) turns green. Where
+     all three met, the two read identically; where some met and some did not, only this one says
+     so. Say which you prefer.
+
+107. **The three figures at the foot.** The first weight with its date, the gain since then in
+     green, and how many times it went up.
+     → The gain counts to the weight you carry **now**, so it agrees with the big number at the top
+     and with the end of the dashed step. **A gain that is not positive is not green** — a weight
+     you lowered by hand must not read as a progression.
+
+108. **Judgment call — one session is not a chart.** Open an Exercise you have trained exactly once.
+     → The heroes and the chip stand, and where the plot would be: `NOTHING HERE YET` and *One
+     session is a dot, not a climb. Train it once more.* §6.7's own empty state says an Exercise
+     gets a line once it has two.
+
+109. **Never reachable on your phone, and here so its absence is not reported as a defect: the
+     mixed-unit chart.** A Machine (stack) or Cable marked in lbs with a kg Microplate has two
+     numbers that never convert and no single number to plot, so the chart plots the **Microload**
+     and the axis reads `+ KG`. **Your rack is kg and your stacks are kg**, so you cannot reach it —
+     the same class as the lbs rack and as the `MICRO` stepper. It is built and it is walked on the
+     VPS by `app/checks/Chart/run.sh`.
+
+110. **An open item on that same half, written down rather than solved.** §6.7 chose the Microload
+     as the line for a reference case whose pin had not moved in fifteen weeks. When the pin *does*
+     move, the roll-up empties the Microload into it and **the line falls while the weight on the
+     machine rises** — exactly the shape §6.7 refused volume for. The screen states it in a sentence
+     under the plot instead of smoothing it. It waits for a lifter who can reach it.
+
+---
+
 ## What is not built yet
 
 None of this is a defect.
 
-- **Flow 4's chart.** The streak and the Workout list landed at ticket 0047, and opening a row of
-  that list — every Set as performed, and the delete behind its `•••` menu — at ticket 0048. The
-  **per-Exercise chart** is ticket 0049, and an Exercise card in the Program sheet still opens the
-  Exercise **sheet** and draws no sparkline (ticket 0050).
+- **The door to Flow 4's chart.** The streak and the Workout list landed at ticket 0047, opening a
+  row of that list at 0048, and the **per-Exercise chart itself** at 0049 — items 98–110. Until
+  ticket 0050 lands, an Exercise card in the Program sheet still opens the Exercise **sheet** and
+  draws no sparkline, so the chart has a room and no door.
 - **The weights on a Workout you finished before this build.** Ticket 0048 started storing the
   weight a progression ended on; Workouts already on the phone have none, so an old Went-up row
   reads a green `WENT UP` and no numbers. Old data, not a defect — see item 90.
@@ -574,10 +662,11 @@ So a failure on the Mac is toolchain drift and not code.
 
 | Suite | Count |
 | --- | --- |
-| `app/HoppaRules` — `swift test` | 187 |
+| `app/HoppaRules` — `swift test` | 211 |
 | `app/HoppaStore` — `swift test` | 49 |
 | `app/checks/UnitStash/run.sh` | 34 |
 | `app/checks/Reorder/run.sh` | 25 |
 | `app/checks/Reweigh/run.sh` | 34 |
 | `app/checks/History/run.sh` | 33 |
 | `app/checks/Past/run.sh` | 66 |
+| `app/checks/Chart/run.sh` | 34 |
