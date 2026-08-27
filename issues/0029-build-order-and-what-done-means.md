@@ -185,3 +185,26 @@ where those findings land hardest. They graduate after Rob has trained with Flow
 `AcceptanceHarness` is deleted at ticket 32, which replaces it. **`HarnessSeed` survives, behind a
 debug switch** — Flow 4 will need sixteen weeks of history to look at, and typing that on a phone is
 not a test.
+
+## Superseded on the scheduling half — 2026-08-27
+
+**The build order stands. The hand-off rule does not.**
+
+This ticket said a batch goes over *when the queue holds a path Rob can walk end to end*, and it
+sliced the route into three hand-offs for that reason. Rob ended it on 2026-08-27: *"Ik wil alles
+op het eind testen, en ik wil eerst alles bouwen. Ik vind namelijk dat onze wayfinder veel te lang
+duurt."*
+
+**The evidence is on his side.** Batches 2, 3 and 4 were pushed and none of them was walked, so the
+rule bought nothing it promised — an early hand-over only helps if it is taken up. What this ticket
+got right is the *order*: shell + Flow 1 → Flow 2 → Flow 3 → Flow 5 → Flow 4, and that order is
+untouched, including the reason Flow 4 goes last.
+
+What changes: **the batch is the whole app**, there is one walk, and
+[`HANDOFF.md`](../HANDOFF.md) is one growing document rather than a message per batch. The three
+rules of *what done means for a screen* — the spec's numbers are the contract, a screen ticket
+closes when it is pushed, and no UI tests — all stand exactly as written.
+
+**One rule is added by the change**, and it lives in the map's Notes: a session that would have
+asked Rob a UI question now decides it, records why, and writes it into `HANDOFF.md` as something
+to look at. Building everything first only saves time if it does not become a question round.

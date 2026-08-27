@@ -45,6 +45,31 @@ real**, and nothing after that is worth doing before it.
 - **Standing preferences**: domain terms, code and project documents in English; conversation
   follows Rob's CLAUDE.md (Simplified Technical English, Dutch when he writes Dutch). Rob is the
   first and only user of this map's output — put choices to him as concrete options.
+- **Build everything, then walk once. Rob's call, 2026-08-27.** *"Ik wil alles op het eind testen,
+  en ik wil eerst alles bouwen. Ik vind namelijk dat onze wayfinder veel te lang duurt."* **This
+  replaces the batching rule below**, which said a batch goes over as soon as the queue holds a
+  walkable path. It does not replace the reason for that rule — the Mac loop is still the expensive
+  half — it replaces the answer: the batch is now **the whole app**.
+  - **The evidence agrees with him.** `0018`–`0043` closed between 2026-08-19 and 2026-08-26 — 26
+    tickets in eight days. What did not move in that time is the walking: batches 2, 3 and 4 are
+    pushed and unwalked. **The bottleneck was never the charting.** A rule that hands over early
+    only helps if the hand-over is taken up, and three queued batches are the proof it was not.
+  - **What this costs, stated once, because it is real.** Batch 1 cost three fixes across four
+    screens. Those fixes were cheap because the screens were fresh and few. Building seven more
+    screens before anything is walked means findings arrive **all at once, against a much larger
+    surface**, and some of them will be the same mistake repeated in several places. That is the
+    trade Rob is making knowingly, and the map takes it.
+  - **So every judgment call goes on the walk list instead of into a question.** A session that
+    would have asked Rob a UI question now **decides it, records the reasoning, and writes the
+    decision into [`HANDOFF.md`](../HANDOFF.md) as something to look at**. He corrects it at the
+    end. That is what "build everything first" means in practice, and it is the only way this does
+    not turn into the question-round it was meant to replace.
+  - **`HANDOFF.md` grows; it is not re-created per batch.** It is one walk now. Each screen ticket
+    appends its own items and its own *what only the phone can answer*, and the closing
+    *what is not built yet* section shrinks as tickets land.
+  - **What does not change**: prove everything provable on the VPS first, and a screen ticket still
+    closes when it is pushed. Rob's verdict still arrives out of band — it just arrives once.
+
 - **Do not end every session with "please build this".** Rob said so plainly at
   [The Logbook on disk](0025-the-logbook-on-disk.md): *"Ik test later wel, geen zin om telkens te
   testen."* The VPS/Mac loop puts him in the critical path of every session that writes Swift, and
@@ -96,15 +121,30 @@ real**, and nothing after that is worth doing before it.
     is a message, and a message does not survive the session. Written against `00321d6`; a batch
     that goes over later rewrites it rather than adding a second one.
 
-    **The frontier is empty now.** [The MICRO stepper on a mixed-unit
-    pin](0042-the-micro-stepper-on-a-mixed-unit-pin.md) was the last open ticket, and it closed
-    *out of scope* rather than onto the route — see **Out of scope** below. So there is no ticket to
-    take, and that is not the map stalling: **what the map is waiting on is Rob's walk**. Batches 2,
-    3 and 4 are pushed and unwalked, and the fog that graduates next — Flow 4, the rest of Flow 5,
-    the history screen — is held on exactly that walk by
-    [Build order across the flows](0029-build-order-and-what-done-means.md). A session that opens
-    this map with no frontier should hand over the queued batches, not chart new tickets to stay
-    busy.
+    **The frontier went empty on 2026-08-26 and was refilled on 2026-08-27.** [The MICRO stepper on
+    a mixed-unit pin](0042-the-micro-stepper-on-a-mixed-unit-pin.md) closed *out of scope* and left
+    nothing takeable, which is what put the question of the walk to Rob and got the
+    build-everything-first answer above. **The fog it was waiting on has now graduated**: seven
+    tickets, `0044`–`0050`, and they are the rest of the app.
+
+    **The route from here**, and it is the order ticket 29 set, unchanged:
+    **Flow 5 first, because its rules are already built** —
+    [the reorder handles](0044-the-reorder-handles.md),
+    [deleting, and the two blocks](0045-deleting-and-the-two-blocks.md),
+    [the Re-weigh list and the two counts](0046-the-reweigh-list-and-the-two-counts.md). Only the
+    last of those needs a new rule; the other two are SwiftUI on `Action`s that landed at ticket 28.
+    **Then Flow 4, which needs new rules and gets them** —
+    [the history screen](0047-the-history-screen.md),
+    [a past Workout opened and deleted](0048-a-past-workout-opened-and-deleted.md),
+    [the per-Exercise chart](0049-the-per-exercise-chart.md),
+    [the Exercise card's two doors](0050-the-exercise-cards-two-doors.md). Two blocking edges only:
+    48 waits on 47 for its way in, and 50 waits on 49 for the room its door opens onto. Everything
+    else is takeable now.
+
+    **Flow 4 carries a cost that is written down rather than solved.** §6.7 needs weeks of Workouts
+    to say anything and the Logbook has none, so what ships is proved against a fixture and not
+    against a climb anyone has watched. That is the same reason ticket 29 put Flow 4 last, and it
+    survives the scheduling change intact.
 
     Before batch 1 the queue was **empty**, cleared 2026-08-20 in one session, which is the pattern
     working as intended. What that walk settled, because each answer outlives its ticket:
@@ -722,22 +762,6 @@ real**, and nothing after that is worth doing before it.
   [Program edits, and which of them are rules](0026-program-edits-and-the-rules-boundary.md) settled
   deleting an Exercise and a Workout Day, which §6.6 *does* specify, and deliberately left this one
   here — it is a gap in the spec, so it needs a decision and not a build.
-- **Flow 5's remaining screens, and all of Flow 4.** Reorder handles, deleting an Exercise or a
-  Workout Day, the two warning dialogs and the Re-weigh list (§6.6); the history list, the streak and
-  the per-Exercise chart (§6.7). **These are fully specified and sharp enough to ticket today** —
-  they sit here as a scheduling choice, not a gap. Their slicing changes with what real training
-  teaches, and this map already expects findings from the rack; the history screen and the Program
-  edits are where those land hardest. They graduate once Rob has trained with Flow 1–3. Held at
-  [Build order across the flows, and what done means for a screen](0029-build-order-and-what-done-means.md).
-- **What an Exercise card opens, once the chart exists.** §6.7 says an Exercise card in the Program
-  sheet opens **that Exercise's chart**, and gives it a sparkline so the door announces itself. The
-  Day artboard's own caption says **tap a row to open it**, meaning §6.2's sheet, which is the only
-  room that exists today — so
-  [The Program sheet hub and the Workout Day screen](0034-the-program-sheet-and-the-workout-day.md)
-  built the card as a door to the sheet and drew no sparkline. When Flow 4 lands the card carries
-  two doors and somebody has to say which one is the whole card: the sparkline alone into the chart
-  and the rest into the sheet, a `•••`, or a swap. Not sharp until the chart is being built, and it
-  graduates with §6.7. Found while building.
 
 - **Increase Contrast, and the rest of the accessibility settings.** [Dark only, or a light mode
   too](0030-dark-only-or-a-light-mode.md) settled the two that reach every screen — Appearance and
@@ -773,19 +797,6 @@ real**, and nothing after that is worth doing before it.
   ticket and it may be a pattern or may be a one-off; nobody has looked at the other screens to
   see how much of them would come out the same way, and a third home is a cost as well as a gain.
   Not sharp until a second screen wants it. Found while building.
-- **What a past Workout's Summary reads its weights off, once Flow 4 can open one.** §6.5's
-  Went-up row is `72.5 KG → 75 KG`, and [The Workout Summary](0038-the-workout-summary.md) reads
-  the `from` off the last logged Set — a record, safe forever — and the `to` off the Exercise's
-  **live** Working Weight. That is exactly right for the screen this map built, which appears
-  between Finish and `DONE` with nothing able to edit an Exercise in between. It is **silently wrong
-  the day a Workout from three weeks ago can be reopened**, which is §6.7's Workout list: by then
-  the live weight has moved on and the row would claim a progression that never happened. The fix is
-  probably one field on `ProgressionOutcome` — it already stores the planned Sets and the threshold
-  for the same reason — but whether the same is true of the condition line's `→ 75 KG`, which is a
-  statement about the *future* and may want to stay live, is the part that is not sharp. It
-  graduates with §6.7, and it sits beside **Flow 5's remaining screens, and all of Flow 4** above.
-  Found while building.
-
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.

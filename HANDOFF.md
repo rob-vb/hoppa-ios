@@ -1,12 +1,20 @@
-# Hand-off — batches 2, 3 and 4
+# Hand-off — the whole app, one walk
 
-One walk, three batches at once. Batch 1 was walked on 2026-08-26 and its three fixes are in;
-everything below has been pushed since and **nobody has looked at any of it on a phone**.
+**This document is not finished.** On 2026-08-27 Rob ended the batching rule: *"Ik wil alles op het
+eind testen, en ik wil eerst alles bouwen."* So there is **one walk, at the end**, and this file
+grows until then — every screen ticket appends its own items and its own *what only the phone can
+answer*, and the **What is not built yet** section at the bottom shrinks as tickets land.
+
+Items 1–38 below cover what was batches 2, 3 and 4, written 2026-08-26 against `00321d6`. Still to
+be appended: Flow 5's reorder handles, deleting, and the Re-weigh list; and all of Flow 4 — the
+history screen, a past Workout, the per-Exercise chart and the Exercise card's doors.
+
+**Judgment calls are marked, not asked.** Under the 2026-08-27 rule a session that would have put a
+UI question to Rob decides it instead, records why on its ticket, and lists it here as something to
+look at. Those items are the ones worth most of the walk.
 
 Every item is *do X → expect Y*. Where an item says a thing is **not** a defect, it is written
 down precisely so it is not reported as one.
-
-Written 2026-08-26 against `00321d6`.
 
 ---
 
