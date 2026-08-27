@@ -20,7 +20,14 @@ down precisely so it is not reported as one.
 ---
 
 1. `git pull`, open `app/Hoppa/Hoppa.xcodeproj`, build and run on the iPhone.
-   → It builds with no error. **Eight files are new** since batch 1 — `LoggingScreen`,
+   → It builds with no error. **This failed on the first attempt and is fixed** — see
+   [Two files, one `PlateChip`](issues/0052-two-files-one-plate-chip.md). `SummaryScreen` and
+   `PlateRackScreen` both declared a `PlateChip`, which is one redeclaration and two bogus errors
+   at the call site; the Summary one is now `AddedPlateChip`. A new check,
+   `app/checks/AppTarget/run.sh`, scans the whole target for a name declared in two files, and it
+   is green. **That check is not a type-check** — SwiftUI cannot compile on the VPS — so Xcode may
+   still stop somewhere after `SummaryScreen`. If it does, send the errors the same way and the
+   walk restarts here. **Eight files are new** since batch 1 — `LoggingScreen`,
    `PlateDrawing`, `PlateGlyph`, `WeightSheet`, `SummaryScreen`, `Confetti`, `ParticleField` and
    `UnitStash` — and seven more changed. The app target is a file-system synchronised group, so all
    eight arrive without a project edit. **If Xcode asks about any file, that is itself the
@@ -738,3 +745,4 @@ So a failure on the Mac is toolchain drift and not code.
 | `app/checks/History/run.sh` | 33 |
 | `app/checks/Past/run.sh` | 66 |
 | `app/checks/Chart/run.sh` | 41 |
+| `app/checks/AppTarget/run.sh` | 30 files, 101 names |

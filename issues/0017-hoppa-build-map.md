@@ -140,6 +140,14 @@ real**, and nothing after that is worth doing before it.
     frontier now, as [The walk, and the findings it produces](0051-the-walk.md), the one ticket on
     this map only Rob can close. Its findings are what the fog's last entry has been waiting for.
 
+    **The walk started on 2026-08-27 and stopped at item 1.** The build failed:
+    [Two files, one `PlateChip`](0052-two-files-one-plate-chip.md), one name declared in two files
+    and three compiler errors from it. It is fixed and pushed, and the walk restarts at item 1.
+    **The cost this map wrote down in advance is now being paid** — *findings arrive all at once,
+    against a much larger surface* — and the first one was not a UI judgment call at all but
+    bookkeeping the machine should have caught. It catches it now. Expect more, and expect some of
+    them to be the same mistake in several places.
+
     **The route from here**, and it is the order ticket 29 set, unchanged:
     **Flow 5 first, because its rules are already built** —
     [the reorder handles](0044-the-reorder-handles.md),
@@ -874,6 +882,15 @@ real**, and nothing after that is worth doing before it.
   big number beside it. §6.7 said *the Program sheet* and the room is the **Workout Day screen**;
   the artboard settles it and the spec carries the correction. 211 → **218**, and `app/checks/Chart`
   34 → **41**, which now prints the Day's cards and which of them carry a door.
+
+- [Two files, one `PlateChip`](0052-two-files-one-plate-chip.md) — the walk's first finding, at
+  item 1: `SummaryScreen` and `PlateRackScreen` each declared a `PlateChip`, so the target would
+  not build. The Summary slab is now `AddedPlateChip`. **The lasting part is why the VPS said
+  green**: every check here compiles one file or one package, and **nothing ever looked at the app
+  target as a module**. `app/checks/AppTarget/run.sh` now does — no top-level name declared in two
+  files (101 names, 30 files), plus `swiftc -parse` over all of them. It is not a type-check and
+  cannot be one; it closes the class of error where two sessions cannot see each other's file,
+  which is the class building ten screens before one walk makes most likely.
 
 ## Not yet specified
 

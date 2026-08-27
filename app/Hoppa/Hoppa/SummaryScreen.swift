@@ -287,7 +287,7 @@ struct SummaryScreen: View {
     /// frame.
     private func wentUpRow(_ row: SummaryWentUp) -> some View {
         HStack(alignment: .top, spacing: 12) {
-            PlateChip(plate: row.addedPlate)
+            AddedPlateChip(plate: row.addedPlate)
                 .padding(.top, 3)
                 .reportsChipFrame(row.exerciseId, in: Self.summarySpace)
             VStack(alignment: .leading, spacing: 7) {
@@ -475,7 +475,7 @@ struct SummaryScreen: View {
 ///
 /// It is a plate, so it is filled and rimmed like every other plate the app draws; the
 /// steel fallback is hollow, for the reason §6.5 gives the steel particle.
-struct PlateChip: View {
+struct AddedPlateChip: View {
     let plate: Weight?
 
     private var hex: String? { plate.flatMap(PlatePalette.hex(for:)) }
