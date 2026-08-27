@@ -51,6 +51,14 @@ enum Route: Hashable {
     case summary(WorkoutID)
     /// Flow 4, §6.7 — not scheduled. Held in the map's **Not yet specified**.
     case history
+    /// §6.6's Re-weigh list — ticket 0046.
+    ///
+    /// It carries **nothing**, and that is the decision. The list is not a set of ids the
+    /// switch handed over: it is `Rules.reweighList`, derived from the Logbook every time
+    /// it is asked. A route that carried the ids would be a copy that goes stale the
+    /// moment a weight is typed, and it could not serve the second door — the one on the
+    /// picker, opened days later with nothing in hand.
+    case reweigh
 }
 
 /// The door is real, the room is not.

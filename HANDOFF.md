@@ -6,9 +6,8 @@ grows until then — every screen ticket appends its own items and its own *what
 answer*, and the **What is not built yet** section at the bottom shrinks as tickets land.
 
 Items 1–38 below cover what was batches 2, 3 and 4, written 2026-08-26 against `00321d6`. Items 39
-onward are appended by each screen ticket as it lands. Still to be appended: Flow 5's deleting and
-the Re-weigh list; and all of Flow 4 — the history screen, a past Workout, the per-Exercise chart
-and the Exercise card's doors.
+onward are appended by each screen ticket as it lands. Still to be appended: all of Flow 4 — the
+history screen, a past Workout, the per-Exercise chart and the Exercise card's doors.
 
 **Judgment calls are marked, not asked.** Under the 2026-08-27 rule a session that would have put a
 UI question to Rob decides it instead, records why on its ticket, and lists it here as something to
@@ -308,6 +307,87 @@ the walk:
 61. In that same Open Workout, tap `NEXT` from the gone card. → You land on the next Open Exercise
     and the counter moves. Log a Set there to prove nothing came unhooked.
 
+## The two rack warnings, and the Re-weigh list (ticket 0046, §6.6)
+
+**Do this last, or on a phone you are willing to re-weigh.** Item 63 clears the Working Weight on
+every barbell, Smith, plate-loaded and Bodyweight Exercise you have, in every Program. It is the
+real event and there is no undo — that is §6.6, not a defect. Items 64–70 put the numbers back.
+
+**One file is new**, `ReweighScreen.swift`, and the app target is a file-system synchronised group,
+so it should arrive with no project edit. **If Xcode asks about it, that is the finding.**
+
+62. **The strand warning.** Program `•••` → `PLATE INVENTORY`, and switch **off** a Microplate that
+    an Exercise uses as its Microloading Increment.
+    → `3 EXERCISES USE THIS PLATE`, and under it *They stop progressing until you pick another
+    plate. Nothing is cleared: switch the 0.25 kg back on and they progress again.* The count is
+    the real one. Confirm, then switch the same plate **back on** → no warning at all, and the
+    Exercise sheet's Microloading row reads that plate again. **Nothing was written either way.**
+
+63. **The clear warning.** On the same screen tap the other unit, `LBS`.
+    → `THIS CLEARS THE WEIGHT ON n EXERCISES`, with the same count the list will hold. `CANCEL` →
+    nothing happens and the rack is still kg. **Do that once before you commit.**
+
+64. Tap `LBS` again and confirm with `SWITCH TO LBS`.
+    → **The Re-weigh list opens by itself.** That is the first of its two doors. Heading
+    `RE-WEIGH`, then *An exercise with no weight logs no set and does not progress*, then one row
+    per cleared Exercise, grouped under its Workout Day, in Program order.
+    → The rack screen behind it now reads `LBS`, and every plate on it is an lbs size.
+
+65. **Judgment call — the field, not a keypad.** Each row has a small decimal field on the right
+    with the Exercise's unit beside it, and you type straight into it. §6.4's full keypad sheet was
+    the alternative and it was **rejected**: twelve of those, each opened and dismissed, is the
+    twelve-times cost the kitchen table exists to avoid.
+    → **Say whether typing eight or ten weights this way is quicker than eight keypads.** If it is
+    not, that is the finding.
+
+66. Type a weight into one row and tap the next row's field.
+    → The first number is written when you **leave** the field, not per keystroke. The row **stays
+    where it is** and does not vanish — deliberate, so rows do not move under your thumb — and the
+    line under the heading recounts: `1 of 8 done. 7 still have no weight.`
+
+67. **Judgment call — the closest line.** Type a weight your lbs rack cannot build exactly, e.g.
+    `137` on a barbell. → A `≈ CLOSEST` chip appears under that row: *you load 135 lbs · 2 under*.
+    Nothing is refused; §5.4 is stated where you type. **Say whether it is useful here or noise.**
+
+68. **Judgment call — the note under the name, which is a door.** Every row shows its Equipment
+    Type, and where something else is still missing it reads `Barbell · no increment`,
+    `Smith · no base weight` or `Cable · no microplate`, with a `›`. The unit switch cleared the
+    Increment and the Base Weight too, and this list shows one field on purpose.
+    → Tap that note. The **Exercise sheet** opens on that Exercise, where the Increment and the
+    Base Weight are. Fill them, close the sheet, and the note is gone.
+    → **Say whether stating it is enough, or whether the list should have asked for the Increment
+    as a second field.**
+
+69. **Zero is a real answer.** On the weighted chin-up row type `0` and leave the field.
+    → It is accepted and the row is done. That is §2.8: zero is a chin-up with no belt, and unset
+    is *you have not said*. **A refused `0` here would be the defect.**
+
+70. Weigh every row, then `DONE`. → You land back on the rack screen. Walk back to the picker.
+    → **No banner.** Then open an Exercise sheet, add a new Exercise and give it no weight.
+
+71. **The second door.** Go home to the picker.
+    → Under your Program's name, a card: `1 EXERCISE HAS NO WEIGHT` · *It logs no set until you
+    weigh it*. Tap it → the same Re-weigh list, with that one row.
+    → **Judgment call.** A sheet at launch was the alternative and it was **rejected**: the list
+    holds every Exercise with no weight, including one you added on purpose a minute ago, so a
+    modal would ambush you with your own decision. **Say whether the banner is loud enough**, and
+    whether it sits right at the top — the **foot** of the picker is History's door.
+
+72. Force-quit, reopen. → The banner is still there, and the list still holds the same row.
+    **Nothing wrote it down**; it is derived from the weight being missing.
+
+73. Weigh that last Exercise. → The banner goes by itself, with no tap of its own.
+
+74. **Switch back to `KG`** and re-weigh everything in kg, or you are training in lbs from here.
+    The switch warns and clears in exactly the same way — it is symmetric, and nothing converts.
+
+75. **The stale One-off.** Start a Workout, set a **One-off Weight** on a barbell Exercise, log one
+    Set, leave the logging screen with `‹`, go to the Plate Inventory and switch the unit.
+    → Back in the Workout the One-off is **gone** and the Exercise shows no weight, so it cannot
+    log. The Set you already logged **keeps its old number** — it really was lifted at that weight
+    (§2.4). Fixed at ticket 0046; before it, the next Set would have been written at the old number
+    under the new label.
+
 ---
 
 ## What is not built yet
@@ -316,9 +396,9 @@ None of this is a defect.
 
 - **Flow 4 entirely** — the history list, the streak, the per-Exercise chart. An Exercise card in
   the Program sheet opens the Exercise **sheet**, and it draws no sparkline.
-- **The rest of Flow 5** — the two warning dialogs and the Re-weigh list after a Plate Inventory
-  unit change. Reorder handles landed at ticket 0044, deleting an **Exercise** has been on its own
-  sheet since ticket 0035, and deleting a **Workout Day** landed at ticket 0045.
+- **Flow 5 is complete.** The two warning dialogs and the Re-weigh list landed at ticket 0046,
+  reorder handles at 0044, deleting an **Exercise** on its own sheet since 0035, and deleting a
+  **Workout Day** at 0045.
 - **Autoscroll while dragging a card past the edge of the list.** Deliberate: a list that fits on
   one screen does not need it (item 49).
 - **Deleting a whole Program**, and holding more than one. The picker reads the first Program;
@@ -337,7 +417,8 @@ So a failure on the Mac is toolchain drift and not code.
 
 | Suite | Count |
 | --- | --- |
-| `app/HoppaRules` — `swift test` | 151 |
+| `app/HoppaRules` — `swift test` | 156 |
 | `app/HoppaStore` — `swift test` | 36 |
 | `app/checks/UnitStash/run.sh` | 34 |
 | `app/checks/Reorder/run.sh` | 25 |
+| `app/checks/Reweigh/run.sh` | 34 |

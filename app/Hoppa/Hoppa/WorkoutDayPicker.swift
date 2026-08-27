@@ -184,6 +184,7 @@ struct WorkoutDayPicker: View {
     private func picker(_ program: Program) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             header(program)
+            reweighBanner
             Spacer().frame(height: 8)
             Text("Pick a day")
                 .typography(Typography.label())
@@ -258,6 +259,44 @@ struct WorkoutDayPicker: View {
             }
         }
         .buttonStyle(.plain)
+    }
+
+    // MARK: - The second door to the Re-weigh list (§6.6) — ticket 0046
+
+    /// §6.6 gives the list one door — *the confirm leads to it* — and stops there. Without
+    /// a second, a user who leaves the screen never finds it again: nothing wrote the list
+    /// down, so nothing brings it back. **This is that second door**, and it is a banner on
+    /// the picker rather than a sheet at launch.
+    ///
+    /// A sheet was the obvious answer and it is the wrong one. The list holds *every*
+    /// Exercise with no Working Weight, which includes one added last night and not yet
+    /// weighed — so a sheet would ambush the user with a modal for a thing he already knows
+    /// about. §7.6: Hoppa states its condition where the user stands. A banner does that,
+    /// it is there every time he opens the app while the condition is true, and it goes by
+    /// itself when the last weight is typed.
+    ///
+    /// It sits **at the top**, under the Program's Name. The foot of the picker is §6.7's
+    /// History door.
+    @ViewBuilder
+    private var reweighBanner: some View {
+        let count = store.logbook.map { Rules.reweighList(in: $0).count } ?? 0
+        if count > 0 {
+            Spacer().frame(height: 8)
+            Button { path.append(.reweigh) } label: {
+                card {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(count == 1 ? "1 exercise has no weight" : "\(count) exercises have no weight")
+                            .typography(Typography.display(15))
+                            .foregroundStyle(Color.text)
+                        // No blame and no advice (§7.6) — the condition, and what it costs.
+                        Text(count == 1 ? "It logs no set until you weigh it" : "They log no sets until you weigh them")
+                            .typography(Typography.meta())
+                            .foregroundStyle(Color.dimText)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
+        }
     }
 
     /// §6.7's first door. **The screen behind it is not built** — ticket 0032 says to say

@@ -88,4 +88,18 @@ public enum Action: Sendable, Hashable {
     /// Writes nothing else. Stranding is **derived**, so switching a plate back on
     /// un-strands what it stranded (§6.6).
     case setPlate(Weight, on: Bool)
+
+    /// The Re-weigh list's **one** write: a Working Weight, on an Exercise named by id,
+    /// with no Open Workout anywhere near it (§6.6).
+    ///
+    /// It is not `.setWorkingWeight`, and the difference is not cosmetic. That case is
+    /// *an edit at the rack*: it reads the Open Workout's current Exercise, it refuses
+    /// without one, and it clears the One-off standing on it. The Re-weigh list is the
+    /// kitchen table — twelve Exercises across every Program, none of them being
+    /// performed — so it can borrow none of that.
+    ///
+    /// It is not `.saveExercise` either. That carries a whole sheet through §6.6's diff,
+    /// and this list shows one field: handing the diff a draft assembled from stored
+    /// fields would make every re-weigh a full save of rows the user never saw.
+    case reweigh(ExerciseID, Weight)
 }

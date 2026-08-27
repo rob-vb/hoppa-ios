@@ -158,7 +158,7 @@ public enum Rules {
         case .createProgram, .renameProgram, .setProgramDefaultWeightUnit, .setProgramMode,
              .addWorkoutDay, .renameWorkoutDay, .moveWorkoutDay, .deleteWorkoutDay,
              .addExercise, .saveExercise, .moveExercise, .deleteExercise,
-             .setPlateInventoryUnit, .setPlate:
+             .setPlateInventoryUnit, .setPlate, .reweigh:
             return applyEdit(logbook, action, at: now)
         }
     }

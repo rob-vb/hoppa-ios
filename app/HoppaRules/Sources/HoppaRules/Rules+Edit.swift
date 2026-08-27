@@ -405,6 +405,37 @@ extension Rules {
                     }
                 }
             }
+            // **The Open Workout's One-off Weights go with them.** A One-off is a number
+            // for today in the Exercise's unit (§4.3), and `logSet` prefers it to the
+            // Working Weight — so one left standing through a rack switch is the exact
+            // stale number this whole section exists to prevent, and it would be written
+            // into a Set under the new label. Only the four types that read the rack:
+            // a Dumbbell in lbs keeps its own unit, and the switch never touched it.
+            //
+            // The Sets **already logged** are not touched, and must not be: a Set records
+            // the weight as it was performed (§2.4), and those really were lifted.
+            if var workout = book.openWorkout {
+                for index in workout.exercises.indices {
+                    guard let exercise = book.exercise(workout.exercises[index].exerciseId),
+                          exercise.equipment.takesUnitFromInventory
+                    else { continue }
+                    workout.exercises[index].oneOffWeight = nil
+                }
+                book.openWorkout = workout
+            }
+            return book
+
+        case .reweigh(let id, let weight):
+            // **Zero is allowed here, and it is the whole reason this is not
+            // `.setWorkingWeight`.** Zero is a real weight (§2.8): a Bodyweight Exercise
+            // done with no belt. Refuse it and a chin-up that the rack switch cleared can
+            // never leave the Re-weigh list, because the only true answer to *what do you
+            // lift it with* is nothing.
+            guard let exercise = book.exercise(id) else { return logbook }
+            // Stored under the unit the Exercise resolves to now. The list types in that
+            // unit — it is the one the row prints — and a label is never converted (§5.1).
+            let unit = exercise.weightUnit(in: book.plateInventory)
+            book.updateExercise(id) { $0.workingWeight = weight.relabelled(unit) }
             return book
 
         case .setPlate(let weight, let isOn):

@@ -131,8 +131,9 @@ real**, and nothing after that is worth doing before it.
     **Flow 5 first, because its rules are already built** —
     [the reorder handles](0044-the-reorder-handles.md),
     [deleting, and the two blocks](0045-deleting-and-the-two-blocks.md),
-    [the Re-weigh list and the two counts](0046-the-reweigh-list-and-the-two-counts.md). Only the
-    last of those needs a new rule; the other two are SwiftUI on `Action`s that landed at ticket 28.
+    [the Re-weigh list and the two counts](0046-the-reweigh-list-and-the-two-counts.md) — **all
+    three now closed, and Flow 5 with them.** The guess that only the last needed a new rule was
+    half right: its rules were already standing, and what it needed was a new *write*.
     **Then Flow 4, which needs new rules and gets them** —
     [the history screen](0047-the-history-screen.md),
     [a past Workout opened and deleted](0048-a-past-workout-opened-and-deleted.md),
@@ -761,6 +762,25 @@ real**, and nothing after that is worth doing before it.
   offers the jump and does not take it**. No new `app/checks/` harness — a copy switch and a
   one-line guard over a three-times-tested rule do not earn a fourth — but every call the two views
   added was type-checked here against the built `HoppaRules` with `DomainCopy.swift` beside it.
+
+- [The Re-weigh list, and the two warnings that count before they fire](0046-the-reweigh-list-and-the-two-counts.md)
+  — **the rules were already standing; the screen and its two doors were not.** `reweighList` and
+  both counts landed at ticket 45's *four questions* and ticket 33 had already wired the warnings,
+  so the ticket's real work was §6.6's three open ends, decided rather than asked (2026-08-27 rule):
+  **the weight is typed in an inline decimal field per row, not in §6.4's keypad sheet** — §6.6's
+  own *once at the kitchen table beats twelve times at the rack* argument kills twelve modal
+  keypads, and §5.4's closest line comes along under each row anyway; **the list is frozen while the
+  screen is open**, or a row leaves it on its first digit and the rows move under the thumb; and
+  **the second door is a banner at the top of the picker, not a sheet at launch** — the list holds
+  every Exercise with no weight, including one added on purpose last night, so a modal would ambush
+  the user with his own decision. The foot of the picker stays History's. One new `Action`,
+  `.reweigh(ExerciseID, Weight)`, because neither existing write fits: `.setWorkingWeight` needs an
+  Open Workout and clears a One-off, `.saveExercise` drags a whole sheet through the §6.6 diff —
+  and **this one accepts zero**, which is what makes a cleared chin-up able to leave the list at
+  all. It also caught a live defect the ticket did not name: **a rack unit switch left the Open
+  Workout's One-off Weights standing**, and `logSet` prefers a One-off, so the next Set would have
+  been written at the old number under the new label. 151 → **156**, plus a new
+  `app/checks/Reweigh` at **34**.
 
 ## Not yet specified
 

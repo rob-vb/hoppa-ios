@@ -511,4 +511,79 @@ struct EditTests {
         #expect(session.book.allExercises == before.allExercises)       // not one field moved
         #expect(session.book.plateInventory.enabledMicroplates.contains(kg("0.25")) == false)
     }
+
+    // MARK: - The Re-weigh list (§6.6)
+
+    @Test("The Re-weigh list writes one field, on an Exercise nobody is performing")
+    func reweighWritesTheWeightAndNothingElse() {
+        var session = Session()
+        session.send(.setPlateInventoryUnit(.lbs))
+        let before = session.stored(Ids.row)!
+
+        session.send(.reweigh(Ids.row, lbs("135")))
+
+        #expect(session.stored(Ids.row)?.workingWeight == lbs("135"))
+        // Everything the switch cleared stays cleared: this list shows one field, and it
+        // writes exactly the field it shows.
+        #expect(session.stored(Ids.row)?.increment == nil)
+        #expect(session.stored(Ids.row)?.microloadingIncrement == nil)
+        var expected = before
+        expected.workingWeight = lbs("135")
+        #expect(session.stored(Ids.row) == expected)
+        // And the row leaves the list, which is the only thing that takes it off.
+        #expect(!Rules.reweighList(in: session.book).contains(Ids.row))
+    }
+
+    @Test("Zero leaves the Re-weigh list, because a chin-up with no belt is a real answer")
+    func reweighAcceptsZero() {
+        var session = Session()
+        session.send(.setPlateInventoryUnit(.lbs))
+        #expect(Rules.reweighList(in: session.book).contains(Ids.chin))
+
+        session.send(.reweigh(Ids.chin, lbs("0")))
+
+        #expect(session.stored(Ids.chin)?.workingWeight == lbs("0"))
+        #expect(!Rules.reweighList(in: session.book).contains(Ids.chin))
+    }
+
+    @Test("A number typed on the list is stored under the unit the Exercise resolves to")
+    func reweighRelabelsToTheExercisesOwnUnit() {
+        var session = Session()
+        // The pin carries its own unit, so a list row for it prints lbs whatever the
+        // rack says. A mislabelled Weight arriving here is relabelled, never converted.
+        session.book.updateExercise(Ids.pulldown) { $0.workingWeight = nil }
+        session.send(.reweigh(Ids.pulldown, kg("120")))
+
+        #expect(session.stored(Ids.pulldown)?.workingWeight == lbs("120"))
+    }
+
+    @Test("A weight nobody owns writes nothing")
+    func reweighOnADeletedExerciseIsRefused() {
+        var session = Session()
+        let before = session.book
+        session.send(.reweigh(ExerciseID(999), kg("60")))
+
+        #expect(session.book == before)
+    }
+
+    @Test("A rack unit switch takes the Open Workout's One-off Weights with it")
+    func theUnitSwitchClearsStaleOneOffs() {
+        var session = Session()
+        session.start()
+        session.goTo(Ids.row)
+        session.send(.setOneOffWeight(kg("50")))
+        session.logSets(1)
+        session.goTo(Ids.press)
+        session.send(.setOneOffWeight(kg("20")))
+
+        session.send(.setPlateInventoryUnit(.lbs))
+
+        // The barbell row reads the rack, so its One-off is a number under a label that
+        // has moved. It goes with the Working Weight it was standing in for.
+        #expect(session.performed(Ids.row)?.oneOffWeight == nil)
+        // The Set already logged is untouched: it really was lifted at 50 kg (§2.4).
+        #expect(session.performed(Ids.row)?.sets.first?.weight == kg("50"))
+        // The Dumbbell carries its own unit and the switch never reached it.
+        #expect(session.performed(Ids.press)?.oneOffWeight == kg("20"))
+    }
 }

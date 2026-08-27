@@ -77,13 +77,17 @@ struct PlateRackScreen: View {
             // Exercise that reads its unit off the rack (§6.6).
             Button("Switch to \(unit.rawValue.uppercased())", role: .destructive) {
                 store.send(.setPlateInventoryUnit(unit))
+                // **The confirm leads to the Re-weigh list** (§6.6, ticket 0046). Only
+                // this path: `ask` sends the switch straight through when it clears
+                // nothing, and a list with no rows is a screen with nothing to say.
+                path.append(.reweigh)
             }
             Button("Cancel", role: .cancel) {}
         } message: { _ in
             Text("""
                 Every barbell, Smith, plate-loaded and bodyweight exercise loses its \
                 weight, its increment and its base weight, and every microloading \
-                increment resets. You type them again on the exercise.
+                increment resets. The next screen asks for the weights again.
                 """)
         }
     }

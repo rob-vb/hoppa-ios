@@ -1191,6 +1191,49 @@ The user throws this switch when they change gym or country, so it is rare and d
 its cost once at the kitchen table beats meeting it twelve times at the rack. Blocking the switch
 once Workouts exist was rejected: it locks a real event out of the app.
 
+**The One-off Weights in an Open Workout go with the Working Weights.** A One-off is a number for
+today in the Exercise's unit (§4.3) and a logged Set prefers it to the Working Weight, so one left
+standing through a rack switch is exactly the stale number this section exists to prevent — it
+would be written into a Set under the new label. Only the four types that read the rack; a Dumbbell
+in lbs is untouched. The Sets **already logged** are not touched and must not be: a Set records the
+weight as performed (§2.4), and those really were lifted. Found while building.
+
+##### The list has two doors, and it asks for one field
+
+§6.6 named the list and left three things open. Each was settled while building it, and each is a
+decision rather than a gap.
+
+- **The weight is typed inline, in a field per row** — not in §6.4's weight sheet. The argument for
+  this screen is that paying the cost once at the kitchen table beats meeting it twelve times at
+  the rack, and twelve full-screen keypads, each opened and dismissed, puts the twelve back. The
+  Exercise sheet is the other kitchen-table screen that asks for a Working Weight, and it asks with
+  a decimal field; this is the idiom the user already has. **§5.4's closest line comes with it**,
+  drawn under a row the moment its number parses — a weight the user's new rack cannot build is
+  precisely what a change of gym produces. **The field writes when it is left, never on the
+  keystroke**: a write per digit would send `13` to disk on the way to `135`.
+- **The list is frozen while the screen is open.** The rule is *has no Working Weight*, so a row
+  would leave the list on its first digit and the rows under the user's thumb would move. The ids
+  are read once, on open, and every one keeps its place until the screen is left. Re-entering
+  re-derives, which is the whole point of a list nobody writes down.
+- **Two doors.** The confirm leads to it, as above. The second is a **banner at the top of the
+  picker** — `3 EXERCISES HAVE NO WEIGHT` — for as long as the condition is true. Without a second
+  door a user who leaves the screen never finds it again, because nothing wrote the list down. A
+  sheet at launch was rejected: the list holds *every* Exercise with no Working Weight, including
+  one added last night, so a modal would ambush the user with a thing he did on purpose. §7.6:
+  Hoppa states its condition where the user stands. The foot of the picker stays §6.7's History
+  door.
+- **A row states what else the switch cleared, and the statement is the door to it.** The switch
+  clears the Increment and the Base Weight too, and this list shows one field. An Exercise
+  re-weighed but still without an Increment does not progress (§4.1), so the note under the name
+  reads `no base weight`, `no increment` or `no microplate`, and tapping it opens the Exercise
+  sheet. Hoppa states the condition rather than filling the field quietly.
+- **Zero is accepted here**, and it is why this screen's write is not §4.3's. Zero is a real weight
+  (§2.8) — a Bodyweight Exercise done with no belt — and it is the only true answer for a chin-up
+  the switch has just cleared. Refuse it and that row can never leave the list.
+
+> Settled at [The Re-weigh list, and the two warnings that count before they
+> fire](issues/0046-the-reweigh-list-and-the-two-counts.md).
+
 #### Switching a Microplate off strands, and says so
 
 The switch warns with the count — `3 EXERCISES USE THIS PLATE` — and the affected Exercises fall
