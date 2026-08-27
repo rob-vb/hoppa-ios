@@ -26,13 +26,25 @@ enum HarnessSeed {
     /// five flows, and a build is what the Mac session is for anyway.
     static let isEnabled = false
 
+    /// Ticket 0047 — **the second switch, and the one Flow 4 was kept for.**
+    ///
+    /// §6.7 needs weeks of Workouts to say anything: a streak of one block and a list of
+    /// one row prove that the screen draws, not that it reads. Ticket 0029 kept this file
+    /// alive for exactly that, and this is the flag that pays it off. With it on, the
+    /// starter Program is trained forward through **the shipping rules** — every Workout is
+    /// `Rules.reduce` doing what it does on the phone — so the weights climb, the reps
+    /// plateau and the streak has a hole in it, because a fixture with none proves nothing.
+    ///
+    /// It needs `isEnabled` too: it is the same seed, with more of it.
+    static let seedsHistory = false
+
     /// Returns the logbook URL, having put a starter Program there if the phone had none.
     static func prepare() -> URL {
         let url = Logbook.fileURL
         guard isEnabled else { return url }
         guard !FileManager.default.fileExists(atPath: url.path) else { return url }
         do {
-            try LogbookFile.encode(starter).write(to: url, options: [.atomic])
+            try LogbookFile.encode(seed).write(to: url, options: [.atomic])
         } catch {
             // Nothing to recover: the harness will simply show a fresh install.
             print("[harness] could not seed a Program — \(error)")
@@ -40,8 +52,20 @@ enum HarnessSeed {
         return url
     }
 
-    /// Upper A, cut down to what a two-Set proof needs. The weights are Rob's own from
-    /// `SPEC.md`'s worked examples, so the numbers on screen are recognisable.
+    /// What lands on the phone: the bare Program, or that Program sixteen weeks in.
+    private static var seed: Logbook {
+        seedsHistory ? trained(starter, weeks: 16, endingOn: Date().timeIntervalSince1970) : starter
+    }
+
+    /// `starter`, reachable from `app/checks/History` — the seed is walked on the VPS
+    /// before it ever reaches a phone.
+    static var starterBook: Logbook { starter }
+
+    /// Upper A and Lower A, cut down to what a two-Set proof needs. The weights are Rob's
+    /// own from `SPEC.md`'s worked examples, so the numbers on screen are recognisable.
+    ///
+    /// **Two Days, since ticket 0047**: a history built on one Day is a list that reads
+    /// `Upper A` fifty times, and the picker's own line has nothing to tell apart.
     private static var starter: Logbook {
         Logbook(
             nextId: 100,
@@ -65,8 +89,80 @@ enum HarnessSeed {
                                 plannedSets: 3, repRange: RepRange(8, 10),
                                 workingWeight: Weight(decimalString: "60", unit: .kg)!,
                                 increment: Weight(decimalString: "2.5", unit: .kg)!)
+                        ]),
+                        WorkoutDay(id: WorkoutDayID(3), name: "Lower A", exercises: [
+                            Exercise(
+                                id: ExerciseID(12), name: "Barbell back squat",
+                                equipment: .barbell,
+                                plannedSets: 3, repRange: RepRange(5, 8),
+                                workingWeight: Weight(decimalString: "80", unit: .kg)!,
+                                increment: Weight(decimalString: "5", unit: .kg)!),
+                            Exercise(
+                                id: ExerciseID(13), name: "Romanian deadlift",
+                                equipment: .barbell,
+                                plannedSets: 3, repRange: RepRange(8, 10),
+                                workingWeight: Weight(decimalString: "70", unit: .kg)!,
+                                increment: Weight(decimalString: "2.5", unit: .kg)!)
                         ])
                     ])
             ])
+    }
+
+    // MARK: - Sixteen weeks of it (ticket 0047)
+
+    /// Which week has no Workout in it at all, counted from the start. §6.7's strip draws
+    /// a dark block and **nothing else** for it, and a fixture where every block is lit
+    /// cannot show that.
+    static let missedWeek = 6
+    /// Which week skips one Exercise, so one row of the list carries `· 1 skipped`.
+    static let skipWeek = 11
+
+    /// Train the Program forward, Monday and Thursday, `weeks` weeks back from `endingOn`.
+    ///
+    /// **Every Workout goes through `Rules.reduce`**, the one door the phone uses, so the
+    /// progressions on screen are the progressions §4.1 actually makes. Nothing here writes
+    /// a `Workout` by hand.
+    ///
+    /// Deterministic: no clock and no randomness, so two runs seed the same book. The reps
+    /// fall short on every third session, which is what puts a plateau in the chart and a
+    /// row with no green line in the list.
+    static func trained(_ base: Logbook, weeks: Int, endingOn now: Timestamp) -> Logbook {
+        var book = base
+        let day = 86_400.0
+        // Whole days back from today, so the last session is this week and the strip ends lit.
+        let lastMonday = now - 3 * day
+        var session = 0
+
+        for week in 0..<weeks {
+            if week == missedWeek { continue }
+            let monday = lastMonday - Double((weeks - 1 - week)) * 7 * day
+            for (index, offset) in [0.0, 3.0].enumerated() {
+                var clock = monday + offset * day + 18 * 3600
+                func send(_ action: Action) {
+                    clock += 9
+                    book = Rules.reduce(book, action, at: clock)
+                }
+                let dayId = WorkoutDayID(index == 0 ? 2 : 3)
+                send(.startWorkout(programId: ProgramID(1), workoutDayId: dayId))
+                guard let open = book.openWorkout else { continue }
+
+                for position in open.exercises.indices {
+                    send(.selectExercise(index: position))
+                    // One Exercise skipped, one week, so the list has a `· 1 skipped` row.
+                    if week == skipWeek && index == 0 && position == 0 {
+                        send(.skip)
+                        continue
+                    }
+                    guard let resolved = book.openWorkout?.current
+                        .flatMap({ book.resolvedExercise($0.exerciseId) }) else { continue }
+                    // Every third session is short of the threshold, so the weight stays.
+                    let reps = session % 3 == 2 ? resolved.repRange.bottom : resolved.targetReps
+                    for _ in 0..<resolved.plannedSets { send(.logSet(reps: reps)) }
+                }
+                send(.finish)
+                session += 1
+            }
+        }
+        return book
     }
 }

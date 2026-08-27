@@ -6,8 +6,8 @@ grows until then — every screen ticket appends its own items and its own *what
 answer*, and the **What is not built yet** section at the bottom shrinks as tickets land.
 
 Items 1–38 below cover what was batches 2, 3 and 4, written 2026-08-26 against `00321d6`. Items 39
-onward are appended by each screen ticket as it lands. Still to be appended: all of Flow 4 — the
-history screen, a past Workout, the per-Exercise chart and the Exercise card's doors.
+onward are appended by each screen ticket as it lands. Still to be appended: the rest of Flow 4 — a
+past Workout opened and deleted, the per-Exercise chart, and the Exercise card's doors.
 
 **Judgment calls are marked, not asked.** Under the 2026-08-27 rule a session that would have put a
 UI question to Rob decides it instead, records why on its ticket, and lists it here as something to
@@ -390,12 +390,93 @@ so it should arrive with no project edit. **If Xcode asks about it, that is the 
 
 ---
 
+## Flow 4 — the history screen (ticket 0047, §6.7)
+
+**Two files are new**, `HistoryScreen.swift` and `Streak.swift` (in the `HoppaStore` package), and
+`HarnessSeed.swift`, `WorkoutDayPicker.swift`, `Route.swift` and `HoppaApp.swift` changed. The app
+target is a file-system synchronised group, so the new app file arrives with no project edit;
+`Streak.swift` is inside the package and is not a project file at all. **If Xcode asks about either,
+that is the finding.**
+
+**This screen needs weeks of Workouts to say anything.** Your phone has as many Workouts as you have
+walked, which is a handful — enough to prove the screen reads, not enough to prove it *looks* right.
+Item 84 is the optional way to see sixteen weeks of it, and it costs you the app's data.
+
+76. Go home to the picker and look at the **foot** of it, at the `HISTORY` row.
+    → It now reads both halves: `12 workouts · 2 weeks in a row`, where before it read the count
+    alone. **The run is dropped where it is zero** — `0 weeks in a row` is a shortfall, and §6.7
+    took the best-ever number out for that same reason. If you have not trained this week or last,
+    the row states the count only, and that is not a defect.
+
+77. Tap it. → The history screen. `‹ UPPER / LOWER` at the top, then `HISTORY`, then the streak
+    card, then the Workout list.
+
+78. **The streak card.** A big figure, `WEEKS IN A ROW` under it, then the strip of blocks, then a
+    date under each end.
+    → **One block per week, and one Workout lights it.** A week you trained four times looks
+    exactly like a week you trained once — deliberate: the question is whether you went.
+    → **No flame, no warning, no *streak lost*, and no best-ever number.** If anything on this card
+    compares you to a past you, that is the finding.
+
+79. **Judgment call — the strip starts at your first Workout.** With three weeks of training you
+    see three blocks, not three lit and thirteen dark.
+    → Fourteen dark blocks would be fourteen weeks you did not own the app. **Say whether a short
+    strip reads as unfinished**; the alternative is a full sixteen every time, and it was rejected
+    for what it implies.
+
+80. **Judgment call — a week that has not ended does not break the run.** If today is Monday or
+    Tuesday and you have not trained yet, the last block is **dark** and the figure is still the
+    run you had.
+    → Otherwise the number would fall to zero every Monday morning and climb back on your first
+    session, which reports the day of the week and not the run. **Say whether the dark last block
+    beside an unchanged figure reads as wrong.**
+
+81. **The Workout list.** Under `n WORKOUTS`, one row per finished Workout, newest first: the date
+    as `18` over `AUG` in the left column, the Workout Day's name, then `4 exercises · 13 sets`, and
+    in green, `2 WENT UP` where anything did.
+    → A Workout that moved nothing has **no green line at all**, not `0 went up`.
+    → A Workout where you skipped something reads `· 1 skipped`, plain, with no warning colour.
+    → **The Open Workout is not in the list.** Start one and come back: the list is unchanged. It
+    has been started, not done.
+
+82. **Judgment call — the year.** A row from last year reads `DEC 25` under the day instead of
+    `DEC`. Everything from this year shows the month alone.
+    → You cannot check this today unless you have a Workout from 2025. It is here so it is not
+    reported as a defect later.
+
+83. Tap any row. → `NOT BUILT YET`, naming ticket 0048. **That is the door, not the room**: opening
+    a past Workout and deleting one is the next ticket. Tap `‹` back.
+
+84. **Optional, and it wipes the app's data — sixteen weeks in one build.** Delete Hoppa from the
+    phone. In `HarnessSeed.swift` set **both** `isEnabled` and `seedsHistory` to `true`, build and
+    run.
+    → The picker holds `Upper A` and `Lower A`, and History shows **30 Workouts**, a strip of
+    **sixteen blocks with exactly one dark**, and `9 WEEKS IN A ROW`. The seed trains the Program
+    forward through the shipping rules, so the weights really climbed and some rows really did not
+    move.
+    → **This is the only way to judge whether the strip and the list look right at length.** Say so.
+    → Set both back to `false` and delete the app again before you train on it.
+
+85. **The empty state.** Only visible on a phone that has never finished a Workout, so it is a
+    fresh-install check and not a walk step: `NOTHING HERE YET`, and one line — *Finish your first
+    workout and it lands here. Every exercise gets a line as soon as it has two.*
+    → The streak card is **not** drawn at all there. A card reading `0` over sixteen dark blocks
+    was the alternative and it was rejected.
+
+86. **The first weekday is your phone's, not Hoppa's.** The strip starts weeks on Monday because
+    your phone's region does. Nothing to do here unless a block boundary looks a day out, which
+    would be the finding.
+
+---
+
 ## What is not built yet
 
 None of this is a defect.
 
-- **Flow 4 entirely** — the history list, the streak, the per-Exercise chart. An Exercise card in
-  the Program sheet opens the Exercise **sheet**, and it draws no sparkline.
+- **Flow 4, apart from the history screen.** The streak and the Workout list landed at ticket 0047.
+  **Opening a row** of that list — every Set as performed, and the delete behind its `•••` menu —
+  is ticket 0048 and says so on screen. The **per-Exercise chart** is ticket 0049, and an Exercise
+  card in the Program sheet still opens the Exercise **sheet** and draws no sparkline (ticket 0050).
 - **Flow 5 is complete.** The two warning dialogs and the Re-weigh list landed at ticket 0046,
   reorder handles at 0044, deleting an **Exercise** on its own sheet since 0035, and deleting a
   **Workout Day** at 0045.
@@ -417,8 +498,9 @@ So a failure on the Mac is toolchain drift and not code.
 
 | Suite | Count |
 | --- | --- |
-| `app/HoppaRules` — `swift test` | 156 |
-| `app/HoppaStore` — `swift test` | 36 |
+| `app/HoppaRules` — `swift test` | 168 |
+| `app/HoppaStore` — `swift test` | 49 |
 | `app/checks/UnitStash/run.sh` | 34 |
 | `app/checks/Reorder/run.sh` | 25 |
 | `app/checks/Reweigh/run.sh` | 34 |
+| `app/checks/History/run.sh` | 33 |

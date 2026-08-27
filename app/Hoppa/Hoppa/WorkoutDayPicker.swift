@@ -299,33 +299,44 @@ struct WorkoutDayPicker: View {
         }
     }
 
-    /// §6.7's first door. **The screen behind it is not built** — ticket 0032 says to say
-    /// which, and this is a live row into `NotBuiltYet`, not a disabled one.
+    /// §6.7's first door. Ticket 0047 built the room behind it.
     ///
-    /// The artboard reads `56 workouts · 9 weeks in a row`. The count is a fact the Logbook
-    /// already holds; the streak is a §6.7 rule nobody has written, so the row states the
-    /// half that is true and invents nothing.
+    /// The artboard reads `56 workouts · 9 weeks in a row`, and it reads both halves now:
+    /// ticket 0032 could only state the count, because the streak was a §6.7 rule nobody
+    /// had written. `Streak.read` is that rule, and it is the **same** call the history
+    /// screen draws its strip from — the app holds one week rule and not two.
+    ///
+    /// Its own `TimelineView`, for the reason the day rows have one: the run is counted
+    /// against the week that holds *now*, and a phone left on the picker crosses midnight.
     private var historyRow: some View {
-        Button {
-            path.append(.history)
-        } label: {
-            card {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("History")
-                        .typography(Typography.display(15))
-                        .foregroundStyle(Color.text)
-                    Text(workoutCount)
-                        .typography(Typography.meta())
-                        .foregroundStyle(Color.dimText)
+        TimelineView(.everyMinute) { timeline in
+            Button {
+                path.append(.history)
+            } label: {
+                card {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("History")
+                            .typography(Typography.display(15))
+                            .foregroundStyle(Color.text)
+                        Text(historyLine(now: timeline.date.timeIntervalSince1970))
+                            .typography(Typography.meta())
+                            .foregroundStyle(Color.dimText)
+                    }
                 }
             }
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
     }
 
-    private var workoutCount: String {
+    /// `56 workouts · 9 weeks in a row`. **The run is dropped where it is zero**, not
+    /// printed as `0 weeks in a row`: a run of nothing is the shortfall §6.7 removed the
+    /// best-ever number to avoid, and the count on its own is still true (§7.6).
+    private func historyLine(now: Timestamp) -> String {
         let count = store.logbook?.workouts.count ?? 0
-        return count == 1 ? "1 workout" : "\(count) workouts"
+        let workouts = count == 1 ? "1 workout" : "\(count) workouts"
+        let run = store.logbook.map { Streak.read($0, now: now).run } ?? 0
+        guard run > 0 else { return workouts }
+        return "\(workouts) · \(run) week\(run == 1 ? "" : "s") in a row"
     }
 
     // MARK: - What a corrupt file looks like

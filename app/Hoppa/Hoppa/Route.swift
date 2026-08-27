@@ -49,8 +49,14 @@ enum Route: Hashable {
     /// statement about one performance, and by the time it is on screen there is no Open
     /// Workout left to read.
     case summary(WorkoutID)
-    /// Flow 4, §6.7 — not scheduled. Held in the map's **Not yet specified**.
+    /// Flow 4, §6.7 — the streak and the Workout list, ticket 0047.
     case history
+    /// One finished Workout, read back weeks later — ticket 0048.
+    ///
+    /// It carries the **Workout's** id and not the Day's, for the reason `.summary` does:
+    /// a row of §6.7's list is a statement about one performance, and the Day it was
+    /// performed on has moved on since.
+    case pastWorkout(WorkoutID)
     /// §6.6's Re-weigh list — ticket 0046.
     ///
     /// It carries **nothing**, and that is the decision. The list is not a set of ids the

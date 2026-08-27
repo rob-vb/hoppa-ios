@@ -127,6 +127,11 @@ real**, and nothing after that is worth doing before it.
     build-everything-first answer above. **The fog it was waiting on has now graduated**: seven
     tickets, `0044`–`0050`, and they are the rest of the app.
 
+    **Flow 4 has started.** [The history screen](0047-the-history-screen.md) closed 2026-08-27 and
+    took the streak, the Workout list and the picker's door with it; `HANDOFF.md` grew items 76–86.
+    Three Flow 4 tickets are left, and [a past Workout opened and
+    deleted](0048-a-past-workout-opened-and-deleted.md) is now unblocked.
+
     **The route from here**, and it is the order ticket 29 set, unchanged:
     **Flow 5 first, because its rules are already built** —
     [the reorder handles](0044-the-reorder-handles.md),
@@ -781,6 +786,28 @@ real**, and nothing after that is worth doing before it.
   Workout's One-off Weights standing**, and `logSet` prefers a One-off, so the next Set would have
   been written at the old number under the new label. 151 → **156**, plus a new
   `app/checks/Reweigh` at **34**.
+- [The history screen — the streak, the Workout list, and the door at the foot of the
+  picker](0047-the-history-screen.md) — **both halves are rules, and the map's own test put them in
+  two different modules.** The Workout list is `Rules.history` in `HoppaRules`; **the streak is not
+  a rule** and `Streak` sits in `HoppaStore` beside `RelativeDay`, because a week needs a calendar,
+  a first weekday and a time zone, and two lifters in two zones may correctly disagree about which
+  week one instant fell in. The compiler settled it the way the map demands: `Calendar` is
+  unreachable in `HoppaRules`, and the thing that *would* compile there — `Int(timestamp / 604_800)`
+  — fixes every week to a Thursday in UTC, so the arithmetic that compiles is the arithmetic that
+  lies. **One week rule and not two**: `Streak.read` answers the strip, its two dates and the figure
+  in one value, and the picker's `HISTORY` row calls the same function, so it finally reads the
+  artboard's `56 workouts · 9 weeks in a row` instead of the count alone. A row's Day Name follows
+  the Summary's rule for an Exercise Name exactly — **live while the Day exists, the stored copy
+  after a delete** (§2.7). Five judgment calls decided rather than asked, all on the walk list: the
+  strip **starts at the first Workout** so a new lifter sees three blocks and not thirteen dark
+  ones; a week that has not ended **does not break the run**, or the figure would report the day of
+  the week every Monday morning; **no streak card at all** before the first Workout; the run is
+  **dropped** from the picker's row where it is zero; and the year joins the month once a date
+  leaves the current one. And **the fixture cost the map wrote down is paid**: `HarnessSeed` gained
+  a `seedsHistory` switch that trains the starter Program sixteen weeks forward **through
+  `Rules.reduce`**, so Flow 4 can be looked at against a real climb — the thing ticket 29 kept that
+  file alive for. 156 → **168**, HoppaStore 36 → **49**, and a new `app/checks/History` at **33**
+  which compiles and runs the seed itself.
 
 ## Not yet specified
 
