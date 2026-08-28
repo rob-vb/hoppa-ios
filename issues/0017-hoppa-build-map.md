@@ -912,6 +912,17 @@ real**, and nothing after that is worth doing before it.
   loud is now decided by job and not by side**, so a Dumbbell's `2 × 22.5 kg` is the big line and
   `each hand` the small one. `SPEC.md` corrected in §5.5, §7.4's hero text and §7.5.
 
+- [The block shakes while it is dragged](0054-the-shaky-drag.md) — the reorder handle, and two
+  independent causes. **The drag was measuring itself**: `DragGesture` reads `translation` in its
+  `.local` space, which for a handle inside a card that `offset(y:)` moves *by that very number* is
+  a frame-rate loop — the card flips between two positions while the finger holds still. `.global`
+  breaks it. And **the list is inside a `ScrollView`**, so a vertical drag was a competition the
+  ScrollView could win; the gesture is now `highPriorityGesture` and the list is pinned by
+  `scrollDisabled` for the drag's duration. The lock is **derived from `dragging`**, never written
+  by hand, because a ScrollView stranded at `scrollDisabled(true)` is worse than the shake.
+  `ReorderDrag` was never the suspect and is untouched — its 25 checks stayed green throughout,
+  which is exactly what that file was split out to buy.
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two

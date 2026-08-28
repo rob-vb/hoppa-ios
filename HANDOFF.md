@@ -729,6 +729,19 @@ originals rather than adding to them.
    round, which put a label in the loud slot and the number in the quiet one. If your Program has
    neither type, skip this and say so.
 
+122. **Open the Program sheet and drag a Day by its handle. Then do the same to an Exercise
+   inside a Day.**
+   → The card follows your thumb **steadily** — no flicker, no two-position judder. The rows it
+   passes slide out of its way, one place at a time, and the list itself **does not scroll** while
+   you hold the handle. Ticket [0054](issues/0054-the-shaky-drag.md).
+
+123. **If it still shakes, try it on a Day with only two or three Exercises** — short enough that
+   the list cannot scroll at all.
+   → This is the one test that splits the two causes apart. Steady on a short list but shaky on a
+   long one means the ScrollView is still taking part. Shaky on both means neither cause was it,
+   and the next suspect is written down on the ticket. **Say which of the two you saw** — it is
+   worth more than "still shaky".
+
 ## What is not built yet
 
 None of this is a defect.

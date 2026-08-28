@@ -26,8 +26,14 @@ import SwiftUI
 //   (§7.1). One imported symbol set would be a §7 decision nobody has made.
 //
 // The handle carries its own `DragGesture` and sits **beside** the row's Button rather than
-// over it, so there is no gesture to give priority to: the handle drags, the rest of the
-// card taps, and the ScrollView keeps every pixel that is neither.
+// over it: the handle drags, the rest of the card taps, and the ScrollView keeps every pixel
+// that is neither.
+//
+// **That last clause was too generous, and ticket 0054 corrects it.** The handle's pixels
+// are inside a vertical `ScrollView` at both call sites, and a vertical drag there is a
+// competition the ScrollView can win. So the drag is a `highPriorityGesture` and the
+// caller's ScrollView is pinned by `isReordering` while a handle is held — a reorder and a
+// scroll must never run at the same time.
 struct ReorderColumn<Item, Key: Hashable, Row: View>: View {
     let items: [Item]
     let id: KeyPath<Item, Key>
@@ -39,12 +45,17 @@ struct ReorderColumn<Item, Key: Hashable, Row: View>: View {
     /// The row's content, and **the position it is drawn at** — which under a finger is the
     /// previewed one, not the stored one, so a numbered list renumbers before the drop.
     let row: (Item, Int) -> Row
+    /// True while a handle is held. **The caller's ScrollView must stop scrolling on it**
+    /// — see the note on the shake below. It is reported rather than owned here because
+    /// `scrollDisabled` only works on the ScrollView itself, and this view is inside it.
+    @Binding var isReordering: Bool
 
     init(
         items: [Item],
         id: KeyPath<Item, Key>,
         rowHeight: CGFloat = 62,
         spacing: CGFloat = 6,
+        isReordering: Binding<Bool> = .constant(false),
         drop: @escaping (Key, Int) -> Void,
         @ViewBuilder row: @escaping (Item, Int) -> Row
     ) {
@@ -52,6 +63,7 @@ struct ReorderColumn<Item, Key: Hashable, Row: View>: View {
         self.id = id
         self.rowHeight = rowHeight
         self.spacing = spacing
+        self._isReordering = isReordering
         self.drop = drop
         self.row = row
     }
@@ -95,6 +107,17 @@ struct ReorderColumn<Item, Key: Hashable, Row: View>: View {
         // One tick as each row displaces, because a drag is watched by the thumb and not by
         // the eye. Haptics are not motion, so Reduce Motion does not reach this.
         .sensoryFeedback(.selection, trigger: drag?.landing)
+        // **The lock is derived, never set by hand.** Writing `isReordering` from the
+        // gesture's two callbacks would mean two places that can leave it true — and a
+        // ScrollView stuck at `scrollDisabled(true)` is a worse defect than the shake it
+        // was added to fix. `dragging` is the single truth; the lock follows it.
+        .onChange(of: dragging) { _, now in isReordering = now != nil }
+        // A cancelled gesture does not always call `onEnded`. Leaving the screen clears
+        // the drag, so a list can never come back locked.
+        .onDisappear {
+            dragging = nil
+            travel = 0
+        }
     }
 
     private func card(index: Int, item: Item) -> some View {
@@ -110,7 +133,13 @@ struct ReorderColumn<Item, Key: Hashable, Row: View>: View {
             RoundedRectangle(cornerRadius: 3)
                 .stroke(lifted ? Color.steel : Color.line, lineWidth: 1))
         // A lifted card is above the ones it passes, and casts the only shadow in the app.
-        .shadow(color: .black.opacity(lifted ? 0.45 : 0), radius: 10, y: 4)
+        //
+        // **Radius 0 and a clear colour when it is not lifted, not opacity 0.** A shadow
+        // is an offscreen blur pass, and a shadow that is merely transparent still costs
+        // one — on every card, on every frame of a drag. Ticket 0054.
+        .shadow(
+            color: lifted ? .black.opacity(0.45) : .clear,
+            radius: lifted ? 10 : 0, y: lifted ? 4 : 0)
         .zIndex(lifted ? 1 : 0)
         .offset(y: shift)
         // The dragged card follows the finger with nothing between it and the skin; the
@@ -129,8 +158,26 @@ struct ReorderColumn<Item, Key: Hashable, Row: View>: View {
         }
         .frame(width: 36, height: rowHeight)
         .contentShape(Rectangle())
-        .gesture(
-            DragGesture(minimumDistance: 2)
+        // ## The shake, and the two things that caused it (ticket 0054)
+        //
+        // **`coordinateSpace: .global`, and it is not a detail.** A `DragGesture` reports
+        // `translation` as `location - startLocation`, both read in the gesture's
+        // coordinate space — and the default, `.local`, is *this handle's* space, which
+        // sits inside the card that `offset(y:)` is moving by the very number being
+        // measured. Move the finger 10 pt: translation reads 10, the card offsets 10, and
+        // on the next event the space has moved 10 with it, so translation reads 0 and the
+        // card snaps back. **That is an oscillation at frame rate**, and it is what a shake
+        // is. The screen does not move, so `.global` cannot feed back.
+        //
+        // **`highPriorityGesture`, because this list lives in a `ScrollView`.** Both call
+        // sites scroll, and a vertical drag on a child of a vertical scroll view is a
+        // competition. Losing it half the time means the content slides under the finger
+        // while the card offsets against it — a second, independent shake, on top of a
+        // list that scrolls when the user meant to reorder. High priority settles the
+        // competition at the start; `isReordering` pins the ScrollView for the duration,
+        // because a reorder and a scroll must never run together.
+        .highPriorityGesture(
+            DragGesture(minimumDistance: 2, coordinateSpace: .global)
                 .onChanged { value in
                     if dragging == nil { dragging = key }
                     travel = value.translation.height

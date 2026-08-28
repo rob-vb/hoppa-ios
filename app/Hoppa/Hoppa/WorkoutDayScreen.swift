@@ -69,6 +69,8 @@ struct WorkoutDayScreen: View {
     /// Ticket 0035's sheet. `nil` while it is closed; the Exercise it opens on when it is
     /// an edit, and `.some(nil)` — a target with no Exercise — when it is an add.
     @State private var sheetTarget: ExerciseSheetTarget? = nil
+    /// True while a reorder handle is held, so the ScrollView stops (ticket 0054).
+    @State private var isReordering = false
 
     /// The Day **with the Program that holds it**: the header draws the Program's Name,
     /// and every Exercise resolves against the Program's Mode and the rack (§5.1).
@@ -286,7 +288,9 @@ struct WorkoutDayScreen: View {
             VStack(spacing: 6) {
                 // §6.6: the handles reorder the **Day**, and the Open Workout follows.
                 // The rule owns all of that; this hands it an id and a position.
-                ReorderColumn(items: day.exercises, id: \.id) { (id: ExerciseID, to: Int) in
+                ReorderColumn(
+                    items: day.exercises, id: \.id, isReordering: $isReordering
+                ) { (id: ExerciseID, to: Int) in
                     store.send(.moveExercise(id, to: to))
                 } row: { (exercise: Exercise, _: Int) in
                     row(exercise.resolved(in: program, inventory: rack), chart(exercise.id))
@@ -297,6 +301,9 @@ struct WorkoutDayScreen: View {
             }
         }
         .scrollBounceBehavior(.basedOnSize)
+        // Ticket 0054, and the same reason as the Program sheet: a held handle pins the
+        // list, because a reorder and a scroll must never run at the same time.
+        .scrollDisabled(isReordering)
     }
 
     /// The card's content only: `ReorderColumn` owns the card itself, and the handle on

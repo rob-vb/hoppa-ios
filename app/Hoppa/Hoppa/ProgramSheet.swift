@@ -28,6 +28,8 @@ struct ProgramSheet: View {
 
     /// The `ADD A DAY` sheet, held as the name being typed into it.
     @State private var newDay = false
+    /// True while a reorder handle is held, so the ScrollView stops (ticket 0054).
+    @State private var isReordering = false
 
     /// Read from the store on every pass, never copied into `@State`: a Day added on this
     /// screen has to appear on it, and a rename made one screen down has to arrive back.
@@ -114,7 +116,9 @@ struct ProgramSheet: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.bottom, 2)
                 }
-                ReorderColumn(items: program.days, id: \.id) { (id: WorkoutDayID, to: Int) in
+                ReorderColumn(
+                    items: program.days, id: \.id, isReordering: $isReordering
+                ) { (id: WorkoutDayID, to: Int) in
                     store.send(.moveWorkoutDay(id, to: to))
                 } row: { (day: WorkoutDay, index: Int) in
                     dayRow(index: index, day: day)
@@ -123,6 +127,10 @@ struct ProgramSheet: View {
             }
         }
         .scrollBounceBehavior(.basedOnSize)
+        // Ticket 0054: a held handle pins the list. A reorder that scrolls at the same
+        // time slides the content under the finger the card is following, which is a
+        // shake — and it is not what the user asked for either.
+        .scrollDisabled(isReordering)
     }
 
     /// The card's content only: `ReorderColumn` draws the card and the handle beside it,
