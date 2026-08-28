@@ -174,6 +174,9 @@ struct WorkoutDayPicker: View {
     /// to name one, and a History door with no Workout behind it would be furniture.
     private var firstRun: some View {
         VStack(alignment: .leading, spacing: 0) {
+            // Ticket 0057: no header on this screen, so the wordmark takes its place.
+            Wordmark(height: 22)
+                .foregroundStyle(Color.steel)
             Spacer()
             Text("Nothing here yet")
                 .typography(Typography.display(26))
@@ -187,6 +190,12 @@ struct WorkoutDayPicker: View {
 
     private func picker(_ program: Program) -> some View {
         VStack(alignment: .leading, spacing: 0) {
+            // Ticket 0057: the wordmark, 12 pt tall in the label grey, above the Program
+            // name. It is the quietest thing on the screen on purpose.
+            Wordmark(height: 12)
+                .foregroundStyle(Color.labelText)
+                .padding(.top, 4)
+                .padding(.bottom, 6)
             header(program)
             reweighBanner
             Spacer().frame(height: 8)
