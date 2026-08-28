@@ -765,6 +765,12 @@ originals rather than adding to them.
    → A small grey **grabber** at the top edge, the iOS one. Drag it down to dismiss. All eight
    sheets have it.
 
+129. **Open the app and look above the Program name on the picker.**
+   → The **HOPPA** wordmark, small and in the dim label grey. It should be the quietest thing on
+   the screen — if it pulls the eye, say so and it gets smaller or dimmer. Ticket
+   [0057](issues/0057-the-wordmark.md). To see the first-run version (larger, steel), delete the
+   app and reinstall, or skip it.
+
 ## What is not built yet
 
 None of this is a defect.

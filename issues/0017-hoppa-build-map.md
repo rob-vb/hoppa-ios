@@ -939,6 +939,11 @@ real**, and nothing after that is worth doing before it.
   colour, face, radius or layout touched. *"Mooier"* beyond that resolves as findings against
   specific screens, the way ticket 0053 did, not as a redesign.
 
+- [The wordmark, placed quietly](0057-the-wordmark.md) — Rob's `hoppa.svg`, as a template
+  image in the asset catalogue: 12 pt in `labelText` above the Program name on the picker, 22 pt
+  in `steel` on the first run. Nowhere else. No `project.pbxproj` edit, and Rob's own commit
+  shows Xcode rewriting that file with nothing but key order changed — one more clean run.
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
