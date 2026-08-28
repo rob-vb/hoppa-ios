@@ -636,8 +636,16 @@ colours, mirrored around a knurled shaft. No guide rails for the Smith, no carri
 plate-loaded machine — per-type silhouettes were rejected as needless variation.
 
 The **Base Weight is the only difference, and it lives in text**: the meta line reads
-`… · BASE 15 KG`, the caption reads `15 base + 20 + 5 + 2.5 + 1.25` on the left and
-`28.75 kg per side` on the right. A Barbell prints no Base Weight at all.
+`… · BASE 15 KG`, and the caption pairs `15 base + 20 + 5 + 2.5 + 1.25` with
+`28.75 kg per side`. A Barbell prints no Base Weight at all.
+
+**The caption stacks, and the half that says what to hang is the loud one** — corrected at
+[The weight is too big and the plates too small](issues/0053-the-hero-and-the-load-line.md),
+which is Rob's own verdict from the walk and not an artboard's. The two halves were side by side
+at 11 px each; they are now a **load line** at 17 px in full text colour over a **qualifier line**
+at 11 px dim. The strings are unchanged. Which half is loud is per Equipment Type: a Barbell and a
+stack load on the left of the table below, a Dumbbell and a belt on the right — `each hand` hangs
+nothing, so it is the qualifier there.
 
 | Type | Drawing | Caption |
 | --- | --- | --- |
@@ -646,8 +654,10 @@ The **Base Weight is the only difference, and it lives in text**: the meta line 
 | Bodyweight | The added plate face-on, hanging from a belt clip | `added weight only` / `1 × 15 kg on the belt` |
 
 **Mixed units** stack two numbers, each with its own unit label: the Working Weight big
-(`100` / `LBS`), the Microload under it at 38 px (`+1.25` / `KG`). **There is no combined total
-anywhere on the screen.**
+(`100` / `LBS`), the Microload under it (`+1.25` / `KG`). **There is no combined total anywhere
+on the screen.** The Working Weight is **64 px** and the Microload **30 px** — cut from the
+artboard's 88 and 38 at ticket 0053, in the same breath that promoted the caption. It is still the
+biggest number on the screen; §7.4 never pinned this size, only the small ones.
 
 ---
 
@@ -1582,6 +1592,12 @@ Green `#2E9E52` doubles as the **done / progression** colour.
 colours, mirrored around a knurled centre shaft, with a caption underneath giving the per-side
 sum in words and figures. It is the same drawing on all three plate-loaded Equipment Types
 (§5.5).
+
+**No collar outboard of the last plate.** Removed at
+[The weight is too big and the plates too small](issues/0053-the-hero-and-the-load-line.md): an
+8 × 40 outline in the darkest steel, sitting exactly where a fifth plate would, read as a plate on
+the phone. §7.1 rule 2 — steel is never filled — was supposed to keep the two apart and did not at
+arm's length. The **sleeve stops stay**; they are what says where the loading zone ends.
 
 ### 7.6 Copy
 

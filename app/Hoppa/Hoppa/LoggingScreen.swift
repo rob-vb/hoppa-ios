@@ -272,8 +272,16 @@ struct LoggingScreen: View {
     /// The big number, its unit, and the rule chip beside it.
     ///
     /// **Mixed units stack two numbers** (§5.5): the Working Weight big, the Microload
-    /// under it at 38 px, each with its own unit label, and **no combined total anywhere**
-    /// — Hoppa converts only inside itself.
+    /// under it, each with its own unit label, and **no combined total anywhere** — Hoppa
+    /// converts only inside itself.
+    ///
+    /// **Ticket 0053 cut the hero from 88 pt to 64, and the Microload from 38 to 30** to
+    /// keep the step between them. Rob at the walk: *"ik vind dat de tekst van het gewicht
+    /// een te grote lettertype heeft en teveel ruimte inneemt."* 88 was the artboard's, not
+    /// §7.4's — §7.4 pins the small sizes and never named this one — and the artboard is a
+    /// reference with known errors (§8.2). The Working Weight is still the hero: the next
+    /// biggest thing on the screen is the 31 pt Set number, so the step is unambiguous.
+    /// What the 24 pt buys is the block under it, which is what he actually reads.
     ///
     /// Tapping it opens ticket 0037's sheet.
     private func weightBlock(_ performed: PerformedExercise, _ exercise: ResolvedExercise) -> some View {
@@ -281,12 +289,12 @@ struct LoggingScreen: View {
             HStack(alignment: .bottom, spacing: 12) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(performedWeight(performed, exercise)?.decimalString ?? "—")
-                        .typography(Typography.display(88, tracking: -0.01))
+                        .typography(Typography.display(64, tracking: -0.01))
                         .foregroundStyle(Color.text)
                     if let micro = exercise.microload, !micro.isZero {
                         HStack(alignment: .bottom, spacing: 8) {
                             Text("+\(micro.decimalString)")
-                                .typography(Typography.display(38))
+                                .typography(Typography.display(30))
                                 .foregroundStyle(Color.steel)
                             Text(micro.unit.rawValue)
                                 .typography(Typography.label(15, tracking: 0.14))

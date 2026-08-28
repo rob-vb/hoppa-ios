@@ -140,6 +140,16 @@ real**, and nothing after that is worth doing before it.
     frontier now, as [The walk, and the findings it produces](0051-the-walk.md), the one ticket on
     this map only Rob can close. Its findings are what the fog's last entry has been waiting for.
 
+    **The walk is running, and the artboard is losing.** Two rounds of findings so far, and the
+    second is the interesting one: nothing in
+    [the weight is too big and the plates too small](0053-the-hero-and-the-load-line.md) is a bug.
+    Every one of those three screens matched its artboard and matched `SPEC.md`, and **all three
+    were wrong in the gym** — a hero sized for a poster, the useful line at footnote size, and a
+    piece of hardware that reads as a plate at arm's length. That is precisely the class of thing
+    ticket 0029 said only Rob's eyes could settle, arriving exactly where it was predicted to.
+    Expect the rest of the walk to be mostly this, and expect `SPEC.md` to keep taking corrections
+    rather than the code taking exceptions.
+
     **The walk started on 2026-08-27 and stopped at item 1.** The build failed:
     [Two files, one `PlateChip`](0052-two-files-one-plate-chip.md), one name declared in two files
     and three compiler errors from it. It is fixed and pushed, and the walk restarts at item 1.
@@ -891,6 +901,16 @@ real**, and nothing after that is worth doing before it.
   files (101 names, 30 files), plus `swiftc -parse` over all of them. It is not a type-check and
   cannot be one; it closes the class of error where two sessions cannot see each other's file,
   which is the class building ten screens before one walk makes most likely.
+
+- [The weight is too big and the plates too small](0053-the-hero-and-the-load-line.md) — the
+  walk's first three *design* findings, all on the logging screen and all one thing: **the hero was
+  answering a question Rob had not asked.** The Working Weight goes 88 → 64 px (the Microload 38 →
+  30), the plate caption goes from 11 px dim beside the sum to **a 17 px load line in full white
+  above it**, and the bar's **collar is deleted** — an 8 × 40 outline in the darkest steel, sitting
+  exactly where a fifth plate would. §7.1 rule 2 was meant to keep steel and plate apart and could
+  not carry it at that size next to that neighbour. §5.5's strings are unchanged; **which half is
+  loud is now decided by job and not by side**, so a Dumbbell's `2 × 22.5 kg` is the big line and
+  `each hand` the small one. `SPEC.md` corrected in §5.5, §7.4's hero text and §7.5.
 
 ## Not yet specified
 

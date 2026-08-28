@@ -706,6 +706,29 @@ under the map's build-everything-first rule. Item 113 is where you overrule it.
 
 ---
 
+## The walk's own findings — re-look at these
+
+Appended as Rob walks. Each one is a change already made and pushed, so these items replace the
+originals rather than adding to them.
+
+119. **Go back to the logging screen and look at the sizes.**
+   → The Working Weight is **64 px**, not 88 — it is still the biggest number on the screen, and
+   the next biggest is the 31 px Set number. The `11.3 base + 20 + 5 + 2.5` line under the drawing
+   is now **17 px in full white**, with `27.5 kg per side` under it at 11 px dim. Ticket
+   [0053](issues/0053-the-hero-and-the-load-line.md). **Say whether the load line is now big
+   enough, and whether 64 is still too big.** Both numbers are one edit away.
+
+120. **Look at the loaded bar. Count the shapes outboard of the plates.**
+   → There should be **none**. The collar is deleted. Going inward from the outermost plate you
+   should see: plates, then a taller thin **sleeve stop**, then the knurled shaft, then the mirror
+   image. If anything still reads as a fifth plate, name which one.
+
+121. **Find a Dumbbell or a Bodyweight Exercise, if your Program has one.**
+   → Its caption **swapped sides on purpose**: the big line is `2 × 22.5 kg` (or `15 kg on the belt`)
+   and the small line under it is `each hand` (or `added weight only`). §5.5 had those the other way
+   round, which put a label in the loud slot and the number in the quiet one. If your Program has
+   neither type, skip this and say so.
+
 ## What is not built yet
 
 None of this is a defect.

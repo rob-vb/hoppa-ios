@@ -52,21 +52,54 @@ struct PlateBreakdownView: View {
 
     // MARK: - The caption (§5.5)
 
-    /// Left, what goes on; right, the sum. §5.5 fixes both halves per Equipment Type, and
-    /// the **Base Weight lives here and not in the drawing** — one drawing serves all
-    /// three plate-loaded types, and the base is the only difference between them.
+    /// What goes on, big; the sum under it, small. §5.5 fixes both halves per Equipment
+    /// Type, and the **Base Weight lives here and not in the drawing** — one drawing
+    /// serves all three plate-loaded types, and the base is the only difference between
+    /// them.
+    ///
+    /// **Ticket 0053 promoted this block**, on Rob's own words at the walk: *"Ik wil de
+    /// '11.3 base + 20 + 5 + 2.5' wat nu in het klein staat veel zichtbaarder. Dat is wat
+    /// ik handig vind om te zien."* The strings are §5.5's, unchanged. What changed is the
+    /// size and the arrangement: the two halves **stack** instead of sitting side by side,
+    /// because at a size worth reading across a gym they do not both fit one line on a
+    /// 390 pt phone.
+    ///
+    /// **The loud half is the one that says what to hang, and that is not the same side
+    /// for every type.** A bar and a stack carry it on §5.5's left — the plates, the pin.
+    /// A Dumbbell and a belt carry it on the right, and their left is only a qualifier
+    /// (`each hand` loads nothing). So the two are named by job below rather than by side.
     private var caption: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(captionLeft)
+        VStack(alignment: .leading, spacing: 3) {
+            Text(loadLine)
+                .typography(Typography.listValue(17))
+                .foregroundStyle(Color.text)
+                .lineLimit(1)
+                // A six-plate bar is twice the width of Rob's. It shrinks rather than
+                // wraps: a load line that reflows changes this block's height between
+                // Exercises, and every Set row under it would move with it.
+                .minimumScaleFactor(0.6)
+            Text(qualifierLine)
                 .typography(Typography.meta(11))
                 .foregroundStyle(Color.dimText)
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
-            Spacer(minLength: 8)
-            Text(captionRight)
-                .typography(Typography.listValue(11))
-                .foregroundStyle(Color.text)
-                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// The half that says what to load.
+    private var loadLine: String {
+        switch breakdown {
+        case .bar, .stack: captionLeft
+        case .dumbbell, .bodyweight: captionRight
+        }
+    }
+
+    /// The half that qualifies it — the per-side sum, or `each hand`.
+    private var qualifierLine: String {
+        switch breakdown {
+        case .bar, .stack: captionRight
+        case .dumbbell, .bodyweight: captionLeft
         }
     }
 
@@ -188,12 +221,11 @@ struct LoadedBar: View {
     /// clipping when a heavy lift puts five plates a side on a 390 pt phone.
     private var naturalWidth: CGFloat {
         let plates = ascending.reduce(CGFloat(0)) { $0 + CGFloat(PlateGlyph.size(for: $1).width) }
-        let parts = CGFloat(ascending.count * 2 + 5)    // plates, 2 collars, 2 stops, shaft
-        return collarWidth * 2 + stopWidth * 2 + shaftWidth + plates * 2 + (parts - 1) * gap
+        let parts = CGFloat(ascending.count * 2 + 3)    // plates, 2 stops, shaft
+        return stopWidth * 2 + shaftWidth + plates * 2 + (parts - 1) * gap
     }
 
     private let gap: CGFloat = 4
-    private let collarWidth: CGFloat = 8
     private let stopWidth: CGFloat = 6
     private let shaftWidth: CGFloat = 100
 
@@ -203,7 +235,6 @@ struct LoadedBar: View {
             ZStack {
                 sleeve
                 HStack(spacing: gap) {
-                    collar
                     ForEach(Array(ascending.enumerated()), id: \.offset) { _, plate in
                         PlateFace(weight: plate)
                     }
@@ -213,7 +244,6 @@ struct LoadedBar: View {
                     ForEach(Array(ascending.reversed().enumerated()), id: \.offset) { _, plate in
                         PlateFace(weight: plate)
                     }
-                    collar
                 }
             }
             .frame(width: naturalWidth, height: geometry.size.height)
@@ -229,11 +259,18 @@ struct LoadedBar: View {
             .frame(height: 9)
     }
 
-    private var collar: some View {
-        RoundedRectangle(cornerRadius: 2)
-            .stroke(Color.collar, lineWidth: 1)
-            .frame(width: collarWidth, height: 40)
-    }
+    /// **There is no collar.** Ticket 0053, and Rob's own words at the walk: *"dat laatste
+    /// dingentje (zwart dingetje) lijkt ook net een plate. die mag weg."* It was an 8 × 40
+    /// outline outboard of the last plate, in the darkest steel on the ramp
+    /// (`lightness: 0.453`) — plate-shaped, plate-sized, and sitting exactly where a fifth
+    /// plate would. §7.1 rule 2 says steel is never filled, which is what should have kept
+    /// the two apart, and on a phone at arm's length it did not: a thin dark outline beside
+    /// four filled plates reads as one more plate, not as hardware.
+    ///
+    /// Nothing is lost by dropping it. §7.5 asks for *plates, mirrored around a knurled
+    /// centre shaft* and names no collar; the sleeve stops stay, and they are the parts that
+    /// say where the loading zone ends. `Color.collar` stays in the palette — the Dumbbell's
+    /// sleeve still wears it, where there is no plate anywhere near it to be confused with.
 
     private var sleeveStop: some View {
         RoundedRectangle(cornerRadius: 1)
