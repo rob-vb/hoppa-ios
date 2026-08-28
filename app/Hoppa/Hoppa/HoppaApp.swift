@@ -28,6 +28,9 @@ struct HoppaApp: App {
             NavigationStack(path: $path) {
                 WorkoutDayPicker(path: $path)
                     .navigationDestination(for: Route.self) { destination($0) }
+                    // Ticket 0055: hidden navigation bars switch off the edge swipe
+                    // back, on every screen. This switches it on again, once.
+                    .background(SwipeBackEnabler().frame(width: 0, height: 0))
             }
             .environment(store)
             // Dark only, and locked — settled at

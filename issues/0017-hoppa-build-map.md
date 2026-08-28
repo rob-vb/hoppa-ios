@@ -923,6 +923,13 @@ real**, and nothing after that is worth doing before it.
   `ReorderDrag` was never the suspect and is untouched — its 25 checks stayed green throughout,
   which is exactly what that file was split out to buy.
 
+- [The edge swipe that no screen allowed](0055-the-swipe-back.md) — every screen hides its
+  navigation bar (§7.4), and hiding the bar hides the back button that UIKit's pop gesture is
+  delegated to, so the left-edge swipe was off everywhere as a side effect nobody could see
+  without a thumb. A zero-sized `UIViewControllerRepresentable` on the root now owns the gesture's
+  delegate; it refuses on the root and wherever `hidesBackButton` is set, which keeps §6.5's
+  `DONE`-only Summary intact. First UIKit in the target, unproven here.
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
@@ -1001,6 +1008,15 @@ real**, and nothing after that is worth doing before it.
   ticket and it may be a pattern or may be a one-off; nobody has looked at the other screens to
   see how much of them would come out the same way, and a third home is a cost as well as a gain.
   Not sharp until a second screen wants it. Found while building.
+- **Does Hoppa look like an iOS app, and should it?** Rob, on the walk (2026-08-28): *"Ook ziet de
+  app er niet iOS native uit. Kun jij ... kijken of je het meer als een native app kunt krijgen en
+  ook ... design wat beter/mooier kan krijgen?"* This runs straight into a settled decision — §7's
+  Plate Rack language, from [Design language & visual direction](0002-design-language-and-visual-direction.md):
+  Anton, near-square radii, drawn glyphs, no SF Symbols, no system chrome. The map's rule is that a
+  settled decision stays settled unless Rob reopens it, and this may be him reopening it — or it
+  may be a handful of specific things (system sheets, list feel, haptics, the swipe that ticket
+  0055 just restored) that read as "not native" without touching the language. Not sharp until
+  Rob says which, and it is put to him as options in the session that opened it.
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.

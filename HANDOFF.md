@@ -742,6 +742,15 @@ originals rather than adding to them.
    and the next suspect is written down on the ticket. **Say which of the two you saw** — it is
    worth more than "still shaky".
 
+124. **From any pushed screen, drag from the left edge to the right.**
+   → The screen slides away and the one under it comes back, the iOS way. Try it on the Program
+   sheet, a Workout Day, the logging screen, History, a past Workout and the chart. Ticket
+   [0055](issues/0055-the-swipe-back.md).
+
+125. **Finish a Workout, and on the Summary drag from the left edge.**
+   → **Nothing happens.** §6.5 says `DONE` is the only exit, and the swipe obeys the same flag the
+   chevron does. If the Summary swipes back to the logging screen, that is a finding.
+
 ## What is not built yet
 
 None of this is a defect.
