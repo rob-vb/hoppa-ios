@@ -190,12 +190,6 @@ struct WorkoutDayPicker: View {
 
     private func picker(_ program: Program) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Ticket 0057: the wordmark, 12 pt tall in the label grey, above the Program
-            // name. It is the quietest thing on the screen on purpose.
-            Wordmark(height: 12)
-                .foregroundStyle(Color.labelText)
-                .padding(.top, 4)
-                .padding(.bottom, 6)
             header(program)
             reweighBanner
             Spacer().frame(height: 8)
@@ -225,22 +219,32 @@ struct WorkoutDayPicker: View {
 
     /// The Program's Name, and the `•••` into its sheet. §6.7's *two doors* counts the doors
     /// into **History**; this is the way into Flow 5, which §6.1 step 3 calls the hub.
+    ///
+    /// Ticket 0057, second pass, on Rob's words: the wordmark **white, top-left**, the
+    /// Program name beside it in steel and **cut off with an ellipsis** when it is long,
+    /// and a drawn gear where `•••` was.
     private func header(_ program: Program) -> some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .center, spacing: 12) {
+            Wordmark(height: 14)
+                .foregroundStyle(Color.text)
             Text(program.name)
                 .typography(Typography.display(13, tracking: 0.1))
                 .foregroundStyle(Color.steel)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .padding(.top, 2)   // Anton sits high; this lands its baseline on the mark's
             Spacer(minLength: 8)
             Button {
                 path.append(.programSheet(program.id, onboarding: false))
             } label: {
-                Text("•••")
-                    .typography(Typography.body(17))
-                    .foregroundStyle(Color.steel)
+                GearGlyph()
+                    .stroke(Color.steel, style: StrokeStyle(lineWidth: 1.5, lineJoin: .round))
+                    .frame(width: 20, height: 20)
                     .frame(width: 50, height: 50, alignment: .trailing)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.pressable)
+            .accessibilityLabel("Program settings")
         }
         .frame(height: 50)          // §7.4's smaller hit target, and the header's whole height
     }
