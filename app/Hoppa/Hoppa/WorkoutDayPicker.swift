@@ -223,30 +223,34 @@ struct WorkoutDayPicker: View {
     /// Ticket 0057, second pass, on Rob's words: the wordmark **white, top-left**, the
     /// Program name beside it in steel and **cut off with an ellipsis** when it is long,
     /// and a drawn gear where `•••` was.
+    ///
+    /// Third pass, same day: the wordmark **twice the size**, the gear on its line, and the
+    /// Program name **under** them. Two rows, so the header is no longer one 50 pt band.
     private func header(_ program: Program) -> some View {
-        HStack(alignment: .center, spacing: 12) {
-            Wordmark(height: 14)
-                .foregroundStyle(Color.text)
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .center, spacing: 12) {
+                Wordmark(height: 28)
+                    .foregroundStyle(Color.text)
+                Spacer(minLength: 8)
+                Button {
+                    path.append(.programSheet(program.id, onboarding: false))
+                } label: {
+                    GearGlyph()
+                        .stroke(Color.steel, style: StrokeStyle(lineWidth: 1.5, lineJoin: .round))
+                        .frame(width: 22, height: 22)
+                        .frame(width: 50, height: 50, alignment: .trailing)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.pressable)
+                .accessibilityLabel("Program settings")
+            }
+            .frame(height: 50)      // §7.4's smaller hit target, and the gear's whole row
             Text(program.name)
                 .typography(Typography.display(13, tracking: 0.1))
                 .foregroundStyle(Color.steel)
                 .lineLimit(1)
                 .truncationMode(.tail)
-                .padding(.top, 2)   // Anton sits high; this lands its baseline on the mark's
-            Spacer(minLength: 8)
-            Button {
-                path.append(.programSheet(program.id, onboarding: false))
-            } label: {
-                GearGlyph()
-                    .stroke(Color.steel, style: StrokeStyle(lineWidth: 1.5, lineJoin: .round))
-                    .frame(width: 20, height: 20)
-                    .frame(width: 50, height: 50, alignment: .trailing)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.pressable)
-            .accessibilityLabel("Program settings")
         }
-        .frame(height: 50)          // §7.4's smaller hit target, and the header's whole height
     }
 
     private func dayRow(_ day: WorkoutDay, now: Timestamp) -> some View {

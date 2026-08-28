@@ -54,3 +54,12 @@ are — and not on the Summary, where the count is the only hero. `HANDOFF.md` i
 
 The "quietest thing on the screen" line above no longer holds for the picker; Rob wants the
 mark seen, and it is his mark. `HANDOFF.md` item 129 rewritten.
+
+## Third pass — same day
+
+> hmmm, ok het logo mag 2x zo groot, en dan programma naam toch eronder. het logo en het
+> tandwiel icoon lijnen op elkaar uit, programma daaronder
+
+The header is **two rows**: the wordmark at 28 pt with the gear (22 pt) centred on its line,
+and the Program name under them in steel, still one line with a tail ellipsis. The 50 pt band
+is now the gear's row alone; the name adds its own line under a 6 pt gap.

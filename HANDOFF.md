@@ -766,8 +766,9 @@ originals rather than adding to them.
    sheets have it.
 
 129. **Open the app and look at the top of the picker.**
-   → Left: the **HOPPA** wordmark in white, 14 pt, with the Program name in steel beside it. Right:
-   a **drawn gear** in steel where `•••` was — tap it, the Program sheet opens. Now rename the
+   → Top row: the **HOPPA** wordmark in white, 28 pt, and on the same line at the right a **drawn
+   gear** in steel where `•••` was — the two sit level. Under them, the Program name in steel.
+   Tap the gear: the Program sheet opens. Now rename the
    Program to something long, like *Upper / Lower / Push / Pull / Legs*, and come back: the name
    **cuts off with an ellipsis** and the gear stays put. Ticket
    [0057](issues/0057-the-wordmark.md). Say if the gear's teeth read as a blob at 20 pt — the
