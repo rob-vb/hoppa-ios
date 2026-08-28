@@ -69,6 +69,7 @@ struct LoggingScreen: View {
         .sheet(item: $sheet) { which in
             sheetBody(which)
                 .presentationBackground(Color.floor)
+                .presentationDragIndicator(.visible)
         }
         .fullScreenCover(isPresented: $showingList, onDismiss: {
             guard finishAfterList else { return }
@@ -203,7 +204,7 @@ struct LoggingScreen: View {
                     .frame(width: 26, height: 50, alignment: .leading)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
             Text(workout.workoutDayName)
                 .typography(Typography.display(15, tracking: 0.06))
                 .foregroundStyle(Color.text)
@@ -216,7 +217,7 @@ struct LoggingScreen: View {
                     .frame(height: 50)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
             Button { sheet = .menu } label: {
                 Text("•••")
                     .typography(Typography.body(17))
@@ -224,7 +225,7 @@ struct LoggingScreen: View {
                     .frame(width: 34, height: 50, alignment: .trailing)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
         }
         .frame(height: 50)
     }
@@ -316,7 +317,7 @@ struct LoggingScreen: View {
             }
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     /// The weight this Exercise is performed at: a One-off Weight wins over the Working
@@ -549,12 +550,13 @@ struct LoggingScreen: View {
                 .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
                 .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     // MARK: - What the buttons do
 
     private func log(_ reps: Int) {
+        Haptic.logged()
         store.send(.logSet(reps: reps))
         pendingReps = nil
     }
@@ -588,8 +590,11 @@ struct LoggingScreen: View {
            (store.logbook?.workouts.count ?? 0) > before {
             // **Replacing** the path, not pushing onto it: §6.5 has no way back, and a
             // finished Workout has no logging screen to go back to.
+            Haptic.finished()
             path = [.summary(finished.id)]
         } else {
+            // Discarded: the Workout is gone and nothing was kept.
+            Haptic.destroyed()
             path.removeAll()
         }
     }
@@ -830,7 +835,7 @@ struct ExerciseListDrawer: View {
                             .frame(height: 50)
                             .contentShape(Rectangle())
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                 }
                 .frame(height: 50)
 
@@ -878,7 +883,7 @@ struct ExerciseListDrawer: View {
                     .stroke(index == workout.currentIndex ? Color.text : Color.line, lineWidth: 1))
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     /// The Sets logged, and nothing else. The **planned** Sets live on the Exercise and a
@@ -973,6 +978,7 @@ struct SheetStack<Content: View>: View {
             .padding(.bottom, 24)
         }
         .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
     }
 }
 
@@ -1019,7 +1025,7 @@ struct SheetRow: View {
                     .stroke(tone == .stop ? Color.stop : Color.chipBorder, lineWidth: 1))
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 }
 
@@ -1044,6 +1050,6 @@ struct SheetPrimary: View {
                 .background(Color.text)
                 .clipShape(RoundedRectangle(cornerRadius: 3))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 }

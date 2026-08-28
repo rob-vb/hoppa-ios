@@ -170,6 +170,7 @@ struct ExerciseSheet: View {
         }
         .presentationBackground(Color.floor)
         .presentationDetents([.large])
+        .presentationDragIndicator(.visible)
         // The two lives leave differently — see `close()` — and neither reading survives
         // a swipe: a drag would save an edit the user was still looking at, or throw an
         // add away without asking. One visible way out, and it is the `✕`.
@@ -240,7 +241,7 @@ struct ExerciseSheet: View {
                     .frame(width: 30, height: 50, alignment: .leading)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
             Text("\(dayName) · Exercise \(position)")
                 .typography(Typography.label(11))
                 .foregroundStyle(Color.dimText)
@@ -342,7 +343,7 @@ struct ExerciseSheet: View {
             }
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     // MARK: - The rows that make an Exercise
@@ -384,7 +385,7 @@ struct ExerciseSheet: View {
                     .frame(height: 44)
                     .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.pressable)
             }
         }
     }
@@ -416,7 +417,7 @@ struct ExerciseSheet: View {
                     .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
         }
     }
 
@@ -440,7 +441,7 @@ struct ExerciseSheet: View {
                 .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
                 .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     private var repRange: some View {
@@ -520,7 +521,7 @@ struct ExerciseSheet: View {
                 .frame(height: 44)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
         } else {
             HStack(spacing: 6) {
                 ForEach(plates, id: \.hundredths) { plate in
@@ -639,7 +640,7 @@ struct ExerciseSheet: View {
                     .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
         }
     }
 
@@ -712,7 +713,7 @@ struct ExerciseSheet: View {
                 .clipShape(RoundedRectangle(cornerRadius: 3))
                 .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     @ViewBuilder
@@ -890,6 +891,7 @@ struct ExerciseSheet: View {
 
     private func remove() {
         guard let id = target.exercise else { return }
+        Haptic.destroyed()
         store.send(.deleteExercise(id))
         dismiss()
     }
@@ -927,7 +929,7 @@ struct EquipmentChips: View {
                         .clipShape(RoundedRectangle(cornerRadius: 3))
                         .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.pressable)
             }
         }
     }

@@ -166,7 +166,7 @@ struct ProgramSheet: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     // MARK: - Program settings
@@ -190,7 +190,7 @@ struct ProgramSheet: View {
             .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     // MARK: - Plain parts
@@ -328,7 +328,7 @@ struct SettingRow: View {
             .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 }
 
@@ -366,7 +366,7 @@ struct AddRow: View {
                     .stroke(Color.chipBorder, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 }
 
@@ -420,6 +420,7 @@ struct NameSheet: View {
         }
         .presentationBackground(Color.floor)
         .presentationDetents([.height(280)])
+        .presentationDragIndicator(.visible)
         // The sheet exists to be typed into, so the keyboard arrives with it.
         .onAppear { focused = true }
     }

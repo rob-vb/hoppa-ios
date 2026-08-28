@@ -117,6 +117,7 @@ struct PastWorkoutScreen: View {
     /// **One door**, `LogbookStore.send` (ticket 26), and then off the screen: the row this
     /// was opened from no longer exists, so there is nothing left here to look at.
     private func delete() {
+        Haptic.destroyed()
         store.send(.deleteWorkout(workoutId))
         leave()
     }
@@ -299,6 +300,7 @@ struct DeleteWorkoutSheet: View {
             .padding(.bottom, 22)
         }
         .presentationDetents([.height(260)])
+        .presentationDragIndicator(.visible)
     }
 
     /// The counts are the list row's, so the confirm removes exactly what the header above
@@ -323,7 +325,7 @@ struct DeleteWorkoutSheet: View {
                     RoundedRectangle(cornerRadius: 3)
                         .stroke(fill ?? Color.line, lineWidth: 1))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 }
 

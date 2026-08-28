@@ -235,7 +235,7 @@ struct ReweighScreen: View {
                 .frame(height: 22)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
         } else {
             Text(exercise.equipment.screenName)
                 .typography(Typography.meta())

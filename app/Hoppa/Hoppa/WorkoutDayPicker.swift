@@ -47,6 +47,7 @@ struct WorkoutDayPicker: View {
         .sheet(item: $sheet) { which in
             sheetBody(which)
                 .presentationBackground(Color.floor)
+                .presentationDragIndicator(.visible)
         }
     }
 
@@ -149,7 +150,10 @@ struct WorkoutDayPicker: View {
         guard store.logbook?.openWorkout == nil else { return }
         if let finished = store.logbook?.workouts.last,
            (store.logbook?.workouts.count ?? 0) > before {
+            Haptic.finished()
             path = [.summary(finished.id)]
+        } else {
+            Haptic.destroyed()
         }
     }
 
@@ -227,7 +231,7 @@ struct WorkoutDayPicker: View {
                     .frame(width: 50, height: 50, alignment: .trailing)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
         }
         .frame(height: 50)          // §7.4's smaller hit target, and the header's whole height
     }
@@ -258,7 +262,7 @@ struct WorkoutDayPicker: View {
                 }
             }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     // MARK: - The second door to the Re-weigh list (§6.6) — ticket 0046
@@ -295,7 +299,7 @@ struct WorkoutDayPicker: View {
                     }
                 }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
         }
     }
 
@@ -324,7 +328,7 @@ struct WorkoutDayPicker: View {
                     }
                 }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
         }
     }
 

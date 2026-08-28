@@ -185,7 +185,7 @@ struct HistoryScreen: View {
             .frame(minHeight: 50)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     /// `4 exercises · 13 sets`, and `· 1 skipped` only where there was one. A skip is

@@ -930,6 +930,15 @@ real**, and nothing after that is worth doing before it.
   delegate; it refuses on the root and wherever `hidesBackButton` is set, which keeps §6.5's
   `DONE`-only Summary intact. First UIKit in the target, unproven here.
 
+- [Native behaviour, own look](0056-native-behaviour-own-look.md) — Rob asked for the app to
+  feel more like iOS and look better; that ran into §7, so it went to him as three options and
+  **he kept the Plate Rack language and asked for the behaviour**. What a native app does under
+  the thumb, and Hoppa did not: a pressed state on every button (`.plain` → `.pressable`, 43
+  sites), a tick at the moments that matter (`Haptic`: logged, finished, stepped, destroyed —
+  nine sites), a grabber on every sheet (eight), and the edge swipe from ticket 0055. Not one
+  colour, face, radius or layout touched. *"Mooier"* beyond that resolves as findings against
+  specific screens, the way ticket 0053 did, not as a redesign.
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two
@@ -1008,15 +1017,6 @@ real**, and nothing after that is worth doing before it.
   ticket and it may be a pattern or may be a one-off; nobody has looked at the other screens to
   see how much of them would come out the same way, and a third home is a cost as well as a gain.
   Not sharp until a second screen wants it. Found while building.
-- **Does Hoppa look like an iOS app, and should it?** Rob, on the walk (2026-08-28): *"Ook ziet de
-  app er niet iOS native uit. Kun jij ... kijken of je het meer als een native app kunt krijgen en
-  ook ... design wat beter/mooier kan krijgen?"* This runs straight into a settled decision — §7's
-  Plate Rack language, from [Design language & visual direction](0002-design-language-and-visual-direction.md):
-  Anton, near-square radii, drawn glyphs, no SF Symbols, no system chrome. The map's rule is that a
-  settled decision stays settled unless Rob reopens it, and this may be him reopening it — or it
-  may be a handful of specific things (system sheets, list feel, haptics, the swipe that ticket
-  0055 just restored) that read as "not native" without touching the language. Not sharp until
-  Rob says which, and it is put to him as options in the session that opened it.
 - **What happens the first time real training disagrees with the spec.** The destination is a
   working app in a gym, so this map should expect findings from the rack and have somewhere to put
   them.

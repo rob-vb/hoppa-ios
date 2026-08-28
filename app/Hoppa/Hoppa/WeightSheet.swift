@@ -88,6 +88,7 @@ struct WeightSheet: View {
             .padding(.bottom, 24)
         }
         .presentationDetents([.large])
+        .presentationDragIndicator(.visible)
     }
 
     // MARK: - The number being typed
@@ -117,7 +118,7 @@ struct WeightSheet: View {
                     .frame(height: 50)   // §7.4 hit target
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
         }
         .frame(height: 50)
     }
@@ -202,7 +203,7 @@ struct WeightSheet: View {
                 .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
                 .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     /// What one `+` is worth on anything that is not a pin: **the move the rule makes**,
@@ -239,6 +240,7 @@ struct WeightSheet: View {
     /// Steps the buffer, never below zero. The arithmetic is in hundredths, so a `+` on
     /// `72.5` cannot land on `74.99999`.
     private func nudge(_ step: Weight, _ direction: Int) {
+        Haptic.stepped()
         let base = Weight(decimalString: buffer, unit: exercise.unit) ?? .zero(exercise.unit)
         let moved = max(0, base.hundredths + direction * step.hundredths)
         buffer = Weight(hundredths: moved, unit: exercise.unit).decimalString
@@ -273,7 +275,7 @@ struct WeightSheet: View {
                 .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
                 .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     /// **A keystroke that cannot become a weight never reaches the buffer.** A `Weight` is

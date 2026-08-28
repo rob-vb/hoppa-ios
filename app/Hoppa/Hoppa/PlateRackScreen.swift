@@ -111,7 +111,7 @@ struct PlateRackScreen: View {
                         .clipShape(RoundedRectangle(cornerRadius: 3))
                         .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.pressable)
             }
         }
     }
@@ -189,7 +189,7 @@ struct PlateRackScreen: View {
             .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     /// Switching **on** is free. Switching a Microplate **off** strands every Exercise
@@ -325,7 +325,7 @@ struct MicroplateSheet: View {
                                 .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
                                 .contentShape(Rectangle())
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(.pressable)
                         }
                     }
                 }
@@ -340,6 +340,7 @@ struct MicroplateSheet: View {
             .padding(.bottom, 20)
         }
         .presentationBackground(Color.floor)
+        .presentationDragIndicator(.visible)
     }
 }
 

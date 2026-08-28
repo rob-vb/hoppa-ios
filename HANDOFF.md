@@ -751,6 +751,20 @@ originals rather than adding to them.
    → **Nothing happens.** §6.5 says `DONE` is the only exit, and the swipe obeys the same flag the
    chevron does. If the Summary swipes back to the logging screen, that is a finding.
 
+126. **Press and hold any button — a card, `LOG 12 REPS`, `DONE`, a stepper — without letting go.**
+   → It **dims and shrinks a touch** while your finger is down, and springs back when you lift.
+   Every button in the app does this now. If any button does nothing while held, name it. Ticket
+   [0056](issues/0056-native-behaviour-own-look.md).
+
+127. **Log a Set. Step a weight with `−`/`+`. Finish a Workout. Delete a past Workout.**
+   → A tick on each: a firm one on the log, a light one on each step, a double success tick as the
+   Summary lands, and a warning buzz on the delete. **Say which of the four you did not feel.**
+   Reduce Motion does not silence these, and your phone's *System Haptics* setting must be on.
+
+128. **Open any sheet — the Exercise sheet, the weight sheet, a rename.**
+   → A small grey **grabber** at the top edge, the iOS one. Drag it down to dismiss. All eight
+   sheets have it.
+
 ## What is not built yet
 
 None of this is a defect.

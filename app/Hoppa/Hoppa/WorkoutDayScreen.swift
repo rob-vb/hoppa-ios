@@ -233,7 +233,7 @@ struct WorkoutDayScreen: View {
                     .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
             if refused, let block {
                 Text(block.reason)
                     .typography(Typography.body(12, lineSpacing: 3))
@@ -249,6 +249,7 @@ struct WorkoutDayScreen: View {
     /// the row. The rule guards itself, so a refusal that reached here would leave the
     /// user on a Day that still exists — which is why the tap above never sends one.
     private func remove() {
+        Haptic.destroyed()
         store.send(.deleteWorkoutDay(workoutDayId))
         if !path.isEmpty { path.removeLast() }
     }
@@ -270,7 +271,7 @@ struct WorkoutDayScreen: View {
                     .frame(height: 50)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
         }
     }
 
@@ -343,7 +344,7 @@ struct WorkoutDayScreen: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
             if let door { chartDoor(door) }
         }
     }
@@ -370,7 +371,7 @@ struct WorkoutDayScreen: View {
             .frame(maxHeight: .infinity)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .accessibilityLabel("Chart for \(chart.name)")
     }
 

@@ -183,7 +183,7 @@ struct NameYourProgram: View {
             .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 
     /// The artboard draws five fixed chips. This draws **the rack the Logbook holds** —
@@ -253,7 +253,7 @@ struct StepHeader: View {
                     .frame(width: 30, height: 50, alignment: .leading)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
             if let label {
                 Text(label)
                     .typography(Typography.label(11))
@@ -287,6 +287,6 @@ struct PrimaryButton: View {
                 .background(Color.text)
                 .clipShape(RoundedRectangle(cornerRadius: 3))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 }
