@@ -35,3 +35,22 @@ more clean run for the fog's first entry.
 
 **Not placed:** on any pushed screen — the chevron and the Program name already say where you
 are — and not on the Summary, where the count is the only hero. `HANDOFF.md` item 129.
+
+## Second pass — Rob's correction, same day
+
+> bij de dag picker, het logo mag gewoon in het wit en die mag linksboven staan en dat
+> program-naam er naast. Als program-naam te lang is dan afkappen. Ook de "drie puntjes" als
+> settings icoon mag een tandwiel icoon zijn
+
+**Three changes to the picker header, and the first-run placement stays as it was.**
+
+- **The wordmark is white** (`text`), 14 pt, **top-left**, in the header row itself.
+- **The Program name sits beside it** in `steel`, `lineLimit(1)` with a tail ellipsis. Anton
+  sits high in its box, so it carries 2 pt of top padding to land beside the mark.
+- **The gear.** `GearGlyph` is a `Shape` — eight teeth on a ring with a hole, one `Path`,
+  stroked 1.5 pt in `steel` and never filled (§7.1 rule 2). Drawn rather than an SF Symbol,
+  because every glyph in the app is (§7.1), and Rob kept §7 at ticket 0056. It sits in the
+  same 50 pt hit target `•••` had.
+
+The "quietest thing on the screen" line above no longer holds for the picker; Rob wants the
+mark seen, and it is his mark. `HANDOFF.md` item 129 rewritten.

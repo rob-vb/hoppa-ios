@@ -765,11 +765,13 @@ originals rather than adding to them.
    → A small grey **grabber** at the top edge, the iOS one. Drag it down to dismiss. All eight
    sheets have it.
 
-129. **Open the app and look above the Program name on the picker.**
-   → The **HOPPA** wordmark, small and in the dim label grey. It should be the quietest thing on
-   the screen — if it pulls the eye, say so and it gets smaller or dimmer. Ticket
-   [0057](issues/0057-the-wordmark.md). To see the first-run version (larger, steel), delete the
-   app and reinstall, or skip it.
+129. **Open the app and look at the top of the picker.**
+   → Left: the **HOPPA** wordmark in white, 14 pt, with the Program name in steel beside it. Right:
+   a **drawn gear** in steel where `•••` was — tap it, the Program sheet opens. Now rename the
+   Program to something long, like *Upper / Lower / Push / Pull / Legs*, and come back: the name
+   **cuts off with an ellipsis** and the gear stays put. Ticket
+   [0057](issues/0057-the-wordmark.md). Say if the gear's teeth read as a blob at 20 pt — the
+   count and the stroke are two numbers.
 
 ## What is not built yet
 
