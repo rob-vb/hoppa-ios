@@ -257,8 +257,6 @@ struct ProgramSettings: View {
     private func rows(_ program: Program) -> some View {
         VStack(spacing: 6) {
             SettingRow(label: "Name", value: program.name) { renaming = true }
-            // One tap cycles the three modes. A picker for three values is still
-            // ceremony when the row already names the one that is on.
             SettingRow(label: "Weight unit", value: program.defaultWeightUnit.rawValue) {
                 store.send(.setProgramDefaultWeightUnit(
                     programId, program.defaultWeightUnit == .kg ? .lbs : .kg))

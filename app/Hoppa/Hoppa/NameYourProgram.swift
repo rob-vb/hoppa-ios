@@ -123,7 +123,8 @@ struct NameYourProgram: View {
 
     private var assumptions: some View {
         VStack(spacing: 6) {
-            // One tap cycles it. Three values, and a picker for three is still ceremony.
+            // One tap flips it, because there are two values and a picker for two values
+            // is ceremony.
             assumptionRow("Weight unit", value: draft.defaultWeightUnit(rack: rack.unit).rawValue) {
                 draft.weightUnit = draft.defaultWeightUnit(rack: rack.unit) == .kg ? .lbs : .kg
                 draft.unitChosenByHand = true
