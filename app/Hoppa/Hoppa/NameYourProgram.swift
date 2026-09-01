@@ -290,3 +290,39 @@ struct PrimaryButton: View {
         .buttonStyle(.pressable)
     }
 }
+
+/// A door at the foot of a list. History on the picker and Program settings on the hub
+/// are the same control: filled card, chip border, 64 pt, title plus a quieter line.
+struct DoorRow: View {
+    let title: String
+    var detail: String? = nil
+    let act: () -> Void
+
+    var body: some View {
+        Button(action: act) {
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(title)
+                        .typography(Typography.display(15))
+                        .foregroundStyle(Color.text)
+                    if let detail {
+                        Text(detail)
+                            .typography(Typography.meta())
+                            .foregroundStyle(Color.dimText)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Text("›")
+                    .typography(Typography.body(13))
+                    .foregroundStyle(Color.labelText)
+            }
+            .padding(.horizontal, 14)
+            .frame(height: 64)
+            .background(Color.card)
+            .clipShape(RoundedRectangle(cornerRadius: 3))
+            .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.pressable)
+    }
+}

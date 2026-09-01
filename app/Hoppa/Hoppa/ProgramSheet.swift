@@ -175,22 +175,12 @@ struct ProgramSheet: View {
     /// onboarding: until this landed, `Route.plateRack(nil)` had no way in and the rack's
     /// own `DONE` branch was unreachable.
     private var settingsRow: some View {
-        Button { path.append(.programSettings(programId)) } label: {
-            HStack(spacing: 12) {
-                Text("Program settings — unit, progression, plate rack")
-                    .typography(Typography.body(12))
-                    .foregroundStyle(Color.dimText)
-                Spacer(minLength: 8)
-                Text("›")
-                    .typography(Typography.body(15))
-                    .foregroundStyle(Color.labelText)
-            }
-            .padding(.horizontal, 14)
-            .frame(height: 52)
-            .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
-            .contentShape(Rectangle())
+        DoorRow(
+            title: "Program settings",
+            detail: "unit, progression, plate rack"
+        ) {
+            path.append(.programSettings(programId))
         }
-        .buttonStyle(.pressable)
     }
 
     // MARK: - Plain parts

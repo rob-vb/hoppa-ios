@@ -331,31 +331,12 @@ struct WorkoutDayPicker: View {
     /// against the week that holds *now*, and a phone left on the picker crosses midnight.
     private var historyRow: some View {
         TimelineView(.everyMinute) { timeline in
-            Button {
+            DoorRow(
+                title: "History",
+                detail: historyLine(now: timeline.date.timeIntervalSince1970)
+            ) {
                 path.append(.history)
-            } label: {
-                HStack(spacing: 12) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("History")
-                            .typography(Typography.display(15))
-                            .foregroundStyle(Color.text)
-                        Text(historyLine(now: timeline.date.timeIntervalSince1970))
-                            .typography(Typography.meta())
-                            .foregroundStyle(Color.dimText)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    Text("›")
-                        .typography(Typography.body(13))
-                        .foregroundStyle(Color.labelText)
-                }
-                .padding(.horizontal, 14)
-                .frame(height: 64)
-                .background(Color.card)
-                .clipShape(RoundedRectangle(cornerRadius: 3))
-                .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
-                .contentShape(Rectangle())
             }
-            .buttonStyle(.pressable)
         }
     }
 
