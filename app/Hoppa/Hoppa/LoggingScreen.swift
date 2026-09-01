@@ -1004,19 +1004,26 @@ struct SheetRow: View {
 
     var body: some View {
         Button(action: act) {
-            HStack(spacing: 10) {
-                if centred { Spacer(minLength: 0) }
-                Text(title)
-                    .typography(Typography.body(15))
-                    .foregroundStyle(tone == .stop ? Color.stop : Color.text)
-                Spacer(minLength: 8)
-                if let sub, !centred {
-                    Text(sub)
-                        .typography(Typography.meta(11))
-                        .foregroundStyle(Color.dimText)
-                        .lineLimit(1)
+            Group {
+                if centred {
+                    Text(title)
+                        .typography(Typography.body(15))
+                        .foregroundStyle(tone == .stop ? Color.stop : Color.text)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                } else {
+                    HStack(spacing: 10) {
+                        Text(title)
+                            .typography(Typography.body(15))
+                            .foregroundStyle(tone == .stop ? Color.stop : Color.text)
+                        Spacer(minLength: 8)
+                        if let sub {
+                            Text(sub)
+                                .typography(Typography.meta(11))
+                                .foregroundStyle(Color.dimText)
+                                .lineLimit(1)
+                        }
+                    }
                 }
-                if centred { Spacer(minLength: 0) }
             }
             .padding(.horizontal, 16)
             .frame(height: 54)

@@ -91,13 +91,14 @@ A user may hold more than one Program. Exercise names are read across **all** of
 ### 2.3 Exercise
 
 Ten fields. Two of them are conditional on Equipment Type, and one row on the sheet swaps with
-the Progression Mode, so the user never sees more than nine at once (§6.2).
+the Progression Mode. Weight Unit is printed beside Working Weight, so the user never sees more
+than eight fields at once (§6.2).
 
 | # | Field | Shown for | Notes |
 | --- | --- | --- | --- |
 | 1 | Name | always | Free text. A **label, not an identity** — see §2.7. |
 | 2 | Equipment Type | always | One of seven; see §2.6. |
-| 3 | Weight Unit | always | **Locked** to the Plate Inventory's unit for the four types loaded off the user's own rack — Barbell, Smith, Plate-loaded and Bodyweight — with a steel lock line stating why. |
+| 3 | Weight Unit | always | Printed beside Working Weight. Steel text for the four types loaded off the user's own rack — Barbell, Smith, Plate-loaded and Bodyweight — and for an add sheet before a chip is picked. Dumbbell, stack and cable get a one-tap chip. No lock line. |
 | 4 | Sets | always | Carries over from the previous Exercise. |
 | 5 | Rep Range | always | Carries over from the previous Exercise. |
 | 6 | Working Weight | always | Any number the user types. Bodyweight: added weight only. **May be unset**: a new Exercise has none until the user types one, and §6.6 clears it back to unset. Unset is not zero — see §2.8. |
@@ -738,9 +739,10 @@ Behaviour of the sheet:
   `INCREMENT · +2.5 KG`, or `MICROLOADING INCREMENT · 0.25 KG MICROPLATE · +0.5 KG ON THE BAR`.
   With no Microplate switched on, that second row reads `NO MICROPLATES · SET UP YOUR RACK` and
   taps through to the Microplate group of the Plate Inventory (§5.2).
-- The Weight Unit is **locked** for the four types loaded off the user's own rack — Barbell,
-  Smith, Plate-loaded and Bodyweight — with a steel lock line saying why. The other three carry
-  their own, and the row flips it in one tap: two values do not need a picker (§5.2).
+- Weight Unit is printed beside Working Weight. The four types loaded off the user's own rack —
+  Barbell, Smith, Plate-loaded and Bodyweight — show it as steel text. The other three carry
+  their own, and a chip flips it in one tap: two values do not need a picker (§5.2). No lock
+  line.
 
 **Five things the sheet does that no artboard shows.** Found while building
 ([The Exercise sheet, and the name field](issues/0035-the-exercise-sheet.md)):
@@ -774,18 +776,19 @@ Behaviour of the sheet:
   `…` types any number (§2.3). Nothing is pre-selected: an Increment the user did not pick is a
   weight Hoppa invented.
 
-**The tap budget — the ticket's core question. 15 taps per Exercise is the floor, 422 for the
-Program** — 14 and 400 until `SAVE AND ADD ANOTHER` became `SAVE`, above:
+**The tap budget — the ticket's core question. 14 taps per Exercise is the floor, 400 for the
+Program.** `SAVE AND ADD ANOTHER` becoming `SAVE` added a tap; Weight Unit leaving the add path
+as its own row takes that tap back.
 
 | Step | Taps |
 | --- | --- |
 | Program name and the three assumptions | 16 |
 | Plate rack — standard kg, one confirm | 3 |
 | 4 Workout Days, named | 40 |
-| 22 Exercises at 15 taps each | 330 |
+| 22 Exercises at 14 taps each | 308 |
 | Base Weight on the 5 machine Exercises | 15 |
 | Rep Range changed on 6 of them | 18 |
-| **Total** | **422** |
+| **Total** | **400** |
 
 Model A's artboards stay in `design/0006-onboarding/` (`DayA`, `DayAFilled`, `DetailA`, `DayB`),
 off the canvas, as the record of the choice.

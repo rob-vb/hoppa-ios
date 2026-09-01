@@ -17,13 +17,15 @@ import HoppaRules
 /// a `Weight` and has to survive a flip like any other. And text carries no unit label, so
 /// nothing in here can go stale — the unit is the key it is filed under, and nothing else.
 ///
-/// The `…` chip rides along because it is part of the same answer: a custom Increment that
-/// comes back to a row of offer chips is not the row the user left.
+/// The two `…` chips ride along because they are part of the same answer: a custom
+/// Increment or Stack Step that comes back to a row of offer chips is not the row the
+/// user left.
 struct TypedWeights: Equatable {
     var working = ""
     var increment = ""
     var stack = ""
     var incrementTyped = false
+    var stackTyped = false
 
     var isEmpty: Bool { working.isEmpty && increment.isEmpty && stack.isEmpty }
 }
@@ -33,7 +35,7 @@ struct TypedWeights: Equatable {
 /// §6.6 takes the Working Weight, the Increment and the Stack Step off the screen when the
 /// unit the Exercise resolves to moves, and the save writes that emptiness — on an edit
 /// sheet, closing *is* the save (§6.2) and there is no cancel, so one wrong tap on the
-/// unit row was the last word on three numbers.
+/// unit chip was the last word on three numbers.
 ///
 /// **A file per unit, and not one memory of the unit at open.** After a flip and a retype
 /// two numbers compete for the same field, and *which unit was it typed in* is the only
