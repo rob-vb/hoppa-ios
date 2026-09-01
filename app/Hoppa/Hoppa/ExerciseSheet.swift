@@ -79,7 +79,8 @@ struct ExerciseSheet: View {
     private enum ExerciseSheetMetrics {
         static let nameHeight: CGFloat = 52
         static let nameInput: CGFloat = 19
-        static let rowMinHeight: CGFloat = 48
+        static let rowMinHeight: CGFloat = 56
+        static let rowVerticalPadding: CGFloat = 8
         static let weightMinWidth: CGFloat = 72
         static let repWidth: CGFloat = 56
         static let customFieldWidth: CGFloat = 132
@@ -788,6 +789,7 @@ struct ExerciseSheet: View {
             Spacer(minLength: 8)
             content()
         }
+        .padding(.vertical, ExerciseSheetMetrics.rowVerticalPadding)
         .frame(minHeight: ExerciseSheetMetrics.rowMinHeight)
         .overlay(alignment: .bottom) { Rectangle().fill(Color.line).frame(height: 1) }
     }
