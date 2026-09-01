@@ -334,7 +334,7 @@ struct WorkoutDayPicker: View {
             Button {
                 path.append(.history)
             } label: {
-                card {
+                HStack(spacing: 12) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("History")
                             .typography(Typography.display(15))
@@ -343,7 +343,17 @@ struct WorkoutDayPicker: View {
                             .typography(Typography.meta())
                             .foregroundStyle(Color.dimText)
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    Text("›")
+                        .typography(Typography.body(13))
+                        .foregroundStyle(Color.labelText)
                 }
+                .padding(.horizontal, 14)
+                .frame(height: 64)
+                .background(Color.card)
+                .clipShape(RoundedRectangle(cornerRadius: 3))
+                .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
+                .contentShape(Rectangle())
             }
             .buttonStyle(.pressable)
         }
@@ -379,7 +389,7 @@ struct WorkoutDayPicker: View {
 
     // MARK: - Plain parts
 
-    /// The outlined row the artboard uses for a Day, for History and for an Exercise card:
+    /// The outlined row the artboard uses for a Day and for an Exercise card:
     /// a `line` border on the floor, radius 3 (§7.4), and never under 50 pt tall.
     private func card<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
         HStack(spacing: 12) {

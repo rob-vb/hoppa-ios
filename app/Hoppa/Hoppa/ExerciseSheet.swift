@@ -76,6 +76,18 @@ struct ExerciseSheet: View {
 
     private enum Field: Hashable { case name, working, increment, base, stack, bottom, top }
 
+    private enum ExerciseSheetMetrics {
+        static let nameHeight: CGFloat = 52
+        static let nameInput: CGFloat = 19
+        static let rowMinHeight: CGFloat = 48
+        static let weightMinWidth: CGFloat = 72
+        static let repWidth: CGFloat = 56
+        static let customFieldWidth: CGFloat = 132
+        static let blockSpacer: CGFloat = 12
+        static let lockedUnitSize: CGFloat = 13
+        static let chipMinWidth: CGFloat = 44
+    }
+
     init(target: ExerciseSheetTarget, initial: ExerciseDraft, carriedOver: Bool) {
         self.target = target
         self.carriedOver = carriedOver
@@ -107,19 +119,15 @@ struct ExerciseSheet: View {
         draft.modeOverride ?? programMode
     }
 
-    /// **The unit the Exercise resolves to** (§5.1) — the rack's for the four types loaded
-    /// off it, its own for the other three. Before an Equipment Type is picked there is
-    /// nothing to resolve, so the sheet shows the Program's default, which is what §2.1
-    /// keeps that default for.
-    private var unit: WeightUnit {
-        guard equipmentChosen else { return draft.ownWeightUnit }
-        return draft.equipment.takesUnitFromInventory ? rack.unit : draft.ownWeightUnit
+    /// **The unit the Exercise resolves to** (§5.1).
+    private var unitTag: UnitTag {
+        Rules.unitTag(
+            equipment: equipmentChosen ? draft.equipment : nil,
+            own: draft.ownWeightUnit,
+            rack: rack.unit)
     }
 
-    /// True where §2.3 locks the Weight Unit row: you cannot load a plate you do not own.
-    private var unitIsLocked: Bool {
-        equipmentChosen && draft.equipment.takesUnitFromInventory
-    }
+    private var unit: WeightUnit { unitTag.unit }
 
     /// §2.6's one refused combination: Microloading on a Dumbbell in the other unit. No
     /// pin to hang a plate on, and no Stack Step to roll it into.
@@ -147,13 +155,13 @@ struct ExerciseSheet: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
                         nameBlock
-                        Spacer().frame(height: 16)
+                        Spacer().frame(height: ExerciseSheetMetrics.blockSpacer)
                         Text("Equipment type")
                             .typography(Typography.label(10.5))
                             .foregroundStyle(equipmentIsMissing ? Color.stop : Color.labelText)
                         Spacer().frame(height: 8)
                         EquipmentChips(chosen: equipmentChosen ? draft.equipment : nil, pick: pick)
-                        Spacer().frame(height: 16)
+                        Spacer().frame(height: ExerciseSheetMetrics.blockSpacer)
                         fields
                         Spacer().frame(height: 12)
                         notes
@@ -230,10 +238,10 @@ struct ExerciseSheet: View {
             // under (§2.4).
             Text("It leaves the program from today. Finished workouts keep the sets you logged.")
         }
-        // The unit is derived, so it can move without the user touching the unit row —
-        // one tap on a chip is enough. §6.6 clears the three fields that were typed in
-        // the old unit, and the sheet does it where the user can see it happen.
-        .onChange(of: unit) { clearForUnitChange() }
+        // The unit is derived, so it can move without a flip — one tap on a chip is
+        // enough. §6.6 clears the three fields that were typed in the old unit, and the
+        // sheet does it where the user can see it happen.
+        .onChange(of: unitTag.unit) { clearForUnitChange() }
     }
 
     // MARK: - The header
@@ -280,7 +288,7 @@ struct ExerciseSheet: View {
 
     private var nameField: some View {
         TextField("", text: $draft.name)
-            .typography(Typography.input(22))
+            .typography(Typography.input(ExerciseSheetMetrics.nameInput))
             .foregroundStyle(Color.text)
             .textInputAutocapitalization(.words)
             .autocorrectionDisabled()
@@ -290,7 +298,7 @@ struct ExerciseSheet: View {
             .onChange(of: draft.name) { nameIsMissing = false }
             .onSubmit { focus = nil }
             .padding(.horizontal, 14)
-            .frame(height: 60)
+            .frame(height: ExerciseSheetMetrics.nameHeight)
             .overlay(
                 RoundedRectangle(cornerRadius: 3)
                     .stroke(nameIsMissing ? Color.stop : Color.text, lineWidth: 1.5))
@@ -328,7 +336,7 @@ struct ExerciseSheet: View {
                 }
                 .background(Color.card)
                 .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
-                .offset(y: 66)
+                .offset(y: ExerciseSheetMetrics.nameHeight + 6)
             }
         }
     }
@@ -365,7 +373,7 @@ struct ExerciseSheet: View {
         VStack(spacing: 0) {
             if equipmentChosen, draft.equipment.takesBaseWeight {
                 row("Base weight") {
-                    weightBox($baseText, field: .base, width: 78) { draft.baseWeight = $0 }
+                    weightBox($baseText, field: .base, width: ExerciseSheetMetrics.weightMinWidth) { draft.baseWeight = $0 }
                 }
             }
             if equipmentChosen, draft.equipment.hasPin {
@@ -379,11 +387,16 @@ struct ExerciseSheet: View {
                     ) { draft.stackStep = $0 }
                 }
             }
-            row("Weight unit") { unitControl }
             row("Sets", note: carriedOver && isAdd ? "Carried over" : nil) { setsStepper }
             row("Rep range", note: carriedOver && isAdd ? "Carried over" : nil) { repRange }
             row("Working weight") {
-                weightBox($workingText, field: .working, width: 78) { draft.workingWeight = $0 }
+                HStack(spacing: 8) {
+                    weightBox(
+                        $workingText, field: .working,
+                        width: ExerciseSheetMetrics.weightMinWidth
+                    ) { draft.workingWeight = $0 }
+                    unitTagView
+                }
             }
             incrementRow
             row("Progression") {
@@ -406,28 +419,24 @@ struct ExerciseSheet: View {
 
     /// One tap flips it, because there are two values and a picker for two values is
     /// ceremony (§5.2) — but only where the Exercise owns its unit. For Barbell, Smith,
-    /// plate-loaded and Bodyweight the row is **locked** and the note below says why
-    /// (§2.3).
+    /// plate-loaded and Bodyweight the letters are steel, not a control: you cannot load
+    /// a plate you do not own (§2.3).
     @ViewBuilder
-    private var unitControl: some View {
-        if unitIsLocked {
-            HStack(spacing: 8) {
-                Text(unit.rawValue)
-                    .typography(Typography.display(17, tracking: 0.03))
-                    .foregroundStyle(Color.steel)
-                Text("Locked")
-                    .typography(Typography.label(9, tracking: 0.12))
-                    .foregroundStyle(Color.labelText)
-            }
-            .frame(height: 44)
-        } else {
+    private var unitTagView: some View {
+        switch unitTag {
+        case .locked(let unit):
+            Text(unit.rawValue)
+                .typography(Typography.display(ExerciseSheetMetrics.lockedUnitSize, tracking: 0.03))
+                .foregroundStyle(Color.steel)
+                .frame(height: 44)
+        case .own(let unit):
             Button {
                 draft.ownWeightUnit = unit == .kg ? .lbs : .kg
             } label: {
                 Text(unit.rawValue)
                     .typography(Typography.display(17, tracking: 0.03))
                     .foregroundStyle(Color.text)
-                    .frame(minWidth: 56, minHeight: 44)
+                    .frame(minWidth: ExerciseSheetMetrics.chipMinWidth, minHeight: 44)
                     .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
                     .contentShape(Rectangle())
             }
@@ -504,25 +513,13 @@ struct ExerciseSheet: View {
     /// are the numbers printed on it. The converted kg column on an lbs stack
     /// (2.3, 4.5, 6.8, 11.3) is not one of them: that machine is lbs.
     private var offeredIncrements: [Weight] {
-        equipmentChosen && draft.equipment.hasPin ? offeredStackSteps : offeredBarIncrements
+        equipmentChosen && draft.equipment.hasPin
+            ? Rules.stackStepOffers(in: unit)
+            : Rules.barIncrementOffers(in: unit)
     }
 
-    /// What a barbell, Smith, plate-loaded machine, dumbbell or belt actually hangs.
-    private var offeredBarIncrements: [Weight] {
-        switch unit {
-        case .kg: [.kg(hundredths: 125), .kg(hundredths: 250), .kg(hundredths: 500)]
-        case .lbs: [.lbs(hundredths: 250), .lbs(hundredths: 500), .lbs(hundredths: 1000)]
-        }
-    }
-
-    /// The fixed jump of a selectorized stack. Identical plates, one pin hole each,
-    /// labelled 5 · 10 · 15 · 20 · 25. 5 and 10 in both units, because that is the
-    /// step the pin actually makes — never 1.25 kg.
     private var offeredStackSteps: [Weight] {
-        switch unit {
-        case .kg: [.kg(hundredths: 500), .kg(hundredths: 1000)]
-        case .lbs: [.lbs(hundredths: 500), .lbs(hundredths: 1000)]
-        }
+        Rules.stackStepOffers(in: unit)
     }
 
     /// The offer chips stay on screen. A stored number that is not an offer used to
@@ -538,20 +535,24 @@ struct ExerciseSheet: View {
         write: @escaping (Weight?) -> Void
     ) -> some View {
         let custom = typed.wrappedValue || (value.map { !offers.contains($0) } ?? false)
-        HStack(spacing: 6) {
-            ForEach(offers, id: \.hundredths) { offer in
-                chip(offer.decimalString, on: !custom && value == offer) {
-                    typed.wrappedValue = false
-                    write(offer)
-                    text.wrappedValue = offer.decimalString
+        VStack(alignment: .trailing, spacing: 6) {
+            HStack(spacing: 6) {
+                ForEach(offers, id: \.hundredths) { offer in
+                    chip(offer.decimalString, on: !custom && value == offer) {
+                        typed.wrappedValue = false
+                        write(offer)
+                        text.wrappedValue = offer.decimalString
+                    }
+                }
+                chip("…", on: custom) {
+                    typed.wrappedValue = true
+                    focus = field
                 }
             }
-            chip("…", on: custom) {
-                typed.wrappedValue = true
-                focus = field
-            }
             if custom {
-                weightBox(text, field: field, width: 62, keep: write)
+                weightBox(
+                    text, field: field,
+                    width: ExerciseSheetMetrics.customFieldWidth, keep: write)
             }
         }
     }
@@ -655,10 +656,8 @@ struct ExerciseSheet: View {
             if let text = stash.note(showing: unit) {
                 note(text)
             }
-            if unitIsLocked {
-                // The artboard's lock line, without its padlock: no SF Symbols (ticket
-                // 0034), and the sentence carries the meaning on its own.
-                note("The unit is \(unit.rawValue), from your plate rack. \(draft.equipment.screenName) exercises cannot use the other unit.")
+            if let text = Rules.exceptionNote(tag: unitTag, rack: rack.unit) {
+                note(text)
             }
             if !equipmentChosen {
                 note("Base weight appears as soon as you pick smith or plate-loaded.")
@@ -710,7 +709,7 @@ struct ExerciseSheet: View {
     }
 
     private func countBox(_ text: Binding<String>, field: Field) -> some View {
-        typedBox(text, field: field, width: 60, decimal: false) { _ in }
+        typedBox(text, field: field, width: ExerciseSheetMetrics.repWidth, decimal: false) { _ in }
     }
 
     private func typedBox(
@@ -789,7 +788,7 @@ struct ExerciseSheet: View {
             Spacer(minLength: 8)
             content()
         }
-        .frame(minHeight: 58)
+        .frame(minHeight: ExerciseSheetMetrics.rowMinHeight)
         .overlay(alignment: .bottom) { Rectangle().fill(Color.line).frame(height: 1) }
     }
 
@@ -828,10 +827,10 @@ struct ExerciseSheet: View {
     /// type has the row, so it survives a change of type the way §2.3 asks.
     ///
     /// **The numbers are put away, not destroyed** (ticket 0043). An edit sheet has no
-    /// cancel — closing *is* the save (§6.2) — so one mis-tap on the unit row used to
+    /// cancel — closing *is* the save (§6.2) — so one mis-tap on the unit chip used to
     /// destroy three numbers with no way back. `UnitStash` files them under the unit they
     /// were typed in and hands back whatever was filed under the unit arriving; tapping
-    /// the row again is a full undo. The sheet keeps none of that reasoning — it hands
+    /// the chip again is a full undo. The sheet keeps none of that reasoning — it hands
     /// over what is on the screen and draws what comes back.
     private func clearForUnitChange() {
         // **The label moves first, and it moves whether or not anything was put away.**
@@ -847,7 +846,7 @@ struct ExerciseSheet: View {
             from: leaving, to: unit,
             onScreen: TypedWeights(
                 working: workingText, increment: incrementText, stack: stackText,
-                incrementTyped: incrementTyped)))
+                incrementTyped: incrementTyped, stackTyped: stackTyped)))
     }
 
     /// Put a filed set of numbers on the screen, in the unit the sheet now shows. The
@@ -859,6 +858,7 @@ struct ExerciseSheet: View {
         incrementText = typed.increment
         stackText = typed.stack
         incrementTyped = typed.incrementTyped
+        stackTyped = typed.stackTyped
         draft.workingWeight = weight(typed.working)
         draft.increment = weight(typed.increment)
         draft.stackStep = weight(typed.stack)
@@ -965,8 +965,6 @@ struct ExerciseSheet: View {
 
 /// Seven chips that wrap, in `SPEC.md` §2.6's own order: the four types loaded off the
 /// user's own rack first, then the three that carry the unit the machine is marked with.
-/// That grouping is the lock rule made visible — the first four lock the Weight Unit row,
-/// the last three do not.
 ///
 /// `chosen` is an `Optional` because **the Equipment Type starts empty** (§6.2): on an add
 /// no chip is lit until the user picks one.
