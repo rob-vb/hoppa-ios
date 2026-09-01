@@ -500,7 +500,7 @@ struct ExerciseSheet: View {
     /// number at all, which is what `…` is for.
     ///
     /// A pin is not a bar. The 1.25 / 2.5 / 5 kg chips are plates you hang; a stack
-    /// jumps by the plate it is built from — 5 or 10 lbs, 2.5 or 5 kg — and those
+    /// jumps by the plate it is built from — 5 or 10 lbs, 5 or 10 kg — and those
     /// are the numbers printed on it. The converted kg column on an lbs stack
     /// (2.3, 4.5, 6.8, 11.3) is not one of them: that machine is lbs.
     private var offeredIncrements: [Weight] {
@@ -516,15 +516,18 @@ struct ExerciseSheet: View {
     }
 
     /// The fixed jump of a selectorized stack. Identical plates, one pin hole each,
-    /// labelled 5 · 10 · 15 · 20 · 25 — never 1.25 kg.
+    /// labelled 5 · 10 · 15 · 20 · 25. 5 and 10 in both units, because that is the
+    /// step the pin actually makes — never 1.25 kg.
     private var offeredStackSteps: [Weight] {
         switch unit {
-        case .kg: [.kg(hundredths: 250), .kg(hundredths: 500)]
+        case .kg: [.kg(hundredths: 500), .kg(hundredths: 1000)]
         case .lbs: [.lbs(hundredths: 500), .lbs(hundredths: 1000)]
         }
     }
 
-    /// Chips, or a field once `…` is tapped or the stored number is not an offer.
+    /// The offer chips stay on screen. A stored number that is not an offer used to
+    /// replace them with a field, so a stack whose step was already typed never showed
+    /// 5 / 10 at all.
     @ViewBuilder
     private func offerChips(
         value: Weight?,
@@ -534,20 +537,21 @@ struct ExerciseSheet: View {
         field: Field,
         write: @escaping (Weight?) -> Void
     ) -> some View {
-        if typed.wrappedValue || (value.map { !offers.contains($0) } ?? false) {
-            weightBox(text, field: field, width: 78, keep: write)
-        } else {
-            HStack(spacing: 6) {
-                ForEach(offers, id: \.hundredths) { offer in
-                    chip(offer.decimalString, on: value == offer) {
-                        write(offer)
-                        text.wrappedValue = offer.decimalString
-                    }
+        let custom = typed.wrappedValue || (value.map { !offers.contains($0) } ?? false)
+        HStack(spacing: 6) {
+            ForEach(offers, id: \.hundredths) { offer in
+                chip(offer.decimalString, on: !custom && value == offer) {
+                    typed.wrappedValue = false
+                    write(offer)
+                    text.wrappedValue = offer.decimalString
                 }
-                chip("…", on: false) {
-                    typed.wrappedValue = true
-                    focus = field
-                }
+            }
+            chip("…", on: custom) {
+                typed.wrappedValue = true
+                focus = field
+            }
+            if custom {
+                weightBox(text, field: field, width: 62, keep: write)
             }
         }
     }
