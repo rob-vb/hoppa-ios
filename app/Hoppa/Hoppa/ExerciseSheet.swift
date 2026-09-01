@@ -56,6 +56,9 @@ struct ExerciseSheet: View {
     @State private var topText = ""
     /// The artboard's `…` chip, which swaps the Increment offers for a field.
     @State private var incrementTyped = false
+    /// The same `…` on the Stack Step row. A pin's offers are the machine's own jump,
+    /// not the barbell plates, so a typed step has to survive the same way.
+    @State private var stackTyped = false
 
     @State private var nameIsMissing = false
     @State private var equipmentIsMissing = false
@@ -94,9 +97,14 @@ struct ExerciseSheet: View {
     private var program: Program? { store.logbook?.workoutDay(target.day)?.program }
     private var dayName: String { store.logbook?.workoutDay(target.day)?.day.name ?? "" }
 
+    /// The Program's Mode, which this Exercise follows until it is overridden (§2.3, §4.4).
+    private var programMode: ProgressionMode {
+        program?.mode ?? .progressiveOverload
+    }
+
     /// The Exercise's own Mode: its override, or the Program's (§2.3, §4.4).
     private var mode: ProgressionMode {
-        draft.modeOverride ?? program?.mode ?? .progressiveOverload
+        draft.modeOverride ?? programMode
     }
 
     /// **The unit the Exercise resolves to** (§5.1) — the rack's for the four types loaded
@@ -191,15 +199,15 @@ struct ExerciseSheet: View {
             "Progression for this exercise", isPresented: $progressionDialog,
             titleVisibility: .visible
         ) {
-            // Three states and not a flip, because a cycle through three cannot say which
-            // way it is going. An override is a deliberate act (§4.4).
-            Button("Program default") { draft.modeOverride = nil }
+            // Two Modes, named as they run. Picking the Program's own Mode follows it;
+            // picking the other is the override (§4.4). A third option called "Program
+            // default" named neither, and a cycle through three cannot say which way it
+            // is going.
             Button(ProgressionMode.progressiveOverload.screenName) {
-                draft.modeOverride = .progressiveOverload
+                setMode(.progressiveOverload)
             }
             Button(ProgressionMode.microloading.screenName) {
-                draft.modeOverride = .microloading
-                openRackIfNoMicroplates()
+                setMode(.microloading)
             }
             Button("Cancel", role: .cancel) {}
         }
@@ -362,7 +370,13 @@ struct ExerciseSheet: View {
             }
             if equipmentChosen, draft.equipment.hasPin {
                 row("Stack step") {
-                    weightBox($stackText, field: .stack, width: 78) { draft.stackStep = $0 }
+                    offerChips(
+                        value: draft.stackStep,
+                        offers: offeredStackSteps,
+                        typed: $stackTyped,
+                        text: $stackText,
+                        field: .stack
+                    ) { draft.stackStep = $0 }
                 }
             }
             row("Weight unit") { unitControl }
@@ -375,7 +389,7 @@ struct ExerciseSheet: View {
             row("Progression") {
                 Button { progressionDialog = true } label: {
                     HStack(spacing: 10) {
-                        Text(draft.modeOverride?.screenName ?? "Program default")
+                        Text(mode.screenName)
                             .typography(Typography.body(13))
                             .foregroundStyle(Color.text)
                         Text("›")
@@ -467,23 +481,13 @@ struct ExerciseSheet: View {
         switch mode {
         case .progressiveOverload:
             row("Increment") {
-                if incrementTyped || (draft.increment.map { !offeredIncrements.contains($0) } ?? false) {
-                    weightBox($incrementText, field: .increment, width: 78) { draft.increment = $0 }
-                } else {
-                    HStack(spacing: 6) {
-                        ForEach(offeredIncrements, id: \.hundredths) { offer in
-                            chip(offer.decimalString, on: draft.increment == offer) {
-                                draft.increment = offer
-                                incrementText = offer.decimalString
-                            }
-                        }
-                        // The artboard's `…`: any number, not only the offers (§2.3).
-                        chip("…", on: false) {
-                            incrementTyped = true
-                            focus = .increment
-                        }
-                    }
-                }
+                offerChips(
+                    value: draft.increment,
+                    offers: offeredIncrements,
+                    typed: $incrementTyped,
+                    text: $incrementText,
+                    field: .increment
+                ) { draft.increment = $0 }
             }
         case .microloading:
             row("Microloading increment") { microplateChips }
@@ -494,10 +498,57 @@ struct ExerciseSheet: View {
     /// The offers, in the unit on screen. They are **offers and not a default**: §6.2
     /// starts the Increment empty and has the user pick it, and §2.3 lets it be any
     /// number at all, which is what `…` is for.
+    ///
+    /// A pin is not a bar. The 1.25 / 2.5 / 5 kg chips are plates you hang; a stack
+    /// jumps by the plate it is built from — 5 or 10 lbs, 2.5 or 5 kg — and those
+    /// are the numbers printed on it. The converted kg column on an lbs stack
+    /// (2.3, 4.5, 6.8, 11.3) is not one of them: that machine is lbs.
     private var offeredIncrements: [Weight] {
+        equipmentChosen && draft.equipment.hasPin ? offeredStackSteps : offeredBarIncrements
+    }
+
+    /// What a barbell, Smith, plate-loaded machine, dumbbell or belt actually hangs.
+    private var offeredBarIncrements: [Weight] {
         switch unit {
         case .kg: [.kg(hundredths: 125), .kg(hundredths: 250), .kg(hundredths: 500)]
         case .lbs: [.lbs(hundredths: 250), .lbs(hundredths: 500), .lbs(hundredths: 1000)]
+        }
+    }
+
+    /// The fixed jump of a selectorized stack. Identical plates, one pin hole each,
+    /// labelled 5 · 10 · 15 · 20 · 25 — never 1.25 kg.
+    private var offeredStackSteps: [Weight] {
+        switch unit {
+        case .kg: [.kg(hundredths: 250), .kg(hundredths: 500)]
+        case .lbs: [.lbs(hundredths: 500), .lbs(hundredths: 1000)]
+        }
+    }
+
+    /// Chips, or a field once `…` is tapped or the stored number is not an offer.
+    @ViewBuilder
+    private func offerChips(
+        value: Weight?,
+        offers: [Weight],
+        typed: Binding<Bool>,
+        text: Binding<String>,
+        field: Field,
+        write: @escaping (Weight?) -> Void
+    ) -> some View {
+        if typed.wrappedValue || (value.map { !offers.contains($0) } ?? false) {
+            weightBox(text, field: field, width: 78, keep: write)
+        } else {
+            HStack(spacing: 6) {
+                ForEach(offers, id: \.hundredths) { offer in
+                    chip(offer.decimalString, on: value == offer) {
+                        write(offer)
+                        text.wrappedValue = offer.decimalString
+                    }
+                }
+                chip("…", on: false) {
+                    typed.wrappedValue = true
+                    focus = field
+                }
+            }
         }
     }
 
@@ -748,6 +799,15 @@ struct ExerciseSheet: View {
         // here: `Rules.edited` writes a Base Weight back only where the new type shows the
         // row, and the sheet shows the row for the same reason.
         openRackIfNoMicroplates()
+    }
+
+    /// Picking the Program's Mode follows the Program; picking the other writes an
+    /// override. An override that names the Mode the Program already runs is not an
+    /// override — it would look the same on the row and survive a Program change the
+    /// user never asked this Exercise to ignore (§4.4).
+    private func setMode(_ chosen: ProgressionMode) {
+        draft.modeOverride = chosen == programMode ? nil : chosen
+        if chosen == .microloading { openRackIfNoMicroplates() }
     }
 
     /// §5.2 again: Microloading with no Microplate switched on opens the Microplate group
