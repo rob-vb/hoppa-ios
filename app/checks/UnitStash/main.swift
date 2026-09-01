@@ -23,6 +23,7 @@ final class Sheet {
     var incrementText = ""
     var stackText = ""
     var incrementTyped = false
+    var stackTyped = false
 
     var stash = UnitStash()
 
@@ -35,10 +36,14 @@ final class Sheet {
         self.stackText = draft.stackStep?.decimalString ?? ""
     }
 
-    var unit: WeightUnit {
-        guard equipmentChosen else { return draft.ownWeightUnit }
-        return draft.equipment.takesUnitFromInventory ? rack.unit : draft.ownWeightUnit
+    var unitTag: UnitTag {
+        Rules.unitTag(
+            equipment: equipmentChosen ? draft.equipment : nil,
+            own: draft.ownWeightUnit,
+            rack: rack.unit)
     }
+
+    var unit: WeightUnit { unitTag.unit }
 
     // --- verbatim from ExerciseSheet ---
     func clearForUnitChange() {
@@ -49,7 +54,7 @@ final class Sheet {
             from: leaving, to: unit,
             onScreen: TypedWeights(
                 working: workingText, increment: incrementText, stack: stackText,
-                incrementTyped: incrementTyped)))
+                incrementTyped: incrementTyped, stackTyped: stackTyped)))
     }
 
     func show(_ typed: TypedWeights) {
@@ -57,6 +62,7 @@ final class Sheet {
         incrementText = typed.increment
         stackText = typed.stack
         incrementTyped = typed.incrementTyped
+        stackTyped = typed.stackTyped
         draft.workingWeight = weight(typed.working)
         draft.increment = weight(typed.increment)
         draft.stackStep = weight(typed.stack)
@@ -83,9 +89,7 @@ final class Sheet {
         draft.workingWeight = weight(text)
     }
 
-    /// The unit row, and picking a chip. Both move `unit`; SwiftUI's `onChange` runs the
-    /// clear, so the harness calls it by hand.
-    func tapUnitRow() {
+    func flipUnit() {
         draft.ownWeightUnit = unit == .kg ? .lbs : .kg
         clearForUnitChange()
     }
@@ -147,12 +151,12 @@ func editDraft() -> ExerciseDraft {
 print("— the mis-tap, and the tap back —")
 do {
     let s = Sheet(draft: editDraft(), equipmentChosen: true, rack: kgRack)
-    s.tapUnitRow()
+    s.flipUnit()
     check("the flip empties the screen", s.workingText.isEmpty && s.incrementText.isEmpty && s.stackText.isEmpty)
     check("the flip holds the three numbers", s.stash.filedWorking(.kg) == "60")
     check("the note says kept, not cleared", s.unitMoveNote?.contains("is kept under kg") == true)
     check("the note does not say cleared", s.unitMoveNote?.contains("cleared") == false)
-    s.tapUnitRow()
+    s.flipUnit()
     check("the tap back returns the weight", s.workingText == "60")
     check("the tap back returns the increment", s.incrementText == "2.5")
     check("the tap back returns the stack step", s.stackText == "5")
@@ -166,14 +170,14 @@ do {
 print("— a number typed after the flip, and a flip back —")
 do {
     let s = Sheet(draft: editDraft(), equipmentChosen: true, rack: kgRack)
-    s.tapUnitRow()
+    s.flipUnit()
     s.typeWorking("135")
     check("the note ends at the first keystroke", s.unitMoveNote == nil)
-    s.tapUnitRow()
+    s.flipUnit()
     check("the kg number is back on screen", s.workingText == "60")
     check("the lbs number is held", s.stash.filedWorking(.lbs) == "135")
     check("both halves are in the note", s.unitMoveNote?.contains("are back") == true && s.unitMoveNote?.contains("is kept under lbs") == true)
-    s.tapUnitRow()
+    s.flipUnit()
     check("the lbs number comes back", s.workingText == "135")
     check("its label is LBS", s.draft.workingWeight == Weight(decimalString: "135", unit: .lbs))
     let e = s.saved()
@@ -183,13 +187,13 @@ do {
 print("— a restored number cleared by hand stays gone —")
 do {
     let s = Sheet(draft: editDraft(), equipmentChosen: true, rack: kgRack)
-    s.tapUnitRow()
+    s.flipUnit()
     s.typeWorking("135")
     s.typeWorking("")
-    s.tapUnitRow()
+    s.flipUnit()
     check("nothing is held under LBS", s.stash.filedWorking(.lbs) == nil)
     check("the kg numbers still return", s.workingText == "60")
-    s.tapUnitRow()
+    s.flipUnit()
     check("the emptied LBS screen stays empty", s.workingText.isEmpty)
     check("and nothing claims to be back", s.stash.numbersReturned == false)
 }
@@ -236,6 +240,22 @@ do {
     check("and says nothing", s.unitMoveNote == nil)
     s.typeWorking("40")
     check("the first number on a fresh sheet survives the save", s.saved().workingWeight == Weight(decimalString: "40", unit: .kg))
+}
+
+print("— a custom stack step survives a flip —")
+do {
+    let s = Sheet(draft: editDraft(), equipmentChosen: true, rack: kgRack)
+    s.stackTyped = true
+    s.stackText = "7.5"
+    s.draft.stackStep = s.weight("7.5")
+    s.flipUnit()
+    check("the flip empties the stack field", s.stackText.isEmpty)
+    check("and closes the … field", !s.stackTyped)
+    s.flipUnit()
+    check("the custom step is back", s.stackText == "7.5")
+    check("the … field is still open", s.stackTyped)
+    let e = s.saved()
+    check("the save writes the custom step", e.storedStackStep == Weight(decimalString: "7.5", unit: .kg))
 }
 
 print(failures == 0 ? "\nall green" : "\n\(failures) FAILED")
