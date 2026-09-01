@@ -48,7 +48,7 @@ struct PastWorkoutScreen: View {
         ZStack {
             Color.floor.ignoresSafeArea()
             content
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)   // §7.4 screen padding
                 .padding(.bottom, 20)
         }
@@ -65,15 +65,6 @@ struct PastWorkoutScreen: View {
         if let past {
             VStack(alignment: .leading, spacing: 0) {
                 header(past)
-                Text(past.workoutDayName)
-                    .typography(Typography.display(25, tracking: 0.02))
-                    .foregroundStyle(Color.text)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 16)
-                Text(meta(past.row))
-                    .typography(Typography.meta())
-                    .foregroundStyle(Color.dimText)
-                    .padding(.top, 7)
                 list(past)
             }
         } else {
@@ -137,23 +128,33 @@ struct PastWorkoutScreen: View {
     // MARK: - The Exercises, in the order they were performed
 
     private func list(_ past: PastWorkout) -> some View {
-        // A VStack, not a LazyVStack. A Workout holds a handful of Exercises, and the
-        // Sets under each name have to be in the tree on the first layout: nested
-        // `ForEach` inside a LazyVStack only materialises the heads until the user
-        // scrolls, and the list then reports a height of about a quarter of the screen.
+        // One ScrollView, the way the chart screen does it. Splitting the title off
+        // above a second stack let each Exercise's unwrapped `(head, sets)` tuple take
+        // the viewport's height: the name sat at the top of a hole, the Sets were in
+        // the hole and did not paint, and the first name was clipped off the top.
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                Text(past.workoutDayName)
+                    .typography(Typography.display(25, tracking: 0.02))
+                    .foregroundStyle(Color.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 16)
+                Text(meta(past.row))
+                    .typography(Typography.meta())
+                    .foregroundStyle(Color.dimText)
+                    .padding(.top, 7)
                 ForEach(past.exercises) { exercise in
-                    exerciseHead(exercise)
-                    ForEach(exercise.sets) { set in setRow(set) }
+                    VStack(alignment: .leading, spacing: 0) {
+                        exerciseHead(exercise)
+                        ForEach(exercise.sets) { set in setRow(set) }
+                    }
+                    .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
         .scrollIndicators(.hidden)
         .scrollBounceBehavior(.basedOnSize)
-        .frame(maxHeight: .infinity)
-        .padding(.top, 4)
     }
 
     /// The name, and **the progression it earned** on the right (§6.7). A One-off replaces
