@@ -48,7 +48,7 @@ struct PastWorkoutScreen: View {
         ZStack {
             Color.floor.ignoresSafeArea()
             content
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .padding(.horizontal, 20)   // §7.4 screen padding
                 .padding(.bottom, 20)
         }
@@ -137,8 +137,12 @@ struct PastWorkoutScreen: View {
     // MARK: - The Exercises, in the order they were performed
 
     private func list(_ past: PastWorkout) -> some View {
+        // A VStack, not a LazyVStack. A Workout holds a handful of Exercises, and the
+        // Sets under each name have to be in the tree on the first layout: nested
+        // `ForEach` inside a LazyVStack only materialises the heads until the user
+        // scrolls, and the list then reports a height of about a quarter of the screen.
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 ForEach(past.exercises) { exercise in
                     exerciseHead(exercise)
                     ForEach(exercise.sets) { set in setRow(set) }
@@ -147,6 +151,8 @@ struct PastWorkoutScreen: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.basedOnSize)
+        .frame(maxHeight: .infinity)
         .padding(.top, 4)
     }
 

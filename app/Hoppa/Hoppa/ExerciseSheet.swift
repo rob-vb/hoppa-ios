@@ -80,7 +80,7 @@ struct ExerciseSheet: View {
         static let nameHeight: CGFloat = 52
         static let nameInput: CGFloat = 19
         static let rowMinHeight: CGFloat = 56
-        static let rowVerticalPadding: CGFloat = 8
+        static let rowVerticalPadding: CGFloat = 6
         static let weightMinWidth: CGFloat = 72
         static let repWidth: CGFloat = 56
         static let customFieldWidth: CGFloat = 132
