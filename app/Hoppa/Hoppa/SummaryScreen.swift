@@ -366,6 +366,12 @@ struct SummaryScreen: View {
             } else {
                 Chip("One-off", tone: .steel)
             }
+        case .none(let stays):
+            if let stays {
+                Chip("None · \(stays.decimalString) \(stays.unit.rawValue) stays", tone: .steel)
+            } else {
+                Chip("None", tone: .steel)
+            }
         case .target(let sets, let reps, let to):
             conditionText("All \(sets) sets at \(reps) → \(weightText(to))")
         case .blocked(let blocker, let sets, let reps):

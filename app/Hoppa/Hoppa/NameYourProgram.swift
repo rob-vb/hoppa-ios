@@ -49,10 +49,6 @@ struct NameYourProgram: View {
     /// principle, applied to a button instead of a switch: Hoppa never disables the
     /// control and never hides the reason — it states the condition where the user taps.
     @State private var nameIsMissing = false
-    /// §5.2 — choosing Microloading with no Microplate on opens the Microplate group
-    /// **as a sheet, in place**. On a fresh install that is every time, because every
-    /// Microplate ships off.
-    @State private var microplateSheet = false
     @FocusState private var nameFocused: Bool
 
     private var rack: PlateInventory { store.logbook?.plateInventory ?? .standard(.kg) }
@@ -97,7 +93,6 @@ struct NameYourProgram: View {
         // here as it is on the picker, and `StepHeader` draws the way back in content —
         // which is what both onboarding artboards do.
         .toolbar(.hidden, for: .navigationBar)
-        .sheet(isPresented: $microplateSheet) { MicroplateSheet() }
     }
 
     // MARK: - The name (§2.7 — a label, not an identity)
@@ -128,20 +123,13 @@ struct NameYourProgram: View {
 
     private var assumptions: some View {
         VStack(spacing: 6) {
-            // One tap flips it, because there are two values and a picker for two values
-            // is ceremony. §5.2 calls the Mode row "one tap away" in those words.
+            // One tap cycles it. Three values, and a picker for three is still ceremony.
             assumptionRow("Weight unit", value: draft.defaultWeightUnit(rack: rack.unit).rawValue) {
                 draft.weightUnit = draft.defaultWeightUnit(rack: rack.unit) == .kg ? .lbs : .kg
                 draft.unitChosenByHand = true
             }
             assumptionRow("Progression", value: draft.mode.screenName) {
-                draft.mode = draft.mode == .progressiveOverload ? .microloading : .progressiveOverload
-                // §5.2 — Hoppa never blocks the Mode and never disables the option. It
-                // opens the Microplate group in place so the user switches on what they
-                // own and lands back here.
-                if draft.mode == .microloading, rack.enabledMicroplates.isEmpty {
-                    microplateSheet = true
-                }
+                draft.mode = draft.mode.next
             }
             assumptionRow("Plate rack", value: rackName, chips: true) {
                 path.append(.plateRack(draft))

@@ -208,15 +208,14 @@ struct ExerciseSheet: View {
             "Progression for this exercise", isPresented: $progressionDialog,
             titleVisibility: .visible
         ) {
-            // Two Modes, named as they run. Picking the Program's own Mode follows it;
-            // picking the other is the override (§4.4). A third option called "Program
-            // default" named neither, and a cycle through three cannot say which way it
-            // is going.
             Button(ProgressionMode.progressiveOverload.screenName) {
                 setMode(.progressiveOverload)
             }
             Button(ProgressionMode.microloading.screenName) {
                 setMode(.microloading)
+            }
+            Button(ProgressionMode.none.screenName) {
+                setMode(.none)
             }
             Button("Cancel", role: .cancel) {}
         }
@@ -502,6 +501,8 @@ struct ExerciseSheet: View {
         case .microloading:
             row("Microloading increment") { microplateChips }
             microloadingNote
+        case .none:
+            EmptyView()
         }
     }
 
@@ -803,7 +804,6 @@ struct ExerciseSheet: View {
         // §2.3 refuses to re-ask a fact about a machine, so nothing stored is thrown away
         // here: `Rules.edited` writes a Base Weight back only where the new type shows the
         // row, and the sheet shows the row for the same reason.
-        openRackIfNoMicroplates()
     }
 
     /// Picking the Program's Mode follows the Program; picking the other writes an
@@ -812,15 +812,6 @@ struct ExerciseSheet: View {
     /// user never asked this Exercise to ignore (§4.4).
     private func setMode(_ chosen: ProgressionMode) {
         draft.modeOverride = chosen == programMode ? nil : chosen
-        if chosen == .microloading { openRackIfNoMicroplates() }
-    }
-
-    /// §5.2 again: Microloading with no Microplate switched on opens the Microplate group
-    /// **in place**, exactly as step 1 does. On a fresh install that is every time.
-    private func openRackIfNoMicroplates() {
-        if mode == .microloading, rack.enabledMicroplates.isEmpty, !microloadingIsRefused {
-            microplateSheet = true
-        }
     }
 
     /// §6.6, where the user can see it: a change of unit takes the Working Weight, the

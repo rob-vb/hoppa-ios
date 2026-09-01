@@ -109,6 +109,8 @@ final class List {
         guard let resolved = resolved(exercise.id) else { return nil }
         if resolved.equipment.takesBaseWeight, resolved.baseWeight == nil { return "no base weight" }
         switch resolved.mode {
+        case .none:
+            return nil
         case .progressiveOverload:
             return resolved.increment == nil ? "no increment" : nil
         case .microloading:

@@ -362,9 +362,15 @@ struct LoggingScreen: View {
         // While logging: the condition, printed as the Increment is **held**. A
         // Microloading Increment moves a bar by twice the plate and rolls into a Stack
         // Step on a mixed pin, and `Rules.progressionMove` is where that lives.
-        let increment = exercise.mode == .microloading
-            ? exercise.microloadingIncrement
-            : exercise.increment
+        let increment: Weight?
+        switch exercise.mode {
+        case .progressiveOverload:
+            increment = exercise.increment
+        case .microloading:
+            increment = exercise.microloadingIncrement
+        case .none:
+            increment = nil
+        }
         guard let increment else { return nil }
         return ("+\(increment.decimalString) \(increment.unit.rawValue) "
                 + "if all \(exercise.thresholdReps)", .steel)

@@ -94,7 +94,11 @@ func equipmentName(_ equipment: EquipmentType) -> String {
 }
 
 func modeName(_ mode: ProgressionMode) -> String {
-    mode == .microloading ? "Microloading" : "Progressive overload"
+    switch mode {
+    case .progressiveOverload: "Progressive overload"
+    case .microloading: "Microloading"
+    case .none: "None"
+    }
 }
 
 func blockerReason(_ blocker: ProgressionBlocker) -> String {

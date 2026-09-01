@@ -39,7 +39,7 @@ public struct PlateInventory: Codable, Sendable, Hashable {
     /// A normal barbell exercise must never be told to hang a 0.5 kg microplate.
     public func plates(for mode: ProgressionMode) -> [Weight] {
         switch mode {
-        case .progressiveOverload:
+        case .progressiveOverload, .none:
             return enabledPlates
         case .microloading:
             // A size can sit in both groups — 2.5 lbs is a normal plate and a Microplate
