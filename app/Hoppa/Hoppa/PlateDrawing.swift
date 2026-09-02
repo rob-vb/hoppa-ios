@@ -207,42 +207,22 @@ struct ClosestLine: View {
 
 // MARK: - The loaded bar (§7.5)
 
-/// Sleeve stops, knurled shaft, sleeve stroke. Nothing on it.
+/// Sleeve stops, knurled shaft, sleeve stroke. Steel is never filled (§7.1 rule 2).
 ///
-/// Steel is never filled (§7.1 rule 2). First-run shows this alone. `LoadedBar` puts
-/// plates on either side of the same drawing. It takes no `BarLoad` because there is none.
-struct BareBar: View {
-    var body: some View {
-        GeometryReader { geometry in
-            let extra = max(0, geometry.size.width - Self.naturalWidth)
-            let shaft = Self.shaftWidth + extra
-            ZStack {
-                Self.sleeve
-                HStack(spacing: Self.gap) {
-                    Self.sleeveStop
-                    KnurledShaft().stroked().frame(width: shaft, height: 14)
-                    Self.sleeveStop
-                }
-            }
-            .frame(width: geometry.size.width, height: geometry.size.height)
-        }
-    }
-
-    fileprivate static let gap: CGFloat = 4
-    fileprivate static let stopWidth: CGFloat = 6
-    fileprivate static let shaftWidth: CGFloat = 100
-    fileprivate static var naturalWidth: CGFloat {
-        stopWidth * 2 + shaftWidth + gap * 2
-    }
+/// `LoadedBar` puts plates on either side of the same drawing.
+enum BareBar {
+    static let gap: CGFloat = 4
+    static let stopWidth: CGFloat = 6
+    static let shaftWidth: CGFloat = 100
 
     /// The sleeve running under the steel. A border, not a fill.
-    fileprivate static var sleeve: some View {
+    static var sleeve: some View {
         RoundedRectangle(cornerRadius: 2)
             .stroke(Color.shaft, lineWidth: 1)
             .frame(height: 9)
     }
 
-    fileprivate static var stopsAndShaft: some View {
+    static var stopsAndShaft: some View {
         HStack(spacing: gap) {
             sleeveStop
             KnurledShaft().stroked().frame(width: shaftWidth, height: 14)
@@ -250,7 +230,7 @@ struct BareBar: View {
         }
     }
 
-    fileprivate static var sleeveStop: some View {
+    private static var sleeveStop: some View {
         RoundedRectangle(cornerRadius: 1)
             .stroke(Color.sleeveStop, lineWidth: 1)
             .frame(width: stopWidth, height: 46)
