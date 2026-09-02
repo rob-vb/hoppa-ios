@@ -81,9 +81,8 @@ struct ExerciseSheet: View {
         static let nameInput: CGFloat = 19
         static let rowMinHeight: CGFloat = 56
         static let rowVerticalPadding: CGFloat = 6
-        static let weightMinWidth: CGFloat = 72
+        static let weightMinWidth: CGFloat = 56
         static let repWidth: CGFloat = 56
-        static let customFieldWidth: CGFloat = 132
         static let blockSpacer: CGFloat = 12
         static let lockedUnitSize: CGFloat = 13
         static let chipMinWidth: CGFloat = 44
@@ -387,9 +386,9 @@ struct ExerciseSheet: View {
                     ) { draft.stackStep = $0 }
                 }
             }
-            row("Sets", note: carriedOver && isAdd ? "Carried over" : nil) { setsStepper }
-            row("Rep range", note: carriedOver && isAdd ? "Carried over" : nil) { repRange }
-            row("Working weight") {
+            row("Sets") { setsStepper }
+            row("Rep range") { repRange }
+            row("Total working weight") {
                 HStack(spacing: 8) {
                     weightBox(
                         $workingText, field: .working,
@@ -537,24 +536,23 @@ struct ExerciseSheet: View {
         write: @escaping (Weight?) -> Void
     ) -> some View {
         let custom = typed.wrappedValue || (value.map { !offers.contains($0) } ?? false)
-        VStack(alignment: .trailing, spacing: 6) {
-            HStack(spacing: 6) {
-                ForEach(offers, id: \.hundredths) { offer in
-                    chip(offer.decimalString, on: !custom && value == offer) {
-                        typed.wrappedValue = false
-                        write(offer)
-                        text.wrappedValue = offer.decimalString
-                    }
-                }
-                chip("…", on: custom) {
-                    typed.wrappedValue = true
-                    focus = field
+        HStack(spacing: 6) {
+            ForEach(offers, id: \.hundredths) { offer in
+                chip(offer.decimalString, on: !custom && value == offer) {
+                    typed.wrappedValue = false
+                    write(offer)
+                    text.wrappedValue = offer.decimalString
                 }
             }
             if custom {
                 weightBox(
                     text, field: field,
-                    width: ExerciseSheetMetrics.customFieldWidth, keep: write)
+                    width: ExerciseSheetMetrics.weightMinWidth, keep: write)
+            } else {
+                chip("…", on: false) {
+                    typed.wrappedValue = true
+                    focus = field
+                }
             }
         }
     }
