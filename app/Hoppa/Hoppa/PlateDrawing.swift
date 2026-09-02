@@ -64,9 +64,10 @@ struct PlateBreakdownView: View {
     /// on a 390 pt phone.
     ///
     /// **The loud half is the plates, not the base.** Mixing `11.3 base + 20 + 5` into
-    /// one line left it unclear what to hang per side. The load line is now the plates
-    /// with their unit (`20 kg + 5 kg`); the Base Weight sits on the qualifier with the
-    /// per-side sum (`11.3 base + 25 kg per side`). A Barbell still prints no base.
+    /// one line left it unclear what to hang per side. A bar's load line is now a
+    /// slightly smaller `Per side:` in front of the plates (`20 + 5`); the Base Weight
+    /// sits on the qualifier with the per-side sum (`11.3 base + 25 kg per side`). A
+    /// Barbell still prints no base.
     ///
     /// **Which half is loud is not the same for every type.** A bar and a stack carry it
     /// on §5.5's left — the plates, the pin. A Dumbbell and a belt carry it on the right,
@@ -74,14 +75,7 @@ struct PlateBreakdownView: View {
     /// named by job below rather than by side.
     private var caption: some View {
         VStack(alignment: .leading, spacing: 3) {
-            Text(loadLine)
-                .typography(Typography.listValue(17))
-                .foregroundStyle(Color.text)
-                .lineLimit(1)
-                // A six-plate bar is twice the width of Rob's. It shrinks rather than
-                // wraps: a load line that reflows changes this block's height between
-                // Exercises, and every Set row under it would move with it.
-                .minimumScaleFactor(0.6)
+            loadLineView
             Text(qualifierLine)
                 .typography(Typography.meta(11))
                 .foregroundStyle(Color.dimText)
@@ -89,6 +83,33 @@ struct PlateBreakdownView: View {
                 .minimumScaleFactor(0.8)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// A bar prefixes `Per side:` at 13 px so the 17 px plates read as a load, not a
+    /// total. Stack, Dumbbell and belt have no sides, so they stay a single 17 px line.
+    @ViewBuilder
+    private var loadLineView: some View {
+        switch breakdown {
+        case .bar:
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Text("Per side: ")
+                    .typography(Typography.listValue(13))
+                Text(loadLine)
+                    .typography(Typography.listValue(17))
+            }
+            .foregroundStyle(Color.text)
+            .lineLimit(1)
+            // A six-plate bar is twice the width of Rob's. It shrinks rather than
+            // wraps: a load line that reflows changes this block's height between
+            // Exercises, and every Set row under it would move with it.
+            .minimumScaleFactor(0.6)
+        default:
+            Text(loadLine)
+                .typography(Typography.listValue(17))
+                .foregroundStyle(Color.text)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+        }
     }
 
     /// The half that says what to load.
@@ -128,11 +149,9 @@ struct PlateBreakdownView: View {
         }
     }
 
-    /// `20 kg + 5 kg`, or `no plates` when the side is empty.
+    /// `20 + 5`, or `no plates` when the side is empty.
     private func plateLine(_ plates: [Weight]) -> String {
-        plates.isEmpty
-            ? "no plates"
-            : plates.map { "\($0.decimalString) \($0.unit.rawValue)" }.joined(separator: " + ")
+        plates.isEmpty ? "no plates" : plates.map(\.decimalString).joined(separator: " + ")
     }
 
     private var captionRight: String {
