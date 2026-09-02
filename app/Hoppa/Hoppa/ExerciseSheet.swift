@@ -290,7 +290,7 @@ struct ExerciseSheet: View {
         TextField("", text: $draft.name)
             .typography(Typography.input(ExerciseSheetMetrics.nameInput))
             .foregroundStyle(Color.text)
-            .textInputAutocapitalization(.words)
+            .textInputAutocapitalization(.sentences)
             .autocorrectionDisabled()
             .submitLabel(.done)
             .focused($focus, equals: .name)
@@ -583,7 +583,7 @@ struct ExerciseSheet: View {
         } else {
             HStack(spacing: 6) {
                 ForEach(plates, id: \.hundredths) { plate in
-                    chip(plate.decimalString, on: picked(plate)) {
+                    chip(microplateChipLabel(plate), on: picked(plate)) {
                         draft.microloadingIncrement = plate
                     }
                 }
@@ -593,6 +593,38 @@ struct ExerciseSheet: View {
 
     private func picked(_ plate: Weight) -> Bool {
         draft.microloadingIncrement?.relabelled(rack.unit) == plate.relabelled(rack.unit)
+    }
+
+    /// The total weight a progression moves — read out of `Rules.progressionMove`, never
+    /// the Microplate alone. A bar takes a pair, so 0.25 kg reads `0.5` on the chip.
+    private func microplateChipLabel(_ plate: Weight) -> String {
+        var trial = draft
+        trial.microloadingIncrement = plate
+        let probe = Exercise(
+            id: target.exercise ?? ExerciseID(0),
+            name: trial.name,
+            equipment: equipmentChosen ? trial.equipment : .barbell,
+            ownWeightUnit: trial.ownWeightUnit,
+            plannedSets: max(1, trial.plannedSets),
+            repRange: trial.repRange,
+            workingWeight: .zero(equipmentChosen ? unit : rack.unit),
+            increment: trial.increment,
+            microloadingIncrement: plate,
+            modeOverride: trial.modeOverride,
+            storedBaseWeight: trial.baseWeight,
+            storedStackStep: trial.stackStep
+        )
+        .resolved(mode: mode, inventory: rack)
+        if let move = Rules.progressionMove(for: probe, inventory: rack) {
+            if move.workingWeight.hundredths > 0 {
+                return move.workingWeight.decimalString
+            }
+            if let micro = move.microload, micro.hundredths > 0 {
+                return micro.decimalString
+            }
+        }
+        let sides = equipmentChosen ? trial.equipment.platesPerProgression : EquipmentType.barbell.platesPerProgression
+        return plate.scaled(by: sides).decimalString
     }
 
     /// What the picked plate actually moves — read out of `Rules.progressionMove`, never
@@ -680,23 +712,26 @@ struct ExerciseSheet: View {
     // MARK: - The bottom control
 
     /// The add life saves and opens empty again, which is the 14-tap floor's one save tap
-    /// (§6.2). The edit life has nothing to save there — closing is the save — so it
-    /// carries the artboard's own control instead.
+    /// (§6.2). The edit life carries an explicit save too — closing still saves, but the
+    /// button gives the tap the user expects.
     @ViewBuilder
     private var bottomControl: some View {
         if isAdd {
             PrimaryButton("Save", action: save)
         } else {
-            Button { removeDialog = true } label: {
-                Text("Remove exercise")
-                    .typography(Typography.label(11))
-                    .foregroundStyle(Color.steel)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
-                    .contentShape(Rectangle())
+            VStack(spacing: 10) {
+                PrimaryButton("Save", action: save)
+                Button { removeDialog = true } label: {
+                    Text("Remove exercise")
+                        .typography(Typography.label(11))
+                        .foregroundStyle(Color.steel)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.pressable)
             }
-            .buttonStyle(.pressable)
         }
     }
 
@@ -741,6 +776,14 @@ struct ExerciseSheet: View {
         .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
         .contentShape(Rectangle())
         .onTapGesture { focus = field }
+        .onChange(of: focus) { _, new in
+            if new == field {
+                DispatchQueue.main.async {
+                    UIApplication.shared.sendAction(
+                        #selector(UIResponder.selectAll(_:)), to: nil, from: nil, for: nil)
+                }
+            }
+        }
     }
 
     /// The Rep Range is read as two numbers and put in order at the save, so a half-typed
