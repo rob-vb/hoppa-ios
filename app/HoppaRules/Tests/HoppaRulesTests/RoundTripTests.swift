@@ -65,12 +65,37 @@ struct RoundTripTests {
 
     @Test("Every enum writes a string, never a Swift case name by accident")
     func enumsCarryExplicitRawValues() {
-        #expect(EquipmentType.plateLoaded.rawValue == "plate-loaded")
-        #expect(EquipmentType.stack.rawValue == "machine-stack")
+        #expect(EquipmentType.machinePlates.rawValue == "machine-plates")
+        #expect(EquipmentType.machineStack.rawValue == "machine-stack")
         #expect(ProgressionMode.progressiveOverload.rawValue == "progressive-overload")
         #expect(WeightUnit.kg.rawValue == "kg")
         #expect(ExerciseState.skipped.rawValue == "skipped")
         #expect(WorkoutState.finished.rawValue == "finished")
+    }
+
+    @Test("Old equipment strings decode; encodes are canonical; chip order is allCases")
+    func equipmentAliasesAndChipOrder() throws {
+        func decode(_ raw: String) throws -> EquipmentType {
+            try JSONDecoder().decode(EquipmentType.self, from: Data("\"\(raw)\"".utf8))
+        }
+        func encode(_ type: EquipmentType) throws -> String {
+            String(decoding: try JSONEncoder().encode(type), as: UTF8.self)
+        }
+
+        #expect(try decode("smith") == .machinePlates)
+        #expect(try decode("plate-loaded") == .machinePlates)
+        #expect(try decode("machine-plates") == .machinePlates)
+        #expect(try decode("cable") == .machineStack)
+        #expect(try decode("machine-stack") == .machineStack)
+        #expect(try encode(.machinePlates) == "\"machine-plates\"")
+        #expect(try encode(.machineStack) == "\"machine-stack\"")
+        #expect(throws: DecodingError.self) {
+            try decode("unknown")
+        }
+        #expect(Array(EquipmentType.allCases) == [
+            .barbell, .dumbbell, .machinePlates, .machineStack, .bodyweight
+        ])
+        #expect(EquipmentType.allCases.count == 5)
     }
 
     @Test("An id encodes as a plain number")

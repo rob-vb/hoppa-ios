@@ -40,10 +40,6 @@ public enum ProgressionBlocker: Sendable, Hashable {
     case noMicroplate
     /// The Microplate this Exercise names is switched off (§6.6).
     case stranded
-    /// The one refused combination: Microloading on an Exercise carrying its own unit,
-    /// where that unit is not the rack's and there is no pin to hang a Microload on
-    /// (§2.6).
-    case unitMismatch
     /// A mixed-unit pin with no Stack Step typed: the roll-up has nothing to roll into
     /// (§4.2), so the Microload cannot move.
     case noStackStep
@@ -286,7 +282,6 @@ extension Rules {
             // to roll it into; everything else moves the Working Weight, and cannot
             // where the plate is in the other unit (§2.6).
             if exercise.isMixedUnitPin { return .noStackStep }
-            if exercise.unit != exercise.inventoryUnit { return .unitMismatch }
             return .noMicroplate
         }
     }

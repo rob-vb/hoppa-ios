@@ -54,7 +54,7 @@ struct PlateBreakdownView: View {
 
     /// What goes on, big; the sum under it, small. §5.5 fixes both halves per Equipment
     /// Type, and the **Base Weight lives here and not in the drawing** — one drawing
-    /// serves all three plate-loaded types, and the base is the only difference between
+    /// serves Barbell and Machine (Plates), and the base is the only difference between
     /// them.
     ///
     /// **Ticket 0053 promoted this block**, on Rob's own words at the walk: *"Ik wil de

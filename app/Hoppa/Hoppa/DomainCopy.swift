@@ -23,17 +23,14 @@ extension ProgressionMode {
 }
 
 extension EquipmentType {
-    /// What the Exercise card and the Exercise sheet call it (§2.6). The artboard's own
-    /// words: `barbell`, `smith`, `stack`, `cable`.
+    /// What the Exercise card and the Exercise sheet call it (§2.6).
     var screenName: String {
         switch self {
         case .barbell: "Barbell"
-        case .smith: "Smith"
-        case .plateLoaded: "Plate-loaded"
-        case .bodyweight: "Bodyweight"
         case .dumbbell: "Dumbbell"
-        case .stack: "Stack"
-        case .cable: "Cable"
+        case .machinePlates: "Machine (Plates)"
+        case .machineStack: "Machine (Stack)"
+        case .bodyweight: "Bodyweight"
         }
     }
 }
@@ -79,7 +76,6 @@ extension ProgressionBlocker {
         case .noIncrement: "no increment yet"
         case .noMicroplate: "no microplates · set up your rack"
         case .stranded: "microplate switched off · set up your rack"
-        case .unitMismatch: "microplate is in the other unit"
         case .noStackStep: "no stack step yet"
         }
     }

@@ -142,7 +142,7 @@
         {
           "exercises" : [
             {
-              "equipment" : "smith",
+              "equipment" : "machine-plates",
               "id" : 10,
               "increment" : {
                 "hundredths" : 250,

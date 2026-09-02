@@ -97,22 +97,22 @@ than eight fields at once (§6.2).
 | # | Field | Shown for | Notes |
 | --- | --- | --- | --- |
 | 1 | Name | always | Free text. A **label, not an identity** — see §2.7. |
-| 2 | Equipment Type | always | One of seven; see §2.6. |
-| 3 | Weight Unit | always | Printed beside Working Weight. Steel text for the four types loaded off the user's own rack — Barbell, Smith, Plate-loaded and Bodyweight — and for an add sheet before a chip is picked. Dumbbell, stack and cable get a one-tap chip. No lock line. |
+| 2 | Equipment Type | always | One of five; see §2.6. |
+| 3 | Weight Unit | always | Printed beside Working Weight. Steel text for the three types loaded off the user's own rack — Barbell, Machine (Plates) and Bodyweight — and for an add sheet before a chip is picked. Dumbbell and Machine (Stack) get a one-tap chip. No lock line. |
 | 4 | Sets | always | Carries over from the previous Exercise. |
 | 5 | Rep Range | always | Carries over from the previous Exercise. |
 | 6 | Working Weight | always | Any number the user types. Bodyweight: added weight only. **May be unset**: a new Exercise has none until the user types one, and §6.6 clears it back to unset. Unset is not zero — see §2.8. |
 | 7 | Increment | Progressive Overload | Any number. Defaults 2.5 kg, 5 kg for legs (lbs: 5 / 10). **May be unset**, like the Working Weight, and §6.6 clears it with it. |
 | 7′ | Microloading Increment | Microloading | Picked from the Microplates in the Plate Inventory, never typed. Keeps the **Inventory's** unit. |
 | 8 | Progression Mode override | always | Inherits from the Program. |
-| 9 | Base Weight | Smith, Plate-loaded | The empty-carriage weight. No default; typed per Exercise. |
-| 10 | Stack Step | Machine (stack), Cable | The fixed jump of the stack, e.g. 10 lbs. |
+| 9 | Base Weight | Machine (Plates) | The empty-carriage weight. No default; typed per Exercise. |
+| 10 | Stack Step | Machine (Stack) | The fixed jump of the stack, e.g. 10 lbs. |
 
 Plus one derived-and-stored value:
 
 | Field | Notes |
 | --- | --- |
-| Microload | A **weight** in the Plate Inventory's unit, hanging on the pin. Exists **only** on a Machine (stack) or Cable whose Weight Unit differs from the Plate Inventory's — the only place with somewhere to hang it and a Stack Step to roll it into (§4.2). Zero otherwise. Never a count of plates, and **always less than one Stack Step**. |
+| Microload | A **weight** in the Plate Inventory's unit, hanging on the pin. Exists **only** on a Machine (Stack) whose Weight Unit differs from the Plate Inventory's — the only place with somewhere to hang it and a Stack Step to roll it into (§4.2). Zero otherwise. Never a count of plates, and **always less than one Stack Step**. |
 
 **The Exercise always holds both Increments**, whatever its current Mode. Switching the Mode
 swaps the row on the sheet and keeps the other value, so nothing is ever re-asked.
@@ -179,25 +179,18 @@ Inventory edit into a history migration, to answer a question nobody asked.
 
 ### 2.6 Equipment Type
 
-Seven types, in two groups.
+Five types, in chip order (`EquipmentType.allCases`):
 
-**Plate Breakdown applies; Weight Unit comes from the Plate Inventory:**
-
-- **Barbell** — 20 kg bar (45 lbs). Prints no Base Weight; the bar is standard.
-- **Smith Machine** — Base Weight per Exercise.
-- **Plate-loaded Machine** — Base Weight per Exercise.
+- **Barbell** — 20 kg bar (45 lbs). Prints no Base Weight; the bar is standard. Plate Breakdown applies. Weight Unit comes from the Plate Inventory.
+- **Dumbbell** — weight per dumbbell. Sets count both dumbbells for volume. Weight Unit is the Exercise's own — the number the machine itself is marked with.
+- **Machine (Plates)** — Smith and plate-loaded machines. Base Weight per Exercise. Same loaded-bar drawing as Barbell. Plate Breakdown applies. Weight Unit comes from the Plate Inventory.
+- **Machine (Stack)** — selectorized stack and cable. Pin weight plus Microplates. Weight Unit is the Exercise's own.
 - **Bodyweight** — added weight only. The added weight **is** a plate off the user's own rack,
-  hanging from a belt, so its unit comes from the rack like the three above it. It has no Plate
+  hanging from a belt, so its unit comes from the rack. It has no Plate
   Breakdown of its own — it draws one plate (§5.5) — but the unit rule is the same one: you cannot
   hang a plate you do not own.
 
-**Weight Unit is the Exercise's own** — the number the machine itself is marked with:
-
-- **Dumbbell** — weight per dumbbell. Sets count both dumbbells for volume.
-- **Machine (stack)** — pin weight plus Microplates.
-- **Cable** — same display as Machine (stack).
-
-**Microloading is available on every one of the seven.** The user notes that people tie
+**Microloading is available on every one of the five.** The user notes that people tie
 microplates to dumbbells, so Hoppa blocks no type. One combination has nowhere to put the plate
 and is refused: **Microloading on a Dumbbell whose Weight Unit differs from the Plate
 Inventory's**. A Dumbbell has no pin and no Stack Step, so there is neither somewhere to hang a
@@ -241,8 +234,9 @@ get wrong quietly. They are gathered here so nothing has to be re-derived from t
   unit, so `≈ CLOSEST` and *is the Microload now one Stack Step* stay exact comparisons (§5.4,
   §4.2). The unit rides on the number, so *units never convert* (§5.1) is something no rule can
   break by accident.
-- **The Weight Unit of a plate-loaded Exercise is not stored on it.** Barbell, Smith, Plate-loaded
-  and Bodyweight read it from the Plate Inventory, so a stale copy cannot exist (§5.1, §6.6).
+- **The Weight Unit of a plate-loaded Exercise is not stored on it.** Barbell, Machine
+  (Plates) and Bodyweight read it from the Plate Inventory, so a stale copy cannot exist (§5.1,
+  §6.6).
 - **An unset weight is not zero.** A weight the user has not typed — a new Exercise, or one §6.6
   has just cleared — is **absent**, and the store must be able to say so. Zero is a real weight: a
   Bodyweight Exercise done with no belt. An Exercise with no Working Weight does not progress, and
@@ -391,12 +385,12 @@ Hoppa **never lowers a Working Weight by itself**, ever.
 count of plates. This is the single model; an earlier prototype held a second one (a microplate
 counter) and it is deleted — see §8.2.
 
-**A bar takes a pair.** Barbell, Smith Machine and Plate-loaded Machine have two sides, so a
+**A bar takes a pair.** Barbell and Machine (Plates) have two sides, so a
 0.25 kg Microloading Increment moves the weight by **0.5 kg** there. Every other Equipment Type
 takes one plate, so the same Increment moves it by 0.25. The picker states both:
 `0.25 kg microplate · +0.5 kg on the bar`.
 
-**The mixed-unit case is the only two-number case.** On a Machine (stack) or Cable whose Weight
+**The mixed-unit case is the only two-number case.** On a Machine (Stack) whose Weight
 Unit differs from the Plate Inventory's, Microloading moves the **Microload** instead, and the
 screen stacks two numbers that never convert: `100 LBS` over `+1 KG`. Hoppa does the mixed-unit
 arithmetic itself and never shows the result of it; the user never types 2.76 lbs.
@@ -500,10 +494,10 @@ The reason is a real gym: the user's rack is kg, but its machines step in lbs, s
 on a stack machine is really 2.3 kg — a number no machine in that gym displays. Each screen shows
 the number the machine shows.
 
-- **The Plate Inventory decides the unit** for Barbell, Smith Machine, Plate-loaded Machine **and
+- **The Plate Inventory decides the unit** for Barbell, Machine (Plates) **and
   Bodyweight**. The user gets no choice there: you cannot load a plate you do not own, and a
   Bodyweight Exercise's added weight is a plate off that same rack (§2.6).
-- Dumbbell, Machine (stack) and Cable carry their own unit — the one the machine is marked with.
+- Dumbbell and Machine (Stack) carry their own unit — the one the machine is marked with.
 - **Units never convert**, anywhere, with exactly one exception: **total volume** on the Workout
   Summary converts to the Program's default unit and shows as one labelled number. Volume is a
   rough progress number, not a loading instruction, so a conversion misleads nobody there —
@@ -514,8 +508,8 @@ the number the machine shows.
 The plate sizes available in the user's gym, in **one** unit. That unit sets the Weight Unit of
 every Exercise with a Plate Breakdown.
 
-- A unit toggle `KG | LBS`, with the line *"This unit applies to every barbell, Smith machine and
-  plate-loaded exercise in the Program."*
+- A unit toggle `KG | LBS`, with the line *"This unit applies to every barbell, machine (plates) and
+  bodyweight exercise in the Program."*
 - A list of plate sizes: a colour chip sized to the plate, the weight, an on/off toggle.
 - **Microplates are a second group** under their own label.
 - **On/off only — no count of pairs.** A pairs count was drawn and rejected as too much setup.
@@ -545,7 +539,7 @@ Microplates on", which was written when the rack held two. The tap counts in §6
 
 **Microloading with an empty Microplate group.** The Progression Mode sits one tap away on the
 Program card at onboarding step 1, so a fresh user can choose Microloading before any Microplate
-exists — and the Microloading Increment must name a Microplate the user owns. Stack and Cable
+exists — and the Microloading Increment must name a Microplate the user owns. Machine (Stack)
 Exercises hit the same wall.
 
 Choosing Microloading with no Microplate on **opens the Microplate group of the Plate Inventory
@@ -556,11 +550,6 @@ through to the same sheet.
 **Hoppa never blocks the Mode and never disables the option.** A disabled control makes the user
 hunt for the reason, which is the one thing Hoppa does nowhere else — every other screen states
 its condition in place.
-
-The one combination Hoppa does refuse — Microloading on a Dumbbell in the other unit (§2.6) — is
-refused the same way, not by greying a control: it states that a dumbbell has nowhere to hang a
-plate and names both ways out. The rule is that the user always learns the reason where they
-stand; it is not that every choice must be available.
 
 **Hoppa holds one Plate Inventory.** Several saved racks, one per gym, is out of scope (§10).
 
@@ -631,9 +620,8 @@ that. The rejected artboards stay in `design/0005-plate-display/` as the record.
 
 ### 5.5 What each Equipment Type draws
 
-**One drawing for all three plate-loaded types.** Barbell, Smith Machine and Plate-loaded
-Machine all draw the **same loaded bar**: plates to relative diameter and width in their real
-colours, mirrored around a knurled shaft. No guide rails for the Smith, no carriage block for the
+**One drawing for Barbell and Machine (Plates).** Both draw the **same loaded bar**: plates to relative diameter and width in their real
+colours, mirrored around a knurled shaft. No guide rails for a Smith, no carriage block for a
 plate-loaded machine — per-type silhouettes were rejected as needless variation.
 
 The **Base Weight is the only difference, and it lives in text**: the meta line reads
@@ -650,7 +638,7 @@ nothing, so it is the qualifier there.
 
 | Type | Drawing | Caption |
 | --- | --- | --- |
-| Machine (stack), Cable | The stack as blocks, loaded ones in steel and the rest dark, the pin below the last loaded block, the Microplate hanging on it | `pin at 10 × 10 lbs · 1 microplate` / `100 lbs + 1.25 kg` |
+| Machine (Stack) | The stack as blocks, loaded ones in steel and the rest dark, the pin below the last loaded block, the Microplate hanging on it | `pin at 10 × 10 lbs · 1 microplate` / `100 lbs + 1.25 kg` |
 | Dumbbell | A steel dumbbell, no plate colours — nothing is loaded | `each hand` / `2 × 22.5 kg` |
 | Bodyweight | The added plate face-on, hanging from a belt clip | `added weight only` / `1 × 15 kg on the belt` |
 
@@ -733,15 +721,15 @@ Behaviour of the sheet:
 - **Sets and Rep Range carry over** from the previous Exercise, marked `CARRIED OVER`. **Every
   other field starts empty** — Equipment Type, Working Weight, Increment and Base Weight are
   always picked by hand.
-- Base Weight appears only after Smith or plate-loaded is picked; Stack Step only for Machine
-  (stack) or Cable. The sheet never grows for a Barbell.
+- Base Weight appears only after Machine (Plates) is picked; Stack Step only for Machine
+  (Stack). The sheet never grows for a Barbell.
 - The Increment row swaps with the Progression Mode:
   `INCREMENT · +2.5 KG`, or `MICROLOADING INCREMENT · 0.25 KG MICROPLATE · +0.5 KG ON THE BAR`.
   With no Microplate switched on, that second row reads `NO MICROPLATES · SET UP YOUR RACK` and
   taps through to the Microplate group of the Plate Inventory (§5.2).
-- Weight Unit is printed beside Working Weight. The four types loaded off the user's own rack —
-  Barbell, Smith, Plate-loaded and Bodyweight — show it as steel text. The other three carry
-  their own, and a chip flips it in one tap: two values do not need a picker (§5.2). No lock
+- Weight Unit is printed beside Working Weight. The three types loaded off the user's own rack —
+  Barbell, Machine (Plates) and Bodyweight — show it as steel text. Dumbbell and Machine (Stack)
+  carry their own, and a chip flips it in one tap: two values do not need a picker (§5.2). No lock
   line.
 
 **Five things the sheet does that no artboard shows.** Found while building
@@ -765,8 +753,8 @@ Behaviour of the sheet:
 - **`REMOVE EXERCISE` is on the sheet**, where the artboard draws it. §6.6 gives deleting an
   Exercise no block to state, so the whole control is one confirm and one action.
 - **The Equipment Type really does start empty**, so no chip is lit on a new Exercise and the save
-  refuses until one is picked. The seven chips are in §2.6's order — the four that read the rack,
-  then the three that carry their own unit — which is the lock rule made visible.
+  refuses until one is picked. The five chips are in §2.6's order (`EquipmentType.allCases`).
+  Dumbbell and Machine (Stack) carry their own unit — which is the lock rule made visible.
 - **The carry-over crosses Workout Days.** The previous Exercise is the one above it in the Day, or
   — for the first Exercise of a Day — the last Exercise of the Day before it: a second Day usually
   opens on the same kind of work, and re-asking at the top of every Day is taps for nothing. The
@@ -890,13 +878,13 @@ range reachable by design. Both adjust buttons are 62 × 64 px.
 `−` / `+` stepping by the Increment. Raising closes the sheet at once. Lowering raises the
 *Just today, or from now on?* sheet, exactly once, on the way down only (§4.3).
 
-**On a Machine (stack) or Cable the sheet grows a second stepper**, because a stack moves in pin
+**On a Machine (Stack) the sheet grows a second stepper**, because a stack moves in pin
 steps and not in Increments: `PIN` steps by the Stack Step (`− 100 LBS +`), `MICRO` steps by the
 Microloading Increment (`− +1 KG +`), and the keypad stays under them. The big number is still
 the Working Weight. A bar keeps the single `−`/`+` at the Increment.
 
-**Except on a mixed-unit pin, where there is no `MICRO` row — only `PIN`.** A Machine (stack) or
-Cable whose Weight Unit differs from the Plate Inventory's carries its Microplates as a
+**Except on a mixed-unit pin, where there is no `MICRO` row — only `PIN`.** A Machine (Stack)
+whose Weight Unit differs from the Plate Inventory's carries its Microplates as a
 **Microload**, a second stored number in the rack's unit that the Working Weight can never absorb,
 because units never convert (§5.1). Stepping it by hand is a different write with a different
 rule: `+` is §4.2's roll-up, and `−` past zero would be a **roll-down**, which §4.2 does not have and
@@ -1007,7 +995,6 @@ the user stands. The rep condition still reads; only the `→ 75 KG` is replaced
 | Progressive Overload with no Increment | `no increment yet` |
 | Microloading with no Microplate picked (§5.2) | `no microplates · set up your rack` |
 | Stranded — the Microplate is switched off (§6.6) | `microplate switched off · set up your rack` |
-| The one refused combination (§2.6) | `microplate is in the other unit` |
 | A mixed-unit pin with no Stack Step to roll into (§4.2) | `no stack step yet` |
 
 An Exercise **deleted mid-Workout** has no Rep Range left to state a condition from, so its row
@@ -1036,8 +1023,8 @@ Three models were built into one watchable prototype and driven live; the user c
 
 | Equipment Type | The burst throws |
 | --- | --- |
-| Barbell, Smith, Plate-loaded | The per-side plates of the **new** Working Weight, Base Weight excluded |
-| Machine (stack), Cable | The Microplates on the pin, plus one steel slab per loaded pin block |
+| Barbell, Machine (Plates) | The per-side plates of the **new** Working Weight, Base Weight excluded |
+| Machine (Stack) | The Microplates on the pin, plus one steel slab per loaded pin block |
 | Dumbbell | Steel — §5.5 draws the dumbbell in steel, so it never throws the Increment plate |
 | Bodyweight | The plate on the belt |
 
@@ -1128,7 +1115,7 @@ the list the rule is about to write.
 
 #### Changing a Weight Unit clears the weights
 
-For the three Equipment Types that carry their own unit — Dumbbell, Machine (stack) and Cable —
+For the two Equipment Types that carry their own unit — Dumbbell and Machine (Stack) —
 changing the Weight Unit **clears the Working Weight, the Increment and the Stack Step**, and the
 same sheet asks for them again in the new unit. The Microloading Increment survives untouched,
 because it keeps the Plate Inventory's unit whatever the Exercise does (§5.1).
@@ -1177,28 +1164,28 @@ weight is typed.
 > [A weight retyped after a unit change](issues/0041-a-weight-retyped-after-a-unit-change.md).
 
 **Changing the Equipment Type across the rack boundary is the same event**, and clears the same
-three fields. A Dumbbell in lbs that becomes a Barbell now reads its unit off a kg rack (§5.1), so
-its `100` means something it was never typed to mean. The unit is derived, so what the rule watches
-is the unit the Exercise *resolves to* — however the user changed it.
+three fields. A Machine (Stack) in lbs that becomes a Barbell now reads its unit off a kg rack
+(§5.1), so its `100` means something it was never typed to mean. The unit is derived, so what the
+rule watches is the unit the Exercise *resolves to* — however the user changed it.
 
 The **Microload follows and never carries across**:
 
 | Change | The Microload |
 | --- | --- |
 | Exercise unit moves **to** the Plate Inventory's unit | Deleted — really gone, not merely hidden. Hide it instead and a second unit change brings the old Microload back. The Working Weight is retyped anyway, so there is nothing to fold in. |
-| Exercise unit moves **away** from it | Created at zero on a Machine (stack) or Cable, for the next Microloading progression to fill. On a Dumbbell — the only other type that can change unit — no Microload is created, and a Dumbbell already on Microloading states why (§2.6). |
+| Exercise unit moves **away** from it | Created at zero on a Machine (Stack), for the next Microloading progression to fill. |
 
 #### Changing the Plate Inventory's unit — the Re-weigh list
 
 The same rule at full blast radius. One switch:
 
-- clears the Working Weight, Increment and Base Weight of **every** Barbell, Smith, plate-loaded
-  and Bodyweight Exercise, in every Program — the four types whose unit the Inventory names
+- clears the Working Weight, Increment and Base Weight of **every** Barbell, Machine
+  (Plates) and Bodyweight Exercise, in every Program — the types whose unit the Inventory names
   (§5.1);
 - resets **every** Microloading Increment, because the other unit's Microplates all ship off
   (§5.2);
-- creates or destroys a Microload on every Machine (stack) and Cable Exercise, which are the only
-  two that can carry one (§2.3).
+- creates or destroys a Microload on every Machine (Stack) Exercise, which is the only
+  type that can carry one (§2.3).
 
 So Hoppa warns with the count — `THIS CLEARS THE WEIGHT ON 12 EXERCISES` — and the confirm leads
 to **one Re-weigh list**: every affected Exercise on one screen, each with an empty weight field.
@@ -1216,7 +1203,7 @@ once Workouts exist was rejected: it locks a real event out of the app.
 **The One-off Weights in an Open Workout go with the Working Weights.** A One-off is a number for
 today in the Exercise's unit (§4.3) and a logged Set prefers it to the Working Weight, so one left
 standing through a rack switch is exactly the stale number this section exists to prevent — it
-would be written into a Set under the new label. Only the four types that read the rack; a Dumbbell
+would be written into a Set under the new label. Only the three types that read the rack; a Dumbbell
 in lbs is untouched. The Sets **already logged** are not touched and must not be: a Set records the
 weight as performed (§2.4), and those really were lifted. Found while building.
 
@@ -1405,7 +1392,7 @@ no point is true. They sit apart in the list, each labelled with its Workout Day
 
 #### Mixed units on a chart
 
-A Machine (stack) or Cable whose Weight Unit differs from the Plate Inventory's carries a
+A Machine (Stack) whose Weight Unit differs from the Plate Inventory's carries a
 Microload (§2.3), and
 the two units never convert, so **there is no single number to plot**. The chart plots whichever
 number actually moves. For the reference case — a 90 lbs stack with a kg Microplate — the pin has

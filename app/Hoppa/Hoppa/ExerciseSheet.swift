@@ -82,6 +82,8 @@ struct ExerciseSheet: View {
         static let rowMinHeight: CGFloat = 56
         static let rowVerticalPadding: CGFloat = 6
         static let weightMinWidth: CGFloat = 56
+        static let baseWeightWidth: CGFloat = 40
+        static let customIncrementWidth: CGFloat = 28
         static let repWidth: CGFloat = 56
         static let blockSpacer: CGFloat = 12
         static let lockedUnitSize: CGFloat = 13
@@ -128,13 +130,6 @@ struct ExerciseSheet: View {
     }
 
     private var unit: WeightUnit { unitTag.unit }
-
-    /// §2.6's one refused combination: Microloading on a Dumbbell in the other unit. No
-    /// pin to hang a plate on, and no Stack Step to roll it into.
-    private var microloadingIsRefused: Bool {
-        equipmentChosen && draft.equipment == .dumbbell
-            && mode == .microloading && unit != rack.unit
-    }
 
     /// The number in the header. An edit reads the Exercise's own place in the Day; an
     /// add counts the position it will land at.
@@ -363,16 +358,16 @@ struct ExerciseSheet: View {
 
     // MARK: - The rows that make an Exercise
 
-    /// **The sheet grows with the Equipment Type** (§6.2). Base Weight appears for Smith
-    /// and plate-loaded, Stack Step for Machine (stack) and Cable, and it never grows for
-    /// a Barbell. Both sit at the top, next to the chips that produced them: they are
+    /// **The sheet grows with the Equipment Type** (§6.2). Base Weight appears for
+    /// Machine (Plates), Stack Step for Machine (Stack), and it never grows for a
+    /// Barbell. Both sit at the top, next to the chips that produced them: they are
     /// facts about the machine, not about the plan.
     @ViewBuilder
     private var fields: some View {
         VStack(spacing: 0) {
             if equipmentChosen, draft.equipment.takesBaseWeight {
-                row("Base weight") {
-                    weightBox($baseText, field: .base, width: ExerciseSheetMetrics.weightMinWidth) { draft.baseWeight = $0 }
+                row("Base weight (machine)") {
+                    weightBox($baseText, field: .base, width: ExerciseSheetMetrics.baseWeightWidth) { draft.baseWeight = $0 }
                 }
             }
             if equipmentChosen, draft.equipment.hasPin {
@@ -417,9 +412,9 @@ struct ExerciseSheet: View {
     }
 
     /// One tap flips it, because there are two values and a picker for two values is
-    /// ceremony (§5.2) — but only where the Exercise owns its unit. For Barbell, Smith,
-    /// plate-loaded and Bodyweight the letters are steel, not a control: you cannot load
-    /// a plate you do not own (§2.3).
+    /// ceremony (§5.2) — but only on Machine (Stack). Every other type reads the rack,
+    /// so the letters are steel, not a control: you cannot load a plate you do not own
+    /// (§2.3).
     @ViewBuilder
     private var unitTagView: some View {
         switch unitTag {
@@ -547,7 +542,7 @@ struct ExerciseSheet: View {
             if custom {
                 weightBox(
                     text, field: field,
-                    width: ExerciseSheetMetrics.weightMinWidth, keep: write)
+                    width: ExerciseSheetMetrics.customIncrementWidth, keep: write)
             } else {
                 chip("…", on: false) {
                     typed.wrappedValue = true
@@ -630,9 +625,7 @@ struct ExerciseSheet: View {
     /// (§4.2); a pin hangs it instead and rolls it into the stack a Stack Step at a time.
     @ViewBuilder
     private var microloadingNote: some View {
-        if microloadingIsRefused {
-            note("A dumbbell has nowhere to hang a plate — set this exercise in \(rack.unit.rawValue), or use progressive overload.")
-        } else if let plate = draft.microloadingIncrement, isStranded(plate) {
+        if let plate = draft.microloadingIncrement, isStranded(plate) {
             note("Your \(plate.decimalString) \(rack.unit.rawValue) plate is switched off. Pick another, or switch it back on in your rack.")
         } else if let clause = microloadingClause {
             note(clause)
@@ -692,7 +685,7 @@ struct ExerciseSheet: View {
                 note(text)
             }
             if !equipmentChosen {
-                note("Base weight appears as soon as you pick smith or plate-loaded.")
+                note("Base weight appears as soon as you pick Machine (Plates).")
             }
             if !isAdd {
                 note("Your changes save when you close this sheet.")
@@ -997,8 +990,8 @@ struct ExerciseSheet: View {
 
 // MARK: - The Equipment Type chips (§2.6)
 
-/// Seven chips that wrap, in `SPEC.md` §2.6's own order: the four types loaded off the
-/// user's own rack first, then the three that carry the unit the machine is marked with.
+/// Five chips that wrap, in `EquipmentType.allCases` order: Barbell, Dumbbell,
+/// Machine (Plates), Machine (Stack), Bodyweight.
 ///
 /// `chosen` is an `Optional` because **the Equipment Type starts empty** (§6.2): on an add
 /// no chip is lit until the user picks one.

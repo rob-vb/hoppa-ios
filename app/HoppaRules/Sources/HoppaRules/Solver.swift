@@ -1,6 +1,6 @@
 /// What the user must load, per Equipment Type (`SPEC.md` §5.5).
 public enum PlateBreakdown: Sendable, Hashable {
-    /// Barbell, Smith Machine and Plate-loaded Machine all draw the same loaded bar.
+    /// Barbell and Machine (Plates) draw the same loaded bar.
     /// The Base Weight is the only difference, and it lives in text.
     case bar(BarLoad)
     case stack(StackLoad)
@@ -163,7 +163,7 @@ extension Rules {
         }
 
         switch exercise.equipment {
-        case .stack, .cable:
+        case .machineStack:
             let step = exercise.stackStep ?? .zero(exercise.unit)
             let blocks = step.hundredths > 0 ? max(0, target.hundredths / step.hundredths) : 0
             let pinWeight = Weight(hundredths: blocks * step.hundredths, unit: exercise.unit)
@@ -188,7 +188,7 @@ extension Rules {
         case .bodyweight:
             return .bodyweight(added: target, plates: greedy(target, sizes: sizes).plates)
 
-        case .barbell, .smith, .plateLoaded:
+        case .barbell, .machinePlates:
             preconditionFailure("handled above")
         }
     }

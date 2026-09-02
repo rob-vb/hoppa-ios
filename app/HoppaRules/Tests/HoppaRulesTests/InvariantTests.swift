@@ -295,15 +295,14 @@ struct InvariantTests {
         #expect(exercise.resolved(mode: .progressiveOverload, inventory: rackKg()).unit == .kg)
     }
 
-    @Test("A Dumbbell in the other unit has nowhere to hang a plate")
-    func microloadingADumbbellInTheOtherUnitIsRefused() {
-        let inventory = rackKg()
+    @Test("A Dumbbell reads its unit off the rack, even when ownWeightUnit is stale")
+    func aDumbbellTakesTheRackUnit() {
         var dumbbell = upperAExercises()[3]
-        dumbbell.ownWeightUnit = .lbs                    // an lbs dumbbell on a kg rack
-        dumbbell.microloadingIncrement = kg("0.25")
-        let resolved = dumbbell.resolved(mode: .microloading, inventory: inventory)
+        dumbbell.ownWeightUnit = .lbs
+        let inLbsGym = dumbbell.resolved(mode: .progressiveOverload, inventory: .standard(.lbs))
 
-        #expect(Rules.progressionMove(for: resolved, inventory: inventory) == nil)
+        #expect(inLbsGym.unit == .lbs)
+        #expect(dumbbell.resolved(mode: .progressiveOverload, inventory: rackKg()).unit == .kg)
     }
 
     @Test("Microloading with no Microplate switched on cannot progress")

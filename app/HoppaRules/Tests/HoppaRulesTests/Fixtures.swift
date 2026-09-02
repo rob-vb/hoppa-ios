@@ -30,7 +30,7 @@ enum Ids {
 func upperAExercises() -> [Exercise] {
     [
         Exercise(
-            id: Ids.smith, name: "Smith machine bench press", equipment: .smith,
+            id: Ids.smith, name: "Smith machine bench press", equipment: .machinePlates,
             plannedSets: 3, repRange: RepRange(8, 12),
             workingWeight: kg("72.5"), increment: kg("2.5"),
             microloadingIncrement: kg("0.25"),
@@ -41,7 +41,7 @@ func upperAExercises() -> [Exercise] {
             workingWeight: kg("60"), increment: kg("2.5"),
             microloadingIncrement: kg("0.25")),
         Exercise(
-            id: Ids.pulldown, name: "Lat pulldown", equipment: .stack,
+            id: Ids.pulldown, name: "Lat pulldown", equipment: .machineStack,
             ownWeightUnit: .lbs,
             plannedSets: 3, repRange: RepRange(10, 12),
             workingWeight: lbs("100"), increment: lbs("10"),

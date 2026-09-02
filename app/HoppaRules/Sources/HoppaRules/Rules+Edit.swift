@@ -25,8 +25,8 @@
 public struct ExerciseDraft: Sendable, Hashable {
     public var name: String
     public var equipment: EquipmentType
-    /// Meaningful for Dumbbell, Machine (stack) and Cable. The sheet locks the row for
-    /// the four types that read the rack (§2.3), so what it carries for those is ignored.
+    /// Meaningful for Dumbbell and Machine (Stack). The sheet locks the row for
+    /// the three types that read the rack (§2.3), so what it carries for those is ignored.
     public var ownWeightUnit: WeightUnit
     public var plannedSets: Int
     public var repRange: RepRange
@@ -34,10 +34,10 @@ public struct ExerciseDraft: Sendable, Hashable {
     public var increment: Weight?
     public var microloadingIncrement: Weight?
     public var modeOverride: ProgressionMode?
-    /// Smith and plate-loaded only. `nil` from a sheet that showed no row for it, which
+    /// Machine (Plates) only. `nil` from a sheet that showed no row for it, which
     /// is why it is written back only where the new Equipment Type has one.
     public var baseWeight: Weight?
-    /// Machine (stack) and Cable only, same rule.
+    /// Machine (Stack) only, same rule.
     public var stackStep: Weight?
     /// **The unit this draft's numbers are written in** — the unit the sheet showed while
     /// the user typed, which is the unit the Exercise *resolved to* then (§5.1).
@@ -45,7 +45,7 @@ public struct ExerciseDraft: Sendable, Hashable {
     /// It has no default on purpose. There are five places that build a draft, and a
     /// default would make *in which unit are these numbers* the one thing a caller can
     /// forget — which is exactly the bug this field closes. `ownWeightUnit` cannot stand
-    /// in for it: the four types loaded off the rack ignore that field entirely.
+    /// in for it: the three types loaded off the rack ignore that field entirely.
     public var shownUnit: WeightUnit
 
     public init(
@@ -79,8 +79,8 @@ public struct ExerciseDraft: Sendable, Hashable {
     /// The sheet as it reads the moment it opens on an existing Exercise.
     ///
     /// It takes the `PlateInventory` because it cannot work out `shownUnit` without one:
-    /// for Barbell, Smith, plate-loaded and Bodyweight the unit is the rack's, and
-    /// `ownWeightUnit` is ignored (§5.1).
+    /// every type except Machine (Stack) reads the rack, and `ownWeightUnit` is ignored
+    /// (§5.1).
     public init(_ exercise: Exercise, in inventory: PlateInventory) {
         self.init(
             name: exercise.name,

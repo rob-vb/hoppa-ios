@@ -385,8 +385,8 @@ struct WorkoutDayScreen: View {
         store.logbook.flatMap { Rules.exerciseChart(id, in: $0) }
     }
 
-    /// `barbell · 3 × 8–12 · +2.5`, and `base 15` where a Smith or a plate-loaded
-    /// machine has one — the artboard's own line. The Stack Step is deliberately not on
+    /// `barbell · 3 × 8–12 · +2.5`, and `base 15` where a Machine (Plates)
+    /// has one — the artboard's own line. The Stack Step is deliberately not on
     /// it: the artboard leaves it off, and a card that listed every conditional field
     /// would be the sheet with worse typography.
     ///

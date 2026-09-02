@@ -261,7 +261,7 @@ struct LoggingScreen: View {
         case .open:
             parts.append("set \(min(performed.sets.count + 1, exercise.plannedSets)) of \(exercise.plannedSets)")
         }
-        // A Barbell's bar is standard, so only a Smith and a plate-loaded machine name one.
+        // A Barbell's bar is standard, so only a Machine (Plates) names a Base Weight.
         if let base = exercise.baseWeight {
             parts.append("base \(base.decimalString) \(base.unit.rawValue)")
         }

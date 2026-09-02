@@ -8,8 +8,8 @@ public struct ResolvedExercise: Sendable, Hashable {
     public let id: ExerciseID
     public let name: String
     public let equipment: EquipmentType
-    /// The Exercise's Weight Unit: the Plate Inventory's for the four rack types, its
-    /// own for Dumbbell, Machine (stack) and Cable (`SPEC.md` §5.1).
+    /// The Exercise's Weight Unit: the Plate Inventory's for every type except Machine
+    /// (Stack), which carries the unit the machine is marked with (`SPEC.md` §5.1).
     public let unit: WeightUnit
     /// The Plate Inventory's unit. A Microload and a Microloading Increment live here.
     public let inventoryUnit: WeightUnit
