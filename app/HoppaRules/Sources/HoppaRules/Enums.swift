@@ -53,10 +53,22 @@ public enum EquipmentType: String, Codable, Sendable, Hashable, CaseIterable {
     }
 }
 
-/// Progressive Overload or Microloading (`SPEC.md` §4.2).
+/// How an Exercise handles progression (`SPEC.md` §4.2).
 public enum ProgressionMode: String, Codable, Sendable, Hashable, CaseIterable {
     case progressiveOverload = "progressive-overload"
     case microloading
+    case none
+}
+
+extension ProgressionMode {
+    /// Program-level one-tap cycle: PO → Microloading → None → PO.
+    public var next: ProgressionMode {
+        switch self {
+        case .progressiveOverload: .microloading
+        case .microloading: .none
+        case .none: .progressiveOverload
+        }
+    }
 }
 
 /// Open until Finish or Discard. One Open Workout at a time (`SPEC.md` §2.4).
@@ -84,8 +96,8 @@ public struct RepRange: Codable, Sendable, Hashable {
         self.top = top
     }
 
-    /// What a Set must reach for this Mode: the top under Progressive Overload, the
-    /// bottom under Microloading (`SPEC.md` §4.1).
+    /// What a Set must reach for this Mode: the bottom under Microloading, the top
+    /// otherwise (`SPEC.md` §4.1).
     public func threshold(for mode: ProgressionMode) -> Int {
         mode == .microloading ? bottom : top
     }

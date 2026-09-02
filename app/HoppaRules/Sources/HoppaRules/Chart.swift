@@ -220,7 +220,10 @@ extension Rules {
 
         var target: ChartTarget?
         var blocker: ProgressionBlocker?
-        if let move = progressionMove(for: exercise, inventory: logbook.plateInventory) {
+        if exercise.mode == .none {
+            target = nil
+            blocker = nil
+        } else if let move = progressionMove(for: exercise, inventory: logbook.plateInventory) {
             target = ChartTarget(
                 sets: exercise.plannedSets,
                 reps: exercise.thresholdReps,

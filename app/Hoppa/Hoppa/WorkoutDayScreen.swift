@@ -402,6 +402,8 @@ struct WorkoutDayScreen: View {
         }
         parts.append("\(exercise.plannedSets) × \(exercise.repRange.bottom)–\(exercise.repRange.top)")
         switch exercise.mode {
+        case .none:
+            break
         case .progressiveOverload:
             if let increment = exercise.increment { parts.append("+\(increment.decimalString)") }
         case .microloading:

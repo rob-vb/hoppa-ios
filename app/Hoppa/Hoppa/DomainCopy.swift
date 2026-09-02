@@ -17,6 +17,7 @@ extension ProgressionMode {
         switch self {
         case .progressiveOverload: "Progressive overload"
         case .microloading: "Microloading"
+        case .none: "None"
         }
     }
 }

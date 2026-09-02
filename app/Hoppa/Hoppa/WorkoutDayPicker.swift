@@ -170,14 +170,18 @@ struct WorkoutDayPicker: View {
 
     // MARK: - The first run (§6.1)
 
-    /// `NOTHING HERE YET` and one `CREATE A PROGRAM` button. No header: there is no Program
-    /// to name one, and a History door with no Workout behind it would be furniture.
+    /// `NOTHING HERE YET` and one `CREATE A PROGRAM` button. No Program to name, and a
+    /// History door with no Workout behind it would be furniture. Ticket 0057: the wordmark
+    /// takes the header's place, same size and colour as the picker-with-a-program.
     private var firstRun: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Ticket 0057: no header on this screen, so the wordmark takes its place.
-            Wordmark(height: 22)
-                .foregroundStyle(Color.steel)
+            Wordmark(height: 28)
+                .foregroundStyle(Color.text)
             Spacer()
+            BareBar()
+                .frame(maxWidth: .infinity)
+                .frame(height: 118)
+            Spacer().frame(height: 16)
             Text("Nothing here yet")
                 .typography(Typography.display(26))
                 .foregroundStyle(Color.text)

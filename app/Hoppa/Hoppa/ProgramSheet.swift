@@ -214,9 +214,6 @@ struct ProgramSettings: View {
     let programId: ProgramID
 
     @State private var renaming = false
-    /// §5.2 again: choosing Microloading with no Microplate on opens the Microplate group
-    /// in place, exactly as step 1 does.
-    @State private var microplateSheet = false
 
     private var program: Program? { store.logbook?.program(programId) }
     private var rack: PlateInventory { store.logbook?.plateInventory ?? .standard(.kg) }
@@ -254,26 +251,18 @@ struct ProgramSettings: View {
                 store.send(.renameProgram(programId, name: name))
             }
         }
-        .sheet(isPresented: $microplateSheet) { MicroplateSheet() }
     }
 
     @ViewBuilder
     private func rows(_ program: Program) -> some View {
         VStack(spacing: 6) {
             SettingRow(label: "Name", value: program.name) { renaming = true }
-            // One tap flips it, for the same reason step 1 flips it: there are two values
-            // and a picker for two values is ceremony (§5.2).
             SettingRow(label: "Weight unit", value: program.defaultWeightUnit.rawValue) {
                 store.send(.setProgramDefaultWeightUnit(
                     programId, program.defaultWeightUnit == .kg ? .lbs : .kg))
             }
             SettingRow(label: "Progression", value: program.mode.screenName) {
-                let next: ProgressionMode =
-                    program.mode == .progressiveOverload ? .microloading : .progressiveOverload
-                store.send(.setProgramMode(programId, next))
-                if next == .microloading, rack.enabledMicroplates.isEmpty {
-                    microplateSheet = true
-                }
+                store.send(.setProgramMode(programId, program.mode.next))
             }
             SettingRow(label: "Plate rack", value: rackName) {
                 path.append(.plateRack(nil))

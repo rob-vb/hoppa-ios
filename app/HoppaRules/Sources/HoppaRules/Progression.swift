@@ -36,6 +36,15 @@ extension Rules {
         exercise: ResolvedExercise,
         inventory: PlateInventory
     ) -> ProgressionResult {
+        if exercise.mode == .none {
+            return ProgressionResult(
+                outcome: ProgressionOutcome(
+                    plannedSets: exercise.plannedSets,
+                    thresholdReps: exercise.repRange.top,
+                    progressed: false),
+                move: nil)
+        }
+
         let threshold = exercise.thresholdReps
         let planned = exercise.plannedSets
 
@@ -85,6 +94,9 @@ extension Rules {
         guard let workingWeight = exercise.workingWeight else { return nil }
 
         switch exercise.mode {
+        case .none:
+            return nil
+
         case .progressiveOverload:
             guard let increment = exercise.increment else { return nil }
             return ProgressionMove(

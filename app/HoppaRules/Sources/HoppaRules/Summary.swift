@@ -56,6 +56,8 @@ public enum SummaryCondition: Sendable, Hashable {
     /// Working Weight that survives instead of a condition. `nil` where the Exercise has
     /// no Working Weight at all.
     case oneOff(stays: Weight?)
+    /// Progression is disabled, so the row states the Working Weight that stays.
+    case none(stays: Weight?)
     /// The logging screen's rule chip, restated: `ALL 3 SETS AT 12 → 75 KG`.
     case target(sets: Int, reps: Int, to: SummaryWeight)
     /// The condition was met, or could be, but there is nowhere to put the plate.
@@ -202,6 +204,8 @@ extension Rules {
     /// pin Increment that is no plate size at all.
     public static func addedPlate(for exercise: ResolvedExercise) -> Weight? {
         switch exercise.mode {
+        case .none:
+            return nil
         case .microloading:
             return exercise.microloadingIncrement
         case .progressiveOverload:
@@ -240,6 +244,9 @@ extension Rules {
             return .oneOff(stays: exercise?.workingWeight)
         }
         guard let exercise, let outcome = performed.outcome else { return .gone }
+        if exercise.mode == .none {
+            return .none(stays: exercise.workingWeight)
+        }
         let sets = outcome.plannedSets
         let reps = outcome.thresholdReps
 
@@ -251,7 +258,10 @@ extension Rules {
                     weight: move.workingWeight,
                     microload: exercise.isMixedUnitPin ? move.microload : nil))
         }
-        return .blocked(progressionBlocker(for: exercise), sets: sets, reps: reps)
+        guard let blocker = progressionBlocker(for: exercise) else {
+            return .none(stays: exercise.workingWeight)
+        }
+        return .blocked(blocker, sets: sets, reps: reps)
     }
 
     /// Which of §4.1's four — five, with a missing Increment — stopped the plate.
@@ -261,9 +271,12 @@ extension Rules {
     /// **Public since ticket 0049**: §6.7's chart states the same condition in place of
     /// the same green line, and a second copy of this ordering would let the two screens
     /// name two different reasons for one stopped plate.
-    public static func progressionBlocker(for exercise: ResolvedExercise) -> ProgressionBlocker {
+    public static func progressionBlocker(for exercise: ResolvedExercise) -> ProgressionBlocker? {
+        if exercise.mode == .none { return nil }
         if exercise.workingWeight == nil { return .noWorkingWeight }
         switch exercise.mode {
+        case .none:
+            return nil
         case .progressiveOverload:
             return .noIncrement
         case .microloading:

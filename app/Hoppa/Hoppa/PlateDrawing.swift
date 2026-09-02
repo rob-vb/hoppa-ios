@@ -207,11 +207,74 @@ struct ClosestLine: View {
 
 // MARK: - The loaded bar (§7.5)
 
-/// Collar, plates, sleeve stop, knurled shaft, and the mirror of it.
+/// Sleeve stops, knurled shaft, sleeve stroke. Nothing on it.
+///
+/// Steel is never filled (§7.1 rule 2). First-run shows this alone. `LoadedBar` puts
+/// plates on either side of the same drawing. It takes no `BarLoad` because there is none.
+struct BareBar: View {
+    var body: some View {
+        GeometryReader { geometry in
+            let extra = max(0, geometry.size.width - Self.naturalWidth)
+            let shaft = Self.shaftWidth + extra
+            ZStack {
+                Self.sleeve
+                HStack(spacing: Self.gap) {
+                    Self.sleeveStop
+                    KnurledShaft().stroked().frame(width: shaft, height: 14)
+                    Self.sleeveStop
+                }
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height)
+        }
+    }
+
+    fileprivate static let gap: CGFloat = 4
+    fileprivate static let stopWidth: CGFloat = 6
+    fileprivate static let shaftWidth: CGFloat = 100
+    fileprivate static var naturalWidth: CGFloat {
+        stopWidth * 2 + shaftWidth + gap * 2
+    }
+
+    /// The sleeve running under the steel. A border, not a fill.
+    fileprivate static var sleeve: some View {
+        RoundedRectangle(cornerRadius: 2)
+            .stroke(Color.shaft, lineWidth: 1)
+            .frame(height: 9)
+    }
+
+    fileprivate static var stopsAndShaft: some View {
+        HStack(spacing: gap) {
+            sleeveStop
+            KnurledShaft().stroked().frame(width: shaftWidth, height: 14)
+            sleeveStop
+        }
+    }
+
+    fileprivate static var sleeveStop: some View {
+        RoundedRectangle(cornerRadius: 1)
+            .stroke(Color.sleeveStop, lineWidth: 1)
+            .frame(width: stopWidth, height: 46)
+    }
+}
+
+/// Plates, mirrored around `BareBar`.
 ///
 /// **Plates run smallest outermost**, mirrored — ticket 0031's own line. §5.5's "biggest
 /// plate first" is the *loading* order, which is what `BarLoad.plates` holds; the drawing
 /// reverses it, because the biggest plate ends up against the shaft.
+///
+/// **There is no collar.** Ticket 0053, and Rob's own words at the walk: *"dat laatste
+/// dingentje (zwart dingetje) lijkt ook net een plate. die mag weg."* It was an 8 × 40
+/// outline outboard of the last plate, in the darkest steel on the ramp
+/// (`lightness: 0.453`) — plate-shaped, plate-sized, and sitting exactly where a fifth
+/// plate would. §7.1 rule 2 says steel is never filled, which is what should have kept
+/// the two apart, and on a phone at arm's length it did not: a thin dark outline beside
+/// four filled plates reads as one more plate, not as hardware.
+///
+/// Nothing is lost by dropping it. §7.5 asks for *plates, mirrored around a knurled
+/// centre shaft* and names no collar; the sleeve stops stay, and they are the parts that
+/// say where the loading zone ends. `Color.collar` stays in the palette — the Dumbbell's
+/// sleeve still wears it, where there is no plate anywhere near it to be confused with.
 struct LoadedBar: View {
     let load: BarLoad
 
@@ -222,25 +285,19 @@ struct LoadedBar: View {
     private var naturalWidth: CGFloat {
         let plates = ascending.reduce(CGFloat(0)) { $0 + CGFloat(PlateGlyph.size(for: $1).width) }
         let parts = CGFloat(ascending.count * 2 + 3)    // plates, 2 stops, shaft
-        return stopWidth * 2 + shaftWidth + plates * 2 + (parts - 1) * gap
+        return BareBar.stopWidth * 2 + BareBar.shaftWidth + plates * 2 + (parts - 1) * BareBar.gap
     }
-
-    private let gap: CGFloat = 4
-    private let stopWidth: CGFloat = 6
-    private let shaftWidth: CGFloat = 100
 
     var body: some View {
         GeometryReader { geometry in
             let scale = min(1, geometry.size.width / max(naturalWidth, 1))
             ZStack {
-                sleeve
-                HStack(spacing: gap) {
+                BareBar.sleeve
+                HStack(spacing: BareBar.gap) {
                     ForEach(Array(ascending.enumerated()), id: \.offset) { _, plate in
                         PlateFace(weight: plate)
                     }
-                    sleeveStop
-                    KnurledShaft().stroked().frame(width: shaftWidth, height: 14)
-                    sleeveStop
+                    BareBar.stopsAndShaft
                     ForEach(Array(ascending.reversed().enumerated()), id: \.offset) { _, plate in
                         PlateFace(weight: plate)
                     }
@@ -250,32 +307,6 @@ struct LoadedBar: View {
             .scaleEffect(scale)
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
-    }
-
-    /// The sleeve running under the plates. Steel, so it is a border and not a fill.
-    private var sleeve: some View {
-        RoundedRectangle(cornerRadius: 2)
-            .stroke(Color.shaft, lineWidth: 1)
-            .frame(height: 9)
-    }
-
-    /// **There is no collar.** Ticket 0053, and Rob's own words at the walk: *"dat laatste
-    /// dingentje (zwart dingetje) lijkt ook net een plate. die mag weg."* It was an 8 × 40
-    /// outline outboard of the last plate, in the darkest steel on the ramp
-    /// (`lightness: 0.453`) — plate-shaped, plate-sized, and sitting exactly where a fifth
-    /// plate would. §7.1 rule 2 says steel is never filled, which is what should have kept
-    /// the two apart, and on a phone at arm's length it did not: a thin dark outline beside
-    /// four filled plates reads as one more plate, not as hardware.
-    ///
-    /// Nothing is lost by dropping it. §7.5 asks for *plates, mirrored around a knurled
-    /// centre shaft* and names no collar; the sleeve stops stay, and they are the parts that
-    /// say where the loading zone ends. `Color.collar` stays in the palette — the Dumbbell's
-    /// sleeve still wears it, where there is no plate anywhere near it to be confused with.
-
-    private var sleeveStop: some View {
-        RoundedRectangle(cornerRadius: 1)
-            .stroke(Color.sleeveStop, lineWidth: 1)
-            .frame(width: stopWidth, height: 46)
     }
 }
 
