@@ -214,6 +214,10 @@ struct ProgramSettings: View {
     let programId: ProgramID
 
     @State private var renaming = false
+    @State private var progressionDialog = false
+    /// §5.2 again: choosing Microloading with no Microplate on opens the Microplate group
+    /// in place, exactly as step 1 does.
+    @State private var microplateSheet = false
 
     private var program: Program? { store.logbook?.program(programId) }
     private var rack: PlateInventory { store.logbook?.plateInventory ?? .standard(.kg) }
@@ -251,6 +255,18 @@ struct ProgramSettings: View {
                 store.send(.renameProgram(programId, name: name))
             }
         }
+        .sheet(isPresented: $microplateSheet) { MicroplateSheet() }
+        .confirmationDialog(
+            "Progression mode", isPresented: $progressionDialog, titleVisibility: .visible
+        ) {
+            Button(ProgressionMode.progressiveOverload.screenName) {
+                setProgramMode(.progressiveOverload)
+            }
+            Button(ProgressionMode.microloading.screenName) {
+                setProgramMode(.microloading)
+            }
+            Button("Cancel", role: .cancel) {}
+        }
     }
 
     @ViewBuilder
@@ -262,7 +278,7 @@ struct ProgramSettings: View {
                     programId, program.defaultWeightUnit == .kg ? .lbs : .kg))
             }
             SettingRow(label: "Progression", value: program.mode.screenName) {
-                store.send(.setProgramMode(programId, program.mode.next))
+                progressionDialog = true
             }
             SettingRow(label: "Plate rack", value: rackName) {
                 path.append(.plateRack(nil))
@@ -274,6 +290,14 @@ struct ProgramSettings: View {
     /// the rack is, so it has to stop saying *standard* the moment that stops being true.
     private var rackName: String {
         "\(rack == .standard(rack.unit) ? "Standard" : "Custom") \(rack.unit.rawValue)"
+    }
+
+    private func setProgramMode(_ mode: ProgressionMode) {
+        guard program?.mode != mode else { return }
+        store.send(.setProgramMode(programId, mode))
+        if mode == .microloading, rack.enabledMicroplates.isEmpty {
+            microplateSheet = true
+        }
     }
 }
 
@@ -408,7 +432,7 @@ struct NameSheet: View {
         TextField("", text: $name)
             .typography(Typography.input(26))
             .foregroundStyle(Color.text)
-            .textInputAutocapitalization(.words)
+            .textInputAutocapitalization(.sentences)
             .autocorrectionDisabled()
             .submitLabel(.done)
             .focused($focused)

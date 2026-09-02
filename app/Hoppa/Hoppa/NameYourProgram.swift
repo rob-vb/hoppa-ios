@@ -102,7 +102,7 @@ struct NameYourProgram: View {
             TextField("", text: $draft.name)
                 .typography(Typography.input(26))
                 .foregroundStyle(Color.text)
-                .textInputAutocapitalization(.words)
+                .textInputAutocapitalization(.sentences)
                 .autocorrectionDisabled()
                 .submitLabel(.done)
                 .focused($nameFocused)

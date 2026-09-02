@@ -367,8 +367,7 @@ struct RackFooter: View {
                 .typography(Typography.body(12))
                 .foregroundStyle(Color.dimText)
         } else {
-            (Text("Smallest jump on the bar: ").foregroundStyle(Color.dimText)
-                + Text(normal.map(text) ?? "nothing").foregroundStyle(Color.text)
+            (Text(normal.map(text) ?? "nothing").foregroundStyle(Color.text)
                 + microClause(micro))
                 .typography(Typography.body(12, lineSpacing: 3))
         }

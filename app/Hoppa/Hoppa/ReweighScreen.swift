@@ -209,6 +209,14 @@ struct ReweighScreen: View {
             .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
             .contentShape(Rectangle())
             .onTapGesture { focus = id }
+            .onChange(of: focus) { _, new in
+                if new == id {
+                    DispatchQueue.main.async {
+                        UIApplication.shared.sendAction(
+                            #selector(UIResponder.selectAll(_:)), to: nil, from: nil, for: nil)
+                    }
+                }
+            }
             Text(resolved(id)?.unit.rawValue ?? rack.unit.rawValue)
                 .typography(Typography.label(10.5))
                 .foregroundStyle(Color.dimText)
