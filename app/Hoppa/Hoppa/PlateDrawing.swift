@@ -59,15 +59,19 @@ struct PlateBreakdownView: View {
     ///
     /// **Ticket 0053 promoted this block**, on Rob's own words at the walk: *"Ik wil de
     /// '11.3 base + 20 + 5 + 2.5' wat nu in het klein staat veel zichtbaarder. Dat is wat
-    /// ik handig vind om te zien."* The strings are §5.5's, unchanged. What changed is the
-    /// size and the arrangement: the two halves **stack** instead of sitting side by side,
-    /// because at a size worth reading across a gym they do not both fit one line on a
-    /// 390 pt phone.
+    /// ik handig vind om te zien."* The two halves **stack** instead of sitting side by
+    /// side, because at a size worth reading across a gym they do not both fit one line
+    /// on a 390 pt phone.
     ///
-    /// **The loud half is the one that says what to hang, and that is not the same side
-    /// for every type.** A bar and a stack carry it on §5.5's left — the plates, the pin.
-    /// A Dumbbell and a belt carry it on the right, and their left is only a qualifier
-    /// (`each hand` loads nothing). So the two are named by job below rather than by side.
+    /// **The loud half is the plates, not the base.** Mixing `11.3 base + 20 + 5` into
+    /// one line left it unclear what to hang per side. The load line is now the plates
+    /// with their unit (`20 kg + 5 kg`); the Base Weight sits on the qualifier with the
+    /// per-side sum (`11.3 base + 25 kg per side`). A Barbell still prints no base.
+    ///
+    /// **Which half is loud is not the same for every type.** A bar and a stack carry it
+    /// on §5.5's left — the plates, the pin. A Dumbbell and a belt carry it on the right,
+    /// and their left is only a qualifier (`each hand` loads nothing). So the two are
+    /// named by job below rather than by side.
     private var caption: some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(loadLine)
@@ -106,11 +110,9 @@ struct PlateBreakdownView: View {
     private var captionLeft: String {
         switch breakdown {
         case .bar(let load):
-            var parts: [String] = []
-            // A Barbell prints no Base Weight at all — the bar is standard (§2.6, §5.5).
-            if load.printsBaseWeight { parts.append("\(load.baseWeight.decimalString) base") }
-            parts.append(contentsOf: load.plates.map(\.decimalString))
-            return parts.isEmpty ? "no plates" : parts.joined(separator: " + ")
+            // Plates only. The Base Weight is the carriage, not something to hang, so it
+            // lives on the qualifier (§5.5).
+            return plateLine(load.plates)
 
         case .stack(let load):
             var line = "pin at \(load.blocks) × \(load.stackStep.decimalString) \(load.stackStep.unit.rawValue)"
@@ -126,10 +128,21 @@ struct PlateBreakdownView: View {
         }
     }
 
+    /// `20 kg + 5 kg`, or `no plates` when the side is empty.
+    private func plateLine(_ plates: [Weight]) -> String {
+        plates.isEmpty
+            ? "no plates"
+            : plates.map { "\($0.decimalString) \($0.unit.rawValue)" }.joined(separator: " + ")
+    }
+
     private var captionRight: String {
         switch breakdown {
         case .bar(let load):
-            return "\(load.perSide.decimalString) \(load.perSide.unit.rawValue) per side"
+            let perSide = "\(load.perSide.decimalString) \(load.perSide.unit.rawValue) per side"
+            // A Barbell's bar is standard, so only a Machine (Plates) names the base.
+            return load.printsBaseWeight
+                ? "\(load.baseWeight.decimalString) base + \(perSide)"
+                : perSide
 
         case .stack(let load):
             // **Never a total** (§5.5): two units stand side by side and Hoppa does not
