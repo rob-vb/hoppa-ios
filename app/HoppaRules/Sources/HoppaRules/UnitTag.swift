@@ -1,8 +1,8 @@
 /// What the Exercise sheet prints beside Working Weight (`SPEC.md` §2.3).
 ///
-/// `.locked` is steel text, not a control: the four types loaded off the rack, and an
+/// `.locked` is steel text, not a control: every type loaded off the rack, and an
 /// add sheet before a chip is picked — that sheet states the Program default and does
-/// not offer a flip. `.own` is the one-tap chip Dumbbell, stack and cable get. The view
+/// not offer a flip. `.own` is the one-tap chip Machine (Stack) gets. The view
 /// must not re-derive this. Unpicked equipment used to be coded as *own the Program
 /// default*, which put a flip on every add; two callers drifting on that case is why
 /// the tag lives here.

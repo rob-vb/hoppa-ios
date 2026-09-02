@@ -220,7 +220,7 @@ struct ChartTests {
         book.programs[0].days.append(WorkoutDay(
             id: WorkoutDayID(50), name: "Upper B",
             exercises: [Exercise(
-                id: ExerciseID(50), name: "Smith machine bench press", equipment: .smith,
+                id: ExerciseID(50), name: "Smith machine bench press", equipment: .machinePlates,
                 plannedSets: 3, repRange: RepRange(8, 12),
                 workingWeight: kg("40"), increment: kg("2.5"), storedBaseWeight: kg("15"))]))
 

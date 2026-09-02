@@ -6,49 +6,69 @@ public enum WeightUnit: String, Codable, Sendable, Hashable, CaseIterable {
 
 /// How an Exercise is loaded (`SPEC.md` §2.6).
 ///
-/// The first four take their Weight Unit from the Plate Inventory: you cannot load a
-/// plate you do not own. The last three carry the unit the machine itself is marked with.
+/// Chip order is declaration order. Barbell, Dumbbell, Machine (Plates) and Bodyweight
+/// take their Weight Unit from the Plate Inventory. Machine (Stack) carries the unit
+/// the machine itself is marked with.
+///
+/// `smith`, `plate-loaded` and `cable` still decode. They are the names those machines
+/// used to have on disk.
 public enum EquipmentType: String, Codable, Sendable, Hashable, CaseIterable {
     case barbell
-    case smith
-    case plateLoaded = "plate-loaded"
-    case bodyweight
     case dumbbell
-    case stack = "machine-stack"
-    case cable
+    case machinePlates = "machine-plates"
+    case machineStack = "machine-stack"
+    case bodyweight
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let raw = try container.decode(String.self)
+        switch raw {
+        case "barbell": self = .barbell
+        case "dumbbell": self = .dumbbell
+        case "smith", "plate-loaded", "machine-plates": self = .machinePlates
+        case "cable", "machine-stack": self = .machineStack
+        case "bodyweight": self = .bodyweight
+        default:
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Unknown EquipmentType '\(raw)'")
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
+    }
 
     /// True where the Weight Unit is the Plate Inventory's and not the Exercise's own.
     public var takesUnitFromInventory: Bool {
-        switch self {
-        case .barbell, .smith, .plateLoaded, .bodyweight: true
-        case .dumbbell, .stack, .cable: false
-        }
+        self != .machineStack
     }
 
     /// A bar has two sides, so one Microplate per side moves the weight by twice the
     /// plate (`SPEC.md` §4.2). Everything else takes one plate.
     public var platesPerProgression: Int {
         switch self {
-        case .barbell, .smith, .plateLoaded: 2
-        case .bodyweight, .dumbbell, .stack, .cable: 1
+        case .barbell, .machinePlates: 2
+        case .bodyweight, .dumbbell, .machineStack: 1
         }
     }
 
     /// Only a pin has somewhere to hang a Microload and a Stack Step to roll it into.
     public var hasPin: Bool {
-        self == .stack || self == .cable
+        self == .machineStack
     }
 
-    /// A Base Weight is a fact about a Smith or a plate-loaded machine, and nothing else.
+    /// A Base Weight is a fact about a Machine (Plates), and nothing else.
     public var takesBaseWeight: Bool {
-        self == .smith || self == .plateLoaded
+        self == .machinePlates
     }
 
-    /// Barbell, Smith and Plate-loaded draw the same loaded bar (`SPEC.md` §5.5).
+    /// Barbell and Machine (Plates) draw the same loaded bar (`SPEC.md` §5.5).
     public var isBarLoaded: Bool {
         switch self {
-        case .barbell, .smith, .plateLoaded: true
-        case .bodyweight, .dumbbell, .stack, .cable: false
+        case .barbell, .machinePlates: true
+        case .bodyweight, .dumbbell, .machineStack: false
         }
     }
 }

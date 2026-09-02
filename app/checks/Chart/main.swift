@@ -84,12 +84,10 @@ func weightText(_ value: ChartWeight) -> String {
 func equipmentName(_ equipment: EquipmentType) -> String {
     switch equipment {
     case .barbell: "Barbell"
-    case .smith: "Smith"
-    case .plateLoaded: "Plate-loaded"
-    case .bodyweight: "Bodyweight"
     case .dumbbell: "Dumbbell"
-    case .stack: "Stack"
-    case .cable: "Cable"
+    case .machinePlates: "Machine (Plates)"
+    case .machineStack: "Machine (Stack)"
+    case .bodyweight: "Bodyweight"
     }
 }
 
@@ -107,7 +105,6 @@ func blockerReason(_ blocker: ProgressionBlocker) -> String {
     case .noIncrement: "no increment yet"
     case .noMicroplate: "no microplates · set up your rack"
     case .stranded: "microplate switched off · set up your rack"
-    case .unitMismatch: "microplate is in the other unit"
     case .noStackStep: "no stack step yet"
     }
 }
@@ -380,7 +377,7 @@ var mixed = Logbook(
             defaultWeightUnit: .kg, mode: .progressiveOverload,
             days: [WorkoutDay(id: WorkoutDayID(2), name: "Upper A", exercises: [
                 Exercise(
-                    id: ExerciseID(10), name: "Lat pulldown", equipment: .stack,
+                    id: ExerciseID(10), name: "Lat pulldown", equipment: .machineStack,
                     ownWeightUnit: .lbs,
                     plannedSets: 3, repRange: RepRange(10, 12),
                     workingWeight: Weight(decimalString: "90", unit: .lbs)!,

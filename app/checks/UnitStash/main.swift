@@ -138,7 +138,7 @@ let kgRack = PlateInventory.standard(.kg)
 func editDraft() -> ExerciseDraft {
     ExerciseDraft(
         name: "Cable Row",
-        equipment: .cable,
+        equipment: .machineStack,
         ownWeightUnit: .kg,
         plannedSets: 3,
         repRange: RepRange(8, 12),
@@ -235,7 +235,7 @@ do {
             name: "Squat", equipment: .barbell, ownWeightUnit: .kg, plannedSets: 3,
             repRange: RepRange(8, 12), shownUnit: .kg),
         equipmentChosen: false, rack: kgRack)
-    s.pick(.cable)
+    s.pick(.machineStack)
     check("an empty add sheet holds nothing", !s.stash.hasNumbers)
     check("and says nothing", s.unitMoveNote == nil)
     s.typeWorking("40")

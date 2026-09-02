@@ -97,7 +97,7 @@ enum History {
     /// generators, so the order is part of the fixture.
     static let specs: [Spec] = [
         // Upper A
-        spec(101, "Smith machine bench press", day: 0, .smith, .kg, start: "65", sets: 3, 8, 12,
+        spec(101, "Smith machine bench press", day: 0, .machinePlates, .kg, start: "65", sets: 3, 8, 12,
              mode: .progressiveOverload, increment: "2.5", base: "15"),
         spec(102, "Barbell row", day: 0, .barbell, .kg, start: "52.5", sets: 3, 8, 10,
              mode: .progressiveOverload, increment: "2.5"),
@@ -106,7 +106,7 @@ enum History {
         // never be reached. That is the plate this history runs on the **1 kg**: it is
         // the case ticket 16 settled and the case ticket 20 said the old fixture dodged,
         // and a snapshot that never reaches it is not worth committing.
-        spec(103, "Lat pulldown", day: 0, .stack, .lbs, start: "90", sets: 3, 10, 12,
+        spec(103, "Lat pulldown", day: 0, .machineStack, .lbs, start: "90", sets: 3, 10, 12,
              mode: .microloading, increment: "10", microplate: "1", stackStep: "10"),
         spec(104, "Dumbbell shoulder press", day: 0, .dumbbell, .kg, start: "20", sets: 3, 8, 12,
              mode: .progressiveOverload, increment: "2.5"),
@@ -117,9 +117,9 @@ enum History {
              mode: .progressiveOverload, increment: "5"),
         spec(107, "Romanian deadlift", day: 1, .barbell, .kg, start: "70", sets: 3, 8, 10,
              mode: .progressiveOverload, increment: "2.5"),
-        spec(108, "Leg curl", day: 1, .stack, .lbs, start: "70", sets: 3, 10, 12,
+        spec(108, "Leg curl", day: 1, .machineStack, .lbs, start: "70", sets: 3, 10, 12,
              mode: .progressiveOverload, increment: "10", stackStep: "10"),
-        spec(109, "Standing calf raise", day: 1, .smith, .kg, start: "60", sets: 4, 10, 15,
+        spec(109, "Standing calf raise", day: 1, .machinePlates, .kg, start: "60", sets: 4, 10, 15,
              mode: .progressiveOverload, increment: "2.5", base: "15"),
         // Upper B
         spec(110, "Overhead press", day: 2, .barbell, .kg, start: "40", sets: 3, 5, 8,
@@ -128,18 +128,18 @@ enum History {
              mode: .progressiveOverload, increment: "2.5"),
         spec(112, "Weighted dip", day: 2, .bodyweight, .kg, start: "10", sets: 3, 6, 10,
              mode: .progressiveOverload, increment: "2.5"),
-        spec(113, "Face pull", day: 2, .cable, .lbs, start: "40", sets: 3, 12, 15,
+        spec(113, "Face pull", day: 2, .machineStack, .lbs, start: "40", sets: 3, 12, 15,
              mode: .progressiveOverload, increment: "10", stackStep: "10"),
         spec(114, "Barbell curl", day: 2, .barbell, .kg, start: "30", sets: 3, 8, 12,
              mode: .microloading, increment: "2.5", microplate: "0.5"),
         // Lower B
         spec(115, "Front squat", day: 3, .barbell, .kg, start: "60", sets: 3, 5, 8,
              mode: .progressiveOverload, increment: "2.5"),
-        spec(116, "Leg press", day: 3, .plateLoaded, .kg, start: "120", sets: 3, 8, 12,
+        spec(116, "Leg press", day: 3, .machinePlates, .kg, start: "120", sets: 3, 8, 12,
              mode: .progressiveOverload, increment: "5", base: "25"),
-        spec(117, "Leg extension", day: 3, .stack, .lbs, start: "80", sets: 3, 10, 15,
+        spec(117, "Leg extension", day: 3, .machineStack, .lbs, start: "80", sets: 3, 10, 15,
              mode: .progressiveOverload, increment: "10", stackStep: "10"),
-        spec(118, "Seated calf raise", day: 3, .plateLoaded, .kg, start: "40", sets: 4, 10, 15,
+        spec(118, "Seated calf raise", day: 3, .machinePlates, .kg, start: "40", sets: 4, 10, 15,
              mode: .progressiveOverload, increment: "2.5", base: "10")
     ]
 

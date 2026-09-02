@@ -4,7 +4,7 @@ import HoppaRules
 @Suite("UnitTag — what the sheet prints beside Working Weight")
 struct UnitTagTests {
 
-    @Test("unitTag: 7 types × nil × both owns × both racks")
+    @Test("unitTag: 5 types × nil × both owns × both racks")
     func theTable() {
         for rack in WeightUnit.allCases {
             for own in WeightUnit.allCases {
@@ -18,7 +18,12 @@ struct UnitTagTests {
                 }
             }
         }
-        #expect(EquipmentType.allCases.count == 7)
+        #expect(EquipmentType.allCases.count == 5)
+        #expect(EquipmentType.dumbbell.takesUnitFromInventory)
+        #expect(!EquipmentType.machineStack.takesUnitFromInventory)
+        #expect(EquipmentType.barbell.takesUnitFromInventory)
+        #expect(EquipmentType.machinePlates.takesUnitFromInventory)
+        #expect(EquipmentType.bodyweight.takesUnitFromInventory)
     }
 
     @Test("stackStepOffers in lbs is 5 and 10 lbs, never converted kg")

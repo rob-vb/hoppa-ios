@@ -78,7 +78,7 @@ enum HarnessSeed {
                         WorkoutDay(id: WorkoutDayID(2), name: "Upper A", exercises: [
                             Exercise(
                                 id: ExerciseID(10), name: "Smith machine bench press",
-                                equipment: .smith,
+                                equipment: .machinePlates,
                                 plannedSets: 3, repRange: RepRange(8, 12),
                                 workingWeight: Weight(decimalString: "72.5", unit: .kg)!,
                                 increment: Weight(decimalString: "2.5", unit: .kg)!,

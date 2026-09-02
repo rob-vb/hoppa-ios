@@ -40,7 +40,7 @@ func book() -> Logbook {
     for size in ["1", "0.5", "0.25"] { rack.setPlate(kg(size), on: true) }
     let upperA = WorkoutDay(id: Ids.upperA, name: "Upper A", exercises: [
         Exercise(
-            id: Ids.smith, name: "Smith machine bench press", equipment: .smith,
+            id: Ids.smith, name: "Smith machine bench press", equipment: .machinePlates,
             plannedSets: 3, repRange: RepRange(8, 12),
             workingWeight: kg("72.5"), increment: kg("2.5"),
             microloadingIncrement: kg("0.25"), storedBaseWeight: kg("15")),
@@ -49,7 +49,7 @@ func book() -> Logbook {
             plannedSets: 3, repRange: RepRange(8, 10),
             workingWeight: kg("60"), increment: kg("2.5")),
         Exercise(
-            id: Ids.pulldown, name: "Lat pulldown", equipment: .stack, ownWeightUnit: .lbs,
+            id: Ids.pulldown, name: "Lat pulldown", equipment: .machineStack, ownWeightUnit: .lbs,
             plannedSets: 3, repRange: RepRange(10, 12),
             workingWeight: lbs("100"), increment: lbs("10"),
             microloadingIncrement: kg("1"), modeOverride: .microloading,
@@ -302,7 +302,7 @@ print("\n— a brand-new Exercise, which is the second door's whole reason —")
 do {
     var start = book()
     let added = ExerciseDraft(
-        name: "Cable row", equipment: .cable, ownWeightUnit: .kg,
+        name: "Cable row", equipment: .machineStack, ownWeightUnit: .kg,
         plannedSets: 3, repRange: RepRange(10, 12), shownUnit: .kg)
     start = Rules.reduce(
         start, .addExercise(workoutDayId: Ids.upperA, at: 4, draft: added), at: 1_770_000_000)

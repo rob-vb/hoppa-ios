@@ -43,7 +43,7 @@ struct PlateRackScreen: View {
                 Spacer().frame(height: 12)
                 unitToggle
                 Spacer().frame(height: 10)
-                Text("This unit applies to every barbell, Smith machine and plate-loaded exercise in the program.")
+                Text("This unit applies to every barbell, dumbbell, machine (plates) and bodyweight exercise in the program.")
                     .typography(Typography.body(12, lineSpacing: 3))
                     .foregroundStyle(Color.dimText)
                 Spacer().frame(height: 16)
@@ -85,7 +85,7 @@ struct PlateRackScreen: View {
             Button("Cancel", role: .cancel) {}
         } message: { _ in
             Text("""
-                Every barbell, Smith, plate-loaded and bodyweight exercise loses its \
+                Every barbell, dumbbell, machine (plates) and bodyweight exercise loses its \
                 weight, its increment and its base weight, and every microloading \
                 increment resets. The next screen asks for the weights again.
                 """)

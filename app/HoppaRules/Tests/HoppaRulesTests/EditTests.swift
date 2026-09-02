@@ -164,7 +164,7 @@ struct EditTests {
         session.send(.addExercise(
             workoutDayId: Ids.upperA, at: 1,
             draft: ExerciseDraft(
-                name: "Face pull", equipment: .cable, ownWeightUnit: .lbs,
+                name: "Face pull", equipment: .machineStack, ownWeightUnit: .lbs,
                 plannedSets: 3, repRange: RepRange(12, 15),
                 workingWeight: lbs("40"), increment: lbs("10"), stackStep: lbs("10"),
                 shownUnit: .lbs)))
@@ -232,21 +232,18 @@ struct EditTests {
     @Test("Changing a Weight Unit clears the weights rather than converting them")
     func aUnitChangeClears() {
         var session = Session()
-        var draft = Self.draft(session.stored(Ids.press)!)              // Dumbbell, kg
-        draft.ownWeightUnit = .lbs
-        session.send(.saveExercise(Ids.press, draft: draft))
+        var draft = Self.draft(session.stored(Ids.pulldown)!)           // stack, lbs
+        draft.ownWeightUnit = .kg
+        session.send(.saveExercise(Ids.pulldown, draft: draft))
 
-        let press = session.stored(Ids.press)!
-        #expect(press.workingWeight == nil)
-        #expect(press.increment == nil)
-        #expect(press.ownWeightUnit == .lbs)
-        // The Microloading Increment keeps the Plate Inventory's unit whatever the
-        // Exercise does (§5.1), so it survives untouched.
-        #expect(press.microloadingIncrement == kg("0.25"))
-        // A Dumbbell has nowhere to hang a Microload, so none is created (§2.6).
-        #expect(press.microload == nil)
-        // And the Exercise is now on the Re-weigh list, without anything writing it down.
-        #expect(Rules.reweighList(in: session.book) == [Ids.press])
+        let pulldown = session.stored(Ids.pulldown)!
+        #expect(pulldown.workingWeight == nil)
+        #expect(pulldown.increment == nil)
+        #expect(pulldown.storedStackStep == nil)
+        #expect(pulldown.ownWeightUnit == .kg)
+        #expect(pulldown.microloadingIncrement == kg("1"))
+        #expect(pulldown.microload == nil)
+        #expect(Rules.reweighList(in: session.book) == [Ids.pulldown])
     }
 
     @Test("A Microload is really destroyed when the pin joins the rack's unit")
@@ -287,20 +284,18 @@ struct EditTests {
     @Test("A weight retyped in the new unit survives the same save that changed the unit")
     func aRetypedWeightSurvives() {
         var session = Session()
-        var draft = Self.draft(session.stored(Ids.press)!)              // Dumbbell, kg
-        draft.ownWeightUnit = .lbs
-        // The sheet emptied the fields on screen, the user typed again under the new
-        // label, and it all leaves in one save (§6.2). §6.6 promises this works.
-        draft.shownUnit = .lbs
-        draft.workingWeight = lbs("50")
-        draft.increment = lbs("5")
-        session.send(.saveExercise(Ids.press, draft: draft))
+        var draft = Self.draft(session.stored(Ids.pulldown)!)           // stack, lbs
+        draft.ownWeightUnit = .kg
+        draft.shownUnit = .kg
+        draft.workingWeight = kg("45")
+        draft.increment = kg("5")
+        draft.stackStep = kg("5")
+        session.send(.saveExercise(Ids.pulldown, draft: draft))
 
-        let press = session.stored(Ids.press)!
-        #expect(press.workingWeight == lbs("50"))
-        #expect(press.increment == lbs("5"))
-        #expect(press.ownWeightUnit == .lbs)
-        // And the Exercise never reaches the Re-weigh list, because it has a weight.
+        let pulldown = session.stored(Ids.pulldown)!
+        #expect(pulldown.workingWeight == kg("45"))
+        #expect(pulldown.increment == kg("5"))
+        #expect(pulldown.ownWeightUnit == .kg)
         #expect(Rules.reweighList(in: session.book).isEmpty)
     }
 
@@ -328,13 +323,12 @@ struct EditTests {
     @Test("A number typed before the flip is still cleared, retype or not")
     func aStaleNumberStillGoes() {
         var session = Session()
-        var draft = Self.draft(session.stored(Ids.press)!)              // Dumbbell, kg
-        // The unit moves and `shownUnit` does not: this draft's numbers were typed in kg.
-        draft.ownWeightUnit = .lbs
+        var draft = Self.draft(session.stored(Ids.pulldown)!)           // stack, lbs
+        draft.ownWeightUnit = .kg
         draft.workingWeight = kg("22.5")
-        session.send(.saveExercise(Ids.press, draft: draft))
+        session.send(.saveExercise(Ids.pulldown, draft: draft))
 
-        #expect(session.stored(Ids.press)?.workingWeight == nil)
+        #expect(session.stored(Ids.pulldown)?.workingWeight == nil)
     }
 
     @Test("The add path is guarded by the same rule as the edit")
@@ -467,9 +461,9 @@ struct EditTests {
     func theInventoryUnitClearsAtFullBlastRadius() {
         var session = Session()
         let warned = Rules.exercisesClearedByInventoryUnit(.lbs, in: session.book)
-        // Smith, Barbell row and the Bodyweight chin-up read the rack; the Dumbbell and
-        // the stack carry their own unit (§5.1).
-        #expect(warned == [Ids.smith, Ids.row, Ids.chin])
+        // Smith, Barbell row, the Dumbbell and the Bodyweight chin-up read the rack;
+        // the stack carries its own unit (§5.1).
+        #expect(warned == [Ids.smith, Ids.row, Ids.press, Ids.chin])
 
         session.send(.setPlateInventoryUnit(.lbs))
 
@@ -477,8 +471,8 @@ struct EditTests {
         #expect(session.stored(Ids.smith)?.workingWeight == nil)
         #expect(session.stored(Ids.smith)?.storedBaseWeight == nil)
         #expect(session.stored(Ids.chin)?.workingWeight == nil)
-        // The Dumbbell and the pin keep their own unit, so their weights stand.
-        #expect(session.stored(Ids.press)?.workingWeight == kg("22.5"))
+        #expect(session.stored(Ids.press)?.workingWeight == nil)
+        // The pin keeps its own unit, so its weight stands.
         #expect(session.stored(Ids.pulldown)?.workingWeight == lbs("100"))
         // Every Microloading Increment resets: the other unit's Microplates all ship off.
         #expect(session.book.allExercises.allSatisfy { $0.microloadingIncrement == nil })
@@ -486,7 +480,7 @@ struct EditTests {
         #expect(session.stored(Ids.pulldown)?.microload == nil)         // lbs pin, lbs rack
         #expect(session.stored(Ids.press)?.microload == nil)
 
-        #expect(Rules.reweighList(in: session.book) == [Ids.smith, Ids.row, Ids.chin])
+        #expect(Rules.reweighList(in: session.book) == [Ids.smith, Ids.row, Ids.press, Ids.chin])
     }
 
     @Test("The warning counts the Exercises that have a weight to lose, and no more")
@@ -494,7 +488,7 @@ struct EditTests {
         var session = Session()
         session.book.updateExercise(Ids.chin) { $0.workingWeight = nil }
 
-        #expect(Rules.exercisesClearedByInventoryUnit(.lbs, in: session.book) == [Ids.smith, Ids.row])
+        #expect(Rules.exercisesClearedByInventoryUnit(.lbs, in: session.book) == [Ids.smith, Ids.row, Ids.press])
         // The switch it is already on clears nothing.
         #expect(Rules.exercisesClearedByInventoryUnit(.kg, in: session.book).isEmpty)
     }
@@ -578,12 +572,11 @@ struct EditTests {
 
         session.send(.setPlateInventoryUnit(.lbs))
 
-        // The barbell row reads the rack, so its One-off is a number under a label that
-        // has moved. It goes with the Working Weight it was standing in for.
+        // The barbell row and the Dumbbell both read the rack, so their One-offs are
+        // numbers under a label that has moved. They go with the Working Weight.
         #expect(session.performed(Ids.row)?.oneOffWeight == nil)
+        #expect(session.performed(Ids.press)?.oneOffWeight == nil)
         // The Set already logged is untouched: it really was lifted at 50 kg (§2.4).
         #expect(session.performed(Ids.row)?.sets.first?.weight == kg("50"))
-        // The Dumbbell carries its own unit and the switch never reached it.
-        #expect(session.performed(Ids.press)?.oneOffWeight == kg("20"))
     }
 }
