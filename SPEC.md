@@ -608,7 +608,7 @@ When the exact weight cannot be built, one extra caption line appears under the 
 
 ```
 [≈ CLOSEST]  you load 62.5 kg · 0.5 over
-20 + 1.25                    21.25 kg per side
+20 kg + 1.25 kg              21.25 kg per side
 ```
 
 - The closest buildable load wins, **up or down**. On a tie, Hoppa rounds **down**.
@@ -625,14 +625,17 @@ colours, mirrored around a knurled shaft. No guide rails for a Smith, no carriag
 plate-loaded machine — per-type silhouettes were rejected as needless variation.
 
 The **Base Weight is the only difference, and it lives in text**: the meta line reads
-`… · BASE 15 KG`, and the caption pairs `15 base + 20 + 5 + 2.5 + 1.25` with
-`28.75 kg per side`. A Barbell prints no Base Weight at all.
+`… · BASE 15 KG`. The load line is the plates to hang, each with its unit
+(`20 kg + 5 kg + 2.5 kg + 1.25 kg`); the qualifier names the Base Weight with the per-side
+sum (`15 base + 28.75 kg per side`). Mixing the base into the plate list made it unclear
+what to add per side. A Barbell prints no Base Weight at all, so its qualifier is only the
+per-side sum.
 
 **The caption stacks, and the half that says what to hang is the loud one** — corrected at
 [The weight is too big and the plates too small](issues/0053-the-hero-and-the-load-line.md),
 which is Rob's own verdict from the walk and not an artboard's. The two halves were side by side
 at 11 px each; they are now a **load line** at 17 px in full text colour over a **qualifier line**
-at 11 px dim. The strings are unchanged. Which half is loud is per Equipment Type: a Barbell and a
+at 11 px dim. Which half is loud is per Equipment Type: a Barbell and a
 stack load on the left of the table below, a Dumbbell and a belt on the right — `each hand` hangs
 nothing, so it is the qualifier there.
 
