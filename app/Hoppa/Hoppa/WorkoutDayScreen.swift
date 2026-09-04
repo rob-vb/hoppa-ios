@@ -18,39 +18,30 @@ import HoppaStore
 // the room for one Day exactly as the sheet is the room for one Exercise. It is never
 // disabled — see `removeRow` for why, and for where the two refusals are printed.
 //
-// **The card has two doors as of ticket 0050**, and which one is the whole card was the
-// question that ticket answered. §6.7 gives an Exercise card a door to that Exercise's
-// chart — *the card carries a sparkline, so the door announces itself* — while this
-// screen's own caption says *tap a row to open it*, meaning §6.2's sheet.
+// **The card is grip and sheet, and nothing else.** Between tickets 0050 and 0058 it had a
+// third region: §6.7 had put the door to an Exercise's chart on this card, as a sparkline
+// on the trailing edge, and ticket 0050 made the mark the door — for three reasons that
+// still hold for *which half of a card* should open the sheet. An Exercise card is edited
+// far more often than it is charted; the mark announced itself; and a card with nothing to
+// plot offered no empty room. What those reasons never settled was *where the chart is
+// reached from*, and this screen was the wrong room for it: it is the room for building a
+// Day, nobody looks for a statistic on the trailing edge of a card here, and it split
+// Flow 4 across two kinds of door that did not rhyme — History a row at the foot of the
+// picker, the chart a sliver on a card one room down.
 //
-// **The sparkline is the door; the rest of the card is the sheet.** Three reasons, and
-// they are on the walk list for Rob to overrule:
-//
-// - **An Exercise card is edited far more often than it is charted.** Every Exercise in a
-//   Program is opened at least once while it is being built, and none of them has a chart
-//   then. Making the chart the whole card would put a screen that says *nothing here yet*
-//   behind the tap that onboarding uses five times in a row.
-// - **§6.7's own sentence makes the mark the announcement**, so the announcement and the
-//   door being one object is the shortest reading of it, and the one that needs no third
-//   affordance to explain.
-// - **No sparkline, no door** (`ExerciseChart.hasSpark`). A card with nothing to plot
-//   draws no mark, so the door to an empty room is never offered — which is §6.7's own
-//   two-session empty state, applied one room further out.
-//
-// Two shapes were refused. A **`•••`**, the way §6.7 hangs delete off a Workout row: it
-// would hold one item, and ticket 0049 already refused a menu of nothing on the chart
-// itself — a menu of one is the same control with an extra tap. And **the swap**, the
-// chart as the whole card with the sheet behind something else, which the 0015 artboard
-// draws: it costs the edit path its target to buy the rarer one.
+// **Ticket 0058 moved the door.** The chart is reached from the Progress page, a sibling of
+// History at the foot of the picker, where every trained Exercise is a row and the whole
+// row is the door. The sparkline left this card with it. So the caption under the Day's
+// Name — `5 exercises · tap a row to open it` — is fully true again: a tap anywhere the
+// grip is not opens §6.2's sheet, and there is no second thing a tap might do.
 //
 // **Where §6.7's "Program sheet" actually is.** §6.7 puts the Exercise card in the Program
 // sheet; in this app the Program sheet lists Workout *Days*, and Exercise cards are here.
 // The artboard settles it — `design/0015-history/Program.dc.html` is headed
 // `‹ Upper / Lower · Upper A · 5 exercises`, which is this screen. `SPEC.md` §6.7 carries
-// the correction.
+// the correction. That artboard also draws the sparkline on the card; it is historical.
 //
-// Artboards: `design/0006-onboarding/Day.dc.html`, and
-// `design/0015-history/Program.dc.html` for the mark.
+// Artboard: `design/0006-onboarding/Day.dc.html`.
 
 struct WorkoutDayScreen: View {
     @Environment(LogbookStore.self) private var store
@@ -294,7 +285,7 @@ struct WorkoutDayScreen: View {
                 ) { (id: ExerciseID, to: Int) in
                     store.send(.moveExercise(id, to: to))
                 } row: { (exercise: Exercise, _: Int) in
-                    row(exercise.resolved(in: program, inventory: rack), chart(exercise.id))
+                    row(exercise.resolved(in: program, inventory: rack))
                 }
                 AddRow("Add an exercise") {
                     sheetTarget = ExerciseSheetTarget(day: workoutDayId, at: day.exercises.count)
@@ -309,80 +300,31 @@ struct WorkoutDayScreen: View {
 
     /// The card's content only: `ReorderColumn` owns the card itself, and the handle on
     /// the leading edge owns the drag. So the tap target stops where the handle starts and
-    /// the two never fight — the row still opens the sheet, everywhere the grip is not.
-    ///
-    /// **Ticket 0050 adds a third region on the trailing edge**, and it sits *beside* the
-    /// sheet's Button rather than over it — the same arrangement `ReorderColumn` gives the
-    /// handle, and for the same reason: two views that never overlap need no gesture
-    /// priority between them, so neither can swallow the other's tap. The card is
-    /// therefore **grip · sheet · chart**, left to right, and the sheet keeps every pixel
-    /// that is neither.
-    private func row(_ exercise: ResolvedExercise, _ chart: ExerciseChart?) -> some View {
-        let door = chart.flatMap { $0.hasSpark ? $0 : nil }
-        return HStack(spacing: 0) {
-            Button {
-                sheetTarget = ExerciseSheetTarget(day: workoutDayId, exercise: exercise.id)
-            } label: {
-                HStack(spacing: 12) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(exercise.name)
-                            .typography(Typography.display(16))
-                            .foregroundStyle(Color.text)
-                            .lineLimit(1)
-                        Text(line(exercise))
-                            .typography(Typography.label(10, tracking: 0.12))
-                            .foregroundStyle(Color.dimText)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.8)
-                    }
-                    Spacer(minLength: 8)
-                    weight(exercise)
-                }
-                // The card's own trailing padding, except where the chart door supplies
-                // it — the mark keeps the same 14 pt off the edge that the weight had.
-                .padding(.trailing, door == nil ? 14 : 0)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.pressable)
-            if let door { chartDoor(door) }
-        }
-    }
-
-    /// §6.7's second door, which **is** the sparkline.
-    ///
-    /// The mark is 44 × 16, and the target around it is 66 × 62 — §7.4 asks 50, and the
-    /// card is 62 tall, so the whole trailing column answers. That is deliberate: a 44 × 16
-    /// mark is a fine thing to look at and a poor thing to hit, and the gap on either side
-    /// of it is not doing anything else.
-    ///
-    /// **The chart it opens is read again on arrival**, from the id and not from this
-    /// value: `ExerciseChartScreen` asks `Rules.exerciseChart` itself, so nothing stale
-    /// travels through the `Route` (the reason `Route.reweigh` carries nothing).
-    private func chartDoor(_ chart: ExerciseChart) -> some View {
+    /// the two never fight — the row opens the sheet, everywhere the grip is not.
+    private func row(_ exercise: ResolvedExercise) -> some View {
         Button {
-            path.append(.exerciseChart(chart.exerciseId))
+            sheetTarget = ExerciseSheetTarget(day: workoutDayId, exercise: exercise.id)
         } label: {
-            HStack(spacing: 0) {
-                Sparkline(marks: chart.sparkline)
-                Spacer().frame(width: 14)
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(exercise.name)
+                        .typography(Typography.display(16))
+                        .foregroundStyle(Color.text)
+                        .lineLimit(1)
+                    Text(line(exercise))
+                        .typography(Typography.label(10, tracking: 0.12))
+                        .foregroundStyle(Color.dimText)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                }
+                Spacer(minLength: 8)
+                weight(exercise)
             }
-            .padding(.leading, 8)
-            .frame(maxHeight: .infinity)
+            .padding(.trailing, 14)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
         }
         .buttonStyle(.pressable)
-        .accessibilityLabel("Chart for \(chart.name)")
-    }
-
-    /// The chart behind one card, or `nil` where the Exercise has none to show.
-    ///
-    /// Asked per card, per pass. `Rules.exerciseChart` walks the Workouts once, and a Day
-    /// holds a handful of Exercises — the alternative is a second, thinner rule that says
-    /// *has this been performed*, and two rules that must agree about the same door is the
-    /// thing this map keeps refusing.
-    private func chart(_ id: ExerciseID) -> ExerciseChart? {
-        store.logbook.flatMap { Rules.exerciseChart(id, in: $0) }
     }
 
     /// `barbell · 3 × 8–12 · +2.5`, and `base 15` where a Machine (Plates)

@@ -203,15 +203,15 @@ struct HistoryScreen: View {
 
     // MARK: - Before the first Workout (§6.7)
 
-    /// Word for word the artboard's, and it states both halves: a Workout lands here when
-    /// it is finished, and an Exercise gets a line once it has two.
+    /// The artboard's first sentence. Its second — *every exercise gets a line as soon as
+    /// it has two* — belonged to the chart door, and since ticket 0058 the chart door is
+    /// on the Progress page, which has its own empty state to say so.
     private var empty: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Nothing here yet")
                 .typography(Typography.display(26))
                 .foregroundStyle(Color.text)
-            Text("Finish your first workout and it lands here. "
-                 + "Every exercise gets a line as soon as it has two.")
+            Text("Finish your first workout and it lands here.")
                 .typography(Typography.body(13, lineSpacing: 4))
                 .foregroundStyle(Color.dimText)
         }
