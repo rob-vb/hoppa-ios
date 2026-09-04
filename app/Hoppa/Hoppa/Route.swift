@@ -51,18 +51,26 @@ enum Route: Hashable {
     case summary(WorkoutID)
     /// Flow 4, §6.7 — the streak and the Workout list, ticket 0047.
     case history
+    /// §6.7's second door: the Progress list, one row per Exercise that has been
+    /// performed — ticket 0058.
+    ///
+    /// It carries **nothing**, for the reason `.reweigh` carries nothing: the list is
+    /// `Rules.progress`, derived from the Logbook every time it is asked, and a route that
+    /// carried the rows would be a copy that goes stale at the next Finish.
+    case progress
     /// One finished Workout, read back weeks later — ticket 0048.
     ///
     /// It carries the **Workout's** id and not the Day's, for the reason `.summary` does:
     /// a row of §6.7's list is a statement about one performance, and the Day it was
     /// performed on has moved on since.
     case pastWorkout(WorkoutID)
-    /// §6.7's second door: one Exercise's progression chart — ticket 0049.
+    /// One Exercise's progression chart — ticket 0049, the room behind a Progress row.
     ///
     /// It carries the **Exercise's** id and nothing else. The chart is a screen about an
     /// Exercise across every Workout it has ever been in, so the Day it was opened from is
-    /// not part of the question — the screen reads the Day back off the Exercise for the
-    /// chevron's label. **The door itself is ticket 0050**: this is the room.
+    /// not part of the question — the screen reads the Day back off the Exercise for its
+    /// meta line. Ticket 0050 put the door to it on the Exercise card; ticket 0058 moved
+    /// the door onto `.progress`, and the room did not change.
     case exerciseChart(ExerciseID)
     /// §6.6's Re-weigh list — ticket 0046.
     ///
