@@ -215,8 +215,8 @@ do {
     check("the sheet opens on the program default", s.unit == .lbs)
     check("and the draft agrees", s.draft.shownUnit == .lbs)
     s.typeWorking("100")
-    s.pick(.dumbbell)
-    check("a dumbbell in LBS keeps the typed number", s.workingText == "100")
+    s.pick(.machineStack)
+    check("a stack in LBS keeps the typed number", s.workingText == "100")
     check("and the save keeps it too", s.saved().workingWeight == Weight(decimalString: "100", unit: .lbs))
 }
 do {

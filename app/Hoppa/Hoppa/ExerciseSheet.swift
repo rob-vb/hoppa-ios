@@ -528,8 +528,6 @@ struct ExerciseSheet: View {
         Rules.stackStepOffers(in: unit)
     }
 
-    /// Live labels when the top plate is not one step. Empty first plate is the
-    /// ordinary stack, so there is nothing extra to say.
     private var firstPlateLabels: String? {
         guard let step = draft.stackStep,
               let ladder = StackLadder(step: step, first: draft.stackFirstPlate),
