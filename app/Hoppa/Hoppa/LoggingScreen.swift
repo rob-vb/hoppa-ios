@@ -65,6 +65,7 @@ struct LoggingScreen: View {
         // §7.4: nothing is drawn in the safe top inset, and the header below carries its
         // own way back — a navigation bar would put a second chevron above it.
         .toolbar(.hidden, for: .navigationBar)
+        .toolbar(.hidden, for: .tabBar)
         .task { start() }
         .sheet(item: $sheet) { which in
             sheetBody(which)

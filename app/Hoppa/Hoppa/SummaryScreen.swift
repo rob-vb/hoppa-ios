@@ -70,6 +70,7 @@ struct SummaryScreen: View {
         // §6.5 has no Accept and no Undo, and a chevron to a finished Workout would be a
         // third thing to argue with. `DONE` is the only exit.
         .toolbar(.hidden, for: .navigationBar)
+        .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden(true)
     }
 

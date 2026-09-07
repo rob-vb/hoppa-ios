@@ -171,8 +171,8 @@ struct WorkoutDayPicker: View {
     // MARK: - The first run (§6.1)
 
     /// `NOTHING HERE YET` dead centre, and one `CREATE A PROGRAM` button. A later
-    /// background video sits behind the same centre. No Program to name, and a History or
-    /// Progress door with no Program behind it would be furniture.
+    /// background video sits behind the same centre. The tab bar hides until a Program
+    /// exists: History, Progress and Settings with nothing behind them would be furniture.
     private var firstRun: some View {
         ZStack {
             Text("Nothing here yet")
@@ -213,45 +213,17 @@ struct WorkoutDayPicker: View {
                 }
                 .scrollBounceBehavior(.basedOnSize)
             }
-
-            Spacer(minLength: 16)
-            // §6.7's two doors, stacked at the foot: History, then Progress (ticket 0058).
-            VStack(spacing: 8) {
-                historyRow
-                progressRow
-            }
         }
     }
 
-    /// The Program's Name, and the `•••` into its sheet. §6.7's *two doors* counts the doors
-    /// into **History** and **Progress**; this is the way into Flow 5, which §6.1 step 3
-    /// calls the hub.
-    ///
-    /// Ticket 0057, second pass, on Rob's words: the wordmark **white, top-left**, the
-    /// Program name beside it in steel and **cut off with an ellipsis** when it is long,
-    /// and a drawn gear where `•••` was.
-    ///
-    /// Third pass, same day: the wordmark **twice the size**, the gear on its line, and the
-    /// Program name **under** them. Two rows, so the header is no longer one 50 pt band.
+    /// The wordmark and the Program's Name. Settings is a tab (ticket 0059), so the gear
+    /// that opened the hub left with it. Two rows still: the mark at 28 pt, the name
+    /// under it in steel, cut off with an ellipsis when it is long.
     private func header(_ program: Program) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .center, spacing: 12) {
-                Wordmark(height: 28)
-                    .foregroundStyle(Color.text)
-                Spacer(minLength: 8)
-                Button {
-                    path.append(.programSheet(program.id, onboarding: false))
-                } label: {
-                    GearGlyph()
-                        .stroke(Color.steel, style: StrokeStyle(lineWidth: 1.5, lineJoin: .round))
-                        .frame(width: 22, height: 22)
-                        .frame(width: 50, height: 50, alignment: .trailing)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.pressable)
-                .accessibilityLabel("Program settings")
-            }
-            .frame(height: 50)      // §7.4's smaller hit target, and the gear's whole row
+            Wordmark(height: 28)
+                .foregroundStyle(Color.text)
+                .frame(height: 50, alignment: .leading)
             Text(program.name)
                 .typography(Typography.display(13, tracking: 0.1))
                 .foregroundStyle(Color.steel)
@@ -303,8 +275,8 @@ struct WorkoutDayPicker: View {
     /// it is there every time he opens the app while the condition is true, and it goes by
     /// itself when the last weight is typed.
     ///
-    /// It sits **at the top**, under the Program's Name. The foot of the picker is §6.7's
-    /// two doors.
+    /// It sits **at the top**, under the Program's Name. History is a tab, not a row at
+    /// the foot.
     @ViewBuilder
     private var reweighBanner: some View {
         let count = store.logbook.map { Rules.reweighList(in: $0).count } ?? 0
@@ -325,57 +297,6 @@ struct WorkoutDayPicker: View {
             }
             .buttonStyle(.pressable)
         }
-    }
-
-    /// §6.7's first door. Ticket 0047 built the room behind it.
-    ///
-    /// The artboard reads `56 workouts · 9 weeks in a row`, and it reads both halves now:
-    /// ticket 0032 could only state the count, because the streak was a §6.7 rule nobody
-    /// had written. `Streak.read` is that rule, and it is the **same** call the history
-    /// screen draws its strip from — the app holds one week rule and not two.
-    ///
-    /// Its own `TimelineView`, for the reason the day rows have one: the run is counted
-    /// against the week that holds *now*, and a phone left on the picker crosses midnight.
-    private var historyRow: some View {
-        TimelineView(.everyMinute) { timeline in
-            DoorRow(
-                title: "History",
-                detail: historyLine(now: timeline.date.timeIntervalSince1970)
-            ) {
-                path.append(.history)
-            }
-        }
-    }
-
-    /// `56 workouts · 9 weeks in a row`. **The run is dropped where it is zero**, not
-    /// printed as `0 weeks in a row`: a run of nothing is the shortfall §6.7 removed the
-    /// best-ever number to avoid, and the count on its own is still true (§7.6).
-    private func historyLine(now: Timestamp) -> String {
-        let count = store.logbook?.workouts.count ?? 0
-        let workouts = count == 1 ? "1 workout" : "\(count) workouts"
-        let run = store.logbook.map { Streak.read($0, now: now).run } ?? 0
-        guard run > 0 else { return workouts }
-        return "\(workouts) · \(run) week\(run == 1 ? "" : "s") in a row"
-    }
-
-    /// §6.7's second door, ticket 0058. The same `DoorRow` as History, directly under it,
-    /// so the two pages are reached the same way. Ticket 0050 had put this door on the
-    /// Exercise card as a sparkline; the card is grip and sheet again.
-    ///
-    /// **No `TimelineView`**: nothing on this line depends on the clock. A row appears
-    /// when a Workout finishes, and a Finish redraws the picker by itself.
-    private var progressRow: some View {
-        DoorRow(title: "Progress", detail: progressLine) {
-            path.append(.progress)
-        }
-    }
-
-    /// `12 exercises`, singular at one, and `0 exercises` before the first session — the
-    /// same shape as History's count, and **only** the count. A went-up total across
-    /// Exercises would be an aggregate §6.7 refused.
-    private var progressLine: String {
-        let count = store.logbook.map { Rules.progress(in: $0).count } ?? 0
-        return count == 1 ? "1 exercise" : "\(count) exercises"
     }
 
     // MARK: - What a corrupt file looks like

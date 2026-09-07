@@ -93,6 +93,7 @@ struct NameYourProgram: View {
         // here as it is on the picker, and `StepHeader` draws the way back in content —
         // which is what both onboarding artboards do.
         .toolbar(.hidden, for: .navigationBar)
+        .toolbar(.hidden, for: .tabBar)
     }
 
     // MARK: - The name (§2.7 — a label, not an identity)
@@ -280,8 +281,8 @@ struct PrimaryButton: View {
     }
 }
 
-/// A door at the foot of a list. History on the picker and Program settings on the hub
-/// are the same control: filled card, chip border, 64 pt, title plus a quieter line.
+/// A door at the foot of a list. Program settings on the hub is this control: filled card,
+/// chip border, 64 pt, title plus a quieter line.
 struct DoorRow: View {
     let title: String
     var detail: String? = nil

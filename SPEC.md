@@ -692,11 +692,11 @@ Three steps to owning a Program:
 3. **The Program sheet — the hub.** The Workout Days with their Exercise counts, `ADD A DAY`, and
    a link to Program settings.
    **Step 3 and Flow 5's hub are one screen**, reached two ways: from step 2's confirm, and from
-   the `•••` on the picker. What it draws is identical — a Program made a minute ago and a Program
-   trained on for a year are the same thing — and only two words of chrome differ: the step count,
-   and a bottom control reading `START A WORKOUT` at the end of onboarding and `DONE` outside it.
-   Both taps do the same thing, which is go home to the picker: **a Workout is picked at the
-   picker** (§3.1), never here. Found while building.
+   the Settings tab. What it draws is identical — a Program made a minute ago and a Program
+   trained on for a year are the same thing — and only the chrome differs: the step count and
+   `START A WORKOUT` at the end of onboarding, neither of which the tab carries. The Home tab is
+   the way to the picker: **a Workout is picked at the picker** (§3.1), never here. Found while
+   building, amended at ticket 0059 when the hub became a tab.
    **A Workout Day is named before it exists.** `ADD A DAY` opens a one-field sheet and the Day is
    created with the name already on it, because a Day with no name would be a row the user cannot
    read. The same sheet renames — a Name is a label (§2.7) — and the Day screen carries a `RENAME`
@@ -1232,8 +1232,8 @@ decision rather than a gap.
   door a user who leaves the screen never finds it again, because nothing wrote the list down. A
   sheet at launch was rejected: the list holds *every* Exercise with no Working Weight, including
   one added last night, so a modal would ambush the user with a thing he did on purpose. §7.6:
-  Hoppa states its condition where the user stands. The foot of the picker stays §6.7's History
-  door.
+  Hoppa states its condition where the user stands. History is a tab, not a row at the foot of
+  the picker.
 - **A row states what else the switch cleared, and the statement is the door to it.** The switch
   clears the Increment and the Base Weight too, and this list shows one field. An Exercise
   re-weighed but still without an Increment does not progress (§4.1), so the note under the name
@@ -1322,15 +1322,18 @@ no way in. Found while building.
 
 Hoppa moves the weight up at every Finish. This is where the climb is visible.
 
-#### Two doors, no tab bar
+#### Four tabs
 
-Hoppa has **no tab bar**. Flow 4 has two doors, and both sit at the foot of the Workout Day
-picker, one under the other, in the same row shape:
+Hoppa has a **native tab bar**. Four tabs, once a Program exists. The bar hides before that,
+during onboarding, and on the logging screen and the Summary — those are not rooms you leave
+with a thumb on the foot.
 
-| Door | Opens |
+| Tab | Opens |
 | --- | --- |
-| A **HISTORY** row at the foot of the Workout Day picker | The history screen: the streak, then the Workout list |
-| A **PROGRESS** row directly under it | The Progress list: one row per Exercise that has been performed, in program order. Tapping a row opens that Exercise's chart |
+| **Home** | The Workout Day picker |
+| **History** | The history screen: the streak, then the Workout list |
+| **Progress** | The Progress list: one row per Exercise that has been performed, in program order. Tapping a row opens that Exercise's chart |
+| **Settings** | Flow 5's hub, the Program sheet |
 
 Nothing permanent is added to the logging screen, and **there is no sparkline on the Workout
 Day card**: the card is grip and §6.2's sheet, and nothing else.
@@ -1339,15 +1342,15 @@ Day card**: the card is grip and §6.2's sheet, and nothing else.
 Progress is an Exercise that has been performed at least once: its Name, its Workout Day, the
 session count, how many times it went up in green, and a sparkline of its climb. The whole
 row is the door, the way a History row is. The sparkline is a mark on it and not a nested
-control — tapping the mark is tapping the row. The Progress row on the picker reads the count
-alone, `12 exercises`, and never a went-up total, which would be an aggregate this section
+control — tapping the mark is tapping the row. The Progress tab's list reads the count
+above it, `12 exercises`, and never a went-up total, which would be an aggregate this section
 refuses. Before the first session the page reads *Nothing here yet — Finish a workout and
 every exercise you trained lands here.*
 
 **Progress is a sibling of History and not a fold into it.** History is a list of Workouts in
 reverse date order with a streak above it; an Exercise across every Workout it has been in is
 a different question, and one screen answering both would make the empty state, the streak
-and the order serve two jobs. Two pages, reached the same way, keep each list one kind of
+and the order serve two jobs. Two pages, reached the same way as tabs, keep each list one kind of
 row. It is not called *Statistics*: that word names aggregates Hoppa does not keep, and this
 section already refused volume and estimated 1RM.
 
@@ -1373,7 +1376,9 @@ label and a row does not.
 > settle was where the chart is reached from, and the Workout Day screen — the room for
 > building a Day — was the wrong room for a statistic. [The Progress
 > page](issues/0058-the-progress-page.md) moved the door to the foot of the picker beside
-> History and took the sparkline off the card. `design/0015-history/Program.dc.html`, which
+> History and took the sparkline off the card. Ticket 0059 moved History, Progress and the
+> hub onto a native tab bar, with Home as the fourth tab, so the picker no longer carries
+> those rows or a gear. `design/0015-history/Program.dc.html`, which
 > draws the mark on the card, is historical; so is that record's note that the row said *the
 > Program sheet* when the room was the Workout Day screen.
 
@@ -1770,5 +1775,5 @@ flows this spec validates, so each is a later effort rather than a resumption of
 | 12 | [Confetti plate source](issues/0012-confetti-plate-source.md) | The burst throws what the Plate Breakdown draws; proportional sampling; steel is hollow (§6.5) |
 | 13 | [Plate Inventory shipped defaults](issues/0013-plate-inventory-shipped-defaults.md) | 25 kg is red, every Microplate ships off, the empty-Microplate path (§5.2, §7.3) |
 | 14 | [Editing a Program over time](issues/0014-editing-a-program-over-time.md) | The Set stores its own numbers, at-least-the-planned-Sets, unit changes clear the weight, the Re-weigh list, deleting (§2.4, §2.5, §3.2, §4.1, §6.6) |
-| 15 | [History and progression charts](issues/0015-history-and-progression-charts.md), amended by [The per-Exercise chart](issues/0049-the-per-exercise-chart.md) and [The Progress page](issues/0058-the-progress-page.md) | Two doors and no tab bar — History and Progress at the foot of the picker, the chart reached from a Progress row and no longer from the Exercise card — the Working-Weight line with a Set grid, the NEXT step, the streak, deleting a past Workout, plate colour outside a Plate Breakdown (§6.7, §7.1) |
+| 15 | [History and progression charts](issues/0015-history-and-progression-charts.md), amended by [The per-Exercise chart](issues/0049-the-per-exercise-chart.md), [The Progress page](issues/0058-the-progress-page.md) and [The native tab bar](issues/0059-the-native-tab-bar.md) | Four tabs — Home, History, Progress, Settings — the chart reached from a Progress row and no longer from the Exercise card — the Working-Weight line with a Set grid, the NEXT step, the streak, deleting a past Workout, plate colour outside a Plate Breakdown (§6.7, §7.1) |
 | 16 | [Bounding the Microload](issues/0016-bounding-the-microload.md) | The roll-up into the pin, the Microload only where there is a Stack Step, Bodyweight takes the Inventory's unit (§2.3, §2.6, §4.2, §5.1, §5.3) |

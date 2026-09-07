@@ -2,7 +2,7 @@ import SwiftUI
 import HoppaRules
 import HoppaStore
 
-// Ticket 0047 — §6.7's first door, and the first Flow 4 screen.
+// Ticket 0047 — §6.7's History tab, and the first Flow 4 screen.
 //
 // Two views on one screen and **both are rules**, so neither is computed here: the strip
 // and its figure are `Streak.read`, the list is `Rules.history`. What is left in this file
@@ -37,7 +37,7 @@ struct HistoryScreen: View {
         ZStack {
             Color.floor.ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
-                StepHeader(label: store.logbook?.programs.first?.name, back: leave)
+                Spacer().frame(height: 16)
                 Text("History")
                     .typography(Typography.display(31, tracking: 0.005))
                     .foregroundStyle(Color.text)
@@ -69,11 +69,6 @@ struct HistoryScreen: View {
                 }
             }
         }
-    }
-
-    private func leave() {
-        guard !path.isEmpty else { return }
-        path.removeLast()
     }
 
     // MARK: - The streak (§6.7)

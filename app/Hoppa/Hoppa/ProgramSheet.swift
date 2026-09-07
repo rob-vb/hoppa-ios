@@ -5,10 +5,11 @@ import HoppaStore
 // Ticket 0034 — §6.1 step 3, **the hub**.
 //
 // One screen with two lives, like `PlateRackScreen` before it: it is onboarding's third
-// step when it is reached from the rack's confirm, and Flow 5's hub when it is reached
-// from the picker's `•••`. The difference is two words of chrome — the step count and the
-// bottom control — and nothing about what it draws, because a Program the user has just
-// made and a Program the user has trained on for a year are the same thing.
+// step when it is reached from the rack's confirm, and Flow 5's hub when it is the
+// Settings tab. The difference is the chrome — the step count and `START A WORKOUT` at
+// the end of onboarding, neither of which the tab carries — and nothing about what it
+// draws, because a Program the user has just made and a Program the user has trained on
+// for a year are the same thing. The Home tab is the way out of the hub.
 //
 // **Scope was cut at ticket 0029 and this file keeps most of the cut**: the Workout Days
 // with their Exercise counts, `ADD A DAY`, and the door to Program settings. Deleting a
@@ -25,6 +26,9 @@ struct ProgramSheet: View {
     let programId: ProgramID
     /// §6.1 step 3, rather than Flow 5's hub. See `Route.programSheet`.
     let onboarding: Bool
+    /// Onboarding pops the home stack. The Settings tab switches to Home. The gone
+    /// state uses this too: there is no Program left to stand on.
+    let goHome: () -> Void
 
     /// The `ADD A DAY` sheet, held as the name being typed into it.
     @State private var newDay = false
@@ -51,6 +55,7 @@ struct ProgramSheet: View {
         // §7.4: nothing is drawn in the safe top inset, so the bar is hidden and
         // `StepHeader` draws the way back in content — as every screen before this does.
         .toolbar(.hidden, for: .navigationBar)
+        .toolbar(onboarding ? .hidden : .automatic, for: .tabBar)
         .sheet(isPresented: $newDay) {
             NameSheet(
                 heading: "Name the day",
@@ -66,7 +71,11 @@ struct ProgramSheet: View {
     @ViewBuilder
     private func content(_ program: Program) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            StepHeader(step: onboarding ? 3 : nil, back: goBack)
+            if onboarding {
+                StepHeader(step: 3, back: goBack)
+            } else {
+                Spacer().frame(height: 16)
+            }
             Text(program.name)
                 .typography(Typography.display(31, tracking: 0.005))
                 .foregroundStyle(Color.text)
@@ -82,11 +91,10 @@ struct ProgramSheet: View {
             days(program)
             Spacer(minLength: 12)
             settingsRow
-            Spacer().frame(height: 10)
-            // Onboarding ends on the artboard's own words. Reached from the picker there
-            // is nothing to start here — the picker is where a Workout is picked (§3.1) —
-            // so the same tap is simply the way out.
-            PrimaryButton(onboarding ? "Start a workout" : "Done") { path = [] }
+            if onboarding {
+                Spacer().frame(height: 10)
+                PrimaryButton("Start a workout", action: goHome)
+            }
         }
     }
 
@@ -190,7 +198,7 @@ struct ProgramSheet: View {
             Text("That program is gone.")
                 .typography(Typography.display(26))
                 .foregroundStyle(Color.text)
-            PrimaryButton("Back") { path = [] }
+            PrimaryButton("Back", action: goHome)
         }
         .padding(.horizontal, 20)
     }

@@ -832,8 +832,50 @@ Xcode asks about it, that is itself the finding (item 1).
   which Exercises appear; it cannot tell you whether the page feels like History's sibling.
 - **Whether program order is what you reach for** on a page you open to see what climbed. Recency
   was the other order and it lost on paper; the phone may overrule the paper.
-- **The picker's foot with two rows on a small screen.** Two 64 pt rows and a Program of four or
-  five Days may push the day list into a scroll on an iPhone SE. Yours is a 16, where it fits.
+- **The picker's foot with two rows on a small screen.** Settled at ticket 0059: those rows
+  are tabs now, and the day list has the foot back.
+
+## Flow 4 — the native tab bar (ticket 0059, §6.7)
+
+**Four tabs instead of two rows and a gear.** History and Progress were `DoorRow`s at the
+foot of the picker. Settings was the gear. They are now Home, History, Progress, Settings
+on the system's tab bar. Each tab keeps its own stack, so a chart opened from Progress is
+still there when you come back from Home. The bar hides with no Program, during onboarding,
+and while a Workout is being logged or summarised.
+
+138. **Open the seeded app.**
+   → A native tab bar at the foot: **Home**, **History**, **Progress**, **Settings**. Not
+   two cards stacked above the home indicator. Home is the picker you already know, minus
+   the History row, the Progress row, and the gear.
+
+139. **Tap History, then a workout, then Home, then History again.**
+   → The past Workout is still on screen. Each tab keeps its own stack. Tap Progress, open
+   a chart, leave, come back: same thing. If either stack pops when you change tabs, that
+   is a finding.
+
+140. **Tap Settings.**
+   → The Program sheet, the hub the gear used to open. No chevron, no `DONE`. The Home tab
+   is the way back to the picker. `Program settings` is still the row at the foot of this
+   screen, into unit, progression and the plate rack.
+
+141. **Start a workout from Home.**
+   → The tab bar **goes**. Finish or discard and it comes back. Same on the Summary: `DONE`
+   is still the only exit, and it lands on Home. If the bar stays up during a set, that is
+   a finding.
+
+142. **Fresh install, first run.**
+   → No tab bar. `NOTHING HERE YET` and `CREATE A PROGRAM`, as before. After the rack
+   confirm you are on step 3 of onboarding, still without the bar. `START A WORKOUT` lands
+   on the picker **with** the bar.
+
+### What only the phone can answer
+
+- **Whether four tabs read as home.** The original refusal (ticket 0015) was that a bar is
+  permanent chrome on an app built for big numbers. The two 64 pt rows it replaced were
+  more chrome, and worse. The phone is the only place that argument can be re-judged.
+- **The SF Symbols in the bar.** Ticket 0056 kept §7's glyphs for Hoppa's own drawing. These
+  four live in UIKit's bar. Say if a house, a clock, a chart and a gear are the wrong four,
+  or if they should be drawn.
 
 ## What is not built yet
 
@@ -841,7 +883,8 @@ None of this is a defect.
 
 - **Flow 4 is complete, and so is the build map.** The streak and the Workout list landed at ticket
   0047, opening a row of that list at 0048, the **per-Exercise chart** at 0049, and its door at 0050
-  on the Exercise card — then **moved to the Progress page** at 0058, items 130–137. Every screen in
+  on the Exercise card — then **moved to the Progress page** at 0058, items 130–137, then
+  **onto a native tab bar** at 0059, items 138–142. Every screen in
   `SPEC.md` now exists and every door between them is open. **There is no sparkline on the Workout
   Day card** and no way to the chart from the Workout Day screen: deliberate, not missing (item 114).
 - **The weights on a Workout you finished before this build.** Ticket 0048 started storing the
@@ -873,8 +916,8 @@ So a failure on the Mac is toolchain drift and not code.
 | `app/checks/UnitStash/run.sh` | 34 |
 | `app/checks/Reorder/run.sh` | 25 |
 | `app/checks/Reweigh/run.sh` | 34 |
-| `app/checks/History/run.sh` | 33 |
+| `app/checks/History/run.sh` | 29 |
 | `app/checks/Past/run.sh` | 66 |
 | `app/checks/Chart/run.sh` | 39 |
 | `app/checks/Progress/run.sh` | 28 |
-| `app/checks/AppTarget/run.sh` | 35 files, 110 names |
+| `app/checks/AppTarget/run.sh` | 35 files, 112 names |

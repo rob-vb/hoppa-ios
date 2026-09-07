@@ -1,16 +1,16 @@
 import SwiftUI
 import HoppaRules
 
-// Ticket 0032 — the navigation spine.
+// Ticket 0032 — the navigation spine. Ticket 0059 — the spine is four stacks.
 //
-// §6.7 names **two doors and no tab bar**, so the shape is one `NavigationStack` whose
-// path lives in `@State` on the root view, per
+// §6.7 names four tabs. Each tab owns a `NavigationStack` whose path lives in `@State`
+// on `HoppaShell`, per
 // [The view layer around the rules](0024-the-view-layer-around-the-rules.md). There is no
 // router object and no navigation state in the store: a path is view state, and the store
-// may not hold view state.
+// may not hold view state. History, Progress and Settings are tabs, not cases here.
 
-/// Every screen the app can push. One case per screen ticket, so a ticket that lands its
-/// screen swaps one `case` in `HoppaApp`'s `navigationDestination` and touches nothing else.
+/// Every screen a tab can push. One case per screen ticket, so a ticket that lands its
+/// screen swaps one `case` in `HoppaShell`'s `navigationDestination` and touches nothing else.
 enum Route: Hashable {
     /// Flow 1, §6.1 step 1 — name the Program and read the three assumptions.
     case createProgram
@@ -25,8 +25,9 @@ enum Route: Hashable {
     /// §6.1 step 3 and Flow 5's hub, which are **the same screen** — ticket 0034.
     ///
     /// `onboarding` is the third step of three and nothing else: it draws the step count
-    /// and it makes the bottom control read `START A WORKOUT` instead of `DONE`. It
-    /// cannot be derived from the Logbook — a Program reached from the picker and a
+    /// and it makes the bottom control read `START A WORKOUT`. Outside onboarding this
+    /// screen is the Settings tab, which is Flow 5's hub, and the Home tab is the way out.
+    /// It cannot be derived from the Logbook — a Program reached from Settings and a
     /// Program just created look identical the moment the first Day is added — and it is
     /// the same distinction `PlateRackScreen` draws from `draft == nil`.
     case programSheet(ProgramID, onboarding: Bool)
@@ -49,15 +50,6 @@ enum Route: Hashable {
     /// statement about one performance, and by the time it is on screen there is no Open
     /// Workout left to read.
     case summary(WorkoutID)
-    /// Flow 4, §6.7 — the streak and the Workout list, ticket 0047.
-    case history
-    /// §6.7's second door: the Progress list, one row per Exercise that has been
-    /// performed — ticket 0058.
-    ///
-    /// It carries **nothing**, for the reason `.reweigh` carries nothing: the list is
-    /// `Rules.progress`, derived from the Logbook every time it is asked, and a route that
-    /// carried the rows would be a copy that goes stale at the next Finish.
-    case progress
     /// One finished Workout, read back weeks later — ticket 0048.
     ///
     /// It carries the **Workout's** id and not the Day's, for the reason `.summary` does:
@@ -70,7 +62,7 @@ enum Route: Hashable {
     /// Exercise across every Workout it has ever been in, so the Day it was opened from is
     /// not part of the question — the screen reads the Day back off the Exercise for its
     /// meta line. Ticket 0050 put the door to it on the Exercise card; ticket 0058 moved
-    /// the door onto `.progress`, and the room did not change.
+    /// the door onto the Progress tab, and the room did not change.
     case exerciseChart(ExerciseID)
     /// §6.6's Re-weigh list — ticket 0046.
     ///

@@ -57,6 +57,7 @@ struct PlateRackScreen: View {
             .padding(.bottom, 20)
         }
         .toolbar(.hidden, for: .navigationBar)
+        .toolbar(draft == nil ? .automatic : .hidden, for: .tabBar)
         .confirmationDialog(
             strandTitle, isPresented: strandIsPresented, titleVisibility: .visible,
             presenting: pendingMicroplateOff
