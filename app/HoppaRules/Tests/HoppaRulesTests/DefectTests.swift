@@ -145,6 +145,26 @@ struct DefectTests {
         #expect(load.isExact)
     }
 
+    @Test("A 25 lb first plate on a 15 lb step pins at the printed label")
+    func aRaisedFirstPlatePinsOnTheLabel() {
+        var book = upperALogbook()
+        book.plateInventory = .standard(.lbs)
+        book.updateExercise(Ids.pulldown) {
+            $0.storedStackStep = lbs("15")
+            $0.storedStackFirstPlate = lbs("25")
+            $0.workingWeight = lbs("70")
+        }
+
+        let exercise = book.resolvedExercise(Ids.pulldown)!
+        guard case .stack(let load) = Rules.breakdown(for: exercise, inventory: book.plateInventory)
+        else { Issue.record("expected a stack"); return }
+
+        #expect(load.pinWeight == lbs("70"))
+        #expect(load.blocks == 4)
+        #expect(load.pinRemainder.isEmpty)
+        #expect(load.isExact)
+    }
+
     // Defect 7: a logged Set holds the rep count only, and the weight is read live off
     // the Exercise.
     @Test("A Set stores its own weight, and a later raise does not move it")

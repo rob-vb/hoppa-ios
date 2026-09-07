@@ -23,8 +23,11 @@ public struct ResolvedExercise: Sendable, Hashable {
     public let microloadingIncrement: Weight?
     /// `nil` on any type that has none, whatever is stored.
     public let baseWeight: Weight?
-    /// `nil` on any type that has none, whatever is stored.
-    public let stackStep: Weight?
+    /// The stack's plates. `nil` on any type without a pin, and on a pin with no
+    /// Stack Step yet, whatever is stored.
+    public let stack: StackLadder?
+    /// The jump alone, for the roll-up and the sheet's note. Derived, never stored twice.
+    public var stackStep: Weight? { stack?.step }
     /// A Microload exists only on a pin whose unit differs from the rack's
     /// (`SPEC.md` §2.3). `nil` everywhere else, whatever is stored.
     public let microload: Weight?
@@ -87,7 +90,11 @@ extension Exercise {
             increment: increment?.relabelled(unit),
             microloadingIncrement: microloadingIncrement?.relabelled(inventory.unit),
             baseWeight: equipment.takesBaseWeight ? storedBaseWeight?.relabelled(unit) : nil,
-            stackStep: equipment.hasPin ? storedStackStep?.relabelled(unit) : nil,
+            stack: equipment.hasPin
+                ? storedStackStep.flatMap {
+                    StackLadder(step: $0.relabelled(unit), first: storedStackFirstPlate?.relabelled(unit))
+                  }
+                : nil,
             microload: mixedUnitPin ? (microload ?? .zero(inventory.unit)).relabelled(inventory.unit) : nil,
             isStranded: isStranded(in: inventory)
         )

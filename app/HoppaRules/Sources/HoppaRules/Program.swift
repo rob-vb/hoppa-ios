@@ -1,7 +1,7 @@
 /// One movement inside a Workout Day.
 ///
-/// Two fields are stored flat and read through an accessor — `baseWeight` and
-/// `stackStep` — because `SPEC.md` §2.3 refuses to re-ask a fact about a machine when
+/// Base Weight, Stack Step and first plate are stored flat and read through
+/// `resolved`, because `SPEC.md` §2.3 refuses to re-ask a fact about a machine when
 /// the Equipment Type changes, while no rule may read one where it does not apply.
 ///
 /// The Weight Unit is **not** a field. For Barbell, Smith, Plate-loaded and Bodyweight it
@@ -33,6 +33,9 @@ public struct Exercise: Codable, Sendable, Hashable {
     public var storedBaseWeight: Weight?
     /// Kept across a change of Equipment Type; read through `resolved`.
     public var storedStackStep: Weight?
+    /// What the top plate reads, where it is not one Stack Step. Same rules as
+    /// `storedStackStep`. `nil` means the ordinary stack: first plate equals the step.
+    public var storedStackFirstPlate: Weight?
     /// A weight on the pin, in the Plate Inventory's unit. Destroyed and recreated at
     /// zero when a unit changes (§2.8), never a count of plates (§4.2).
     public var microload: Weight?
@@ -50,6 +53,7 @@ public struct Exercise: Codable, Sendable, Hashable {
         modeOverride: ProgressionMode? = nil,
         storedBaseWeight: Weight? = nil,
         storedStackStep: Weight? = nil,
+        storedStackFirstPlate: Weight? = nil,
         microload: Weight? = nil
     ) {
         self.id = id
@@ -64,6 +68,7 @@ public struct Exercise: Codable, Sendable, Hashable {
         self.modeOverride = modeOverride
         self.storedBaseWeight = storedBaseWeight
         self.storedStackStep = storedStackStep
+        self.storedStackFirstPlate = storedStackFirstPlate
         self.microload = microload
     }
 }

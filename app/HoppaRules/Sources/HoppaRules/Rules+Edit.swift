@@ -39,6 +39,8 @@ public struct ExerciseDraft: Sendable, Hashable {
     public var baseWeight: Weight?
     /// Machine (Stack) only, same rule.
     public var stackStep: Weight?
+    /// Machine (Stack) only. Empty means the first plate reads one Stack Step.
+    public var stackFirstPlate: Weight?
     /// **The unit this draft's numbers are written in** — the unit the sheet showed while
     /// the user typed, which is the unit the Exercise *resolved to* then (§5.1).
     ///
@@ -60,6 +62,7 @@ public struct ExerciseDraft: Sendable, Hashable {
         modeOverride: ProgressionMode? = nil,
         baseWeight: Weight? = nil,
         stackStep: Weight? = nil,
+        stackFirstPlate: Weight? = nil,
         shownUnit: WeightUnit
     ) {
         self.name = name
@@ -73,6 +76,7 @@ public struct ExerciseDraft: Sendable, Hashable {
         self.modeOverride = modeOverride
         self.baseWeight = baseWeight
         self.stackStep = stackStep
+        self.stackFirstPlate = stackFirstPlate
         self.shownUnit = shownUnit
     }
 
@@ -94,6 +98,7 @@ public struct ExerciseDraft: Sendable, Hashable {
             modeOverride: exercise.modeOverride,
             baseWeight: exercise.storedBaseWeight,
             stackStep: exercise.storedStackStep,
+            stackFirstPlate: exercise.storedStackFirstPlate,
             shownUnit: exercise.weightUnit(in: inventory))
     }
 
@@ -124,6 +129,7 @@ public struct ExerciseDraft: Sendable, Hashable {
         kept.workingWeight = nil
         kept.increment = nil
         kept.stackStep = nil
+        kept.stackFirstPlate = nil
         return kept
     }
 
@@ -147,7 +153,10 @@ public struct ExerciseDraft: Sendable, Hashable {
             microloadingIncrement: sheet.microloadingIncrement,
             modeOverride: sheet.modeOverride)
         if sheet.equipment.takesBaseWeight { made.storedBaseWeight = sheet.baseWeight }
-        if sheet.equipment.hasPin { made.storedStackStep = sheet.stackStep }
+        if sheet.equipment.hasPin {
+            made.storedStackStep = sheet.stackStep
+            made.storedStackFirstPlate = sheet.stackFirstPlate
+        }
         made.microload = made.needsMicroload(in: inventory) ? .zero(inventory.unit) : nil
         return made
     }
@@ -498,11 +507,13 @@ extension Rules {
         if new.equipment.takesBaseWeight { new.storedBaseWeight = sheet.baseWeight }
         if new.equipment.hasPin {
             new.storedStackStep = sheet.stackStep
+            new.storedStackFirstPlate = sheet.stackFirstPlate
         } else if newUnit != oldUnit {
             // No pin, so no row to retype it in, and its unit has moved under it. §2.8
             // keeps a Stack Step across a change of type; it does not keep one across a
             // change of unit, and here both happened at once.
             new.storedStackStep = nil
+            new.storedStackFirstPlate = nil
         }
 
         if newUnit != oldUnit {

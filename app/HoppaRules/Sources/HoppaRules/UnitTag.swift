@@ -26,10 +26,23 @@ extension Rules {
         return equipment.takesUnitFromInventory ? .locked(rack) : .own(own)
     }
 
-    /// Always 5 and 10 in `unit`. Never a converted kg column (2.3, 4.5, 11.3) on an
-    /// lbs stack: that machine is lbs, and the chips print what the pin actually jumps.
+    /// Always 5, 10 and 15 in lbs; 5 and 10 in kg. Never a converted kg column
+    /// (2.3, 4.5, 11.3) on an lbs stack: that machine is lbs, and the chips print
+    /// what the pin actually jumps.
     public static func stackStepOffers(in unit: WeightUnit) -> [Weight] {
-        [Weight(hundredths: 500, unit: unit), Weight(hundredths: 1000, unit: unit)]
+        switch unit {
+        case .lbs:
+            [
+                Weight(hundredths: 500, unit: unit),
+                Weight(hundredths: 1000, unit: unit),
+                Weight(hundredths: 1500, unit: unit),
+            ]
+        case .kg:
+            [
+                Weight(hundredths: 500, unit: unit),
+                Weight(hundredths: 1000, unit: unit),
+            ]
+        }
     }
 
     public static func barIncrementOffers(in unit: WeightUnit) -> [Weight] {

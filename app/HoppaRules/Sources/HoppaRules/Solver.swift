@@ -29,8 +29,8 @@ public struct StackLoad: Sendable, Hashable {
     /// How many pin steps are under the pin.
     public var blocks: Int
     public var stackStep: Weight
-    /// `blocks × stackStep`. The pin takes the largest Stack Step at or under the
-    /// Working Weight (`SPEC.md` §5.3).
+    /// What the pin plate reads. The highest label at or under the Working Weight
+    /// (`SPEC.md` §5.3). Equal to `first + (blocks - 1) × step` when `blocks ≥ 1`.
     public var pinWeight: Weight
     /// The part of the Working Weight the pin cannot reach, as plates. Same unit only.
     public var pinRemainder: [Weight]
@@ -164,9 +164,8 @@ extension Rules {
 
         switch exercise.equipment {
         case .machineStack:
-            let step = exercise.stackStep ?? .zero(exercise.unit)
-            let blocks = step.hundredths > 0 ? max(0, target.hundredths / step.hundredths) : 0
-            let pinWeight = Weight(hundredths: blocks * step.hundredths, unit: exercise.unit)
+            let pin = exercise.stack?.pin(atOrUnder: target)
+            let pinWeight = pin?.label ?? .zero(exercise.unit)
             let leftover = target - pinWeight
             // A pin takes single plates, not a pair. Only a same-unit rack can fill it.
             let fill = exercise.unit == inventory.unit
@@ -174,8 +173,8 @@ extension Rules {
                 : (plates: [Weight](), remainder: leftover)
             let microloadPlates = exercise.microload.map { greedy($0, sizes: inventory.plates(for: .microloading)).plates } ?? []
             return .stack(StackLoad(
-                blocks: blocks,
-                stackStep: step,
+                blocks: pin?.plate ?? 0,
+                stackStep: exercise.stack?.step ?? .zero(exercise.unit),
                 pinWeight: pinWeight,
                 pinRemainder: fill.plates,
                 isExact: fill.remainder.hundredths == 0,

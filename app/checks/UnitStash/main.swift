@@ -22,6 +22,7 @@ final class Sheet {
     var workingText = ""
     var incrementText = ""
     var stackText = ""
+    var firstText = ""
     var incrementTyped = false
     var stackTyped = false
 
@@ -34,6 +35,7 @@ final class Sheet {
         self.workingText = draft.workingWeight?.decimalString ?? ""
         self.incrementText = draft.increment?.decimalString ?? ""
         self.stackText = draft.stackStep?.decimalString ?? ""
+        self.firstText = draft.stackFirstPlate?.decimalString ?? ""
     }
 
     var unitTag: UnitTag {
@@ -54,6 +56,7 @@ final class Sheet {
             from: leaving, to: unit,
             onScreen: TypedWeights(
                 working: workingText, increment: incrementText, stack: stackText,
+                first: firstText,
                 incrementTyped: incrementTyped, stackTyped: stackTyped)))
     }
 
@@ -61,11 +64,13 @@ final class Sheet {
         workingText = typed.working
         incrementText = typed.increment
         stackText = typed.stack
+        firstText = typed.first
         incrementTyped = typed.incrementTyped
         stackTyped = typed.stackTyped
         draft.workingWeight = weight(typed.working)
         draft.increment = weight(typed.increment)
         draft.stackStep = weight(typed.stack)
+        draft.stackFirstPlate = weight(typed.first)
     }
 
     func weight(_ text: String) -> Weight? {
@@ -77,7 +82,7 @@ final class Sheet {
     var hasContent: Bool {
         !draft.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             || equipmentChosen || !workingText.isEmpty || !incrementText.isEmpty
-            || !stackText.isEmpty
+            || !stackText.isEmpty || !firstText.isEmpty
             || stash.hasNumbers
     }
     // --- end verbatim ---
@@ -256,6 +261,20 @@ do {
     check("the … field is still open", s.stackTyped)
     let e = s.saved()
     check("the save writes the custom step", e.storedStackStep == Weight(decimalString: "7.5", unit: .kg))
+    check("first plate stays empty", s.firstText.isEmpty)
+}
+
+print("— a first plate survives a flip —")
+do {
+    let s = Sheet(draft: editDraft(), equipmentChosen: true, rack: kgRack)
+    s.firstText = "25"
+    s.draft.stackFirstPlate = s.weight("25")
+    s.flipUnit()
+    check("the flip empties the first plate", s.firstText.isEmpty)
+    s.flipUnit()
+    check("the first plate is back", s.firstText == "25")
+    let e = s.saved()
+    check("the save writes the first plate", e.storedStackFirstPlate == Weight(decimalString: "25", unit: .kg))
 }
 
 print(failures == 0 ? "\nall green" : "\n\(failures) FAILED")

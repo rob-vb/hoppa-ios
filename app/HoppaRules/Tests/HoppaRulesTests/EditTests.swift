@@ -240,6 +240,7 @@ struct EditTests {
         #expect(pulldown.workingWeight == nil)
         #expect(pulldown.increment == nil)
         #expect(pulldown.storedStackStep == nil)
+        #expect(pulldown.storedStackFirstPlate == nil)
         #expect(pulldown.ownWeightUnit == .kg)
         #expect(pulldown.microloadingIncrement == kg("1"))
         #expect(pulldown.microload == nil)
@@ -279,6 +280,47 @@ struct EditTests {
         #expect(session.resolved(Ids.smith)?.baseWeight == nil)
         // The unit did not change, so the weights stayed.
         #expect(session.stored(Ids.smith)?.workingWeight == kg("72.5"))
+    }
+
+    @Test("A first plate survives a change of Equipment Type with the Stack Step")
+    func firstPlateSurvivesATypeChange() {
+        var session = Session()
+        var toKg = Self.draft(session.stored(Ids.pulldown)!)
+        toKg.ownWeightUnit = .kg
+        toKg.shownUnit = .kg
+        toKg.workingWeight = kg("50")
+        toKg.increment = kg("5")
+        toKg.stackStep = kg("5")
+        toKg.stackFirstPlate = kg("10")
+        session.send(.saveExercise(Ids.pulldown, draft: toKg))
+
+        var draft = Self.draft(session.stored(Ids.pulldown)!)
+        draft.equipment = .barbell
+        draft.stackStep = nil
+        draft.stackFirstPlate = nil
+        session.send(.saveExercise(Ids.pulldown, draft: draft))
+
+        #expect(session.stored(Ids.pulldown)?.storedStackStep == kg("5"))
+        #expect(session.stored(Ids.pulldown)?.storedStackFirstPlate == kg("10"))
+        #expect(session.resolved(Ids.pulldown)?.stack == nil)
+        #expect(session.resolved(Ids.pulldown)?.stackStep == nil)
+    }
+
+    @Test("A first plate clears with the Stack Step when the unit goes stale")
+    func firstPlateClearsOnAStaleUnit() {
+        var session = Session()
+        var setup = Self.draft(session.stored(Ids.pulldown)!)
+        setup.stackFirstPlate = lbs("25")
+        session.send(.saveExercise(Ids.pulldown, draft: setup))
+        #expect(session.stored(Ids.pulldown)?.storedStackFirstPlate == lbs("25"))
+
+        var draft = Self.draft(session.stored(Ids.pulldown)!)
+        draft.ownWeightUnit = .kg
+        session.send(.saveExercise(Ids.pulldown, draft: draft))
+
+        let pulldown = session.stored(Ids.pulldown)!
+        #expect(pulldown.storedStackStep == nil)
+        #expect(pulldown.storedStackFirstPlate == nil)
     }
 
     @Test("A weight retyped in the new unit survives the same save that changed the unit")

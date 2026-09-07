@@ -52,6 +52,7 @@ struct ExerciseSheet: View {
     @State private var incrementText = ""
     @State private var baseText = ""
     @State private var stackText = ""
+    @State private var firstText = ""
     @State private var bottomText = ""
     @State private var topText = ""
     /// The artboard's `…` chip, which swaps the Increment offers for a field.
@@ -74,7 +75,7 @@ struct ExerciseSheet: View {
 
     @FocusState private var focus: Field?
 
-    private enum Field: Hashable { case name, working, increment, base, stack, bottom, top }
+    private enum Field: Hashable { case name, working, increment, base, stack, firstPlate, bottom, top }
 
     private enum ExerciseSheetMetrics {
         static let nameHeight: CGFloat = 52
@@ -100,6 +101,7 @@ struct ExerciseSheet: View {
         _incrementText = State(initialValue: initial.increment?.decimalString ?? "")
         _baseText = State(initialValue: initial.baseWeight?.decimalString ?? "")
         _stackText = State(initialValue: initial.stackStep?.decimalString ?? "")
+        _firstText = State(initialValue: initial.stackFirstPlate?.decimalString ?? "")
         _bottomText = State(initialValue: "\(initial.repRange.bottom)")
         _topText = State(initialValue: "\(initial.repRange.top)")
     }
@@ -380,6 +382,14 @@ struct ExerciseSheet: View {
                         field: .stack
                     ) { draft.stackStep = $0 }
                 }
+                if draft.stackStep != nil {
+                    row("First plate", note: firstPlateLabels) {
+                        weightBox(
+                            $firstText, field: .firstPlate,
+                            width: ExerciseSheetMetrics.baseWeightWidth
+                        ) { draft.stackFirstPlate = $0 }
+                    }
+                }
             }
             row("Sets") { setsStepper }
             row("Rep range") { repRange }
@@ -505,7 +515,7 @@ struct ExerciseSheet: View {
     /// number at all, which is what `…` is for.
     ///
     /// A pin is not a bar. The 1.25 / 2.5 / 5 kg chips are plates you hang; a stack
-    /// jumps by the plate it is built from — 5 or 10 lbs, 5 or 10 kg — and those
+    /// jumps by the plate it is built from — 5, 10 or 15 lbs, 5 or 10 kg — and those
     /// are the numbers printed on it. The converted kg column on an lbs stack
     /// (2.3, 4.5, 6.8, 11.3) is not one of them: that machine is lbs.
     private var offeredIncrements: [Weight] {
@@ -516,6 +526,18 @@ struct ExerciseSheet: View {
 
     private var offeredStackSteps: [Weight] {
         Rules.stackStepOffers(in: unit)
+    }
+
+    /// Live labels when the top plate is not one step. Empty first plate is the
+    /// ordinary stack, so there is nothing extra to say.
+    private var firstPlateLabels: String? {
+        guard let step = draft.stackStep,
+              let ladder = StackLadder(step: step, first: draft.stackFirstPlate),
+              !ladder.startsFromZero
+        else { return nil }
+        let second = ladder.first + ladder.step
+        let third = ladder.first + ladder.step.scaled(by: 2)
+        return "\(ladder.first.decimalString) · \(second.decimalString) · \(third.decimalString)"
     }
 
     /// The offer chips stay on screen. A stored number that is not an offer used to
@@ -605,7 +627,8 @@ struct ExerciseSheet: View {
             microloadingIncrement: plate,
             modeOverride: trial.modeOverride,
             storedBaseWeight: trial.baseWeight,
-            storedStackStep: trial.stackStep
+            storedStackStep: trial.stackStep,
+            storedStackFirstPlate: trial.stackFirstPlate
         )
         .resolved(mode: mode, inventory: rack)
         if let move = Rules.progressionMove(for: probe, inventory: rack) {
@@ -668,7 +691,8 @@ struct ExerciseSheet: View {
             microloadingIncrement: draft.microloadingIncrement,
             modeOverride: draft.modeOverride,
             storedBaseWeight: draft.baseWeight,
-            storedStackStep: draft.stackStep
+            storedStackStep: draft.stackStep,
+            storedStackFirstPlate: draft.stackFirstPlate
         )
         .resolved(mode: mode, inventory: rack)
     }
@@ -873,6 +897,7 @@ struct ExerciseSheet: View {
             from: leaving, to: unit,
             onScreen: TypedWeights(
                 working: workingText, increment: incrementText, stack: stackText,
+                first: firstText,
                 incrementTyped: incrementTyped, stackTyped: stackTyped)))
     }
 
@@ -884,11 +909,13 @@ struct ExerciseSheet: View {
         workingText = typed.working
         incrementText = typed.increment
         stackText = typed.stack
+        firstText = typed.first
         incrementTyped = typed.incrementTyped
         stackTyped = typed.stackTyped
         draft.workingWeight = weight(typed.working)
         draft.increment = weight(typed.increment)
         draft.stackStep = weight(typed.stack)
+        draft.stackFirstPlate = weight(typed.first)
     }
 
     /// A typed field as a `Weight` in the unit the sheet is showing. **An unset weight
@@ -943,7 +970,7 @@ struct ExerciseSheet: View {
     private var hasContent: Bool {
         !draft.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             || equipmentChosen || !workingText.isEmpty || !incrementText.isEmpty
-            || !baseText.isEmpty || !stackText.isEmpty
+            || !baseText.isEmpty || !stackText.isEmpty || !firstText.isEmpty
             || stash.hasNumbers
     }
 
