@@ -944,6 +944,13 @@ real**, and nothing after that is worth doing before it.
   in `steel` on the first run. Nowhere else. No `project.pbxproj` edit, and Rob's own commit
   shows Xcode rewriting that file with nothing but key order changed — one more clean run.
 
+- [The native tab bar](0059-the-native-tab-bar.md) — Rob asked for History and Progress as
+  a native iOS bar, then for Home and Settings in the same bar. Four tabs, each a
+  `NavigationStack` with its own path. `HoppaTab` is the shape. History, Progress and
+  Settings left `Route` because they are roots. The picker lost the two `DoorRow`s and the
+  gear. The bar hides with no Program, during onboarding, and on logging and the Summary.
+  Unproven here: SwiftUI does not compile on the VPS.
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two

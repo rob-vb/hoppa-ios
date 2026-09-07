@@ -1,8 +1,8 @@
 // Ticket 0047 — the history screen's own logic, walked on this machine.
 //
-// `HistoryScreen.swift` imports SwiftUI, so what is below is the ring around it: `meta`,
-// `historyLine` from `WorkoutDayPicker`, and `HistoryDate`, with the SwiftUI wrapper
-// dropped. Keep it in step with the screen by hand.
+// `HistoryScreen.swift` imports SwiftUI, so what is below is the ring around it: `meta`
+// and `HistoryDate`, with the SwiftUI wrapper dropped. Keep it in step with the screen
+// by hand.
 //
 // `Rules.history` and `Streak.read` are **not** copied — they are the shipping calls, and
 // they have their own suites in the two packages. What this file proves is that the screen
@@ -55,16 +55,6 @@ func meta(_ row: HistoryRow) -> String {
 func wentUp(_ row: HistoryRow) -> String? {
     guard row.wentUpCount > 0 else { return nil }
     return row.wentUpCount == 1 ? "1 went up" : "\(row.wentUpCount) went up"
-}
-
-// MARK: - The ring: `WorkoutDayPicker.historyLine`
-
-func historyLine(_ logbook: Logbook, now: Timestamp) -> String {
-    let count = logbook.workouts.count
-    let workouts = count == 1 ? "1 workout" : "\(count) workouts"
-    let run = Streak.read(logbook, now: now, calendar: calendar).run
-    guard run > 0 else { return workouts }
-    return "\(workouts) · \(run) week\(run == 1 ? "" : "s") in a row"
 }
 
 // MARK: - The ring: `HistoryDate`
@@ -163,16 +153,12 @@ check("a Workout that moved nothing draws no green line", wentUp(rows[0]) == nil
 // MARK: - The empty list
 
 check("before the first Workout there is nothing to draw", Rules.history(in: book([])).isEmpty)
-check("and the picker states the count alone",
-      historyLine(book([]), now: at("2026-08-19 20:00")) == "0 workouts")
 
 // MARK: - The strip and the figure
 
 let streak = Streak.read(threeWeeks, now: at("2026-08-19 20:00"), calendar: calendar)
 check("three weeks, all lit", streak.weeks.map(\.trained) == [true, true, true])
 check("and the run is three", streak.run == 3)
-check("the picker states both halves",
-      historyLine(threeWeeks, now: at("2026-08-19 20:00")) == "3 workouts · 3 weeks in a row")
 
 let monday = Streak.read(threeWeeks, now: at("2026-08-24 07:00"), calendar: calendar)
 check("Monday morning adds a dark block", monday.weeks.map(\.trained) == [true, true, true, false])
@@ -180,14 +166,6 @@ check("and the run still reads three", monday.run == 3)
 
 let broken = Streak.read(threeWeeks, now: at("2026-08-31 07:00"), calendar: calendar)
 check("a whole week missed ends the run", broken.run == 0)
-check("and the picker drops the half that is no longer true",
-      historyLine(threeWeeks, now: at("2026-08-31 07:00")) == "3 workouts")
-
-let one = book([workout(101, day: upperA, name: "Upper A", at: "2026-08-19 18:00", exercises: [
-    performed(11, sets: 3)
-])])
-check("one workout, one week, both singular",
-      historyLine(one, now: at("2026-08-19 20:00")) == "1 workout · 1 week in a row")
 
 // MARK: - The dates
 

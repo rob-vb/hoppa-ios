@@ -2,14 +2,14 @@ import SwiftUI
 import HoppaRules
 import HoppaStore
 
-// Ticket 0058 — §6.7's second door, and the room behind it.
+// Ticket 0058 — §6.7's Progress tab, and the room behind it.
 //
-// **History's arrangement with a different list.** The chevron carries the Program's Name,
-// the title is `Progress`, and under it is either the empty state or a table of rows
-// separated by a rule. The list is `Rules.progress`, which is a rule and has its own suite;
-// what is left here is arrangement and English, which is what ticket 0029 says a view may
-// hold. The screen does no arithmetic: the session count, the went-up count and the
-// sparkline all arrive on the row.
+// **History's arrangement with a different list.** The title is `Progress`, and under it
+// is either the empty state or a table of rows separated by a rule. The list is
+// `Rules.progress`, which is a rule and has its own suite; what is left here is
+// arrangement and English, which is what ticket 0029 says a view may hold. The screen
+// does no arithmetic: the session count, the went-up count and the sparkline all arrive
+// on the row.
 //
 // **Why this page exists**, in one paragraph, because ticket 0050 had put the door
 // elsewhere. The chart's door was a sparkline on the Exercise card, one room down from the
@@ -40,7 +40,7 @@ struct ProgressScreen: View {
         ZStack {
             Color.floor.ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
-                StepHeader(label: store.logbook?.programs.first?.name, back: leave)
+                Spacer().frame(height: 16)
                 Text("Progress")
                     .typography(Typography.display(31, tracking: 0.005))
                     .foregroundStyle(Color.text)
@@ -62,11 +62,6 @@ struct ProgressScreen: View {
             Spacer().frame(height: 16)
             list(rows)
         }
-    }
-
-    private func leave() {
-        guard !path.isEmpty else { return }
-        path.removeLast()
     }
 
     // MARK: - The Exercise list (§6.7)
