@@ -10,7 +10,7 @@ import HoppaRules
 // value, where `swiftc -typecheck` against the built modules reaches it and a throwaway
 // harness can walk every flip.
 
-/// The three fields a change of unit takes off the Exercise sheet (`SPEC.md` §6.6), held
+/// The typed fields a change of unit takes off the Exercise sheet (`SPEC.md` §6.6), held
 /// as the **text** the user typed rather than as `Weight`s.
 ///
 /// Text, because the text is the truth while the sheet is open: a half-typed `72.` is not
@@ -24,10 +24,13 @@ struct TypedWeights: Equatable {
     var working = ""
     var increment = ""
     var stack = ""
+    var first = ""
     var incrementTyped = false
     var stackTyped = false
 
-    var isEmpty: Bool { working.isEmpty && increment.isEmpty && stack.isEmpty }
+    var isEmpty: Bool {
+        working.isEmpty && increment.isEmpty && stack.isEmpty && first.isEmpty
+    }
 }
 
 /// **What the Exercise sheet remembers across a change of unit.**

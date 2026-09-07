@@ -164,7 +164,7 @@ struct WeightSheet: View {
     private var steppers: some View {
         if exercise.equipment.hasPin {
             VStack(spacing: 8) {
-                if let step = pinStep { stepperRow("Pin", step) }
+                if let step = pinStep { stepperRow("Pin", step, floor: exercise.stack?.first) }
                 if let step = microStep { stepperRow("Micro", step) }
             }
         } else if let step = incrementStep {
@@ -179,18 +179,18 @@ struct WeightSheet: View {
         }
     }
 
-    private func stepperRow(_ label: String, _ step: Weight) -> some View {
+    private func stepperRow(_ label: String, _ step: Weight, floor: Weight? = nil) -> some View {
         HStack(spacing: 12) {
             Text(label)
                 .typography(Typography.label(10, tracking: 0.12))
                 .foregroundStyle(Color.labelText)
                 .frame(width: 44, alignment: .leading)
-            stepButton("−") { nudge(step, -1) }
+            stepButton("−") { nudge(step, -1, floor: floor) }
             Text("\(step.decimalString) \(step.unit.rawValue)")
                 .typography(Typography.listValue(13))
                 .foregroundStyle(Color.dimText)
                 .frame(maxWidth: .infinity)
-            stepButton("+") { nudge(step, +1) }
+            stepButton("+") { nudge(step, +1, floor: floor) }
         }
     }
 
@@ -237,13 +237,19 @@ struct WeightSheet: View {
         return plate.relabelled(exercise.unit)
     }
 
-    /// Steps the buffer, never below zero. The arithmetic is in hundredths, so a `+` on
-    /// `72.5` cannot land on `74.99999`.
-    private func nudge(_ step: Weight, _ direction: Int) {
+    /// Steps the buffer. PIN− never goes below the first plate. PIN+ from a weight
+    /// below first, including zero, lands on first. An off-pin working weight translates
+    /// by the step; it does not snap onto a plate.
+    private func nudge(_ step: Weight, _ direction: Int, floor: Weight? = nil) {
         Haptic.stepped()
         let base = Weight(decimalString: buffer, unit: exercise.unit) ?? .zero(exercise.unit)
-        let moved = max(0, base.hundredths + direction * step.hundredths)
-        buffer = Weight(hundredths: moved, unit: exercise.unit).decimalString
+        if let floor, direction > 0, base < floor {
+            buffer = floor.decimalString
+            return
+        }
+        let moved = base.hundredths + direction * step.hundredths
+        let minimum = floor?.hundredths ?? 0
+        buffer = Weight(hundredths: max(minimum, moved), unit: exercise.unit).decimalString
     }
 
     // MARK: - The keypad

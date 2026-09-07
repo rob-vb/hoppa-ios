@@ -136,7 +136,7 @@ struct PlateBreakdownView: View {
             return plateLine(load.plates)
 
         case .stack(let load):
-            var line = "pin at \(load.blocks) × \(load.stackStep.decimalString) \(load.stackStep.unit.rawValue)"
+            var line = "pin at \(load.pinWeight.decimalString) \(load.pinWeight.unit.rawValue)"
             let hanging = load.pinRemainder.count + load.microloadPlates.count
             if hanging > 0 { line += " · \(hanging) microplate\(hanging == 1 ? "" : "s")" }
             return line

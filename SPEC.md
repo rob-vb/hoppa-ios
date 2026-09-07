@@ -106,7 +106,7 @@ than eight fields at once (§6.2).
 | 7′ | Microloading Increment | Microloading | Picked from the Microplates in the Plate Inventory, never typed. Keeps the **Inventory's** unit. |
 | 8 | Progression Mode override | always | Inherits from the Program. |
 | 9 | Base Weight | Machine (Plates) | The empty-carriage weight. No default; typed per Exercise. |
-| 10 | Stack Step | Machine (Stack) | The fixed jump of the stack, e.g. 10 lbs. |
+| 10 | Stack Step | Machine (Stack) | The fixed jump of the stack, e.g. 10 lbs. A Machine (Stack) may also hold a first plate, which defaults to the Stack Step, so pin labels read `first + (n − 1) × step`. |
 
 Plus one derived-and-stored value:
 
