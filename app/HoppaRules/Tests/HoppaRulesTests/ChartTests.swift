@@ -412,28 +412,28 @@ struct ChartHistoryTests {
     }
 }
 
-/// Ticket 0050 — the mark an Exercise card carries, and the door it **is**.
+/// Ticket 0050 — the mark, and the gate. Ticket 0058 — where both are applied.
 ///
-/// §6.7: *the card carries a sparkline, so the door announces itself.* The decision taken
-/// at ticket 0050 reads that literally — the announcement and the door are one object, so
-/// `hasSpark` is the whole of whether the card has a second door, and `sparkline` is the
-/// whole of what it draws. Both are here rather than in the view for the reason the series
-/// itself is: two lifters holding the same `Logbook` must see the same mark.
-@Suite("SPEC.md §6.7 — the sparkline, and the door it is")
+/// `hasSpark` is the whole of whether an Exercise is a row of the Progress list, and
+/// `sparkline` is the whole of what the row draws. Both are here rather than in the view
+/// for the reason the series itself is: two lifters holding the same `Logbook` must see
+/// the same mark. Ticket 0050 applied the gate at the Exercise card; ticket 0058 applies it
+/// at the list, in `Rules.progress`, and the arithmetic under it did not move.
+@Suite("SPEC.md §6.7 — the sparkline, and the gate it is")
 struct SparklineTests {
 
-    // MARK: - The door
+    // MARK: - The gate
 
-    @Test("An Exercise nobody has trained draws no mark, so its card has no second door")
-    func nothingToPlotIsNoDoor() {
+    @Test("An Exercise nobody has trained draws no mark, so it is not a Progress row")
+    func nothingToPlotIsNoRow() {
         let chart = Rules.exerciseChart(Ids.smith, in: upperALogbook())!
         #expect(chart.points.isEmpty)
         #expect(chart.hasSpark == false)
         #expect(chart.sparkline.isEmpty)
     }
 
-    @Test("One session opens the door, though the chart still has no line")
-    func oneSessionIsADoor() {
+    @Test("One session passes the gate, though the chart still has no line")
+    func oneSessionPassesTheGate() {
         var session = Session()
         session.start()
         session.logSets(3, reps: 9)
@@ -471,7 +471,7 @@ struct SparklineTests {
         let spark = chart.sparkline
 
         #expect(spark.count == chart.points.count)
-        // Every y is the chart's own `ChartScale.fraction`, so the card and the screen
+        // Every y is the chart's own `ChartScale.fraction`, so the row and the screen
         // draw one climb and not two.
         for (mark, point) in zip(spark, chart.points) {
             #expect(mark.y == chart.scale!.fraction(of: point.line))
@@ -481,8 +481,8 @@ struct SparklineTests {
         #expect(chart.points.contains { $0.oneOff != nil })
     }
 
-    @Test("The x axis is real time on the card as well, so a missed week is a wider gap")
-    func realTimeOnTheCardToo() {
+    @Test("The x axis is real time on the row as well, so a missed week is a wider gap")
+    func realTimeOnTheRowToo() {
         let chart = Rules.exerciseChart(ChartHistoryTests.smith, in: ChartHistoryTests.book)!
         let spark = chart.sparkline
 
@@ -507,12 +507,12 @@ struct SparklineTests {
         }
     }
 
-    @Test("A mixed-unit pin still gets a door, and its mark is the number that moves")
-    func theMixedUnitPinKeepsItsDoor() {
+    @Test("A mixed-unit pin is still a row, and its mark is the number that moves")
+    func theMixedUnitPinKeepsItsRow() {
         let chart = Rules.exerciseChart(ChartHistoryTests.pulldown, in: ChartHistoryTests.book)!
-        // The card prints the pin and the mark plots the Microload — the two are not the
-        // same number, and only the chart has room to label them. Suppressing the mark
-        // would leave this Exercise's chart with no way in at all, which is worse.
+        // The mark plots the Microload and the chart prints the pin beside it — two
+        // numbers, and only the chart has room to label them. Dropping the row would
+        // leave this Exercise's chart with no way in at all, which is worse.
         #expect(chart.isMixedUnitPin)
         #expect(chart.hasSpark)
         #expect(chart.sparkline.count == chart.points.count)

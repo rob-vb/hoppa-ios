@@ -7,8 +7,10 @@ built yet** section at the bottom shrank as they landed. This is that walk.
 
 Items 1–38 below cover what was batches 2, 3 and 4, written 2026-08-26 against `00321d6`. Items 39
 onward are appended by each screen ticket as it lands. **It is finished as of ticket 0050**, the
-last on the build map: items 111–118 are the Exercise card's two doors, and with them every screen
-in `SPEC.md` exists and every door between them is open. **This document is now the walk.**
+last on the build map, and with it every screen in `SPEC.md` exists and every door between them is
+open. **This document is now the walk.** Ticket 0058 then moved one door: the chart is reached from
+a **Progress** page beside History, not from a sparkline on the Exercise card. Items 111–118 were
+rewritten for that, and items 130–137 walk the new page.
 
 **Judgment calls are marked, not asked.** Under the 2026-08-27 rule a session that would have put a
 UI question to Rob decides it instead, records why on its ticket, and lists it here as something to
@@ -467,7 +469,9 @@ Item 84 is the optional way to see sixteen weeks of it, and it costs you the app
 
 85. **The empty state.** Only visible on a phone that has never finished a Workout, so it is a
     fresh-install check and not a walk step: `NOTHING HERE YET`, and one line — *Finish your first
-    workout and it lands here. Every exercise gets a line as soon as it has two.*
+    workout and it lands here.* (It used to go on: *Every exercise gets a line as soon as it has
+    two.* Ticket 0058 cut that sentence; it was about the chart door, and the chart door now has its
+    own page with its own empty state — item 131.)
     → The streak card is **not** drawn at all there. A card reading `0` over sixteen dark blocks
     was the alternative and it was rejected.
 
@@ -553,8 +557,9 @@ before item 96**, because 96 destroys the Workout you were reading.
 
 ## Flow 4 — the per-Exercise chart (ticket 0049, §6.7)
 
-**The door to this screen landed at ticket 0050** — items 111–118. Walk those first: they are how
-you get here.
+**The door to this screen is a row of the Progress page** — items 130–137, since ticket 0058.
+Walk those first: they are how you get here. (Ticket 0050 had put the door on the Exercise card
+as a sparkline; that is gone, and items 111–118 now say so.)
 
 **And this is the screen the whole map has the least confidence in**, for a reason worth stating
 before the first tap: §6.7 needs weeks of Workouts before it says anything, and your Logbook has
@@ -564,9 +569,10 @@ output pasted into ticket 0049, before you judge the phone**, because three sess
 phone cannot show you what fifteen look like.
 
 98. Open a chart for an Exercise you have trained **twice or more**.
-    → The Day's name and a `‹` at the top, the Exercise name under it, then
-    `Smith · 3 × 8–12 · Progressive overload`, then the Working Weight as the biggest number on the
-    screen, then the rule chip — `ALL 3 SETS AT 12 → 82.5 KG` — then the plot.
+    → `‹ PROGRESS` at the top, the Exercise name under it, then
+    `Upper A · Smith · 3 × 8–12 · Progressive overload` — the Day first, since ticket 0058 — then
+    the Working Weight as the biggest number on the screen, then the rule chip —
+    `ALL 3 SETS AT 12 → 82.5 KG` — then the plot.
 
 99. **Judgment call — there is no `•••`.** The artboard draws one at the top right. §6.7 hangs
     delete off a *Workout* row and gives this menu nothing at all, so the control is not drawn
@@ -638,71 +644,56 @@ phone cannot show you what fifteen look like.
 
 ---
 
-## Flow 4 — the Exercise card's two doors (ticket 0050, §6.7)
+## Flow 4 — the Exercise card is one door again (ticket 0050, moved at ticket 0058, §6.7)
 
-**This is the last ticket on the build map.** With it, every screen in `SPEC.md` exists and every
-door between them is open. **One new file**, `app/Hoppa/Hoppa/Sparkline.swift`; the app target is a
-file-system synchronised group, so it arrives with no project edit — and if Xcode asks about it,
-that is itself the finding (item 1).
-
-§6.7 gives an Exercise card a door to that Exercise's chart, and the card already had one to §6.2's
-Exercise sheet. **Which one is the whole card was a judgment call, taken here rather than asked**,
-under the map's build-everything-first rule. Item 113 is where you overrule it.
+**Ticket 0050 was the last ticket on the build map**, and it put the chart's door on the Exercise
+card as a sparkline — the mark was the door, the rest of the card the sheet. **Ticket 0058 moved
+that door** to a Progress page beside History (items 130–137) and took the mark off the card. The
+items below were rewritten for that: each of them used to tell you to tap a sparkline on the card,
+and a walk that still did would report a working screen as a defect.
 
 111. On the **Workout Day** screen, look at an Exercise you have **never trained** — one you have
      just added.
-     → The card is exactly what it was: the name, `barbell · 3 × 8–12 · +2.5`, the Working Weight
-     or a `—`. **No sparkline.** Tap anywhere on it and the Exercise sheet opens, as before.
+     → The card is the name, `barbell · 3 × 8–12 · +2.5`, and the Working Weight or a `—`. **No
+     sparkline.** Tap anywhere on it and the Exercise sheet opens.
 
 112. Now look at an Exercise you have trained **at least once**.
-     → A small steel line sits between the Working Weight and the card's trailing edge, ending in a
-     filled dot. That is the sparkline, and it is **the door**.
+     → **The same card.** No steel line, no dot, nothing on the trailing edge but the Working
+     Weight and its 14 pt of air. A card that changes shape after the first session is a finding.
 
-113. **Tap the sparkline.** Then tap the card anywhere else.
-     → The mark opens that Exercise's **chart**; everywhere else still opens the **Exercise sheet**.
-     → **This is the judgment call.** Three reasons it went this way: an Exercise card is edited far
-     more often than it is charted, so the frequent path keeps the whole card; §6.7's own sentence
-     is *the card carries a sparkline, so the door announces itself*, which makes the announcement
-     and the door one object; and a card with nothing to plot draws no mark, so a door to an empty
-     room is never offered. **Two shapes were refused** — a `•••` holding one item, and the swap
-     that makes the chart the whole card. Say if either is what you wanted.
+113. **Tap the card anywhere the grip is not.**
+     → The **Exercise sheet** opens, every time. There is no second thing a tap on this card can
+     do. Ticket 0050's judgment call — which half of the card opens the sheet — is moot: the whole
+     card does.
 
-114. **Try to hit the mark with a thumb, standing up.** The mark itself is 44 × 16 pt; the target
-     around it is the whole trailing column, 66 × 62.
-     → It should not take two goes. If it does, say so — the column can widen without moving
-     anything else.
+114. **Try to open the chart from here.**
+     → You cannot, and that is deliberate. The Workout Day screen is the room for building a Day;
+     the chart is reached from **Progress**, at the foot of the picker (item 130). Say if you miss a
+     way through from here — a row on this screen is the obvious shape and it was not added.
 
-115. **Drag the same card by its grip.** Then tap the mark again.
-     → The reorder handle, the sheet and the chart are three regions side by side, none over
-     another. A drag must never open either screen, and a tap must never start a drag.
+115. **Drag the same card by its grip.** Then tap the card.
+     → The reorder handle and the sheet are two regions side by side, neither over the other. A
+     drag must never open the sheet, and a tap must never start a drag.
 
-116. **Look at what the mark plots.** It is the chart's own line, on the chart's own scale and its
-     own real-time x axis — so a missed week is a wider gap on the card too.
-     → Open the chart and compare the two shapes. They must be the same climb.
-     → It draws **no** One-off marker and **no** dashed `NEXT` step, on purpose: a hollow marker is
-     a smudge at that size, and the step's destination is the big number already printed beside the
-     mark on the same card.
+116. **Look at the trailing edge of every card in the Day, trained or not.**
+     → They all end the same way: the Working Weight (or `—`), then the card's edge. Nothing on the
+     card tells you which Exercises have been trained; that is what the Progress page is for.
 
-117. **One session is a dot.** An Exercise trained exactly once draws a single dot and still opens.
-     → The chart then says `NOTHING HERE YET` and keeps its heroes and its chip. **The two gates
-     are deliberately not one gate**: two sessions make a *line*, one makes a *screen worth
-     reaching*. Say if you would rather the door waited for the second session.
+117. **The caption under the Day name reads `5 exercises · tap a row to open it`.**
+     → Since ticket 0058 that sentence is wholly true: a row opens one thing. Ticket 0050 had it
+     half-true and kept it anyway; there is nothing left to say about a chart here.
 
-118. **The caption under the Day name still reads `5 exercises · tap a row to open it`.**
-     → Deliberate: §7.6 keeps Hoppa from instructing, and §6.7's mark is meant to announce itself.
-     Say if you want a word about the chart there.
+118. **Open the Program sheet and come back to this Day.**
+     → Still no mark on any card. The artboard in `design/0015-history/Program.dc.html` draws one;
+     that artboard is historical, and `SPEC.md` §6.7 says so.
 
 ### What only the phone can answer
 
-- **Whether a 44 × 16 mark reads at arm's length** in gym light, and whether it reads as a *door*
-  rather than as decoration. Nothing on the VPS can answer that; `app/checks/Chart/run.sh` prints
-  the same cards as text and proves only which of them carry a mark and what it plots.
-- **Whether the door appearing after the first session is a pleasant surprise or a jumpy card.**
-  The card changes shape the first time an Exercise is trained, and that has never been watched.
-- **The mixed-unit pin.** There the card prints the pin and the mark plots the Microload — two
-  different numbers side by side, and only the chart has room to label them. Suppressing the mark
-  would leave that chart with no way in at all, which is worse. **Unreachable on your phone**: your
-  rack is kg and your stacks are kg, same class as item 109.
+- **Whether the card feels emptier** with the trailing column gone. On the VPS it is text; on the
+  phone the Working Weight is the last thing on the row again, as it was before ticket 0050.
+- **The mixed-unit pin** no longer has a second number beside its Working Weight on the card. Its
+  mark now sits on the Progress row, where the meta line has room to name the Day. **Unreachable on
+  your phone**: your rack is kg and your stacks are kg, same class as item 109.
 
 ---
 
@@ -774,13 +765,85 @@ originals rather than adding to them.
    [0057](issues/0057-the-wordmark.md). Say if the gear's teeth read as a blob at 20 pt — the
    count and the stroke are two numbers.
 
+---
+
+## Flow 4 — the Progress page (ticket 0058, §6.7)
+
+**One new screen and one moved door.** You asked for a sibling of History — *net zoals dat we een
+History pagina hebben ook een Statistics pagina* — and this is it, under the name **Progress**:
+Statistics names aggregates Hoppa does not keep, Progress names the climb §6.7 already draws. The
+chart's door left the Exercise card (items 111–118) and is a row on this page. **Two new files**,
+`app/Hoppa/Hoppa/ProgressScreen.swift` and `app/HoppaRules/Sources/HoppaRules/Progress.swift`; the
+app target is a file-system synchronised group, so the screen arrives with no project edit — and if
+Xcode asks about it, that is itself the finding (item 1).
+
+130. **Open the app and look at the foot of the picker.**
+   → Two rows, the same shape, 8 pt apart: `HISTORY` with `30 workouts · 9 weeks in a row` under
+   it, and **`PROGRESS`** under that with `4 exercises` — the count of Exercises you have trained at
+   least once, and **only** the count. No went-up total: that would be an aggregate across
+   Exercises, which §6.7 refused. On a phone that has never trained, it reads `0 exercises`. On a
+   first run with no Program there is **neither** row, as before.
+
+131. **The empty state.** Fresh install, open Progress before the first Workout.
+   → `NOTHING HERE YET`, and one line — *Finish a workout and every exercise you trained lands
+   here.* Nothing else on the page. Finish one Workout and come back: every Exercise you did not
+   skip is now a row.
+
+132. **Tap `PROGRESS` on the seeded book.** `‹ UPPER / LOWER` at the top, `PROGRESS` as the title,
+   `4 EXERCISES` as a label, then a table.
+   → **The rows are in your Program's order** — Upper A's Exercises in the order they sit on the
+   Day, then Lower A's — not most-recent first. History answers *when*; this answers *what*. Say if
+   you expected recency.
+
+133. **Read one row.** Name on top, then `Upper A · 14 sessions` in the meta line, then a green
+   `10 WENT UP` where any session did, then a steel sparkline on the right ending in a dot, then
+   `›`.
+   → The bench reads **14** sessions and the row **15**: the seed skips the bench once, and a skip
+   makes no point and no session. `1 session` is singular. A row that never went up has **no green
+   line**, not a `0`.
+
+134. **Two Exercises with the same Name.** Add a second `Barbell row` to Lower A and train it once.
+   → **Two rows**, one reading `Upper A · …` and the other `Lower A · …`. Charts never join by
+   Name, so neither does this list. Rename the Day or the Exercise and the row reads the new Name
+   at once; delete the Exercise and its row is gone.
+
+135. **Tap a row — anywhere on it, including the sparkline.**
+   → That Exercise's **chart** opens. **The mark is not a button**: it is decoration on a row that
+   is itself the door, so a tap on the mark and a tap on the Name do the same thing. If the mark
+   ever does something the rest of the row does not, that is a finding.
+
+136. **On the chart, look at the top.**
+   → The chevron reads **`‹ PROGRESS`**, the room you came from, and the meta line under the
+   Exercise name now starts with the Day — `Upper A · Smith · 3 × 8–12 · Progressive overload` —
+   so the two `Barbell row`s from item 134 still read apart once the chart is open. Swipe or tap
+   back and you land on the Progress list, not the picker.
+
+137. **Compare the sparkline on the row with the line on the chart it opens.**
+   → The same climb: the mark is the chart's own points on the chart's own scale and its own
+   real-time x axis, so a missed week is a wider gap on the row too. It draws **no** One-off marker
+   and **no** dashed `NEXT` step, on purpose. An Exercise trained exactly once is a single dot on
+   the row and `NOTHING HERE YET` on the chart — **the two gates are deliberately not one gate**:
+   two sessions make a *line*, one makes a *screen worth reaching*.
+
+### What only the phone can answer
+
+- **Whether the rows read at a glance** with a mark, three lines of text and a chevron on one row.
+  `app/checks/Progress/run.sh` prints the same rows as text and proves the English, the order and
+  which Exercises appear; it cannot tell you whether the page feels like History's sibling.
+- **Whether program order is what you reach for** on a page you open to see what climbed. Recency
+  was the other order and it lost on paper; the phone may overrule the paper.
+- **The picker's foot with two rows on a small screen.** Two 64 pt rows and a Program of four or
+  five Days may push the day list into a scroll on an iPhone SE. Yours is a 16, where it fits.
+
 ## What is not built yet
 
 None of this is a defect.
 
 - **Flow 4 is complete, and so is the build map.** The streak and the Workout list landed at ticket
-  0047, opening a row of that list at 0048, the **per-Exercise chart** at 0049 and **its door** at
-  0050 — items 76–118. Every screen in `SPEC.md` now exists and every door between them is open.
+  0047, opening a row of that list at 0048, the **per-Exercise chart** at 0049, and its door at 0050
+  on the Exercise card — then **moved to the Progress page** at 0058, items 130–137. Every screen in
+  `SPEC.md` now exists and every door between them is open. **There is no sparkline on the Workout
+  Day card** and no way to the chart from the Workout Day screen: deliberate, not missing (item 114).
 - **The weights on a Workout you finished before this build.** Ticket 0048 started storing the
   weight a progression ended on; Workouts already on the phone have none, so an old Went-up row
   reads a green `WENT UP` and no numbers. Old data, not a defect — see item 90.
@@ -805,12 +868,13 @@ So a failure on the Mac is toolchain drift and not code.
 
 | Suite | Count |
 | --- | --- |
-| `app/HoppaRules` — `swift test` | 218 |
+| `app/HoppaRules` — `swift test` | 242 |
 | `app/HoppaStore` — `swift test` | 49 |
 | `app/checks/UnitStash/run.sh` | 34 |
 | `app/checks/Reorder/run.sh` | 25 |
 | `app/checks/Reweigh/run.sh` | 34 |
 | `app/checks/History/run.sh` | 33 |
 | `app/checks/Past/run.sh` | 66 |
-| `app/checks/Chart/run.sh` | 41 |
-| `app/checks/AppTarget/run.sh` | 30 files, 101 names |
+| `app/checks/Chart/run.sh` | 39 |
+| `app/checks/Progress/run.sh` | 28 |
+| `app/checks/AppTarget/run.sh` | 35 files, 110 names |

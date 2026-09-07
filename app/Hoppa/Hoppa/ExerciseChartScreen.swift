@@ -33,6 +33,13 @@ import HoppaStore
 // - **The dashed step is steel where the user set the weight by hand** — see
 //   `ChartNextStep.isProgression`, which carries the reasoning.
 //
+// **Reached from the Progress page since ticket 0058.** The chevron reads `Progress`, the
+// room this was opened from, and the Day's Name moved into the meta line ahead of the
+// equipment — so two Exercises with one Name still read apart once the chart is open, which
+// is the one thing the Progress row could tell you that the chart's title cannot. Ticket
+// 0050 had opened this screen from a sparkline on the Exercise card, with the Day in the
+// chevron; the screen itself states nothing different.
+//
 // Artboards: `design/0015-history/Main.dc.html`, `Plateau.dc.html`, `Mixed.dc.html`.
 
 struct ExerciseChartScreen: View {
@@ -59,7 +66,7 @@ struct ExerciseChartScreen: View {
     private var content: some View {
         if let chart {
             VStack(alignment: .leading, spacing: 0) {
-                StepHeader(label: dayName, back: leave)
+                StepHeader(label: "Progress", back: leave)
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
                         Text(chart.name)
@@ -103,7 +110,8 @@ struct ExerciseChartScreen: View {
         path.removeLast()
     }
 
-    /// The Workout Day this Exercise sits in, which is the room the chart was opened from.
+    /// The Workout Day this Exercise sits in. Read live off the Program, so a renamed Day
+    /// reads its new Name here as it does on the Progress row.
     private var dayName: String? {
         store.logbook?.programs
             .flatMap(\.days)
@@ -111,13 +119,17 @@ struct ExerciseChartScreen: View {
             .name
     }
 
-    /// `Smith machine · 3 × 8–12 · Progressive overload`.
+    /// `Upper A · Smith machine · 3 × 8–12 · Progressive overload`. The Day first, because
+    /// it is what tells two Exercises with one Name apart (§2.7).
     private func meta(_ chart: ExerciseChart) -> String {
-        [
+        var parts: [String] = []
+        if let dayName { parts.append(dayName) }
+        parts += [
             chart.equipment.screenName,
             "\(chart.plannedSets) × \(chart.repRange.bottom)–\(chart.repRange.top)",
             chart.mode.screenName
-        ].joined(separator: " · ")
+        ]
+        return parts.joined(separator: " · ")
     }
 
     // MARK: - The heroes

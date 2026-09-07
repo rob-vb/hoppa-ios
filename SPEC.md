@@ -51,7 +51,7 @@ Four flows, all validated with the user against drawn screens:
 - **Flow 1 — Onboarding**: creating a Program, the plate rack, entering Exercises.
 - **Flow 2 — Logging**: performing a Workout.
 - **Flow 3 — Summary**: what the user sees at Finish.
-- **Flow 4 — History**: the Workout list, the streak, and the per-Exercise progression chart.
+- **Flow 4 — History and Progress**: the Workout list, the streak, the Progress list, and the per-Exercise progression chart.
 
 A fifth is specified but not drawn:
 
@@ -1324,40 +1324,58 @@ Hoppa moves the weight up at every Finish. This is where the climb is visible.
 
 #### Two doors, no tab bar
 
-Hoppa has **no tab bar**. History is reached from the two places the user already stands:
+Hoppa has **no tab bar**. Flow 4 has two doors, and both sit at the foot of the Workout Day
+picker, one under the other, in the same row shape:
 
 | Door | Opens |
 | --- | --- |
 | A **HISTORY** row at the foot of the Workout Day picker | The history screen: the streak, then the Workout list |
-| Any **Exercise card** in the Workout Day screen | That Exercise's chart. The card carries a sparkline, so the door announces itself |
+| A **PROGRESS** row directly under it | The Progress list: one row per Exercise that has been performed, in program order. Tapping a row opens that Exercise's chart |
 
-Nothing permanent is added to the logging screen.
+Nothing permanent is added to the logging screen, and **there is no sparkline on the Workout
+Day card**: the card is grip and §6.2's sheet, and nothing else.
 
-**The sparkline *is* the door**, and the rest of the card still opens §6.2's Exercise sheet.
-Settled while building, at
-[The Exercise card's two doors](issues/0050-the-exercise-cards-two-doors.md): §6.7's own
-sentence makes the mark the announcement, so the announcement and the door are one object
-and no third affordance has to be explained. An Exercise card is edited far more often than
-it is charted — every Exercise is opened while the Program is being built, and none of them
-has a chart then — so the frequent path keeps the whole card.
+**The Progress list is the room; the chart is still the per-Exercise screen.** A row of
+Progress is an Exercise that has been performed at least once: its Name, its Workout Day, the
+session count, how many times it went up in green, and a sparkline of its climb. The whole
+row is the door, the way a History row is. The sparkline is a mark on it and not a nested
+control — tapping the mark is tapping the row. The Progress row on the picker reads the count
+alone, `12 exercises`, and never a went-up total, which would be an aggregate this section
+refuses. Before the first session the page reads *Nothing here yet — Finish a workout and
+every exercise you trained lands here.*
 
-**No sparkline, no door.** The mark is drawn only where the Exercise has been performed at
-least once, so a card with nothing to plot offers no way into an empty room. That is this
-section's own empty state, one room further out — and note the two gates are **not** the
-same gate: two sessions make a *line*, one makes a *screen worth reaching*, because at one
-session the chart still states the hero, the chip and the condition for the next step.
+**Progress is a sibling of History and not a fold into it.** History is a list of Workouts in
+reverse date order with a streak above it; an Exercise across every Workout it has been in is
+a different question, and one screen answering both would make the empty state, the streak
+and the order serve two jobs. Two pages, reached the same way, keep each list one kind of
+row. It is not called *Statistics*: that word names aggregates Hoppa does not keep, and this
+section already refused volume and estimated 1RM.
+
+**No sparkline, no row.** An Exercise with nothing to plot is not on the list, so a door to
+an empty room is never offered. That is this section's own empty state, one room further
+out — and note the two gates are **not** the same gate: two sessions make a *line*, one
+makes a *screen worth reaching*, because at one session the chart still states the hero, the
+chip and the condition for the next step. The Open Workout adds nothing until it is finished,
+a deleted Exercise drops out, a renamed Day or Exercise reads live, and a Skipped-only
+Exercise makes no row because a skip makes no point.
 
 **The mark is the chart's own line**, on the chart's own scale and its own real-time x axis,
 in **2 px steel** — §7.1's rule that no plate colour enters a chart does not stop at the
 chart's edge. It draws no One-off marker and no `NEXT` step: a hollow marker is a smudge at
-that size, and the step's destination is already the big number printed beside it on the
-same card.
+that size, and the step is a statement about the next session that the chart has room to
+label and a row does not.
 
-> **This row said *the Program sheet* and the room is the Workout Day screen.** In this app
-> the Program sheet lists Workout Days; Exercise cards live one room down. The artboard
-> settles it — `design/0015-history/Program.dc.html` is headed
-> `‹ Upper / Lower · Upper A · 5 exercises`, which is the Workout Day screen. Corrected at
-> ticket 0050.
+> **How the second door got here.** The decision record and the artboards put the chart's
+> door on the Exercise card: *the card carries a sparkline, so the door announces itself*.
+> [The Exercise card's two doors](issues/0050-the-exercise-cards-two-doors.md) built it that
+> way, making the mark the door and leaving the rest of the card to §6.2's sheet, for three
+> reasons that still hold for which half of a card should open the sheet. What they did not
+> settle was where the chart is reached from, and the Workout Day screen — the room for
+> building a Day — was the wrong room for a statistic. [The Progress
+> page](issues/0058-the-progress-page.md) moved the door to the foot of the picker beside
+> History and took the sparkline off the card. `design/0015-history/Program.dc.html`, which
+> draws the mark on the card, is historical; so is that record's note that the row said *the
+> Program sheet* when the room was the Workout Day screen.
 
 #### The per-Exercise chart
 
@@ -1752,5 +1770,5 @@ flows this spec validates, so each is a later effort rather than a resumption of
 | 12 | [Confetti plate source](issues/0012-confetti-plate-source.md) | The burst throws what the Plate Breakdown draws; proportional sampling; steel is hollow (§6.5) |
 | 13 | [Plate Inventory shipped defaults](issues/0013-plate-inventory-shipped-defaults.md) | 25 kg is red, every Microplate ships off, the empty-Microplate path (§5.2, §7.3) |
 | 14 | [Editing a Program over time](issues/0014-editing-a-program-over-time.md) | The Set stores its own numbers, at-least-the-planned-Sets, unit changes clear the weight, the Re-weigh list, deleting (§2.4, §2.5, §3.2, §4.1, §6.6) |
-| 15 | [History and progression charts](issues/0015-history-and-progression-charts.md), amended by [The per-Exercise chart](issues/0049-the-per-exercise-chart.md) | Two doors and no tab bar, the Working-Weight line with a Set grid, the NEXT step, the streak, deleting a past Workout, plate colour outside a Plate Breakdown (§6.7, §7.1) |
+| 15 | [History and progression charts](issues/0015-history-and-progression-charts.md), amended by [The per-Exercise chart](issues/0049-the-per-exercise-chart.md) and [The Progress page](issues/0058-the-progress-page.md) | Two doors and no tab bar — History and Progress at the foot of the picker, the chart reached from a Progress row and no longer from the Exercise card — the Working-Weight line with a Set grid, the NEXT step, the streak, deleting a past Workout, plate colour outside a Plate Breakdown (§6.7, §7.1) |
 | 16 | [Bounding the Microload](issues/0016-bounding-the-microload.md) | The roll-up into the pin, the Microload only where there is a Stack Step, Bodyweight takes the Inventory's unit (§2.3, §2.6, §4.2, §5.1, §5.3) |

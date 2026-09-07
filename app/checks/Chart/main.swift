@@ -423,13 +423,15 @@ check(
     "And the screen says why the line drops",
     mixedUnitNote(pulldown).contains("drops back"))
 
-// MARK: - The ring: the Exercise card's two doors (ticket 0050)
+// MARK: - The ring: the sparkline in its box (ticket 0050; on a Progress row since 0058)
 
 /// The sparkline as `Sparkline.swift`'s `Canvas` draws it, on a grid of characters.
 ///
 /// **A copy, and it can rot** — the same bargain the plot above takes. What it copies is
 /// only the flip and the inset: every point is `ExerciseChart.sparkline`, which is the
-/// shipping rule, linked from the built package.
+/// shipping rule, linked from the built package. Which Exercises carry a mark is a question
+/// about the Progress list, and `app/checks/Progress` asks it; what is proved here is the
+/// arithmetic of the mark itself.
 func spark(_ chart: ExerciseChart, width: Int = 22, height: Int = 5) -> [String] {
     let marks = chart.sparkline
     guard !marks.isEmpty else { return Array(repeating: String(repeating: " ", count: width), count: height) }
@@ -459,42 +461,16 @@ extension String {
     }
 }
 
-/// One Exercise card as `WorkoutDayScreen` draws it: the Name, the meta line, the Working
-/// Weight — and, **only where `hasSpark`**, the sparkline that is the second door.
-func card(_ chart: ExerciseChart, _ exercise: ResolvedExercise) -> [String] {
-    let inner = 62, markWidth = 22, textWidth = inner - markWidth - 2
-    let weight = exercise.workingWeight.map {
-        "\($0.decimalString) \(exercise.unit.rawValue)"
-    } ?? "—"
-    let text = [exercise.name.uppercased(), "", weight, "", ""]
-    let mark = chart.hasSpark
-        ? spark(chart, width: markWidth, height: text.count)
-        : Array(repeating: "", count: text.count)
-    let door = chart.hasSpark ? " → chart " : " no door — nothing plotted yet "
-
-    var lines = ["  ┌" + String(repeating: "─", count: inner) + "┐"]
-    for (line, marked) in zip(text, mark) {
-        lines.append("  │ " + line.rightPadded(to: textWidth)
-                     + marked.rightPadded(to: markWidth) + " │")
-    }
-    lines.append("  └" + String(repeating: "─", count: max(0, inner - door.count))
-                 + door + "┘")
-    return lines
-}
-
 print("")
-print("=== The Day screen's cards, and which of them carry a second door ===")
-print("    The sparkline **is** the door (ticket 0050): no mark, no way to the chart.")
+print("=== The mark beside each chart, in its 44 × 16 box ===")
 
 for exercise in book.allExercises {
     let chart = Rules.exerciseChart(exercise.id, in: book)!
-    for line in card(chart, book.resolvedExercise(exercise.id)!) { print(line) }
+    print("   " + chart.name.rightPadded(to: 30) + spark(chart)[0])
+    for line in spark(chart).dropFirst() { print("   " + "".rightPadded(to: 30) + line) }
 }
 
 print("")
-check(
-    "Every trained Exercise carries a door",
-    book.allExercises.allSatisfy { Rules.exerciseChart($0.id, in: book)!.hasSpark })
 check(
     "The mark plots the chart's own points, one for one",
     book.allExercises.allSatisfy {
@@ -525,15 +501,15 @@ let onceBook = HarnessSeed.trained(bare, weeks: 1, endingOn: at("2026-08-26 18:0
 let once = Rules.exerciseChart(bare.allExercises[0].id, in: onceBook)!
 check("One session is a dot, not a climb", once.points.count == 1 && !once.hasLine)
 
-// Ticket 0050's gate, from both sides. **No sparkline, no door** — and the two gates are
-// deliberately not one gate: two sessions make a *line*, one makes a *screen worth
-// reaching*, which still states the hero, the chip and the condition for the next step.
-check("An Exercise nobody has trained carries no door", !cold.hasSpark)
-check("So the card draws no mark at all", cold.sparkline.isEmpty)
-for line in card(cold, bare.resolvedExercise(bare.allExercises[0].id)!) { print(line) }
-check("One session opens the door, though there is still no line", once.hasSpark && !once.hasLine)
+// Ticket 0050's gate, from both sides, and it is the Progress list's gate since 0058. The
+// two gates are deliberately not one gate: two sessions make a *line*, one makes a *screen
+// worth reaching*, which still states the hero, the chip and the condition for the next
+// step. Whether an untrained Exercise is a row is `app/checks/Progress`'s question; that
+// its mark is empty is this file's.
+check("An Exercise nobody has trained has no mark to draw", !cold.hasSpark && cold.sparkline.isEmpty)
+check("One session passes the gate, though there is still no line", once.hasSpark && !once.hasLine)
 check("And the mark is the one dot", once.sparkline.count == 1 && once.sparkline[0].x == 1)
-for line in card(once, onceBook.resolvedExercise(bare.allExercises[0].id)!) { print(line) }
+for line in spark(once) { print("   " + line) }
 
 print("")
 print(failures == 0 ? "All checks passed." : "\(failures) check(s) FAILED.")

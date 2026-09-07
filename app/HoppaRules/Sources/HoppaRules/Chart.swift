@@ -392,9 +392,9 @@ extension Rules {
     }
 }
 
-// MARK: - The sparkline on an Exercise card (§6.7, ticket 0050)
+// MARK: - The sparkline on a Progress row (§6.7 — ticket 0050, moved at ticket 0058)
 
-/// One point of the mark an Exercise card carries, in fractions of its box.
+/// One point of the mark a Progress row carries, in fractions of its box.
 ///
 /// **Fractions and not points**, for the reason `ChartScale.fraction(of:)` answers in
 /// fractions: a `Weight` is exact and a pixel is not, so the rule stops at the last
@@ -402,7 +402,7 @@ extension Rules {
 /// owns. The one place a `Double` is allowed near a weight, twice over.
 public struct SparkPoint: Sendable, Hashable {
     /// `0` at the first session, `1` at the last. **Real time** (§6.7), the same axis the
-    /// chart's own line runs on — so a missed week is a wider gap on the card too.
+    /// chart's own line runs on — so a missed week is a wider gap on the row too.
     public var x: Double
     /// `0` at the bottom of the plot, `1` at the top, on **the chart's own `ChartScale`**.
     public var y: Double
@@ -410,19 +410,21 @@ public struct SparkPoint: Sendable, Hashable {
 
 extension ExerciseChart {
 
-    /// §6.7's sparkline: *the card carries a sparkline, so the door announces itself.*
+    /// §6.7's sparkline: the mark on a Progress row, beside the Exercise's figures.
     ///
     /// **It is the chart's own line, and nothing else.** Same points, same real-time x
-    /// axis, same padded `ChartScale` — so the mark on the card is a small true copy of
+    /// axis, same padded `ChartScale` — so the mark on the row is a small true copy of
     /// the line on the screen it opens, and the two can never draw two different climbs.
     /// The view scales it into 44 × 16 and strokes it 2 px steel.
     ///
-    /// **What it leaves out, and why** (ticket 0050). The One-off markers, the dashed
-    /// NEXT step and the gridlines are all on the chart and none of them is here. A
-    /// hollow marker at this size is a smudge; the step's destination is already the big
-    /// number printed beside the mark on the same card, so drawing it twice would be the
-    /// only thing on the card stated twice. What is left is the one thing a sparkline is
-    /// for: the shape of the climb.
+    /// **What it leaves out, and why** (ticket 0050, and still true on the row). The
+    /// One-off markers, the dashed NEXT step and the gridlines are all on the chart and
+    /// none of them is here. A hollow marker at this size is a smudge, and the step is a
+    /// statement about the next session that the chart has room to label and a row does
+    /// not. What is left is the one thing a sparkline is for: the shape of the climb.
+    ///
+    /// Ticket 0050 drew it on the Exercise card as the chart's door. Ticket 0058 moved it
+    /// onto the Progress row, where the whole row is the door and the mark is decoration.
     public var sparkline: [SparkPoint] {
         guard let scale, let first = points.first?.startedAt, let last = points.last?.startedAt
         else { return [] }
@@ -436,18 +438,19 @@ extension ExerciseChart {
         }
     }
 
-    /// **Does this Exercise card carry a door to its chart?**
+    /// **Is this Exercise a row of the Progress list?**
     ///
-    /// The judgment call of ticket 0050, and it is one word: *no sparkline, no door.* The
-    /// card's second door **is** the sparkline (§6.7), so an Exercise with nothing to
-    /// plot draws no mark and offers no way in — which is §6.7's own empty-state rule,
-    /// one room further out. Everything else about the card is unchanged, so the door
-    /// costs nothing on a Program the user is still building.
+    /// The gate ticket 0050 set, kept word for word at ticket 0058 and applied one room
+    /// further up: *no sparkline, no door.* An Exercise with nothing to plot is not a row
+    /// of `Rules.progress`, so a door to an empty room is never offered — which is §6.7's
+    /// own empty-state rule, applied at the list. A Program the user is still building has
+    /// an empty Progress page and nothing else changes.
     ///
     /// **One session is enough**, though it is only a dot. §6.7's *two sessions* is the
     /// rule for the **line**, not for the screen: at one session the chart still states
     /// the hero, the chip and the condition for the next step, which is the whole of what
-    /// a lifter one session in can be told. Gating the door at two would build a screen
-    /// with no way to reach it.
+    /// a lifter one session in can be told. Gating the row at two would build a screen
+    /// with no way to reach it. The two gates were never the same gate, and moving the
+    /// door did not join them.
     public var hasSpark: Bool { !points.isEmpty }
 }

@@ -67,6 +67,8 @@ struct HoppaApp: App {
             ReweighScreen(path: $path)
         case .history:
             HistoryScreen(path: $path)
+        case .progress:
+            ProgressScreen(path: $path)
         case .pastWorkout(let id):
             PastWorkoutScreen(path: $path, workoutId: id)
         case .exerciseChart(let id):

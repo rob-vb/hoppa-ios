@@ -1,30 +1,34 @@
 import SwiftUI
 import HoppaRules
 
-// Ticket 0050 — §6.7's sparkline, and the second door on an Exercise card.
+// Ticket 0050 — §6.7's sparkline. Ticket 0058 — where it lives now.
 //
-// *"Any **Exercise card** in the Program sheet → That Exercise's chart. The card carries a
-// sparkline, so the door announces itself."*
+// **The mark is decoration on a row that is itself the door.** It sits on a Progress row,
+// between the Exercise's figures and the chevron, and it owns no gesture: tapping the mark
+// is tapping the row, the way tapping the date on a History row is tapping the row. It is
+// hidden from accessibility for the same reason — the row's own label says what it opens.
 //
-// **The announcement and the door are one object.** That is the decision ticket 0050 took,
-// and this file is the whole of it: the mark is the tap target, the rest of the card still
-// opens §6.2's Exercise sheet, and an Exercise with nothing to plot draws no mark and so
-// offers no second door. See `ExerciseChart.hasSpark` for the reasoning; `WorkoutDayScreen`
-// is where the two targets sit beside each other.
+// It was not born there. Ticket 0050 put it on the Exercise card in the Workout Day screen
+// as a nested button, *the* door to the chart, beside the sheet's own tap target. Ticket
+// 0058 moved the door to the Progress page and took the mark with it; the card is grip and
+// sheet again. Nothing about the drawing changed, which is the point of the drawing being
+// its own file.
 //
 // **The view holds no arithmetic**, exactly as `ExerciseChartScreen` holds none. Every
-// point is `ExerciseChart.sparkline` — the chart's own line, on the chart's own
-// `ChartScale`, on the chart's own real-time x axis — so the mark on the card and the line
-// on the screen it opens can never draw two different climbs. What is left here is 44 × 16
-// points of pixels.
+// point is `ExerciseChart.sparkline`, carried on the `ProgressRow` — the chart's own line,
+// on the chart's own `ChartScale`, on the chart's own real-time x axis — so the mark on the
+// row and the line on the screen it opens can never draw two different climbs. What is left
+// here is 44 × 16 points of pixels.
 //
 // **2 px steel**, like the chart's line. §7.1's rule that no plate colour ever enters a
-// chart does not stop at the chart's edge: a coloured mark on a card would claim to be a
+// chart does not stop at the chart's edge: a coloured mark on a row would claim to be a
 // plate. Green is not used either — on the chart green marks *one session*, and a green
-// dot alone on a card would read as a verdict on the Exercise.
+// dot alone on a row would read as a verdict on the Exercise. The row's own green line,
+// `3 went up`, is already the verdict in words.
 //
-// Artboard: `design/0015-history/Program.dc.html`, which draws it 54 × 20 at 1.5 px.
-// `SPEC.md` beats the artboard: the ticket sets 2 px, to match the line it is a copy of.
+// Artboard: `design/0015-history/Program.dc.html`, which draws it on the card at 54 × 20
+// and 1.5 px. Historical on both counts: `SPEC.md` set 2 px to match the line it copies,
+// and the card no longer carries it.
 
 struct Sparkline: View {
     /// `ExerciseChart.sparkline` — fractions of this box, oldest first.
@@ -54,7 +58,7 @@ struct Sparkline: View {
                     style: StrokeStyle(lineWidth: Self.stroke, lineCap: .round, lineJoin: .round))
             }
             // Drawn on one session as well as fifteen. A lone dot is what a single
-            // session honestly looks like, and the card still opens the screen that
+            // session honestly looks like, and the row still opens the screen that
             // states the hero and the condition for the next step.
             context.fill(
                 Path(ellipseIn: CGRect(
@@ -63,7 +67,8 @@ struct Sparkline: View {
                 with: .color(Color.steel))
         }
         .frame(width: Self.width, height: Self.height)
-        // The mark is a picture of a series that is stated in words one tap away.
+        // The mark is a picture of a series that is stated in words one tap away, and
+        // the row it sits on carries the label.
         .accessibilityHidden(true)
     }
 
