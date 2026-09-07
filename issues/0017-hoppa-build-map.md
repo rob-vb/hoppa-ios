@@ -951,6 +951,14 @@ real**, and nothing after that is worth doing before it.
   gear. The bar hides with no Program, during onboarding, and on logging and the Summary.
   Unproven here: SwiftUI does not compile on the VPS.
 
+- [The unnamed plate on the pin](0060-the-unnamed-plate-on-the-pin.md) — Chest fly at
+  87.5 kg printed `pin at 85 kg · 1 microplate`. Ticket 0053 made that line loud so it
+  would say which plates to hang, and `1 microplate` was the string that became loud: a
+  count, and a word that is wrong when Progressive Overload hangs a 2.5 kg **normal plate**
+  on the pin. The load line now names the plates (`pin at 85 kg · 2.5 kg`). Copy lives on
+  `StackLoad` in `DomainCopy.swift`, proved here by `app/checks/LoadLine` against
+  `Rules.breakdown`. `SPEC.md` §5.5 and the stack bullets in `CONTEXT.md` follow.
+
 ## Not yet specified
 
 - **Who owns `project.pbxproj`, and what a conflict in it costs.** The VPS/Mac loop means two

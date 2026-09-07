@@ -590,7 +590,7 @@ there is nothing to roll up**: 1.25 kg of Microload draws as one 1.25 kg plate, 
 
 **The pin follows the Working Weight, and the Microload rolls into it.** Hoppa does not choose the
 pin: the user sets the Working Weight and the pin takes the largest Stack Step at or under it,
-with the remainder hanging on it as Microplates.
+with the remainder hanging on it as plates from the Inventory the Mode allows.
 
 An earlier draft of this section said a stack *never* rolls into the next pin step, on the grounds
 that one step is about eighteen microplates away and the case is therefore theoretical. **It is
@@ -641,14 +641,24 @@ nothing, so it is the qualifier there.
 
 | Type | Drawing | Caption |
 | --- | --- | --- |
-| Machine (Stack) | The stack as blocks, loaded ones in steel and the rest dark, the pin below the last loaded block, the Microplate hanging on it | `pin at 10 × 10 lbs · 1 microplate` / `100 lbs + 1.25 kg` |
+| Machine (Stack) | The stack as blocks, loaded ones in steel and the rest dark, the pin below the last loaded block, the plates hanging on it | `pin at 85 kg · 2.5 kg` / `85 kg + 2.5` |
 | Dumbbell | A steel dumbbell, no plate colours — nothing is loaded | `each hand` / `2 × 22.5 kg` |
 | Bodyweight | The added plate face-on, hanging from a belt clip | `added weight only` / `1 × 15 kg on the belt` |
 
+**The stack's load line names the hanging plates by size**, never as a count of microplates.
+Ticket 0053 made that line loud so it would say which plates to hang, and `1 microplate` was the
+string that became loud — a count that does not name the plate, and a word that is wrong when
+Progressive Overload hangs a 2.5 kg normal plate on the pin. Corrected at
+[The unnamed plate on the pin](issues/0060-the-unnamed-plate-on-the-pin.md). The pin is the
+printed label (`85 kg`); then the plates (`2.5 kg`). A real Microplate still prints its size.
+The pin is no longer the artboard's `10 × 10 lbs` either: the built caption already named the
+label, and the hanging half now matches.
+
 **Mixed units** stack two numbers, each with its own unit label: the Working Weight big
 (`100` / `LBS`), the Microload under it (`+1.25` / `KG`). **There is no combined total anywhere
-on the screen.** The Working Weight is **64 px** and the Microload **30 px** — cut from the
-artboard's 88 and 38 at ticket 0053, in the same breath that promoted the caption. It is still the
+on the screen.** The load line keeps both units (`pin at 100 lbs · 1.25 kg`). The Working Weight
+is **64 px** and the Microload **30 px** — cut from the artboard's 88 and 38 at ticket 0053, in
+the same breath that promoted the caption. It is still the
 biggest number on the screen; §7.4 never pinned this size, only the small ones.
 
 ---

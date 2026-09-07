@@ -80,3 +80,42 @@ extension ProgressionBlocker {
         }
     }
 }
+
+extension StackLoad {
+    /// `pin at 85 kg · 2.5 kg`. Names the hanging plates. Never a count of microplates —
+    /// Progressive Overload hangs a normal plate on the pin, and even a real Microplate
+    /// has a size the gym needs to hear (`SPEC.md` §5.5).
+    var loadLine: String {
+        var line = "pin at \(pinWeight.decimalString) \(pinWeight.unit.rawValue)"
+        let hanging = hangingLabels
+        if !hanging.isEmpty { line += " · " + hanging.joined(separator: " + ") }
+        return line
+    }
+
+    /// `85 kg + 2.5`, or `100 lbs + 1.25 kg` when the units differ. The math under the
+    /// load line. Never a total of two units (§5.5).
+    var qualifierLine: String {
+        var line = "\(pinWeight.decimalString) \(pinWeight.unit.rawValue)"
+        for plate in pinRemainder { line += " + \(plate.decimalString)" }
+        if let micro = microload, !micro.isZero {
+            line += " + \(micro.decimalString) \(micro.unit.rawValue)"
+        }
+        return line
+    }
+
+    /// Same-unit remainder as plates, then the mixed-unit Microload. Falls back to the
+    /// Microload's own number when the rack cannot split it into plates.
+    private var hangingLabels: [String] {
+        var labels = pinRemainder.map(named)
+        if !microloadPlates.isEmpty {
+            labels += microloadPlates.map(named)
+        } else if let micro = microload, !micro.isZero {
+            labels.append(named(micro))
+        }
+        return labels
+    }
+
+    private func named(_ plate: Weight) -> String {
+        "\(plate.decimalString) \(plate.unit.rawValue)"
+    }
+}
