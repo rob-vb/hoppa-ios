@@ -877,6 +877,17 @@ and while a Workout is being logged or summarised.
   four live in UIKit's bar. Say if a house, a clock, a chart and a gear are the wrong four,
   or if they should be drawn.
 
+## The unnamed plate on the pin (ticket 0060, §5.5)
+
+**The load line names the plate.** Ticket 0053 made that line loud so it would say which
+plates to hang. The string that became loud was still `1 microplate` — a count, and a word
+that is wrong when Progressive Overload hangs a 2.5 kg normal plate on the pin.
+
+143. **Open Chest fly machine, or any stack sitting on 87.5 kg.**
+   → The load line under the drawing reads **`pin at 85 kg · 2.5 kg`**, not `1 microplate`.
+   The dim line under it is still `85 kg + 2.5`. If a real Microplate is hanging it still
+   prints its size (`0.5 kg`), never a count.
+
 ## What is not built yet
 
 None of this is a defect.
@@ -920,4 +931,5 @@ So a failure on the Mac is toolchain drift and not code.
 | `app/checks/Past/run.sh` | 66 |
 | `app/checks/Chart/run.sh` | 39 |
 | `app/checks/Progress/run.sh` | 28 |
-| `app/checks/AppTarget/run.sh` | 35 files, 112 names |
+| `app/checks/LoadLine/run.sh` | 14 |
+| `app/checks/AppTarget/run.sh` | 35 files, 116 names |

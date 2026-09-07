@@ -136,10 +136,8 @@ struct PlateBreakdownView: View {
             return plateLine(load.plates)
 
         case .stack(let load):
-            var line = "pin at \(load.pinWeight.decimalString) \(load.pinWeight.unit.rawValue)"
-            let hanging = load.pinRemainder.count + load.microloadPlates.count
-            if hanging > 0 { line += " · \(hanging) microplate\(hanging == 1 ? "" : "s")" }
-            return line
+            // Ticket 0060 — names the hanging plates. Never a count of microplates.
+            return load.loadLine
 
         case .dumbbell:
             return "each hand"
@@ -164,14 +162,7 @@ struct PlateBreakdownView: View {
                 : perSide
 
         case .stack(let load):
-            // **Never a total** (§5.5): two units stand side by side and Hoppa does not
-            // add them up, because nothing converted reaches the screen.
-            var line = "\(load.pinWeight.decimalString) \(load.pinWeight.unit.rawValue)"
-            for plate in load.pinRemainder { line += " + \(plate.decimalString)" }
-            if let micro = load.microload, !micro.isZero {
-                line += " + \(micro.decimalString) \(micro.unit.rawValue)"
-            }
-            return line
+            return load.qualifierLine
 
         case .dumbbell(let each):
             return "2 × \(each.decimalString) \(each.unit.rawValue)"
