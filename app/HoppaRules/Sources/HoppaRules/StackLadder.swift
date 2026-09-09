@@ -31,6 +31,11 @@ public struct StackLadder: Sendable, Hashable {
         /// 1-based. Plate 1 is the top plate.
         public let plate: Int
         public let label: Weight
+
+        public init(plate: Int, label: Weight) {
+            self.plate = plate
+            self.label = label
+        }
     }
 
     /// Highest label at or under `target`. nil if target < first.

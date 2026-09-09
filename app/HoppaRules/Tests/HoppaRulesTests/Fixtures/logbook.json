@@ -134,6 +134,10 @@
         }
       }
     ],
+    "stackAddOns" : {
+      "fiveLbs" : true,
+      "twoAndAHalfLbs" : true
+    },
     "unit" : "kg"
   },
   "programs" : [

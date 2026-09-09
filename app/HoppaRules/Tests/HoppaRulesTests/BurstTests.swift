@@ -56,8 +56,10 @@ struct BurstTests {
     func stackThrowsBlocksAndPin() {
         // 100 lbs on a 10 lbs stack, with a 1.25 kg Microload hanging on the pin.
         let load = StackLoad(
-            blocks: 10, stackStep: lbs("10"), pinWeight: lbs("100"), pinRemainder: [],
-            isExact: true, microload: kg("1.25"), microloadPlates: [kg("1.25")])
+            blocks: 10, stackStep: lbs("10"), pinWeight: lbs("100"),
+            hanging: .addOns([]),
+            isExact: true, microload: kg("1.25"), microloadPlates: [kg("1.25")],
+            workingUnit: .lbs, loadedTotal: lbs("100"), difference: lbs("0"))
         let source = Rules.burstSource(.stack(load))
 
         #expect(source.filter { $0 == .steel }.count == 10)
@@ -69,8 +71,10 @@ struct BurstTests {
     func stackThrowsItsSameUnitRemainder() {
         // 27.5 kg on a 5 kg stack: the pin takes 25, and 2.5 hangs on it.
         let load = StackLoad(
-            blocks: 5, stackStep: kg("5"), pinWeight: kg("25"), pinRemainder: [kg("2.5")],
-            isExact: true, microload: nil, microloadPlates: [])
+            blocks: 5, stackStep: kg("5"), pinWeight: kg("25"),
+            hanging: .rackPlates([kg("2.5")]),
+            isExact: true, microload: nil, microloadPlates: [],
+            workingUnit: .kg, loadedTotal: kg("27.5"), difference: kg("0"))
         let source = Rules.burstSource(.stack(load))
 
         #expect(source.filter { $0 == .plate(kg("2.5")) }.count == 1)
@@ -113,7 +117,7 @@ struct BurstTests {
             // Every plate thrown is a plate the drawing holds.
             let drawnPlates: [Weight] = switch drawn {
             case .bar(let l): l.plates
-            case .stack(let l): l.pinRemainder + l.microloadPlates
+            case .stack(let l): l.hanging.iron + l.microloadPlates
             case .dumbbell: []
             case .bodyweight(_, let p): p
             }

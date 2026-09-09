@@ -99,6 +99,8 @@ public enum Action: Sendable, Hashable {
     /// Writes nothing else. Stranding is **derived**, so switching a plate back on
     /// un-strands what it stranded (§6.6).
     case setPlate(Weight, on: Bool)
+    /// A stack-machine slider, on or off. Gym hardware, not a rack plate.
+    case setStackAddOn(StackAddOn, on: Bool)
 
     /// The Re-weigh list's **one** write: a Working Weight, on an Exercise named by id,
     /// with no Open Workout anywhere near it (§6.6).

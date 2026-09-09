@@ -163,7 +163,7 @@ extension Rules {
 
         var pinSteps = 0
         while hanging.hundredths >= stepInRackUnit.hundredths {
-            weight = weight + stackStep
+            weight = weight + stackStep.converted(to: weight.unit)
             hanging = inventory.roundedUpToBuildable(hanging - stepInRackUnit, for: .microloading)
             pinSteps += 1
         }

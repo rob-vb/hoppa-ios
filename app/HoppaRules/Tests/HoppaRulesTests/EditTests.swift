@@ -239,7 +239,7 @@ struct EditTests {
         let pulldown = session.stored(Ids.pulldown)!
         #expect(pulldown.workingWeight == nil)
         #expect(pulldown.increment == nil)
-        #expect(pulldown.storedStackStep == nil)
+        #expect(pulldown.storedStackStep == lbs("10"))
         #expect(pulldown.storedStackFirstPlate == nil)
         #expect(pulldown.ownWeightUnit == .kg)
         #expect(pulldown.microloadingIncrement == kg("1"))
@@ -256,7 +256,7 @@ struct EditTests {
         draft.ownWeightUnit = .kg                                       // the rack's unit
         session.send(.saveExercise(Ids.pulldown, draft: draft))
         #expect(session.stored(Ids.pulldown)?.microload == nil)
-        #expect(session.stored(Ids.pulldown)?.storedStackStep == nil)
+        #expect(session.stored(Ids.pulldown)?.storedStackStep == lbs("10"))
 
         // Back again: created at zero, not the old 1 kg. Hiding it instead would bring
         // the old Microload back here (§6.6).
@@ -306,8 +306,8 @@ struct EditTests {
         #expect(session.resolved(Ids.pulldown)?.stackStep == nil)
     }
 
-    @Test("A first plate clears with the Stack Step when the unit goes stale")
-    func firstPlateClearsOnAStaleUnit() {
+    @Test("A first plate survives a Working Weight unit flip")
+    func firstPlateSurvivesAWorkingUnitFlip() {
         var session = Session()
         var setup = Self.draft(session.stored(Ids.pulldown)!)
         setup.stackFirstPlate = lbs("25")
@@ -319,8 +319,8 @@ struct EditTests {
         session.send(.saveExercise(Ids.pulldown, draft: draft))
 
         let pulldown = session.stored(Ids.pulldown)!
-        #expect(pulldown.storedStackStep == nil)
-        #expect(pulldown.storedStackFirstPlate == nil)
+        #expect(pulldown.storedStackStep == lbs("10"))
+        #expect(pulldown.storedStackFirstPlate == lbs("25"))
     }
 
     @Test("A weight retyped in the new unit survives the same save that changed the unit")

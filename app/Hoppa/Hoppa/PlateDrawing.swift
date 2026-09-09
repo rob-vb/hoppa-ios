@@ -192,8 +192,7 @@ struct PlateBreakdownView: View {
 /// Draws nothing at all when the rack builds the weight exactly, which is the common case.
 struct ClosestLine: View {
     let breakdown: PlateBreakdown
-    /// The weight the breakdown was solved at. A `StackLoad` does not carry it back, and
-    /// the gap has to be named against the number the user is actually lifting.
+    /// The weight the breakdown was solved at. Named against the number the user is lifting.
     let performedAt: Weight
 
     var body: some View {
@@ -212,9 +211,7 @@ struct ClosestLine: View {
         case .bar(let load):
             return load.isExact ? nil : (load.loadedTotal, load.difference)
         case .stack(let load):
-            guard !load.isExact else { return nil }
-            let loaded = load.pinRemainder.reduce(load.pinWeight, +)
-            return (loaded, loaded - performedAt.relabelled(loaded.unit))
+            return load.isExact ? nil : (load.loadedTotal, load.difference)
         case .dumbbell, .bodyweight:
             return nil
         }
@@ -380,10 +377,7 @@ struct LoadedStack: View {
 
     private var loaded: Int { max(0, min(load.blocks, totalBlocks)) }
 
-    /// Everything the pin carries: the same-unit remainder the pin cannot reach, and the
-    /// Microload where the units differ. Ticket 0031 settled that these hang in the same
-    /// place, so they draw in the same place.
-    private var hanging: [Weight] { load.pinRemainder + load.microloadPlates }
+    private var hanging: [Weight] { load.hanging.iron + load.microloadPlates }
 
     var body: some View {
         HStack(alignment: .center, spacing: 10) {

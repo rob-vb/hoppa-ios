@@ -24,8 +24,12 @@ public struct ResolvedExercise: Sendable, Hashable {
     /// `nil` on any type that has none, whatever is stored.
     public let baseWeight: Weight?
     /// The stack's plates. `nil` on any type without a pin, and on a pin with no
-    /// Stack Step yet, whatever is stored.
+    /// Stack Step yet, whatever is stored. Built from the stored step and first plate
+    /// without relabelling them onto the Working Weight's unit.
     public let stack: StackLadder?
+    /// Enabled sliders when the ladder is lbs. Empty on a kg ladder, and when both
+    /// add-ons are off.
+    public let stackAddOns: [Weight]
     /// The jump alone, for the roll-up and the sheet's note. Derived, never stored twice.
     public var stackStep: Weight? { stack?.step }
     /// A Microload exists only on a pin whose unit differs from the rack's
@@ -74,6 +78,12 @@ extension Exercise {
     public func resolved(mode: ProgressionMode, inventory: PlateInventory) -> ResolvedExercise {
         let unit = weightUnit(in: inventory)
         let mixedUnitPin = equipment.hasPin && unit != inventory.unit
+        let ladder: StackLadder? = equipment.hasPin
+            ? storedStackStep.flatMap { step in
+                let first = storedStackFirstPlate.flatMap { $0.unit == step.unit ? $0 : nil }
+                return StackLadder(step: step, first: first)
+            }
+            : nil
         return ResolvedExercise(
             id: id,
             name: name,
@@ -90,11 +100,8 @@ extension Exercise {
             increment: increment?.relabelled(unit),
             microloadingIncrement: microloadingIncrement?.relabelled(inventory.unit),
             baseWeight: equipment.takesBaseWeight ? storedBaseWeight?.relabelled(unit) : nil,
-            stack: equipment.hasPin
-                ? storedStackStep.flatMap {
-                    StackLadder(step: $0.relabelled(unit), first: storedStackFirstPlate?.relabelled(unit))
-                  }
-                : nil,
+            stack: ladder,
+            stackAddOns: ladder?.unit == .lbs ? inventory.stackAddOns.enabledSizes : [],
             microload: mixedUnitPin ? (microload ?? .zero(inventory.unit)).relabelled(inventory.unit) : nil,
             isStranded: isStranded(in: inventory)
         )

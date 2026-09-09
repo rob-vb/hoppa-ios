@@ -11,13 +11,11 @@ import HoppaStore
 // Three things this sheet does **not** decide, because rules already do:
 //
 // - **The clearing rule.** A change of Equipment Type across the rack boundary is a
-//   change of unit (§6.6), and `Rules.edited` drops the Working Weight, the Increment and
-//   the Stack Step when the draft was typed in a unit the Exercise no longer resolves to
-//   (ticket 0041). The sheet takes the same three off the screen the moment the unit on
-//   screen changes, so the user is never typing under a label that has moved under him —
-//   it agrees with the rule rather than working around it. **The sheet keeps them**
-//   (ticket 0043): they go into a per-unit stash and come back if the unit does, because
-//   closing an edit sheet is the save and a mis-tap must not be the last word.
+//   change of unit (§6.6), and `Rules.edited` drops the Working Weight and the Increment
+//   when the draft was typed in a unit the Exercise no longer resolves to (ticket 0041).
+//   **The sheet keeps them** (ticket 0043): they go into a per-unit stash and come back
+//   if the unit does, because closing an edit sheet is the save and a mis-tap must not
+//   be the last word.
 // - **What a Microloading Increment moves.** `Rules.progressionMove` owns the doubling on
 //   a bar and the roll-up on a pin; the row below reads the move out of it rather than
 //   multiplying by two itself, exactly as ticket 0034's Exercise card does.
@@ -60,6 +58,7 @@ struct ExerciseSheet: View {
     /// The same `…` on the Stack Step row. A pin's offers are the machine's own jump,
     /// not the barbell plates, so a typed step has to survive the same way.
     @State private var stackTyped = false
+    @State private var stackChipUnit: WeightUnit
 
     @State private var nameIsMissing = false
     @State private var equipmentIsMissing = false
@@ -102,6 +101,7 @@ struct ExerciseSheet: View {
         _baseText = State(initialValue: initial.baseWeight?.decimalString ?? "")
         _stackText = State(initialValue: initial.stackStep?.decimalString ?? "")
         _firstText = State(initialValue: initial.stackFirstPlate?.decimalString ?? "")
+        _stackChipUnit = State(initialValue: initial.stackStep?.unit ?? initial.ownWeightUnit)
         _bottomText = State(initialValue: "\(initial.repRange.bottom)")
         _topText = State(initialValue: "\(initial.repRange.top)")
     }
@@ -234,9 +234,6 @@ struct ExerciseSheet: View {
             // under (§2.4).
             Text("It leaves the program from today. Finished workouts keep the sets you logged.")
         }
-        // The unit is derived, so it can move without a flip — one tap on a chip is
-        // enough. §6.6 clears the three fields that were typed in the old unit, and the
-        // sheet does it where the user can see it happen.
         .onChange(of: unitTag.unit) { clearForUnitChange() }
     }
 
@@ -374,19 +371,24 @@ struct ExerciseSheet: View {
             }
             if equipmentChosen, draft.equipment.hasPin {
                 row("Stack step") {
-                    offerChips(
-                        value: draft.stackStep,
-                        offers: offeredStackSteps,
-                        typed: $stackTyped,
-                        text: $stackText,
-                        field: .stack
-                    ) { draft.stackStep = $0 }
+                    HStack(spacing: 8) {
+                        offerChips(
+                            value: draft.stackStep,
+                            offers: offeredStackSteps,
+                            typed: $stackTyped,
+                            text: $stackText,
+                            field: .stack,
+                            unit: stackChipUnit
+                        ) { draft.stackStep = $0 }
+                        stackUnitChip
+                    }
                 }
                 if draft.stackStep != nil {
                     row("First plate", note: firstPlateLabels) {
                         weightBox(
                             $firstText, field: .firstPlate,
-                            width: ExerciseSheetMetrics.baseWeightWidth
+                            width: ExerciseSheetMetrics.baseWeightWidth,
+                            unit: stackChipUnit
                         ) { draft.stackFirstPlate = $0 }
                     }
                 }
@@ -421,10 +423,6 @@ struct ExerciseSheet: View {
         }
     }
 
-    /// One tap flips it, because there are two values and a picker for two values is
-    /// ceremony (§5.2) — but only on Machine (Stack). Every other type reads the rack,
-    /// so the letters are steel, not a control: you cannot load a plate you do not own
-    /// (§2.3).
     @ViewBuilder
     private var unitTagView: some View {
         switch unitTag {
@@ -446,6 +444,30 @@ struct ExerciseSheet: View {
             }
             .buttonStyle(.pressable)
         }
+    }
+
+    @ViewBuilder
+    private var stackUnitChip: some View {
+        Button {
+            flipStackUnit()
+        } label: {
+            Text(stackChipUnit.rawValue)
+                .typography(Typography.display(17, tracking: 0.03))
+                .foregroundStyle(Color.text)
+                .frame(minWidth: ExerciseSheetMetrics.chipMinWidth, minHeight: 44)
+                .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.chipBorder, lineWidth: 1))
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.pressable)
+    }
+
+    private func flipStackUnit() {
+        stackChipUnit = stackChipUnit == .kg ? .lbs : .kg
+        draft.stackStep = nil
+        draft.stackFirstPlate = nil
+        stackText = ""
+        firstText = ""
+        stackTyped = false
     }
 
     private var setsStepper: some View {
@@ -513,11 +535,6 @@ struct ExerciseSheet: View {
     /// The offers, in the unit on screen. They are **offers and not a default**: §6.2
     /// starts the Increment empty and has the user pick it, and §2.3 lets it be any
     /// number at all, which is what `…` is for.
-    ///
-    /// A pin is not a bar. The 1.25 / 2.5 / 5 kg chips are plates you hang; a stack
-    /// jumps by the plate it is built from — 5, 10 or 15 lbs, 5 or 10 kg — and those
-    /// are the numbers printed on it. The converted kg column on an lbs stack
-    /// (2.3, 4.5, 6.8, 11.3) is not one of them: that machine is lbs.
     private var offeredIncrements: [Weight] {
         equipmentChosen && draft.equipment.hasPin
             ? Rules.stackStepOffers(in: unit)
@@ -525,7 +542,7 @@ struct ExerciseSheet: View {
     }
 
     private var offeredStackSteps: [Weight] {
-        Rules.stackStepOffers(in: unit)
+        Rules.stackStepOffers(in: stackChipUnit)
     }
 
     private var firstPlateLabels: String? {
@@ -548,6 +565,7 @@ struct ExerciseSheet: View {
         typed: Binding<Bool>,
         text: Binding<String>,
         field: Field,
+        unit: WeightUnit? = nil,
         write: @escaping (Weight?) -> Void
     ) -> some View {
         let custom = typed.wrappedValue || (value.map { !offers.contains($0) } ?? false)
@@ -562,7 +580,9 @@ struct ExerciseSheet: View {
             if custom {
                 weightBox(
                     text, field: field,
-                    width: ExerciseSheetMetrics.customIncrementWidth, keep: write)
+                    width: ExerciseSheetMetrics.customIncrementWidth,
+                    unit: unit,
+                    keep: write)
             } else {
                 chip("…", on: false) {
                     typed.wrappedValue = true
@@ -751,10 +771,12 @@ struct ExerciseSheet: View {
     // MARK: - Reading the fields
 
     private func weightBox(
-        _ text: Binding<String>, field: Field, width: CGFloat, keep: @escaping (Weight?) -> Void
+        _ text: Binding<String>, field: Field, width: CGFloat,
+        unit: WeightUnit? = nil,
+        keep: @escaping (Weight?) -> Void
     ) -> some View {
         typedBox(text, field: field, width: width, decimal: true) { value in
-            keep(weight(value))
+            keep(weight(value, unit: unit))
         }
     }
 
@@ -870,33 +892,29 @@ struct ExerciseSheet: View {
         draft.modeOverride = chosen == programMode ? nil : chosen
     }
 
-    /// §6.6, where the user can see it: a change of unit takes the Working Weight, the
-    /// Increment and the Stack Step off the screen. The Base Weight is not touched here —
-    /// it belongs to a type that reads the rack, and it is written back only where the new
-    /// type has the row, so it survives a change of type the way §2.3 asks.
-    ///
-    /// **The numbers are put away, not destroyed** (ticket 0043). An edit sheet has no
-    /// cancel — closing *is* the save (§6.2) — so one mis-tap on the unit chip used to
-    /// destroy three numbers with no way back. `UnitStash` files them under the unit they
-    /// were typed in and hands back whatever was filed under the unit arriving; tapping
-    /// the chip again is a full undo. The sheet keeps none of that reasoning — it hands
-    /// over what is on the screen and draws what comes back.
     private func clearForUnitChange() {
-        // **The label moves first, and it moves whether or not anything was put away.**
-        // The draft carries the unit its numbers are written in (§6.6), and an empty sheet
-        // that has just picked a Cable in lbs is about to be typed into in lbs. Leave this
-        // under a guard and a first number typed on a fresh sheet is cleared at the save,
-        // which is the very bug the field exists to close.
         let leaving = draft.shownUnit
         draft.shownUnit = unit
         guard leaving != unit else { return }
 
+        let keptStack = draft.stackStep
+        let keptFirst = draft.stackFirstPlate
+        let keptStackText = stackText
+        let keptFirstText = firstText
+        let keptStackTyped = stackTyped
+
         show(stash.move(
             from: leaving, to: unit,
             onScreen: TypedWeights(
-                working: workingText, increment: incrementText, stack: stackText,
-                first: firstText,
-                incrementTyped: incrementTyped, stackTyped: stackTyped)))
+                working: workingText, increment: incrementText, stack: "",
+                first: "",
+                incrementTyped: incrementTyped, stackTyped: false)))
+
+        draft.stackStep = keptStack
+        draft.stackFirstPlate = keptFirst
+        stackText = keptStackText
+        firstText = keptFirstText
+        stackTyped = keptStackTyped
     }
 
     /// Put a filed set of numbers on the screen, in the unit the sheet now shows. The
@@ -912,16 +930,10 @@ struct ExerciseSheet: View {
         stackTyped = typed.stackTyped
         draft.workingWeight = weight(typed.working)
         draft.increment = weight(typed.increment)
-        draft.stackStep = weight(typed.stack)
-        draft.stackFirstPlate = weight(typed.first)
     }
 
-    /// A typed field as a `Weight` in the unit the sheet is showing. **An unset weight
-    /// is `nil`, not zero** (§2.8): an empty field is *the user has not typed one*, and
-    /// zero is a real Bodyweight lift. Both the keypad and the stash read a field through
-    /// here, so a restored number is parsed exactly as a typed one.
-    private func weight(_ text: String) -> Weight? {
-        text.isEmpty ? nil : Weight(decimalString: text, unit: unit)
+    private func weight(_ text: String, unit: WeightUnit? = nil) -> Weight? {
+        text.isEmpty ? nil : Weight(decimalString: text, unit: unit ?? self.unit)
     }
 
     // MARK: - Saving, which happens once (§6.2)

@@ -116,6 +116,10 @@ extension StackLoad {
     }
 
     private func named(_ plate: Weight) -> String {
-        "\(plate.decimalString) \(plate.unit.rawValue)"
+        if case .addOns = hanging, workingUnit == .kg, plate.unit == .lbs,
+           let sticker = Sticker(of: plate, readIn: .kg) {
+            return "\(plate.decimalString)lbs (\(sticker.decimalString)kg)"
+        }
+        return "\(plate.decimalString) \(plate.unit.rawValue)"
     }
 }
