@@ -377,8 +377,6 @@ struct LoadedStack: View {
 
     private var loaded: Int { max(0, min(load.blocks, totalBlocks)) }
 
-    /// Everything the pin carries: add-ons or rack leftover, and the Microload where
-    /// the units differ. Ticket 0031 settled that these hang in the same place.
     private var hanging: [Weight] { load.hanging.iron + load.microloadPlates }
 
     var body: some View {

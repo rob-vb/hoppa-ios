@@ -43,9 +43,6 @@ extension Rules {
         case .bar(let load):
             load.plates.map(BurstParticle.plate)
 
-        // The Microplates on the pin, plus one steel slab per loaded pin block.
-        // Everything hanging on the pin counts: add-ons or rack leftover, and
-        // `microloadPlates` for the mixed-unit Microload.
         case .stack(let load):
             (load.hanging.iron + load.microloadPlates).map(BurstParticle.plate)
                 + Array(repeating: .steel, count: max(0, load.blocks))

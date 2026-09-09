@@ -11,8 +11,6 @@ public enum PinHanging: Sendable, Hashable {
     }
 }
 
-/// Lbs closest and kg leftover. `Rules.breakdown` delegates; the shipping signature
-/// does not grow.
 enum StackSolve {
 
     static func load(
@@ -54,9 +52,6 @@ enum StackSolve {
             microloadPlates: microloadPlates)
     }
 
-    /// Neighboring pins × add-on subsets. Convert the target into the ladder unit once,
-    /// then search in that unit. Closest in mass; tie down by smaller loaded mass, then
-    /// fewer sliders (195 empty beats 190+5), then lower pin label.
     private static func closestLbs(
         target: Weight,
         ladder: StackLadder,
@@ -107,7 +102,6 @@ enum StackSolve {
             difference: loadedTotal - target)
     }
 
-    /// Pin at or under, leftover as rack plates when the rack shares the ladder unit.
     private static func leftover(
         target: Weight,
         step: Weight,
@@ -153,7 +147,6 @@ enum StackSolve {
         return [StackLadder.Pin(plate: 1, label: ladder.first)]
     }
 
-    /// Power set. Each subset keeps `sizes` order, biggest first.
     private static func addOnSubsets(_ sizes: [Weight]) -> [[Weight]] {
         var subsets: [[Weight]] = [[]]
         for size in sizes {

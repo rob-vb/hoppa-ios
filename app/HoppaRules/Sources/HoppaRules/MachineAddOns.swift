@@ -12,8 +12,7 @@ public enum StackAddOn: Sendable, Hashable, CaseIterable {
     }
 }
 
-/// Which of the two sliders this gym has on the stack machines. Nested on the Plate
-/// Inventory so `Rules.breakdown(for:inventory:)` stays the only UI entry.
+/// Which of the two sliders this gym has on the stack machines.
 public struct MachineAddOns: Codable, Sendable, Hashable {
     public var twoAndAHalfLbs: Bool
     public var fiveLbs: Bool

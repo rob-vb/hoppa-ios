@@ -11,13 +11,11 @@ import HoppaStore
 // Three things this sheet does **not** decide, because rules already do:
 //
 // - **The clearing rule.** A change of Equipment Type across the rack boundary is a
-//   change of unit (§6.6), and `Rules.edited` drops the Working Weight, the Increment and
-//   the Stack Step when the draft was typed in a unit the Exercise no longer resolves to
-//   (ticket 0041). The sheet takes the same three off the screen the moment the unit on
-//   screen changes, so the user is never typing under a label that has moved under him —
-//   it agrees with the rule rather than working around it. **The sheet keeps them**
-//   (ticket 0043): they go into a per-unit stash and come back if the unit does, because
-//   closing an edit sheet is the save and a mis-tap must not be the last word.
+//   change of unit (§6.6), and `Rules.edited` drops the Working Weight and the Increment
+//   when the draft was typed in a unit the Exercise no longer resolves to (ticket 0041).
+//   **The sheet keeps them** (ticket 0043): they go into a per-unit stash and come back
+//   if the unit does, because closing an edit sheet is the save and a mis-tap must not
+//   be the last word.
 // - **What a Microloading Increment moves.** `Rules.progressionMove` owns the doubling on
 //   a bar and the roll-up on a pin; the row below reads the move out of it rather than
 //   multiplying by two itself, exactly as ticket 0034's Exercise card does.
@@ -236,9 +234,6 @@ struct ExerciseSheet: View {
             // under (§2.4).
             Text("It leaves the program from today. Finished workouts keep the sets you logged.")
         }
-        // The unit is derived, so it can move without a flip — one tap on a chip is
-        // enough. §6.6 clears the three fields that were typed in the old unit, and the
-        // sheet does it where the user can see it happen.
         .onChange(of: unitTag.unit) { clearForUnitChange() }
     }
 
@@ -428,7 +423,6 @@ struct ExerciseSheet: View {
         }
     }
 
-    /// One tap flips the Working Weight's unit. Stack step has its own chip.
     @ViewBuilder
     private var unitTagView: some View {
         switch unitTag {
@@ -467,8 +461,6 @@ struct ExerciseSheet: View {
         .buttonStyle(.pressable)
     }
 
-    /// A Stack Step unit flip clears the step and the first plate. A Working Weight
-    /// flip does not.
     private func flipStackUnit() {
         stackChipUnit = stackChipUnit == .kg ? .lbs : .kg
         draft.stackStep = nil
@@ -543,11 +535,6 @@ struct ExerciseSheet: View {
     /// The offers, in the unit on screen. They are **offers and not a default**: §6.2
     /// starts the Increment empty and has the user pick it, and §2.3 lets it be any
     /// number at all, which is what `…` is for.
-    ///
-    /// A pin is not a bar. The 1.25 / 2.5 / 5 kg chips are plates you hang; a stack
-    /// jumps by the plate it is built from — 5, 7, 10 or 15 lbs, 5 or 10 kg — and those
-    /// are the numbers printed on it. The converted kg column on an lbs stack
-    /// (2.3, 4.5, 6.8, 11.3) is not one of them: that machine is lbs.
     private var offeredIncrements: [Weight] {
         equipmentChosen && draft.equipment.hasPin
             ? Rules.stackStepOffers(in: unit)
@@ -905,8 +892,6 @@ struct ExerciseSheet: View {
         draft.modeOverride = chosen == programMode ? nil : chosen
     }
 
-    /// A Working Weight unit flip takes the Working Weight and the Increment off the
-    /// screen. The Stack Step stays: it has its own unit chip.
     private func clearForUnitChange() {
         let leaving = draft.shownUnit
         draft.shownUnit = unit
@@ -947,8 +932,6 @@ struct ExerciseSheet: View {
         draft.increment = weight(typed.increment)
     }
 
-    /// A typed field as a `Weight`. Stack fields pass `stackChipUnit`; Working Weight
-    /// and Increment use the unit the sheet is showing.
     private func weight(_ text: String, unit: WeightUnit? = nil) -> Weight? {
         text.isEmpty ? nil : Weight(decimalString: text, unit: unit ?? self.unit)
     }

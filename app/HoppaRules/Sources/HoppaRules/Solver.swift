@@ -47,7 +47,6 @@ public struct StackLoad: Sendable, Hashable {
     /// `loadedTotal` minus the Working Weight. Positive is over, negative is under.
     public var difference: Weight
 
-    /// Flattened hanging iron. Burst and drawing still hang this list.
     public var pinRemainder: [Weight] { hanging.iron }
 }
 

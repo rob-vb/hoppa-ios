@@ -84,8 +84,7 @@ extension ProgressionBlocker {
 extension StackLoad {
     /// `pin at 85 kg · 2.5 kg`. Names the hanging plates. Never a count of microplates —
     /// Progressive Overload hangs a normal plate on the pin, and even a real Microplate
-    /// has a size the gym needs to hear (`SPEC.md` §5.5). An lbs slider in a kg UI is
-    /// `2.5lbs (1.1kg)` via `Sticker`, never `Weight.converted`.
+    /// has a size the gym needs to hear (`SPEC.md` §5.5).
     var loadLine: String {
         var line = "pin at \(pinWeight.decimalString) \(pinWeight.unit.rawValue)"
         let hanging = hangingLabels

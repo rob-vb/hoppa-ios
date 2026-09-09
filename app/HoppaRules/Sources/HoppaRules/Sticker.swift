@@ -31,7 +31,6 @@ public struct Sticker: Sendable, Hashable {
         self.unit = target
     }
 
-    /// `11` tenths reads `1.1`; `10` reads `1`.
     public var decimalString: String {
         let negative = tenths < 0
         let magnitude = negative ? -tenths : tenths
@@ -42,7 +41,6 @@ public struct Sticker: Sendable, Hashable {
         return "\(sign)\(whole).\(fraction)"
     }
 
-    /// Half away from zero, both signs. Uses truncating division.
     static func roundHalfAwayFromZero(_ numerator: Int, _ denominator: Int) -> Int {
         let negative = (numerator < 0) != (denominator < 0)
         let absN = numerator < 0 ? -numerator : numerator
