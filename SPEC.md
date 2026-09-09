@@ -599,11 +599,12 @@ there is nothing to roll up**: 1.25 kg of Microload draws as one 1.25 kg plate, 
 pin on a **kg** ladder: the user sets the Working Weight and the pin takes the largest Stack Step at
 or under it, with the remainder hanging on it as plates from the Inventory the Mode allows.
 
-An **lbs** ladder never borrows bar plates. Hoppa converts the Working Weight into the ladder unit
-once, then searches the neighboring pins times the subsets of the gym's 2.5 lb and 5 lb sliders,
-and picks the closest in mass. On a tie it takes the smaller loaded mass, then fewer sliders, then
-the lower pin label. It may overshoot. `≈ CLOSEST` reads that loaded total in the Working Weight's
-hundredths, not a reconstructed pin plus remainder.
+An **lbs** ladder searches neighboring pins, the gym's 2.5 lb and 5 lb sliders, and leftover
+rack plates in the spoken Working Weight column. An exact spoken total wins. On a miss Hoppa
+takes the smaller gap, then fewer sliders, then fewer leftover plates, then the lower pin.
+Leftover plates are an exact cover of the remaining spoken mass when one exists, otherwise
+greedy-under. The pin recipe still prints. Stacks do not show `≈ CLOSEST`. That chip is the bar
+line in §5.4.
 
 An earlier draft of this section said a stack *never* rolls into the next pin step, on the grounds
 that one step is about eighteen microplates away and the case is therefore theoretical. **It is
@@ -617,7 +618,7 @@ Stack Step at all times.
 The big number is **always the Working Weight Hoppa tracks**. It never changes to fit the plate
 rack. Sets are logged against it, not against the load actually on the bar.
 
-When the exact weight cannot be built, one extra caption line appears under the bar drawing:
+When the exact weight cannot be built, one extra caption line appears under the **bar** drawing:
 
 ```
 [≈ CLOSEST]  you load 62.5 kg · 0.5 over
@@ -626,6 +627,8 @@ Per side: 20 + 1.25          21.25 kg per side
 
 - The closest buildable load wins, **up or down**. On a tie, Hoppa rounds **down**.
 - The `≈ CLOSEST` chip is **steel** (`#3A3E42` border, `#9BA1A7` text), never a plate colour.
+- A stack that cannot hit the typed number prints the pin recipe and the gap without that chip.
+  The Exercise sheet and the Weight sheet run the same solve when the Working Weight is typed.
 
 Two alternatives were drawn and rejected: A, round the target down to buildable; B, move the
 target to the closest either way. Both change the number Hoppa tracks, and the rack must not do

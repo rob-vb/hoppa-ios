@@ -14,6 +14,13 @@ public enum PinHanging: Sendable, Hashable {
 
 enum StackSolve {
 
+    private struct Recipe {
+        var pin: StackLadder.Pin
+        var addOns: [Weight]
+        var leftover: [Weight]
+        var loadedTotal: Weight
+    }
+
     static func load(
         target: Weight,
         ladder: StackLadder?,
@@ -35,7 +42,7 @@ enum StackSolve {
                 microloadPlates: microloadPlates)
         }
         if ladder.unit == .lbs {
-            return closestLbs(
+            return searchLbs(
                 target: target,
                 ladder: ladder,
                 addOns: addOns,
@@ -55,7 +62,9 @@ enum StackSolve {
             microloadPlates: microloadPlates)
     }
 
-    private static func closestLbs(
+    /// Neighboring pins × add-on subsets, each scored in spoken working-unit
+    /// mass after leftover plates. Exact hits beat a nearer lbs slider.
+    private static func searchLbs(
         target: Weight,
         ladder: StackLadder,
         addOns: [Weight],
@@ -65,67 +74,78 @@ enum StackSolve {
         microloadPlates: [Weight]
     ) -> StackLoad {
         let converted = target.converted(to: ladder.unit)
-        var best: (pin: StackLadder.Pin, addOns: [Weight], loaded: Weight, distance: Int)?
+        let hangLeftover = target.unit != ladder.unit && rack.unit == target.unit
+        let sizes = rack.plates(for: mode)
+        var best: Recipe?
         for pin in neighboringPins(on: ladder, around: converted) {
             for subset in addOnSubsets(addOns) {
-                let extra = subset.reduce(0) { $0 + $1.hundredths }
-                let loaded = Weight(
-                    hundredths: pin.label.hundredths + extra, unit: ladder.unit)
-                let distance = abs(loaded.hundredths - converted.hundredths)
-                let candidate = (pin, subset, loaded, distance)
-                if let current = best {
-                    let better =
-                        distance < current.distance
-                        || (distance == current.distance
-                            && (loaded.hundredths < current.loaded.hundredths
-                                || (loaded.hundredths == current.loaded.hundredths
-                                    && (subset.count < current.addOns.count
-                                        || (subset.count == current.addOns.count
-                                            && pin.label.hundredths < current.pin.label.hundredths)))))
-                    if better { best = candidate }
+                let leftoverPlates: [Weight]
+                let loadedTotal: Weight
+                if hangLeftover {
+                    let spoken =
+                        spokenMass(pin.label, in: target.unit, pinColumn: true).hundredths
+                        + subset.reduce(0) {
+                            $0 + spokenMass($1, in: target.unit, pinColumn: false).hundredths
+                        }
+                    let gap = target.hundredths - spoken
+                    if gap > 0 {
+                        let need = Weight(hundredths: gap, unit: target.unit)
+                        leftoverPlates = exactCover(need, sizes: sizes)
+                            ?? Rules.greedy(need, sizes: sizes).plates
+                    } else {
+                        leftoverPlates = []
+                    }
+                    let hung = leftoverPlates.reduce(0) { $0 + $1.hundredths }
+                    loadedTotal = Weight(hundredths: spoken + hung, unit: target.unit)
                 } else {
-                    best = candidate
+                    leftoverPlates = []
+                    let extra = subset.reduce(0) { $0 + $1.hundredths }
+                    let iron = Weight(
+                        hundredths: pin.label.hundredths + extra, unit: ladder.unit)
+                    loadedTotal = target.unit == ladder.unit
+                        ? iron
+                        : iron.converted(to: target.unit)
                 }
+                let recipe = Recipe(
+                    pin: pin, addOns: subset, leftover: leftoverPlates,
+                    loadedTotal: loadedTotal)
+                if better(recipe, than: best, target: target) { best = recipe }
             }
         }
-        let chosen = best ?? (
+        let chosen = best ?? Recipe(
             pin: StackLadder.Pin(plate: 1, label: ladder.first),
-            addOns: [Weight](),
-            loaded: ladder.first,
-            distance: 0)
-        let leftoverPlates: [Weight]
-        let loadedTotal: Weight
-        if target.unit != ladder.unit, rack.unit == target.unit {
-            let spoken =
-                spokenMass(chosen.pin.label, in: target.unit, pinColumn: true).hundredths
-                + chosen.addOns.reduce(0) {
-                    $0 + spokenMass($1, in: target.unit, pinColumn: false).hundredths
-                }
-            let gap = target.hundredths - spoken
-            leftoverPlates = gap > 0
-                ? Rules.greedy(
-                    Weight(hundredths: gap, unit: target.unit),
-                    sizes: rack.plates(for: mode)).plates
-                : []
-            let hung = leftoverPlates.reduce(0) { $0 + $1.hundredths }
-            loadedTotal = Weight(hundredths: spoken + hung, unit: target.unit)
-        } else {
-            leftoverPlates = []
-            loadedTotal = target.unit == ladder.unit
-                ? chosen.loaded
-                : chosen.loaded.converted(to: target.unit)
-        }
+            addOns: [], leftover: [],
+            loadedTotal: target.unit == ladder.unit
+                ? ladder.first
+                : ladder.first.converted(to: target.unit))
         return StackLoad(
             blocks: chosen.pin.plate,
             stackStep: ladder.step,
             pinWeight: chosen.pin.label,
-            hanging: .addOns(chosen.addOns, leftover: leftoverPlates),
-            isExact: loadedTotal == target,
+            hanging: .addOns(chosen.addOns, leftover: chosen.leftover),
+            isExact: chosen.loadedTotal == target,
             microload: microload,
             microloadPlates: microloadPlates,
             workingUnit: target.unit,
-            loadedTotal: loadedTotal,
-            difference: loadedTotal - target)
+            loadedTotal: chosen.loadedTotal,
+            difference: chosen.loadedTotal - target)
+    }
+
+    private static func better(_ recipe: Recipe, than current: Recipe?, target: Weight) -> Bool {
+        guard let current else { return true }
+        let exact = recipe.loadedTotal == target
+        let currentExact = current.loadedTotal == target
+        if exact != currentExact { return exact }
+        let distance = abs(recipe.loadedTotal.hundredths - target.hundredths)
+        let currentDistance = abs(current.loadedTotal.hundredths - target.hundredths)
+        if distance != currentDistance { return distance < currentDistance }
+        if recipe.addOns.count != current.addOns.count {
+            return recipe.addOns.count < current.addOns.count
+        }
+        if recipe.leftover.count != current.leftover.count {
+            return recipe.leftover.count < current.leftover.count
+        }
+        return recipe.pin.label.hundredths < current.pin.label.hundredths
     }
 
     private static func leftover(
@@ -158,6 +178,43 @@ enum StackSolve {
             workingUnit: target.unit,
             loadedTotal: loadedTotal,
             difference: loadedTotal - target)
+    }
+
+    private static func exactCover(_ need: Weight, sizes: [Weight]) -> [Weight]? {
+        let positive = sizes.filter { $0.hundredths > 0 }
+        guard need.hundredths > 0 else { return [] }
+        var hits: [Int: [Weight]] = [:]
+        var misses: Set<Int> = []
+        func cover(_ remaining: Int) -> [Weight]? {
+            if remaining == 0 { return [] }
+            if remaining < 0 { return nil }
+            if misses.contains(remaining) { return nil }
+            if let hit = hits[remaining] { return hit }
+            var found: [Weight]?
+            for size in positive where size.hundredths <= remaining {
+                if let rest = cover(remaining - size.hundredths) {
+                    let combo = [size] + rest
+                    if found == nil || finer(combo, than: found!) {
+                        found = combo
+                    }
+                }
+            }
+            if let found {
+                hits[remaining] = found
+            } else {
+                misses.insert(remaining)
+            }
+            return found
+        }
+        return cover(need.hundredths)
+    }
+
+    /// Fewest plates, then finer iron. 1 kg + 1 kg beats 1.25 kg + 0.75 kg at 2 kg.
+    private static func finer(_ a: [Weight], than b: [Weight]) -> Bool {
+        if a.count != b.count { return a.count < b.count }
+        let left = a.map(\.hundredths).sorted(by: >)
+        let right = b.map(\.hundredths).sorted(by: >)
+        return left.lexicographicallyPrecedes(right)
     }
 
     private static func spokenMass(
