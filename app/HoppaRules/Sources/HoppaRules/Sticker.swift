@@ -31,6 +31,38 @@ public struct Sticker: Sendable, Hashable {
         self.unit = target
     }
 
+    /// The pin column on an lbs stack: 190 lbs reads 86 kg, not 86.2.
+    /// Rounds converted hundredths to whole units. Going through tenths first would
+    /// turn 195 lbs (88.45 kg) into 89.
+    public static func ones(of weight: Weight, readIn target: WeightUnit) -> Sticker? {
+        let ones: Int
+        if target == weight.unit {
+            ones = roundHalfAwayFromZero(weight.hundredths, 100)
+        } else {
+            let factor: Int
+            let divisor: Int
+            switch (weight.unit, target) {
+            case (.kg, .lbs):
+                factor = Weight.lbsPerKgNumerator
+                divisor = Weight.lbsPerKgDenominator * 100
+            case (.lbs, .kg):
+                factor = Weight.lbsPerKgDenominator
+                divisor = Weight.lbsPerKgNumerator * 100
+            default:
+                return nil
+            }
+            let (product, overflow) = weight.hundredths.multipliedReportingOverflow(by: factor)
+            guard !overflow else { return nil }
+            ones = roundHalfAwayFromZero(product, divisor)
+        }
+        return Sticker(tenths: ones * 10, unit: target)
+    }
+
+    init(tenths: Int, unit: WeightUnit) {
+        self.tenths = tenths
+        self.unit = unit
+    }
+
     public var decimalString: String {
         let negative = tenths < 0
         let magnitude = negative ? -tenths : tenths
@@ -39,6 +71,12 @@ public struct Sticker: Sendable, Hashable {
         let sign = negative ? "-" : ""
         if fraction == 0 { return "\(sign)\(whole)" }
         return "\(sign)\(whole).\(fraction)"
+    }
+
+    /// Hundredths tagged in this sticker's unit. The solver totals spoken masses here,
+    /// once, because `Sticker` itself has no `+`.
+    public var asWeight: Weight {
+        Weight(hundredths: tenths * 10, unit: unit)
     }
 
     static func roundHalfAwayFromZero(_ numerator: Int, _ denominator: Int) -> Int {

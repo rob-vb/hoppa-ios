@@ -186,7 +186,7 @@ struct WeightSheet: View {
                 .foregroundStyle(Color.labelText)
                 .frame(width: 44, alignment: .leading)
             stepButton("−") { nudge(step, -1, floor: floor) }
-            Text("\(step.decimalString) \(step.unit.rawValue)")
+            Text(stepLabel(step))
                 .typography(Typography.listValue(13))
                 .foregroundStyle(Color.dimText)
                 .frame(maxWidth: .infinity)
@@ -226,6 +226,15 @@ struct WeightSheet: View {
     private var pinStep: Weight? {
         guard let step = exercise.stackStep, step.hundredths > 0 else { return nil }
         return step
+    }
+
+    /// Logging speaks the Working Weight's unit. A 10 lb pin step reads 4.5 kg.
+    private func stepLabel(_ step: Weight) -> String {
+        if exercise.unit == .kg, step.unit == .lbs,
+           let sticker = Sticker(of: step, readIn: .kg) {
+            return "\(sticker.decimalString) kg"
+        }
+        return "\(step.decimalString) \(step.unit.rawValue)"
     }
 
     /// A pin takes **one** plate, not a pair, so the Microplate and the jump are the same

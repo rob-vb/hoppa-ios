@@ -87,19 +87,31 @@ check("mixed does not say microplate either", !mixed.loadLine.contains("micropla
 // MARK: - Chest fly in kg on a 5 lb stack
 
 let flyLbs = stack("88.8", unit: .kg, step: "5", stepUnit: .lbs)
-check("88.8 kg / 5 lbs names the pin only", flyLbs.loadLine == "pin at 195 lbs")
+check("88.8 kg / 5 lbs names the kg column", flyLbs.loadLine == "pin at 88 kg")
 check("88.8 kg hangs no slider", flyLbs.pinRemainder.isEmpty)
 check("88.8 kg is not exact", !flyLbs.isExact)
-check("88.8 kg loadedTotal is the floor convert of 195 lbs", flyLbs.loadedTotal == kg("88.45"))
-check("88.8 kg qualifier is the pin", flyLbs.qualifierLine == "195 lbs")
+check("88.8 kg loadedTotal is the pin column", flyLbs.loadedTotal == kg("88"))
+check("88.8 kg qualifier is the pin", flyLbs.qualifierLine == "88 kg")
 
-// MARK: - An lbs slider in a kg UI names the sticker
+// MARK: - An lbs slider in a kg UI speaks kg
 
 let withSlider = stack("89.2", unit: .kg, step: "5", stepUnit: .lbs)
-check(
-    "89.2 kg hangs 2.5lbs (1.1kg)",
-    withSlider.loadLine == "pin at 195 lbs · 2.5lbs (1.1kg)")
+check("89.2 kg hangs 1.1 kg", withSlider.loadLine == "pin at 88 kg · 1.1 kg")
 check("89.2 kg hanging is the 2.5 lb slider", withSlider.pinRemainder == [lbs("2.5")])
+
+// MARK: - The Basic Fit chest fly: 10 lb stack, 0.5 kg on the pin
+
+var gym = PlateInventory.standard(.kg)
+gym.setPlate(kg("0.5"), on: true)
+let flyTen = stack(
+    "88.8", unit: .kg, step: "10", stepUnit: .lbs,
+    mode: .microloading, inventory: gym)
+check(
+    "88.8 kg on 10 lbs is pin + slider + micro",
+    flyTen.loadLine == "pin at 86 kg · 2.3 kg + 0.5 kg")
+check("88.8 kg qualifier adds in kg", flyTen.qualifierLine == "86 kg + 2.3 + 0.5")
+check("88.8 kg on 10 lbs is exact", flyTen.isExact)
+check("88.8 kg loadedTotal is the sticker sum", flyTen.loadedTotal == kg("88.8"))
 
 if failures > 0 {
     print("\(failures) failed")

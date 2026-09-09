@@ -1,12 +1,13 @@
-/// What hangs on the pin. Lbs ladders never borrow bar plates, so the two paths cannot
-/// share a `[Weight]`.
+/// What hangs on the pin. An lbs ladder may also take leftover rack plates in the
+/// working unit after the sliders, so the two kinds stay distinct inside one case.
 public enum PinHanging: Sendable, Hashable {
-    case addOns([Weight])
+    case addOns([Weight], leftover: [Weight])
     case rackPlates([Weight])
 
     public var iron: [Weight] {
         switch self {
-        case .addOns(let weights), .rackPlates(let weights): weights
+        case .addOns(let addOns, let leftover): addOns + leftover
+        case .rackPlates(let plates): plates
         }
     }
 }
@@ -38,6 +39,8 @@ enum StackSolve {
                 target: target,
                 ladder: ladder,
                 addOns: addOns,
+                rack: rack,
+                mode: mode,
                 microload: microload,
                 microloadPlates: microloadPlates)
         }
@@ -56,6 +59,8 @@ enum StackSolve {
         target: Weight,
         ladder: StackLadder,
         addOns: [Weight],
+        rack: PlateInventory,
+        mode: ProgressionMode,
         microload: Weight?,
         microloadPlates: [Weight]
     ) -> StackLoad {
@@ -88,12 +93,33 @@ enum StackSolve {
             addOns: [Weight](),
             loaded: ladder.first,
             distance: 0)
-        let loadedTotal = chosen.loaded.converted(to: target.unit)
+        let leftoverPlates: [Weight]
+        let loadedTotal: Weight
+        if target.unit != ladder.unit, rack.unit == target.unit {
+            let spoken =
+                spokenMass(chosen.pin.label, in: target.unit, pinColumn: true).hundredths
+                + chosen.addOns.reduce(0) {
+                    $0 + spokenMass($1, in: target.unit, pinColumn: false).hundredths
+                }
+            let gap = target.hundredths - spoken
+            leftoverPlates = gap > 0
+                ? Rules.greedy(
+                    Weight(hundredths: gap, unit: target.unit),
+                    sizes: rack.plates(for: mode)).plates
+                : []
+            let hung = leftoverPlates.reduce(0) { $0 + $1.hundredths }
+            loadedTotal = Weight(hundredths: spoken + hung, unit: target.unit)
+        } else {
+            leftoverPlates = []
+            loadedTotal = target.unit == ladder.unit
+                ? chosen.loaded
+                : chosen.loaded.converted(to: target.unit)
+        }
         return StackLoad(
             blocks: chosen.pin.plate,
             stackStep: ladder.step,
             pinWeight: chosen.pin.label,
-            hanging: .addOns(chosen.addOns),
+            hanging: .addOns(chosen.addOns, leftover: leftoverPlates),
             isExact: loadedTotal == target,
             microload: microload,
             microloadPlates: microloadPlates,
@@ -132,6 +158,16 @@ enum StackSolve {
             workingUnit: target.unit,
             loadedTotal: loadedTotal,
             difference: loadedTotal - target)
+    }
+
+    private static func spokenMass(
+        _ weight: Weight, in unit: WeightUnit, pinColumn: Bool
+    ) -> Weight {
+        if weight.unit == unit { return weight }
+        let sticker = pinColumn
+            ? Sticker.ones(of: weight, readIn: unit)
+            : Sticker(of: weight, readIn: unit)
+        return sticker?.asWeight ?? weight.converted(to: unit)
     }
 
     private static func neighboringPins(

@@ -57,7 +57,7 @@ struct BurstTests {
         // 100 lbs on a 10 lbs stack, with a 1.25 kg Microload hanging on the pin.
         let load = StackLoad(
             blocks: 10, stackStep: lbs("10"), pinWeight: lbs("100"),
-            hanging: .addOns([]),
+            hanging: .addOns([], leftover: []),
             isExact: true, microload: kg("1.25"), microloadPlates: [kg("1.25")],
             workingUnit: .lbs, loadedTotal: lbs("100"), difference: lbs("0"))
         let source = Rules.burstSource(.stack(load))
