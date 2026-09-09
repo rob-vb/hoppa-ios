@@ -1,7 +1,7 @@
 import Testing
 import HoppaRules
 
-@Suite("StackSolve — lbs closest, kg leftover")
+@Suite("StackSolve — lbs search, kg leftover")
 struct StackSolveTests {
 
     @Test("Resolve does not relabel a lbs step onto a kg hero")
@@ -19,7 +19,7 @@ struct StackSolveTests {
         #expect(resolved.stackAddOns == [lbs("5"), lbs("2.5")])
     }
 
-    @Test("88.8 kg on a 5 lb step pins at 195 lbs, no slider")
+    @Test("88.8 kg on a 5 lb step hangs a 2.5 kg plate on the 190 lb pin")
     func chestFlyCrossUnit() {
         let fly = Exercise(
             id: ExerciseID(1), name: "Chest fly machine", equipment: .machineStack,
@@ -32,12 +32,11 @@ struct StackSolveTests {
         guard case .stack(let load) = Rules.breakdown(for: resolved, inventory: inventory)
         else { Issue.record("expected a stack"); return }
 
-        #expect(load.pinWeight == lbs("195"))
-        #expect(load.hanging == .addOns([], leftover: []))
-        #expect(load.pinRemainder.isEmpty)
+        #expect(load.pinWeight == lbs("190"))
+        #expect(load.hanging == .addOns([], leftover: [kg("2.5")]))
         #expect(!load.isExact)
-        #expect(load.loadedTotal == kg("88"))
-        #expect(load.difference.hundredths == -80)
+        #expect(load.loadedTotal == kg("88.5"))
+        #expect(load.difference.hundredths == -30)
         #expect(load.difference.unit == .kg)
         #expect(load.workingUnit == .kg)
         #expect(load.microload == nil)
@@ -134,6 +133,59 @@ struct StackSolveTests {
         #expect(load.pinRemainder.isEmpty)
         #expect(!load.isExact)
         #expect(load.loadedTotal == lbs("100"))
+    }
+
+    @Test("81 kg on a 5 lb stack hangs leftover kg, not the 2.5 lb slider")
+    func latPulldownEightyOneHitsExact() {
+        var inventory = PlateInventory.standard(.kg)
+        inventory.setPlate(kg("1"), on: true)
+        inventory.setPlate(kg("0.75"), on: true)
+        inventory.setPlate(kg("0.5"), on: true)
+        inventory.setPlate(kg("0.25"), on: true)
+        let pulldown = Exercise(
+            id: ExerciseID(12), name: "Lat pulldown", equipment: .machineStack,
+            ownWeightUnit: .kg,
+            plannedSets: 2, repRange: RepRange(6, 8),
+            workingWeight: kg("81"), increment: kg("0.5"),
+            microloadingIncrement: kg("0.5"),
+            modeOverride: .microloading,
+            storedStackStep: lbs("5"))
+        let resolved = pulldown.resolved(mode: .microloading, inventory: inventory)
+        guard case .stack(let load) = Rules.breakdown(for: resolved, inventory: inventory)
+        else { Issue.record("expected a stack"); return }
+
+        #expect(load.pinWeight == lbs("175"))
+        guard case .addOns(let addOns, let leftover) = load.hanging else {
+            Issue.record("expected add-ons hanging"); return
+        }
+        #expect(addOns.isEmpty)
+        #expect(leftover == [kg("1"), kg("1")])
+        #expect(load.isExact)
+        #expect(load.loadedTotal == kg("81"))
+        #expect(load.difference == kg("0"))
+    }
+
+    @Test("81 kg still hits with two 1 kg plates when 0.75 is off")
+    func latPulldownEightyOneSkipsTheTooBigPlate() {
+        var inventory = PlateInventory.standard(.kg)
+        inventory.setPlate(kg("1"), on: true)
+        inventory.setPlate(kg("0.75"), on: false)
+        let pulldown = Exercise(
+            id: ExerciseID(12), name: "Lat pulldown", equipment: .machineStack,
+            ownWeightUnit: .kg,
+            plannedSets: 2, repRange: RepRange(6, 8),
+            workingWeight: kg("81"), increment: kg("0.5"),
+            microloadingIncrement: kg("1"),
+            modeOverride: .microloading,
+            storedStackStep: lbs("5"))
+        let resolved = pulldown.resolved(mode: .microloading, inventory: inventory)
+        guard case .stack(let load) = Rules.breakdown(for: resolved, inventory: inventory)
+        else { Issue.record("expected a stack"); return }
+
+        #expect(load.pinWeight == lbs("175"))
+        #expect(load.hanging == .addOns([], leftover: [kg("1"), kg("1")]))
+        #expect(load.isExact)
+        #expect(load.loadedTotal == kg("81"))
     }
 
     @Test("89.2 kg on a 5 lb step hangs the 2.5 lb slider")

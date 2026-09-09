@@ -177,9 +177,14 @@ struct ReweighScreen: View {
             // only thing in Hoppa that deals with the gap, and a weight the user's own
             // rack cannot build is exactly what a change of gym produces.
             if let resolved = resolved(exercise.id), let weight = typed(exercise.id) {
-                ClosestLine(
-                    breakdown: Rules.breakdown(for: resolved, at: weight, inventory: rack),
-                    performedAt: weight)
+                let breakdown = Rules.breakdown(
+                    for: resolved, at: weight, inventory: rack)
+                if case .stack(let load) = breakdown {
+                    Text(load.loadLine)
+                        .typography(Typography.meta(11))
+                        .foregroundStyle(Color.dimText)
+                }
+                ClosestLine(breakdown: breakdown, performedAt: weight)
             }
         }
         .padding(.horizontal, 14)

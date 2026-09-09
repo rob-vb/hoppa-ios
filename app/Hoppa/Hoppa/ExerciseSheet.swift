@@ -396,12 +396,28 @@ struct ExerciseSheet: View {
             row("Sets") { setsStepper }
             row("Rep range") { repRange }
             row("Total working weight") {
-                HStack(spacing: 8) {
-                    weightBox(
-                        $workingText, field: .working,
-                        width: ExerciseSheetMetrics.weightMinWidth
-                    ) { draft.workingWeight = $0 }
-                    unitTagView
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 8) {
+                        weightBox(
+                            $workingText, field: .working,
+                            width: ExerciseSheetMetrics.weightMinWidth
+                        ) { draft.workingWeight = $0 }
+                        unitTagView
+                    }
+                    if equipmentChosen, draft.equipment.hasPin, let typed = weight(workingText) {
+                        let probe = probeExercise(workingWeight: typed)
+                        if case .stack(let load) = Rules.breakdown(
+                            for: probe, at: typed, inventory: rack
+                        ) {
+                            Text(load.loadLine)
+                                .typography(Typography.meta(11))
+                                .foregroundStyle(Color.dimText)
+                            if !load.isExact {
+                                ClosestLine(
+                                    breakdown: .stack(load), performedAt: typed)
+                            }
+                        }
+                    }
                 }
             }
             incrementRow

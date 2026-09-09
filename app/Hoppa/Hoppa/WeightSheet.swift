@@ -74,9 +74,14 @@ struct WeightSheet: View {
                 hero
                 steppers
                 if let typed {
-                    ClosestLine(
-                        breakdown: Rules.breakdown(for: exercise, at: typed, inventory: inventory),
-                        performedAt: typed)
+                    let breakdown = Rules.breakdown(
+                        for: exercise, at: typed, inventory: inventory)
+                    if case .stack(let load) = breakdown {
+                        Text(load.loadLine)
+                            .typography(Typography.meta(11))
+                            .foregroundStyle(Color.dimText)
+                    }
+                    ClosestLine(breakdown: breakdown, performedAt: typed)
                 }
                 keypad
                 PrimaryButton("Set the weight") { if let typed { commit(typed) } }

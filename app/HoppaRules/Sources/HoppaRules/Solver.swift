@@ -35,6 +35,8 @@ public struct StackLoad: Sendable, Hashable {
     /// Add-ons on an lbs ladder, plus leftover rack plates in the working unit when
     /// the ladder and the Working Weight disagree. Rack plates on a kg leftover path.
     public var hanging: PinHanging
+    /// False when spoken pin plus hanging is not the typed Working Weight.
+    /// Stacks then print the gap without `≈ CLOSEST`.
     public var isExact: Bool
     /// The Microload, on a mixed-unit pin only. Never converted, never totalled.
     public var microload: Weight?
@@ -44,7 +46,8 @@ public struct StackLoad: Sendable, Hashable {
     /// The Working Weight's unit. `loadedTotal` and `difference` live here.
     public var workingUnit: WeightUnit
     /// Pin plus hanging, as the logging screen adds them. An lbs pin in a kg UI is the
-    /// kg column plus leftover plates. The Microload is not in it.
+    /// kg column plus leftover plates. Exact recipes beat a nearer lbs slider.
+    /// The Microload is not in it.
     public var loadedTotal: Weight
     /// `loadedTotal` minus the Working Weight. Positive is over, negative is under.
     public var difference: Weight

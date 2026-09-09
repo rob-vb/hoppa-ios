@@ -198,12 +198,19 @@ struct ClosestLine: View {
     var body: some View {
         if let gap {
             HStack(spacing: 9) {
-                Chip("≈ closest", tone: .steel)
+                if showsClosestChip {
+                    Chip("≈ closest", tone: .steel)
+                }
                 Text(text(gap))
                     .typography(Typography.meta(11))
                     .foregroundStyle(Color.dimText)
             }
         }
+    }
+
+    private var showsClosestChip: Bool {
+        if case .bar = breakdown { return true }
+        return false
     }
 
     private var gap: (loaded: Weight, difference: Weight)? {
