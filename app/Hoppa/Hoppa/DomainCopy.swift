@@ -86,19 +86,18 @@ extension StackLoad {
     /// Progressive Overload hangs a normal plate on the pin, and even a real Microplate
     /// has a size the gym needs to hear (`SPEC.md` §5.5).
     var loadLine: String {
-        var line = "pin at \(pinWeight.decimalString) \(pinWeight.unit.rawValue)"
+        var line = "pin at \(spokenPin)"
         let hanging = hangingLabels
         if !hanging.isEmpty { line += " · " + hanging.joined(separator: " + ") }
         return line
     }
 
-    /// `85 kg + 2.5`, or `100 lbs + 1.25 kg` when the units differ. The math under the
-    /// load line. Never a total of two units (§5.5).
+    /// `85 kg + 2.5`. The math under the load line, in the Working Weight's unit.
     var qualifierLine: String {
-        var line = "\(pinWeight.decimalString) \(pinWeight.unit.rawValue)"
-        for plate in pinRemainder { line += " + \(plate.decimalString)" }
+        var line = spokenPin
+        for plate in pinRemainder { line += " + \(spokenNumber(plate))" }
         if let micro = microload, !micro.isZero {
-            line += " + \(micro.decimalString) \(micro.unit.rawValue)"
+            line += " + \(named(micro))"
         }
         return line
     }
@@ -115,10 +114,26 @@ extension StackLoad {
         return labels
     }
 
-    private func named(_ plate: Weight) -> String {
-        if case .addOns = hanging, workingUnit == .kg, plate.unit == .lbs,
+    private var spokenPin: String {
+        if workingUnit == .kg, pinWeight.unit == .lbs,
+           let sticker = Sticker.ones(of: pinWeight, readIn: .kg) {
+            return "\(sticker.decimalString) kg"
+        }
+        return "\(pinWeight.decimalString) \(pinWeight.unit.rawValue)"
+    }
+
+    private func spokenNumber(_ plate: Weight) -> String {
+        if workingUnit == .kg, plate.unit == .lbs,
            let sticker = Sticker(of: plate, readIn: .kg) {
-            return "\(plate.decimalString)lbs (\(sticker.decimalString)kg)"
+            return sticker.decimalString
+        }
+        return plate.decimalString
+    }
+
+    private func named(_ plate: Weight) -> String {
+        if workingUnit == .kg, plate.unit == .lbs,
+           let sticker = Sticker(of: plate, readIn: .kg) {
+            return "\(sticker.decimalString) kg"
         }
         return "\(plate.decimalString) \(plate.unit.rawValue)"
     }

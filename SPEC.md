@@ -501,9 +501,11 @@ the number the machine shows.
 - **Units never convert**, anywhere the user can see, with exactly one exception: **total volume** on the Workout
   Summary converts to the Program's default unit and shows as one labelled number. Volume is a
   rough progress number, not a loading instruction, so a conversion misleads nobody there —
-  unlike the Plate Breakdown, which stays exact. An lbs slider on a kg Working Weight may
-  **gloss** as `2.5lbs (1.1kg)` — tenths, printed, never added. Conversion is still forbidden
-  as arithmetic.
+  unlike the Plate Breakdown, which stays exact. The **Plate Inventory** glosses an lbs slider
+  as `2.5 lbs (1.1 kg)` — tenths, printed, never added. Logging screens speak the Working
+  Weight's unit: a 190 lb pin in a kg UI is `86 kg`, the number printed on that plate, and
+  a 5 lb slider is `2.3 kg`. Those spoken numbers add, and leftover rack plates hang after
+  them. Conversion of hundredths is still internal.
 
 ### 5.2 The Plate Inventory
 
@@ -663,9 +665,10 @@ Progressive Overload hangs a 2.5 kg normal plate on the pin. Corrected at
 [The unnamed plate on the pin](issues/0060-the-unnamed-plate-on-the-pin.md). The pin is the
 printed label (`85 kg`); then the plates (`2.5 kg`). A real Microplate still prints its size.
 The pin is no longer the artboard's `10 × 10 lbs` either: the built caption already named the
-label, and the hanging half now matches. An lbs slider in a kg UI prints `2.5lbs (1.1kg)`; the
-pin itself is not glossed (`pin at 195 lbs · 2.5 lbs (1.1 kg)`). An exact pin with nothing hanging
-is only `pin at 195 lbs`.
+label, and the hanging half now matches. Logging speaks the Working Weight's unit. An lbs pin
+in a kg UI is the kg column on that plate (`pin at 86 kg · 2.3 kg + 0.5 kg`); the rack still
+glosses the same slider as `5 lbs (2.3 kg)`. An exact pin with nothing hanging is only
+`pin at 86 kg`.
 
 **Mixed units** stack two numbers, each with its own unit label: the Working Weight big
 (`100` / `LBS`), the Microload under it (`+1.25` / `KG`). **There is no combined total anywhere

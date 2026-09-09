@@ -33,12 +33,37 @@ struct StackSolveTests {
         else { Issue.record("expected a stack"); return }
 
         #expect(load.pinWeight == lbs("195"))
-        #expect(load.hanging == .addOns([]))
+        #expect(load.hanging == .addOns([], leftover: []))
         #expect(load.pinRemainder.isEmpty)
         #expect(!load.isExact)
-        #expect(load.loadedTotal == kg("88.45"))
-        #expect(load.difference.hundredths == -35)
+        #expect(load.loadedTotal == kg("88"))
+        #expect(load.difference.hundredths == -80)
         #expect(load.difference.unit == .kg)
+        #expect(load.workingUnit == .kg)
+        #expect(load.microload == nil)
+    }
+
+    @Test("88.8 kg on a 10 lb stack is 86 kg + 2.3 kg + 0.5 kg")
+    func chestFlyTenPoundStackHitsTheStickerSum() {
+        var inventory = PlateInventory.standard(.kg)
+        inventory.setPlate(kg("0.5"), on: true)
+        let fly = Exercise(
+            id: ExerciseID(1), name: "Chest fly machine", equipment: .machineStack,
+            ownWeightUnit: .kg,
+            plannedSets: 2, repRange: RepRange(6, 8),
+            workingWeight: kg("88.8"), increment: kg("5"),
+            microloadingIncrement: kg("0.5"),
+            modeOverride: .microloading,
+            storedStackStep: lbs("10"))
+        let resolved = fly.resolved(mode: .microloading, inventory: inventory)
+        guard case .stack(let load) = Rules.breakdown(for: resolved, inventory: inventory)
+        else { Issue.record("expected a stack"); return }
+
+        #expect(load.pinWeight == lbs("190"))
+        #expect(load.pinRemainder == [lbs("5"), kg("0.5")])
+        #expect(load.isExact)
+        #expect(load.loadedTotal == kg("88.8"))
+        #expect(load.difference == kg("0"))
         #expect(load.workingUnit == .kg)
         #expect(load.microload == nil)
     }
@@ -81,7 +106,7 @@ struct StackSolveTests {
         else { Issue.record("expected a stack"); return }
 
         #expect(load.pinWeight == lbs("100"))
-        #expect(load.hanging == .addOns([]))
+        #expect(load.hanging == .addOns([], leftover: []))
         #expect(load.microload == kg("1"))
         #expect(load.microloadPlates == [kg("1")])
         #expect(load.loadedTotal == lbs("100"))
@@ -105,7 +130,7 @@ struct StackSolveTests {
         else { Issue.record("expected a stack"); return }
 
         #expect(load.pinWeight == lbs("100"))
-        #expect(load.hanging == .addOns([]))
+        #expect(load.hanging == .addOns([], leftover: []))
         #expect(load.pinRemainder.isEmpty)
         #expect(!load.isExact)
         #expect(load.loadedTotal == lbs("100"))
@@ -125,7 +150,7 @@ struct StackSolveTests {
         else { Issue.record("expected a stack"); return }
 
         #expect(load.pinWeight == lbs("195"))
-        #expect(load.hanging == .addOns([lbs("2.5")]))
+        #expect(load.hanging == .addOns([lbs("2.5")], leftover: []))
         #expect(!load.isExact)
     }
 }

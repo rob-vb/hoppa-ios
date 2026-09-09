@@ -12,6 +12,15 @@ struct StickerTests {
         #expect(Sticker(of: lbs("10"), readIn: .kg)?.decimalString == "4.5")
         #expect(Sticker(of: lbs("15"), readIn: .kg)?.decimalString == "6.8")
         #expect(Sticker(of: lbs("85"), readIn: .kg)?.decimalString == "38.6")
+        #expect(Sticker(of: lbs("190"), readIn: .kg)?.decimalString == "86.2")
+    }
+
+    @Test("A pin plate rounds to the whole kg printed on the stack")
+    func pinColumnIsOnes() {
+        #expect(Sticker.ones(of: lbs("190"), readIn: .kg)?.decimalString == "86")
+        #expect(Sticker.ones(of: lbs("195"), readIn: .kg)?.decimalString == "88")
+        #expect(Sticker.ones(of: lbs("200"), readIn: .kg)?.decimalString == "91")
+        #expect(Sticker.ones(of: lbs("10"), readIn: .kg)?.decimalString == "5")
     }
 
     @Test("Same-unit sticker is tenths of the original")

@@ -29,10 +29,11 @@ public struct StackLoad: Sendable, Hashable {
     /// How many pin steps are under the pin.
     public var blocks: Int
     public var stackStep: Weight
-    /// What the pin plate reads. The highest label at or under the Working Weight
-    /// (`SPEC.md` §5.3). Equal to `first + (blocks - 1) × step` when `blocks ≥ 1`.
+    /// What the pin plate reads in the ladder's unit. Logging copy speaks the
+    /// working-unit sticker of this label (`SPEC.md` §5.3).
     public var pinWeight: Weight
-    /// Add-ons on an lbs ladder, rack plates on a kg leftover path.
+    /// Add-ons on an lbs ladder, plus leftover rack plates in the working unit when
+    /// the ladder and the Working Weight disagree. Rack plates on a kg leftover path.
     public var hanging: PinHanging
     public var isExact: Bool
     /// The Microload, on a mixed-unit pin only. Never converted, never totalled.
@@ -42,7 +43,8 @@ public struct StackLoad: Sendable, Hashable {
     public var microloadPlates: [Weight]
     /// The Working Weight's unit. `loadedTotal` and `difference` live here.
     public var workingUnit: WeightUnit
-    /// Pin plus hanging, in working-unit hundredths. The Microload is not in it.
+    /// Pin plus hanging, as the logging screen adds them. An lbs pin in a kg UI is the
+    /// kg column plus leftover plates. The Microload is not in it.
     public var loadedTotal: Weight
     /// `loadedTotal` minus the Working Weight. Positive is over, negative is under.
     public var difference: Weight
