@@ -118,18 +118,16 @@ public struct ExerciseDraft: Sendable, Hashable {
     /// a stale number from a retyped one — the number's own label cannot, because a stored
     /// label may be stale by design (§2.8) and `ExerciseDraft(_:in:)` copies stored labels.
     ///
-    /// **Exactly the three fields §6.6 names.** The Microloading Increment keeps the Plate
-    /// Inventory's unit whatever the Exercise does (§5.1), so it is never stale here. The
-    /// Base Weight is in the rack's unit too, and that unit moves only when the *rack*
-    /// moves — `setPlateInventoryUnit`, which does its own clearing. No edit to an
-    /// Exercise can leave a Base Weight labelled wrong.
+    /// **Exactly the Working Weight and the Increment.** The Microloading Increment keeps
+    /// the Plate Inventory's unit whatever the Exercise does (§5.1), so it is never stale
+    /// here. The Stack Step carries its own unit and is not cleared by a Working Weight
+    /// flip. The Base Weight is in the rack's unit too, and that unit moves only when the
+    /// *rack* moves — `setPlateInventoryUnit`, which does its own clearing.
     func withoutStaleWeights(resolvingTo unit: WeightUnit) -> ExerciseDraft {
         guard shownUnit != unit else { return self }
         var kept = self
         kept.workingWeight = nil
         kept.increment = nil
-        kept.stackStep = nil
-        kept.stackFirstPlate = nil
         return kept
     }
 
@@ -454,6 +452,10 @@ extension Rules {
             // Nothing else is written. Stranding is derived, so switching a plate back
             // on un-strands exactly what switching it off stranded (§6.6).
             book.plateInventory.setPlate(weight, on: isOn)
+            return book
+
+        case .setStackAddOn(let addOn, let isOn):
+            book.plateInventory.setAddOn(addOn, on: isOn)
             return book
 
         default:

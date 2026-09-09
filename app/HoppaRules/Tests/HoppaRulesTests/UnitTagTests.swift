@@ -26,11 +26,12 @@ struct UnitTagTests {
         #expect(EquipmentType.bodyweight.takesUnitFromInventory)
     }
 
-    @Test("stackStepOffers in lbs is 5, 10 and 15 lbs, never converted kg")
+    @Test("stackStepOffers in lbs is 5, 7, 10 and 15 lbs, never converted kg")
     func lbsStackStepsAreNotConvertedKg() {
         let offers = Rules.stackStepOffers(in: .lbs)
         #expect(offers == [
             Weight.lbs(hundredths: 500),
+            Weight.lbs(hundredths: 700),
             Weight.lbs(hundredths: 1000),
             Weight.lbs(hundredths: 1500),
         ])

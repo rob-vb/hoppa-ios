@@ -17,11 +17,39 @@ public struct PlateInventory: Codable, Sendable, Hashable {
     public var unit: WeightUnit
     public var plates: [PlateSize]
     public var microplates: [PlateSize]
+    public var stackAddOns: MachineAddOns
 
-    public init(unit: WeightUnit, plates: [PlateSize], microplates: [PlateSize]) {
+    public init(
+        unit: WeightUnit,
+        plates: [PlateSize],
+        microplates: [PlateSize],
+        stackAddOns: MachineAddOns = .standard
+    ) {
         self.unit = unit
         self.plates = plates
         self.microplates = microplates
+        self.stackAddOns = stackAddOns
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case unit, plates, microplates, stackAddOns
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        unit = try container.decode(WeightUnit.self, forKey: .unit)
+        plates = try container.decode([PlateSize].self, forKey: .plates)
+        microplates = try container.decode([PlateSize].self, forKey: .microplates)
+        stackAddOns = try container.decodeIfPresent(MachineAddOns.self, forKey: .stackAddOns)
+            ?? .standard
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(unit, forKey: .unit)
+        try container.encode(plates, forKey: .plates)
+        try container.encode(microplates, forKey: .microplates)
+        try container.encode(stackAddOns, forKey: .stackAddOns)
     }
 
     /// The switched-on normal plates, biggest first. What Progressive Overload may load.
@@ -131,5 +159,9 @@ public struct PlateInventory: Codable, Sendable, Hashable {
     public mutating func setPlate(_ weight: Weight, on isOn: Bool) {
         for index in plates.indices where plates[index].weight == weight { plates[index].isOn = isOn }
         for index in microplates.indices where microplates[index].weight == weight { microplates[index].isOn = isOn }
+    }
+
+    public mutating func setAddOn(_ addOn: StackAddOn, on isOn: Bool) {
+        stackAddOns.set(addOn, on: isOn)
     }
 }

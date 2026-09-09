@@ -32,14 +32,23 @@ public struct StackLoad: Sendable, Hashable {
     /// What the pin plate reads. The highest label at or under the Working Weight
     /// (`SPEC.md` §5.3). Equal to `first + (blocks - 1) × step` when `blocks ≥ 1`.
     public var pinWeight: Weight
-    /// The part of the Working Weight the pin cannot reach, as plates. Same unit only.
-    public var pinRemainder: [Weight]
+    /// Add-ons on an lbs ladder, rack plates on a kg leftover path.
+    public var hanging: PinHanging
     public var isExact: Bool
     /// The Microload, on a mixed-unit pin only. Never converted, never totalled.
     public var microload: Weight?
     /// The Microload drawn as plates: identical plates are never stacked, so 1.25 kg of
     /// Microload is one 1.25 kg plate and not five 0.25s (`SPEC.md` §5.3).
     public var microloadPlates: [Weight]
+    /// The Working Weight's unit. `loadedTotal` and `difference` live here.
+    public var workingUnit: WeightUnit
+    /// Pin plus hanging, in working-unit hundredths. The Microload is not in it.
+    public var loadedTotal: Weight
+    /// `loadedTotal` minus the Working Weight. Positive is over, negative is under.
+    public var difference: Weight
+
+    /// Flattened hanging iron. Burst and drawing still hang this list.
+    public var pinRemainder: [Weight] { hanging.iron }
 }
 
 extension Rules {
@@ -164,20 +173,15 @@ extension Rules {
 
         switch exercise.equipment {
         case .machineStack:
-            let pin = exercise.stack?.pin(atOrUnder: target)
-            let pinWeight = pin?.label ?? .zero(exercise.unit)
-            let leftover = target - pinWeight
-            // A pin takes single plates, not a pair. Only a same-unit rack can fill it.
-            let fill = exercise.unit == inventory.unit
-                ? greedy(leftover, sizes: sizes)
-                : (plates: [Weight](), remainder: leftover)
-            let microloadPlates = exercise.microload.map { greedy($0, sizes: inventory.plates(for: .microloading)).plates } ?? []
-            return .stack(StackLoad(
-                blocks: pin?.plate ?? 0,
-                stackStep: exercise.stack?.step ?? .zero(exercise.unit),
-                pinWeight: pinWeight,
-                pinRemainder: fill.plates,
-                isExact: fill.remainder.hundredths == 0,
+            let microloadPlates = exercise.microload.map {
+                greedy($0, sizes: inventory.plates(for: .microloading)).plates
+            } ?? []
+            return .stack(StackSolve.load(
+                target: target,
+                ladder: exercise.stack,
+                addOns: exercise.stackAddOns,
+                rack: inventory,
+                mode: exercise.mode,
                 microload: exercise.microload,
                 microloadPlates: microloadPlates))
 

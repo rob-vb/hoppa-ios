@@ -240,16 +240,31 @@ struct WeightSheet: View {
     /// Steps the buffer. PIN− never goes below the first plate. PIN+ from a weight
     /// below first, including zero, lands on first. An off-pin working weight translates
     /// by the step; it does not snap onto a plate.
+    ///
+    /// When the step is lbs and the keypad is kg, arithmetic stays in the step's unit
+    /// and the result is converted back. Mixing hundredths across units traps (`Weight.<`).
     private func nudge(_ step: Weight, _ direction: Int, floor: Weight? = nil) {
         Haptic.stepped()
         let base = Weight(decimalString: buffer, unit: exercise.unit) ?? .zero(exercise.unit)
-        if let floor, direction > 0, base < floor {
-            buffer = floor.decimalString
+        if step.unit == exercise.unit {
+            if let floor, direction > 0, base < floor {
+                buffer = floor.decimalString
+                return
+            }
+            let moved = base.hundredths + direction * step.hundredths
+            let minimum = floor?.hundredths ?? 0
+            buffer = Weight(hundredths: max(minimum, moved), unit: exercise.unit).decimalString
             return
         }
-        let moved = base.hundredths + direction * step.hundredths
+        let inStep = base.converted(to: step.unit)
+        if let floor, direction > 0, inStep < floor {
+            buffer = floor.converted(to: exercise.unit).decimalString
+            return
+        }
+        let moved = inStep.hundredths + direction * step.hundredths
         let minimum = floor?.hundredths ?? 0
-        buffer = Weight(hundredths: max(minimum, moved), unit: exercise.unit).decimalString
+        let landed = Weight(hundredths: max(minimum, moved), unit: step.unit)
+        buffer = landed.converted(to: exercise.unit).decimalString
     }
 
     // MARK: - The keypad

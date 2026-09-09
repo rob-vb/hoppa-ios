@@ -141,7 +141,7 @@ struct DefectTests {
         #expect(load.blocks == 10)                       // not 11, which rounding would give
         #expect(load.pinWeight == lbs("100"))
         #expect(load.pinWeight <= exercise.workingWeight!)
-        #expect(load.pinRemainder == [lbs("5")])         // the rest hangs on the pin
+        #expect(load.hanging == .addOns([lbs("5")]))
         #expect(load.isExact)
     }
 

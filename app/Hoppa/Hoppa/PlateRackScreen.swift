@@ -130,7 +130,7 @@ struct PlateRackScreen: View {
         }
     }
 
-    // MARK: - The two groups
+    // MARK: - The groups
 
     private var groups: some View {
         ScrollView {
@@ -140,6 +140,9 @@ struct PlateRackScreen: View {
                 Spacer().frame(height: 16)
                 groupLabel("Microplates")
                 plateRows(rack.microplates, tallest: 10, shortest: 7, width: 7)
+                Spacer().frame(height: 16)
+                groupLabel("Stack add-ons")
+                addOnRows
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -207,6 +210,43 @@ struct PlateRackScreen: View {
             return
         }
         pendingMicroplateOff = plate.weight
+    }
+
+    private var addOnRows: some View {
+        VStack(spacing: 6) {
+            addOnRow(.fiveLbs, height: 14)
+            addOnRow(.twoAndAHalfLbs, height: 11)
+        }
+    }
+
+    private func addOnRow(_ addOn: StackAddOn, height: CGFloat) -> some View {
+        let isOn = rack.stackAddOns.isOn(addOn)
+        return Button { store.send(.setStackAddOn(addOn, on: !isOn)) } label: {
+            HStack(spacing: 14) {
+                PlateChip(weight: addOn.iron, isOn: isOn, width: 8, height: height)
+                    .frame(width: 22)
+                Text(addOnLabel(addOn))
+                    .typography(Typography.listValue())
+                    .foregroundStyle(isOn ? Color.text : Color.labelText)
+                Spacer(minLength: 8)
+                RackSwitch(isOn: isOn)
+            }
+            .padding(.horizontal, 14)
+            .frame(height: 50)
+            .background(isOn ? Color.card : Color.clear)
+            .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.line, lineWidth: 1))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.pressable)
+    }
+
+    /// Settings list: `2.5 lbs`, plus `(1.1 kg)` when the gym reads kg.
+    private func addOnLabel(_ addOn: StackAddOn) -> String {
+        let lbs = "\(addOn.iron.decimalString) lbs"
+        guard rack.unit == .kg, let sticker = Sticker(of: addOn.iron, readIn: .kg) else {
+            return lbs
+        }
+        return "\(lbs) (\(sticker.decimalString) kg)"
     }
 
     // MARK: - The footer (§5.2), which states only what is true

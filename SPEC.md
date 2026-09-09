@@ -498,10 +498,12 @@ the number the machine shows.
   Bodyweight**. The user gets no choice there: you cannot load a plate you do not own, and a
   Bodyweight Exercise's added weight is a plate off that same rack (§2.6).
 - Dumbbell and Machine (Stack) carry their own unit — the one the machine is marked with.
-- **Units never convert**, anywhere, with exactly one exception: **total volume** on the Workout
+- **Units never convert**, anywhere the user can see, with exactly one exception: **total volume** on the Workout
   Summary converts to the Program's default unit and shows as one labelled number. Volume is a
   rough progress number, not a loading instruction, so a conversion misleads nobody there —
-  unlike the Plate Breakdown, which stays exact.
+  unlike the Plate Breakdown, which stays exact. An lbs slider on a kg Working Weight may
+  **gloss** as `2.5lbs (1.1kg)` — tenths, printed, never added. Conversion is still forbidden
+  as arithmetic.
 
 ### 5.2 The Plate Inventory
 
@@ -512,6 +514,9 @@ every Exercise with a Plate Breakdown.
   bodyweight exercise in the Program."*
 - A list of plate sizes: a colour chip sized to the plate, the weight, an on/off toggle.
 - **Microplates are a second group** under their own label.
+- **Stack add-ons are a third group**: the 2.5 lb and 5 lb sliders on selectorized machines.
+  Both ship **on**. They are machine hardware, never a bar plate, and `plates(for:)` does not
+  list them. In a kg gym the rows read `2.5 lbs (1.1 kg)`.
 - **On/off only — no count of pairs.** A pairs count was drawn and rejected as too much setup.
   Hoppa accepts that it can propose a load the user cannot build from the plates they physically
   own.
@@ -589,8 +594,14 @@ there is nothing to roll up**: 1.25 kg of Microload draws as one 1.25 kg plate, 
 +1.25 kg (one normal plate).
 
 **The pin follows the Working Weight, and the Microload rolls into it.** Hoppa does not choose the
-pin: the user sets the Working Weight and the pin takes the largest Stack Step at or under it,
-with the remainder hanging on it as plates from the Inventory the Mode allows.
+pin on a **kg** ladder: the user sets the Working Weight and the pin takes the largest Stack Step at
+or under it, with the remainder hanging on it as plates from the Inventory the Mode allows.
+
+An **lbs** ladder never borrows bar plates. Hoppa converts the Working Weight into the ladder unit
+once, then searches the neighboring pins times the subsets of the gym's 2.5 lb and 5 lb sliders,
+and picks the closest in mass. On a tie it takes the smaller loaded mass, then fewer sliders, then
+the lower pin label. It may overshoot. `≈ CLOSEST` reads that loaded total in the Working Weight's
+hundredths, not a reconstructed pin plus remainder.
 
 An earlier draft of this section said a stack *never* rolls into the next pin step, on the grounds
 that one step is about eighteen microplates away and the case is therefore theoretical. **It is
@@ -652,7 +663,9 @@ Progressive Overload hangs a 2.5 kg normal plate on the pin. Corrected at
 [The unnamed plate on the pin](issues/0060-the-unnamed-plate-on-the-pin.md). The pin is the
 printed label (`85 kg`); then the plates (`2.5 kg`). A real Microplate still prints its size.
 The pin is no longer the artboard's `10 × 10 lbs` either: the built caption already named the
-label, and the hanging half now matches.
+label, and the hanging half now matches. An lbs slider in a kg UI prints `2.5lbs (1.1kg)`; the
+pin itself is not glossed (`pin at 195 lbs · 2.5 lbs (1.1 kg)`). An exact pin with nothing hanging
+is only `pin at 195 lbs`.
 
 **Mixed units** stack two numbers, each with its own unit label: the Working Weight big
 (`100` / `LBS`), the Microload under it (`+1.25` / `KG`). **There is no combined total anywhere

@@ -52,25 +52,30 @@ final class Sheet {
         let leaving = draft.shownUnit
         draft.shownUnit = unit
         guard leaving != unit else { return }
+        let keptStack = draft.stackStep
+        let keptFirst = draft.stackFirstPlate
+        let keptStackText = stackText
+        let keptFirstText = firstText
+        let keptStackTyped = stackTyped
         show(stash.move(
             from: leaving, to: unit,
             onScreen: TypedWeights(
-                working: workingText, increment: incrementText, stack: stackText,
-                first: firstText,
-                incrementTyped: incrementTyped, stackTyped: stackTyped)))
+                working: workingText, increment: incrementText, stack: "",
+                first: "",
+                incrementTyped: incrementTyped, stackTyped: false)))
+        draft.stackStep = keptStack
+        draft.stackFirstPlate = keptFirst
+        stackText = keptStackText
+        firstText = keptFirstText
+        stackTyped = keptStackTyped
     }
 
     func show(_ typed: TypedWeights) {
         workingText = typed.working
         incrementText = typed.increment
-        stackText = typed.stack
-        firstText = typed.first
         incrementTyped = typed.incrementTyped
-        stackTyped = typed.stackTyped
         draft.workingWeight = weight(typed.working)
         draft.increment = weight(typed.increment)
-        draft.stackStep = weight(typed.stack)
-        draft.stackFirstPlate = weight(typed.first)
     }
 
     func weight(_ text: String) -> Weight? {
@@ -157,7 +162,8 @@ print("— the mis-tap, and the tap back —")
 do {
     let s = Sheet(draft: editDraft(), equipmentChosen: true, rack: kgRack)
     s.flipUnit()
-    check("the flip empties the screen", s.workingText.isEmpty && s.incrementText.isEmpty && s.stackText.isEmpty)
+    check("the flip empties the weight and increment", s.workingText.isEmpty && s.incrementText.isEmpty)
+    check("the flip keeps the stack step", s.stackText == "5")
     check("the flip holds the three numbers", s.stash.filedWorking(.kg) == "60")
     check("the note says kept, not cleared", s.unitMoveNote?.contains("is kept under kg") == true)
     check("the note does not say cleared", s.unitMoveNote?.contains("cleared") == false)
@@ -254,8 +260,8 @@ do {
     s.stackText = "7.5"
     s.draft.stackStep = s.weight("7.5")
     s.flipUnit()
-    check("the flip empties the stack field", s.stackText.isEmpty)
-    check("and closes the … field", !s.stackTyped)
+    check("the flip keeps the stack field", s.stackText == "7.5")
+    check("the … field stays open", s.stackTyped)
     s.flipUnit()
     check("the custom step is back", s.stackText == "7.5")
     check("the … field is still open", s.stackTyped)
@@ -270,7 +276,7 @@ do {
     s.firstText = "25"
     s.draft.stackFirstPlate = s.weight("25")
     s.flipUnit()
-    check("the flip empties the first plate", s.firstText.isEmpty)
+    check("the flip keeps the first plate", s.firstText == "25")
     s.flipUnit()
     check("the first plate is back", s.firstText == "25")
     let e = s.saved()

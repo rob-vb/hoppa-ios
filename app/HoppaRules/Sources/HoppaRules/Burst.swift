@@ -44,11 +44,10 @@ extension Rules {
             load.plates.map(BurstParticle.plate)
 
         // The Microplates on the pin, plus one steel slab per loaded pin block.
-        // Everything hanging on the pin counts: `pinRemainder` is the same-unit part
-        // the pin cannot reach and `microloadPlates` is the mixed-unit Microload, and
-        // the drawing hangs both in the same place.
+        // Everything hanging on the pin counts: add-ons or rack leftover, and
+        // `microloadPlates` for the mixed-unit Microload.
         case .stack(let load):
-            (load.pinRemainder + load.microloadPlates).map(BurstParticle.plate)
+            (load.hanging.iron + load.microloadPlates).map(BurstParticle.plate)
                 + Array(repeating: .steel, count: max(0, load.blocks))
 
         // §5.5 draws the dumbbell in steel and loads nothing on it, so it never throws

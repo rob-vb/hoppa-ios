@@ -19,12 +19,14 @@ func lbs(_ text: String) -> Weight { Weight(decimalString: text, unit: .lbs)! }
 
 func stack(
     _ weight: String, unit: WeightUnit = .kg, step: String,
+    stepUnit: WeightUnit? = nil,
     mode: ProgressionMode = .progressiveOverload,
     inventory: PlateInventory = .standard(.kg),
     microload: Weight? = nil
 ) -> StackLoad {
     let working = Weight(decimalString: weight, unit: unit)!
-    let stepWeight = Weight(decimalString: step, unit: unit)!
+    let ladderUnit = stepUnit ?? unit
+    let stepWeight = Weight(decimalString: step, unit: ladderUnit)!
     let exercise = Exercise(
         id: ExerciseID(1), name: "Chest fly machine", equipment: .machineStack,
         ownWeightUnit: unit,
@@ -81,6 +83,23 @@ let mixed = stack(
 check("lbs pin + kg plate keeps both units", mixed.loadLine == "pin at 100 lbs · 1 kg")
 check("mixed qualifier never totals", mixed.qualifierLine == "100 lbs + 1 kg")
 check("mixed does not say microplate either", !mixed.loadLine.contains("microplate"))
+
+// MARK: - Chest fly in kg on a 5 lb stack
+
+let flyLbs = stack("88.8", unit: .kg, step: "5", stepUnit: .lbs)
+check("88.8 kg / 5 lbs names the pin only", flyLbs.loadLine == "pin at 195 lbs")
+check("88.8 kg hangs no slider", flyLbs.pinRemainder.isEmpty)
+check("88.8 kg is not exact", !flyLbs.isExact)
+check("88.8 kg loadedTotal is the floor convert of 195 lbs", flyLbs.loadedTotal == kg("88.45"))
+check("88.8 kg qualifier is the pin", flyLbs.qualifierLine == "195 lbs")
+
+// MARK: - An lbs slider in a kg UI names the sticker
+
+let withSlider = stack("89.2", unit: .kg, step: "5", stepUnit: .lbs)
+check(
+    "89.2 kg hangs 2.5lbs (1.1kg)",
+    withSlider.loadLine == "pin at 195 lbs · 2.5lbs (1.1kg)")
+check("89.2 kg hanging is the 2.5 lb slider", withSlider.pinRemainder == [lbs("2.5")])
 
 if failures > 0 {
     print("\(failures) failed")
