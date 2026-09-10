@@ -58,6 +58,18 @@ public struct Sticker: Sendable, Hashable {
         return Sticker(tenths: ones * 10, unit: target)
     }
 
+    /// Printed columns a lifter can set the pin to. Tenths always. Ones only
+    /// when they do not round past tenths: 125 lbs prints 56.7 kg, not 57.
+    public static func settableColumns(of weight: Weight, readIn target: WeightUnit) -> [Sticker] {
+        guard let tenths = Sticker(of: weight, readIn: target) else { return [] }
+        var columns = [tenths]
+        if let ones = Sticker.ones(of: weight, readIn: target),
+           ones.tenths <= tenths.tenths, ones != tenths {
+            columns.append(ones)
+        }
+        return columns
+    }
+
     init(tenths: Int, unit: WeightUnit) {
         self.tenths = tenths
         self.unit = unit

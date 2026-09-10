@@ -239,6 +239,28 @@ struct StackSolveTests {
         #expect(load.loadedTotal == kg("81"))
     }
 
+    @Test("59.5 kg on a 5 lb stack is 56.7 kg plus 2.5 kg, not a 57 kg pin")
+    func fiftyNineFiveIsNotAFiftySevenPin() {
+        let fly = Exercise(
+            id: ExerciseID(1), name: "Chest fly machine", equipment: .machineStack,
+            ownWeightUnit: .kg,
+            plannedSets: 2, repRange: RepRange(6, 8),
+            workingWeight: kg("59.5"), increment: kg("5"),
+            storedStackStep: lbs("5"))
+        let inventory = PlateInventory.standard(.kg)
+        let resolved = fly.resolved(mode: .progressiveOverload, inventory: inventory)
+        guard case .stack(let load) = Rules.breakdown(for: resolved, inventory: inventory)
+        else { Issue.record("expected a stack"); return }
+
+        #expect(load.pinWeight == lbs("125"))
+        #expect(load.spokenPinWeight == kg("56.7"))
+        #expect(load.hanging == .addOns([], leftover: [kg("2.5")]))
+        #expect(!load.isExact)
+        #expect(load.loadedTotal == kg("59.2"))
+        #expect(load.difference.hundredths == -30)
+        #expect(load.workingUnit == .kg)
+    }
+
     @Test("89.2 kg on a 5 lb step hangs the 2.5 lb slider")
     func chestFlyHangsTwoAndAHalf() {
         let fly = Exercise(

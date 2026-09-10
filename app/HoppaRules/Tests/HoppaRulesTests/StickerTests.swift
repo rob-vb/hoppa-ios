@@ -24,6 +24,20 @@ struct StickerTests {
         #expect(Sticker.ones(of: lbs("15"), readIn: .kg)?.decimalString == "7")
     }
 
+    @Test("Ones that round past tenths are not a pin you can set")
+    func settableColumnsDropOnesUp() {
+        let ten = Sticker.settableColumns(of: lbs("10"), readIn: .kg)
+        #expect(ten.map(\.decimalString) == ["4.5"])
+        let oneTwentyFive = Sticker.settableColumns(of: lbs("125"), readIn: .kg)
+        #expect(oneTwentyFive.map(\.decimalString) == ["56.7"])
+        let oneSeventyFive = Sticker.settableColumns(of: lbs("175"), readIn: .kg)
+        #expect(oneSeventyFive.map(\.decimalString) == ["79.4", "79"])
+        let oneNinety = Sticker.settableColumns(of: lbs("190"), readIn: .kg)
+        #expect(oneNinety.map(\.decimalString) == ["86.2", "86"])
+        let oneThirty = Sticker.settableColumns(of: lbs("130"), readIn: .kg)
+        #expect(oneThirty.map(\.decimalString) == ["59"])
+    }
+
     @Test("Same-unit sticker is tenths of the original")
     func sameUnit() {
         #expect(Sticker(of: kg("2.5"), readIn: .kg)?.decimalString == "2.5")
