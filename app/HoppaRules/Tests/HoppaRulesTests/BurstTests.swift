@@ -57,7 +57,7 @@ struct BurstTests {
         // 100 lbs on a 10 lbs stack, with a 1.25 kg Microload hanging on the pin.
         let load = StackLoad(
             blocks: 10, stackStep: lbs("10"), pinWeight: lbs("100"),
-            spokenPinWeight: lbs("100"),
+            columnMass: lbs("100"),
             hanging: .addOns([], leftover: []),
             isExact: true, microload: kg("1.25"), microloadPlates: [kg("1.25")],
             workingUnit: .lbs, loadedTotal: lbs("100"), difference: lbs("0"))
@@ -73,7 +73,7 @@ struct BurstTests {
         // 27.5 kg on a 5 kg stack: the pin takes 25, and 2.5 hangs on it.
         let load = StackLoad(
             blocks: 5, stackStep: kg("5"), pinWeight: kg("25"),
-            spokenPinWeight: kg("25"),
+            columnMass: kg("25"),
             hanging: .rackPlates([kg("2.5")]),
             isExact: true, microload: nil, microloadPlates: [],
             workingUnit: .kg, loadedTotal: kg("27.5"), difference: kg("0"))

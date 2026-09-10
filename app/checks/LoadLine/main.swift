@@ -90,7 +90,7 @@ check("mixed does not say microplate either", !mixed.loadLine.contains("micropla
 // MARK: - Chest fly in kg on a 5 lb stack
 
 let flyLbs = stack("88.8", unit: .kg, step: "5", stepUnit: .lbs)
-check("88.8 kg / 5 lbs names the kg column plus leftover", flyLbs.loadLine == "pin at 86 kg · 2.5 kg")
+check("88.8 kg / 5 lbs names the 190 lb plate plus leftover", flyLbs.loadLine == "pin at 190 lbs · 2.5 kg")
 check("88.8 kg hangs a 2.5 kg plate", flyLbs.pinRemainder == [kg("2.5")])
 check("88.8 kg is not exact", !flyLbs.isExact)
 check("88.8 kg loadedTotal is pin plus leftover", flyLbs.loadedTotal == kg("88.5"))
@@ -99,7 +99,7 @@ check("88.8 kg qualifier adds leftover", flyLbs.qualifierLine == "86 kg + 2.5")
 // MARK: - An lbs slider in a kg UI speaks kg
 
 let withSlider = stack("89.2", unit: .kg, step: "5", stepUnit: .lbs)
-check("89.2 kg hangs 1.1 kg", withSlider.loadLine == "pin at 88 kg · 1.1 kg")
+check("89.2 kg hangs 1.1 kg", withSlider.loadLine == "pin at 195 lbs · 1.1 kg")
 check("89.2 kg hanging is the 2.5 lb slider", withSlider.pinRemainder == [lbs("2.5")])
 
 // MARK: - The Basic Fit chest fly: 10 lb stack, 0.5 kg on the pin
@@ -111,7 +111,7 @@ let flyTen = stack(
     mode: .microloading, inventory: gym)
 check(
     "88.8 kg on 10 lbs is pin + slider + micro",
-    flyTen.loadLine == "pin at 86 kg · 2.3 kg + 0.5 kg")
+    flyTen.loadLine == "pin at 190 lbs · 2.3 kg + 0.5 kg")
 check("88.8 kg qualifier adds in kg", flyTen.qualifierLine == "86 kg + 2.3 + 0.5")
 check("88.8 kg on 10 lbs is exact", flyTen.isExact)
 check("88.8 kg loadedTotal is the sticker sum", flyTen.loadedTotal == kg("88.8"))
@@ -125,7 +125,7 @@ let pulldown81 = stack(
     "81", unit: .kg, step: "5", stepUnit: .lbs,
     mode: .microloading, inventory: pulldownGym)
 check("81 kg is exact", pulldown81.isExact)
-check("81 kg hangs two 1 kg plates", pulldown81.loadLine == "pin at 79 kg · 1 kg + 1 kg")
+check("81 kg hangs two 1 kg plates", pulldown81.loadLine == "pin at 175 lbs · 1 kg + 1 kg")
 check("81 kg qualifier is the math", pulldown81.qualifierLine == "79 kg + 1 + 1")
 check("81 kg loadedTotal is the typed weight", pulldown81.loadedTotal == kg("81"))
 
@@ -138,7 +138,7 @@ let press68 = stack(
     "6.8", unit: .kg, step: "5", stepUnit: .lbs,
     mode: .microloading, inventory: pressGym)
 check("6.8 kg is exact", press68.isExact)
-check("6.8 kg is only the pin", press68.loadLine == "pin at 6.8 kg")
+check("6.8 kg is only the pin", press68.loadLine == "pin at 15 lbs")
 check("6.8 kg hangs nothing", press68.pinRemainder.isEmpty)
 check("6.8 kg qualifier is the pin", press68.qualifierLine == "6.8 kg")
 check("6.8 kg loadedTotal is the typed weight", press68.loadedTotal == kg("6.8"))
@@ -152,15 +152,15 @@ let press5 = stack(
     "5", unit: .kg, step: "5", stepUnit: .lbs,
     mode: .microloading, inventory: fiveGym)
 check("5 kg is exact", press5.isExact)
-check("5 kg is the 10 lb plate plus 0.5 kg", press5.loadLine == "pin at 4.5 kg · 0.5 kg")
+check("5 kg is the 10 lb plate plus 0.5 kg", press5.loadLine == "pin at 10 lbs · 0.5 kg")
 check("5 kg pin is 10 lbs", press5.pinWeight == lbs("10"))
 check("5 kg hangs the 0.5 kg plate", press5.pinRemainder == [kg("0.5")])
 check("5 kg qualifier adds from the printed column", press5.qualifierLine == "4.5 kg + 0.5")
 
 let fly595 = stack("59.5", unit: .kg, step: "5", stepUnit: .lbs)
-check("59.5 kg is the printed 125 lb column plus leftover", fly595.loadLine == "pin at 56.7 kg · 2.5 kg")
+check("59.5 kg is the 125 lb plate plus leftover", fly595.loadLine == "pin at 125 lbs · 2.5 kg")
 check("59.5 kg pin is 125 lbs", fly595.pinWeight == lbs("125"))
-check("59.5 kg speaks 56.7 kg, not 57 kg", fly595.spokenPinWeight == kg("56.7"))
+check("59.5 kg scores 56.7 kg, not 57 kg", fly595.columnMass == kg("56.7"))
 check("59.5 kg hangs a 2.5 kg plate", fly595.pinRemainder == [kg("2.5")])
 check("59.5 kg is not exact", !fly595.isExact)
 check("59.5 kg loadedTotal is pin plus leftover", fly595.loadedTotal == kg("59.2"))

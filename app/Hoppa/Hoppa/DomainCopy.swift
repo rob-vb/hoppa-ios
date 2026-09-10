@@ -86,7 +86,7 @@ extension StackLoad {
     /// Progressive Overload hangs a normal plate on the pin, and even a real Microplate
     /// has a size the gym needs to hear (`SPEC.md` §5.5).
     var loadLine: String {
-        var line = "pin at \(spokenPin)"
+        var line = "pin at \(pinHole)"
         let hanging = hangingLabels
         if !hanging.isEmpty { line += " · " + hanging.joined(separator: " + ") }
         return line
@@ -94,7 +94,7 @@ extension StackLoad {
 
     /// `85 kg + 2.5`. The math under the load line, in the Working Weight's unit.
     var qualifierLine: String {
-        var line = spokenPin
+        var line = columnPhrase
         for plate in pinRemainder { line += " + \(spokenNumber(plate))" }
         if let micro = microload, !micro.isZero {
             line += " + \(named(micro))"
@@ -114,8 +114,12 @@ extension StackLoad {
         return labels
     }
 
-    private var spokenPin: String {
-        "\(spokenPinWeight.decimalString) \(spokenPinWeight.unit.rawValue)"
+    private var pinHole: String {
+        "\(pinWeight.decimalString) \(pinWeight.unit.rawValue)"
+    }
+
+    private var columnPhrase: String {
+        "\(columnMass.decimalString) \(columnMass.unit.rawValue)"
     }
 
     private func spokenNumber(_ plate: Weight) -> String {
