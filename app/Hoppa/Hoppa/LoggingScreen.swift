@@ -14,7 +14,9 @@ import HoppaStore
 // - **The rep counter is view state.** `Action.logSet(reps:)` takes a finished number, and
 //   `Action`'s own doc-comment says so: the prototype's reducer mixed the screen, the
 //   overlay and the keypad buffer in with real rules, and none of that can fail a test.
-//   `pendingReps` lives here and reaches the rules once, as an argument.
+//   `pendingReps` lives here and reaches the rules once, as an argument. Aiming a logged
+//   Set is a second buffer, `correcting`; Put sends `.correctReps` with a finished
+//   number. The two stay apart so a queued next-Set count survives a correction.
 // - **The Rest Timer holds no clock.** `Workout.restStartedAt` is a `Timestamp` the rules
 //   write, and a `TimelineView` reads `now − restStartedAt` — which is why a lock, a
 //   background and a phone call cost no code here
@@ -31,9 +33,18 @@ struct LoggingScreen: View {
     @Binding var path: [Route]
     let workoutDayId: WorkoutDayID
 
+    /// What `Put` will write, and which slot. Nil on `correcting` means the bottom row
+    /// is logging the next Set (or moving on). Not persisted. Not an Action.
+    private struct Correction {
+        var index: Int
+        var reps: Int
+    }
+
     /// The reps the bottom button will log. `nil` means *the Target Reps* — the top of the
-    /// Rep Range — so a `−` on one Exercise never leaks into the next one.
+    /// Rep Range — so a `−` on one Exercise never leaks into the next one. Next Set only.
     @State private var pendingReps: Int?
+    /// Aim plus the stepper count for a logged Set. `nil` means not aiming.
+    @State private var correcting: Correction?
     @State private var sheet: LoggingSheet?
     @State private var showingList = false
     /// The drawer's own `FINISH WORKOUT`, held until the cover has actually gone. A sheet
@@ -84,6 +95,7 @@ struct LoggingScreen: View {
                         store.send(.selectExercise(index: index))
                         // A `−` on one Exercise must not follow the user to the next one.
                         pendingReps = nil
+                        correcting = nil
                         showingList = false
                     },
                     finish: {
@@ -185,6 +197,7 @@ struct LoggingScreen: View {
             PrimaryButton("Next: \(workout.exercises[next].name)") {
                 store.send(.nextOpen)
                 pendingReps = nil
+                correcting = nil
             }
         } else {
             PrimaryButton("Finish workout") { attemptFinish() }
@@ -413,32 +426,40 @@ struct LoggingScreen: View {
     }
 
     /// **Reps over the range read `14 reps · 8–12` — plain, no colour** (§6.4, §7.6). The
-    /// user did the work; nothing he did wears a warning.
+    /// user did the work; nothing he did wears a warning. The whole row is the tap
+    /// target: the number is the meaning, the 50 px row is the hit.
     private func loggedRow(_ number: Int, _ set: LoggedSet, _ exercise: ResolvedExercise) -> some View {
-        setRow(number, isNext: false) {
-            HStack(spacing: 8) {
-                Text("\(set.reps) reps")
-                    .typography(Typography.listValue(14))
-                    .foregroundStyle(Color.text)
-                if set.reps > exercise.repRange.top {
-                    Text("· \(exercise.repRange.bottom)–\(exercise.repRange.top)")
-                        .typography(Typography.meta(12))
-                        .foregroundStyle(Color.dimText)
+        let index = number - 1
+        let reps = displayReps(set, at: index)
+        return Button { tapLogged(index, set) } label: {
+            setRow(number, isNext: isAimed(loggedIndex: index)) {
+                HStack(spacing: 8) {
+                    Text("\(reps) reps")
+                        .typography(Typography.listValue(14))
+                        .foregroundStyle(Color.text)
+                    if reps > exercise.repRange.top {
+                        Text("· \(exercise.repRange.bottom)–\(exercise.repRange.top)")
+                            .typography(Typography.meta(12))
+                            .foregroundStyle(Color.dimText)
+                    }
+                    // §6.4 marks a One-off twice, and this is the second mark: a plain chip on
+                    // **every** Set logged under it.
+                    if set.oneOff { Chip("one-off", tone: .steel) }
+                    Spacer(minLength: 8)
+                    Text("✓")
+                        .typography(Typography.body(14))
+                        .foregroundStyle(Color.go)
                 }
-                // §6.4 marks a One-off twice, and this is the second mark: a plain chip on
-                // **every** Set logged under it.
-                if set.oneOff { Chip("one-off", tone: .steel) }
-                Spacer(minLength: 8)
-                Text("✓")
-                    .typography(Typography.body(14))
-                    .foregroundStyle(Color.go)
             }
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.pressable)
     }
 
+    @ViewBuilder
     private func nextRow(_ number: Int, _ exercise: ResolvedExercise) -> some View {
         let reps = pendingReps ?? exercise.targetReps
-        return setRow(number, isNext: true) {
+        let row = setRow(number, isNext: correcting == nil) {
             HStack(spacing: 8) {
                 Text(reps == exercise.targetReps ? "Target \(reps) reps" : "\(reps) reps")
                     .typography(Typography.listValue(14))
@@ -450,6 +471,16 @@ struct LoggingScreen: View {
                 }
                 Spacer(minLength: 0)
             }
+        }
+        // While a logged Set is aimed, this row is still the next log, but the
+        // stroke belongs to the aimed row. Tapping it cancels.
+        if correcting != nil {
+            Button { correcting = nil } label: {
+                row.contentShape(Rectangle())
+            }
+            .buttonStyle(.pressable)
+        } else {
+            row
         }
     }
 
@@ -524,7 +555,8 @@ struct LoggingScreen: View {
     // MARK: - The bottom control row
 
     /// `−` · `LOG n REPS` · `+` while there is a Set to log, and after that the one tap
-    /// that moves on.
+    /// that moves on. Aiming a logged Set steals the row: `PUT n REPS` replaces, including
+    /// after the last Set, until Put or cancel.
     ///
     /// **Completing costs no tap; moving on costs one** (§6.4). The last Set completes the
     /// Exercise by itself — that is `Rules.reduce`, not this view — and the button then
@@ -534,7 +566,14 @@ struct LoggingScreen: View {
     private func bottomRow(
         _ workout: Workout, _ performed: PerformedExercise, _ exercise: ResolvedExercise
     ) -> some View {
-        if performed.state == .open, performed.sets.count < exercise.plannedSets {
+        if let correcting {
+            let reps = correcting.reps
+            HStack(spacing: 9) {
+                adjust("−") { self.correcting?.reps = max(0, reps - 1) }
+                PrimaryButton("Put \(reps) reps") { put(reps, at: correcting.index) }
+                adjust("+") { self.correcting?.reps = reps + 1 }
+            }
+        } else if performed.state == .open, performed.sets.count < exercise.plannedSets {
             let reps = pendingReps ?? exercise.targetReps
             HStack(spacing: 9) {
                 adjust("−") { pendingReps = max(0, reps - 1) }
@@ -562,10 +601,34 @@ struct LoggingScreen: View {
 
     // MARK: - What the buttons do
 
+    private func isAimed(loggedIndex: Int) -> Bool {
+        correcting?.index == loggedIndex
+    }
+
+    private func displayReps(_ set: LoggedSet, at index: Int) -> Int {
+        if let correcting, correcting.index == index { return correcting.reps }
+        return set.reps
+    }
+
+    private func tapLogged(_ index: Int, _ set: LoggedSet) {
+        if correcting?.index == index {
+            correcting = nil
+        } else {
+            correcting = Correction(index: index, reps: set.reps)
+        }
+    }
+
     private func log(_ reps: Int) {
         Haptic.logged()
         store.send(.logSet(reps: reps))
         pendingReps = nil
+        correcting = nil
+    }
+
+    private func put(_ reps: Int, at index: Int) {
+        Haptic.logged()
+        store.send(.correctReps(index: index, reps: reps))
+        correcting = nil
     }
 
     /// **Finish is gated** (§3.3), and the gate has a one-tap way out — because it would
@@ -739,8 +802,8 @@ struct LoggingScreen: View {
         }
     }
 
-    /// A weight change leaves `pendingReps` alone: it is the *reps* the next Set will
-    /// carry, and the user adjusted those on this Exercise, for this Exercise.
+    /// A weight change leaves `pendingReps` and `correcting` alone: the next Set's count
+    /// is still this Exercise's, and a standing correction is a past Set, not the load.
     private func setWeight(_ action: Action) {
         store.send(action)
         sheet = nil
@@ -749,6 +812,7 @@ struct LoggingScreen: View {
     private func act(_ action: Action) {
         store.send(action)
         pendingReps = nil
+        correcting = nil
         sheet = nil
     }
 
