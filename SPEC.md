@@ -506,10 +506,12 @@ the number the machine shows.
   Summary converts to the Program's default unit and shows as one labelled number. Volume is a
   rough progress number, not a loading instruction, so a conversion misleads nobody there —
   unlike the Plate Breakdown, which stays exact. The **Plate Inventory** glosses an lbs slider
-  as `2.5 lbs (1.1 kg)` — tenths, printed, never added. The load line names the pin the
-  machine prints (`pin at 190 lbs`). Leftover scoring still uses the kg column on that
-  plate (`86 kg` for 190 lbs, `2.3 kg` for a 5 lb slider) so leftover plates add in the
-  Working Weight's unit. Conversion of hundredths is still internal.
+  as `2.5 lbs (1.1 kg)` — tenths, printed, never added. Logging screens speak the Working
+  Weight's unit. A 15 lb selectorized pin in a kg UI is the whole kg on that plate
+  (`pin at 59 kg` on 130 lbs, `pin at 66 kg` on 145 lbs). A 5 lb cable pin keeps tenths
+  (`pin at 6.8 kg` on 15 lbs, `pin at 4.5 kg` on 10 lbs). A 5 lb slider is `2.3 kg`. Those
+  spoken numbers add, and leftover rack plates hang after them. Conversion of hundredths is
+  still internal.
 
 ### 5.2 The Plate Inventory
 
@@ -604,11 +606,13 @@ pin on a **kg** ladder: the user sets the Working Weight and the pin takes the l
 or under it, with the remainder hanging on it as plates from the Inventory the Mode allows.
 
 An **lbs** ladder searches neighboring pins, the gym's 2.5 lb and 5 lb sliders, and leftover
-rack plates in the spoken Working Weight column. A pin whose printed tenths column is the
-typed kg (`6.8 kg` on 15 lbs, `4.5 kg` on 10 lbs) sits there with nothing hanging. Leftover
-may fill from that column (`5 kg` is `pin at 10 lbs · 0.5 kg`, not a 5 kg pin). Ones recipes
-count only when something hangs and when ones do not round past the printed tenths, so
-`79 kg + 1 + 1` still adds and `57 kg` is not a pin on 125 lbs (`pin at 125 lbs · 2.5 kg`).
+rack plates in the spoken Working Weight column. A pin whose printed kg column is the
+typed kg sits there with nothing hanging. A 5 lb cable stack prints tenths (`6.8 kg` on
+15 lbs, `4.5 kg` on 10 lbs). A 15 lb selectorized stack prints whole kg (`59 kg` on 130 lbs,
+`66 kg` on 145 lbs), even when that ones value rounds past tenths. Leftover may fill from
+that column (`5 kg` is `pin at 4.5 kg · 0.5 kg`, not a 5 kg pin). On a 5 lb stack, ones
+recipes count only when something hangs and when ones do not round past the printed tenths,
+so `79 kg + 1 + 1` still adds and `57 kg` is not a pin on 125 lbs (`pin at 56.7 kg · 2.5 kg`).
 On a miss Hoppa takes the smaller gap, then fewer sliders, then fewer leftover plates, then
 the lower pin.
 Leftover plates are an exact cover of the remaining spoken mass when one exists, otherwise
@@ -677,13 +681,13 @@ Progressive Overload hangs a 2.5 kg normal plate on the pin. Corrected at
 [The unnamed plate on the pin](issues/0060-the-unnamed-plate-on-the-pin.md). The pin is the
 printed label (`85 kg`); then the plates (`2.5 kg`). A real Microplate still prints its size.
 The pin is no longer the artboard's `10 × 10 lbs` either: the built caption already named the
-label, and the hanging half now matches. The load line names the hole the gym printed.
-An lbs pin in a kg UI is `pin at 190 lbs · 2.3 kg + 0.5 kg`. The rack still
-glosses the same slider as `5 lbs (2.3 kg)`. An exact pin with nothing hanging is only
-the plate: `pin at 10 lbs`, `pin at 15 lbs`, `pin at 190 lbs`.
-`5 kg` is not a pin on that stack. It is `pin at 10 lbs · 0.5 kg`. `57 kg` is not a pin on 125 lbs.
-It is `pin at 125 lbs · 2.5 kg`. Qualifier math stays in the Working Weight's unit
-(`4.5 kg + 0.5`, `6.8 kg`, `56.7 kg + 2.5`).
+label, and the hanging half now matches. Logging speaks the Working Weight's unit. An lbs pin
+in a kg UI is the kg column on that plate. A 15 lb selectorized stack prints whole kg
+(`pin at 66 kg` on 145 lbs, `pin at 59 kg` on 130 lbs). A 5 lb cable stack prints tenths
+(`pin at 4.5 kg` on 10 lbs, `pin at 6.8 kg` on 15 lbs, `pin at 86 kg` on 190 lbs with a
+5 lb slider as `2.3 kg`). `5 kg` is not a pin on a 5 lb stack. It is
+`pin at 4.5 kg · 0.5 kg`. `57 kg` is not a pin on 125 lbs. It is
+`pin at 56.7 kg · 2.5 kg`. Qualifier math stays in the Working Weight's unit.
 
 **Mixed units** stack two numbers, each with its own unit label: the Working Weight big
 (`100` / `LBS`), the Microload under it (`+1.25` / `KG`). **There is no combined total anywhere
