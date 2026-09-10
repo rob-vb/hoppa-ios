@@ -66,8 +66,9 @@ enum StackSolve {
     /// Neighboring pins × add-on subsets, each scored in spoken working-unit
     /// mass after leftover plates. Tenths recipes match the printed column
     /// (`4.5 kg` on 10 lbs, `6.8 kg` on 15 lbs) and may hang leftover from
-    /// that column. Ones recipes exist only when something hangs, so `79 kg
-    /// + 1 + 1` still adds and a bare 10 lb plate is never a 5 kg pin.
+    /// that column. Ones recipes exist only when something hangs and when
+    /// ones do not round past tenths, so `79 kg + 1 + 1` still adds, a bare
+    /// 10 lb plate is never a 5 kg pin, and 125 lbs is 56.7 kg, not 57 kg.
     private static func searchLbs(
         target: Weight,
         ladder: StackLadder,
@@ -84,20 +85,25 @@ enum StackSolve {
         for pin in neighboringPins(on: ladder, around: converted) {
             for subset in addOnSubsets(addOns) {
                 if hangLeftover {
-                    // Tenths only on an exact printed column. Misses keep ones
-                    // so 88.8 kg stays `pin at 86 kg · 2.5 kg`, not 195 lbs.
-                    if let tenths = hangRecipe(
-                        pin: pin, addOns: subset, pinColumn: false,
-                        target: target, sizes: sizes
-                    ), tenths.loadedTotal == target,
-                       better(tenths, than: best, target: target) {
-                        best = tenths
-                    }
-                    if let ones = hangRecipe(
-                        pin: pin, addOns: subset, pinColumn: true,
-                        target: target, sizes: sizes
-                    ), better(ones, than: best, target: target) {
-                        best = ones
+                    guard let tenthsSticker = Sticker(of: pin.label, readIn: target.unit)
+                    else { continue }
+                    let columns = Sticker.settableColumns(of: pin.label, readIn: target.unit)
+                    let onesSettable = columns.contains { $0 != tenthsSticker }
+                    for sticker in columns {
+                        let isTenths = sticker == tenthsSticker
+                        guard let recipe = hangRecipe(
+                            pin: pin, addOns: subset,
+                            spokenPin: sticker.asWeight,
+                            dropBareEmpty: !isTenths,
+                            target: target, sizes: sizes
+                        ) else { continue }
+                        // Tenths leftover on a miss only when ones is not a
+                        // settable column. Otherwise 88.8 kg would leave the
+                        // 190 lb pin as 86.2 kg + 2.5 kg.
+                        if isTenths, recipe.loadedTotal != target, onesSettable {
+                            continue
+                        }
+                        if better(recipe, than: best, target: target) { best = recipe }
                     }
                 } else {
                     let extra = subset.reduce(0) { $0 + $1.hundredths }
@@ -142,11 +148,11 @@ enum StackSolve {
     private static func hangRecipe(
         pin: StackLadder.Pin,
         addOns: [Weight],
-        pinColumn: Bool,
+        spokenPin: Weight,
+        dropBareEmpty: Bool,
         target: Weight,
         sizes: [Weight]
     ) -> Recipe? {
-        let spokenPin = spokenMass(pin.label, in: target.unit, pinColumn: pinColumn)
         let sliders = addOns.reduce(0) {
             $0 + spokenMass($1, in: target.unit, pinColumn: false).hundredths
         }
@@ -160,7 +166,7 @@ enum StackSolve {
         } else {
             leftoverPlates = []
         }
-        if pinColumn, addOns.isEmpty, leftoverPlates.isEmpty { return nil }
+        if dropBareEmpty, addOns.isEmpty, leftoverPlates.isEmpty { return nil }
         let hung = leftoverPlates.reduce(0) { $0 + $1.hundredths }
         return Recipe(
             pin: pin, addOns: addOns, leftover: leftoverPlates,

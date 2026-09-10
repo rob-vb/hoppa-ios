@@ -154,6 +154,17 @@ check("5 kg pin is 10 lbs", press5.pinWeight == lbs("10"))
 check("5 kg hangs the 0.5 kg plate", press5.pinRemainder == [kg("0.5")])
 check("5 kg qualifier adds from the printed column", press5.qualifierLine == "4.5 kg + 0.5")
 
+// MARK: - 59.5 kg on a 5 lb stack: 57 kg is not a pin
+
+let fly595 = stack("59.5", unit: .kg, step: "5", stepUnit: .lbs)
+check("59.5 kg is the printed 125 lb column plus leftover", fly595.loadLine == "pin at 56.7 kg · 2.5 kg")
+check("59.5 kg pin is 125 lbs", fly595.pinWeight == lbs("125"))
+check("59.5 kg speaks 56.7 kg, not 57 kg", fly595.spokenPinWeight == kg("56.7"))
+check("59.5 kg hangs a 2.5 kg plate", fly595.pinRemainder == [kg("2.5")])
+check("59.5 kg is not exact", !fly595.isExact)
+check("59.5 kg loadedTotal is pin plus leftover", fly595.loadedTotal == kg("59.2"))
+check("59.5 kg qualifier adds leftover", fly595.qualifierLine == "56.7 kg + 2.5")
+
 if failures > 0 {
     print("\(failures) failed")
     exit(1)

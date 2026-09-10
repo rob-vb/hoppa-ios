@@ -34,7 +34,7 @@ public struct StackLoad: Sendable, Hashable {
     public var pinWeight: Weight
     /// Working-unit mass named for the pin on the load line. Tenths when that
     /// is the printed column (`4.5 kg` on 10 lbs); ones when leftover is
-    /// scored from ones (`79 kg + 1 + 1`).
+    /// scored from ones that do not round past tenths (`79 kg + 1 + 1`).
     public var spokenPinWeight: Weight
     /// Add-ons on an lbs ladder, plus leftover rack plates in the working unit when
     /// the ladder and the Working Weight disagree. Rack plates on a kg leftover path.
