@@ -31,7 +31,7 @@ public struct Sticker: Sendable, Hashable {
         self.unit = target
     }
 
-    /// The pin column on an lbs stack: 190 lbs reads 86 kg, not 86.2.
+    /// Whole kg of a converted mass. 190 lbs reads 86 kg, not 86.2.
     /// Rounds converted hundredths to whole units. Going through tenths first would
     /// turn 195 lbs (88.45 kg) into 89.
     public static func ones(of weight: Weight, readIn target: WeightUnit) -> Sticker? {
@@ -68,6 +68,17 @@ public struct Sticker: Sendable, Hashable {
             columns.append(ones)
         }
         return columns
+    }
+
+    /// What the gym prints on that pin for this ladder.
+    public static func pinColumns(
+        of weight: Weight, readIn target: WeightUnit, on ladder: StackLadder
+    ) -> [Sticker] {
+        if ladder.pinColumnIsOnes,
+           let ones = Sticker.ones(of: weight, readIn: target) {
+            return [ones]
+        }
+        return settableColumns(of: weight, readIn: target)
     }
 
     init(tenths: Int, unit: WeightUnit) {

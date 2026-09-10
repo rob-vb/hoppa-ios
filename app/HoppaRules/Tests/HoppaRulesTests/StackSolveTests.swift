@@ -278,4 +278,46 @@ struct StackSolveTests {
         #expect(load.hanging == .addOns([lbs("2.5")], leftover: []))
         #expect(!load.isExact)
     }
+
+    @Test("66 kg on a 15 lb stack sits on the 66 kg plate")
+    func sixtySixIsTheHundredFortyFivePlate() {
+        let quad = Exercise(
+            id: ExerciseID(3), name: "Leg extension", equipment: .machineStack,
+            ownWeightUnit: .kg,
+            plannedSets: 2, repRange: RepRange(6, 8),
+            workingWeight: kg("66"), increment: kg("5"),
+            storedStackStep: lbs("15"),
+            storedStackFirstPlate: lbs("10"))
+        let inventory = PlateInventory.standard(.kg)
+        let resolved = quad.resolved(mode: .progressiveOverload, inventory: inventory)
+        guard case .stack(let load) = Rules.breakdown(for: resolved, inventory: inventory)
+        else { Issue.record("expected a stack"); return }
+
+        #expect(load.pinWeight == lbs("145"))
+        #expect(load.columnMass == kg("66"))
+        #expect(load.hanging == .addOns([], leftover: []))
+        #expect(load.isExact)
+        #expect(load.loadedTotal == kg("66"))
+    }
+
+    @Test("59 kg on a 15 lb stack sits on the 59 kg plate")
+    func fiftyNineIsTheHundredThirtyPlate() {
+        let hip = Exercise(
+            id: ExerciseID(4), name: "Hip abduction", equipment: .machineStack,
+            ownWeightUnit: .kg,
+            plannedSets: 2, repRange: RepRange(6, 8),
+            workingWeight: kg("59"), increment: kg("5"),
+            storedStackStep: lbs("15"),
+            storedStackFirstPlate: lbs("10"))
+        let inventory = PlateInventory.standard(.kg)
+        let resolved = hip.resolved(mode: .progressiveOverload, inventory: inventory)
+        guard case .stack(let load) = Rules.breakdown(for: resolved, inventory: inventory)
+        else { Issue.record("expected a stack"); return }
+
+        #expect(load.pinWeight == lbs("130"))
+        #expect(load.columnMass == kg("59"))
+        #expect(load.hanging == .addOns([], leftover: []))
+        #expect(load.isExact)
+        #expect(load.loadedTotal == kg("59"))
+    }
 }

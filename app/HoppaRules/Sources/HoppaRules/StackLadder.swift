@@ -10,6 +10,8 @@ public struct StackLadder: Sendable, Hashable {
 
     public var startsFromZero: Bool { first == step }
     public var unit: WeightUnit { step.unit }
+    /// 15 lb and coarser selectorized plates print whole kg. A 5 lb cable stack prints tenths.
+    public var pinColumnIsOnes: Bool { unit == .lbs && step.hundredths >= 1500 }
 
     /// nil / non-positive first → first == step. nil if step.hundredths <= 0.
     /// Differing units trap, same as `Weight.+`.

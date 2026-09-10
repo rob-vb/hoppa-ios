@@ -9,6 +9,7 @@ struct StackLadderTests {
         let ladder = StackLadder(step: lbs("15"), first: lbs("25"))!
         #expect(!ladder.startsFromZero)
         #expect(ladder.unit == .lbs)
+        #expect(ladder.pinColumnIsOnes)
 
         let at70 = ladder.pin(atOrUnder: lbs("70"))
         #expect(at70?.plate == 4)
@@ -30,6 +31,7 @@ struct StackLadderTests {
         let ladder = StackLadder(step: lbs("10"), first: nil)!
         #expect(ladder.startsFromZero)
         #expect(ladder.first == lbs("10"))
+        #expect(!ladder.pinColumnIsOnes)
 
         let pin = ladder.pin(atOrUnder: lbs("105"))
         #expect(pin?.plate == 10)

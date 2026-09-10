@@ -38,6 +38,37 @@ struct StickerTests {
         #expect(oneThirty.map(\.decimalString) == ["59"])
     }
 
+    @Test("A 15 lb stack prints whole kg, including ones that round past tenths")
+    func fifteenPoundPinColumnsAreOnes() {
+        let fifteen = StackLadder(step: lbs("15"), first: lbs("10"))!
+        let five = StackLadder(step: lbs("5"), first: nil)!
+        #expect(
+            Sticker.pinColumns(of: lbs("145"), readIn: .kg, on: fifteen)
+                .map(\.decimalString) == ["66"])
+        #expect(
+            Sticker.pinColumns(of: lbs("130"), readIn: .kg, on: fifteen)
+                .map(\.decimalString) == ["59"])
+        #expect(
+            Sticker.pinColumns(of: lbs("160"), readIn: .kg, on: fifteen)
+                .map(\.decimalString) == ["73"])
+        #expect(
+            Sticker.pinColumns(of: lbs("10"), readIn: .kg, on: five)
+                .map(\.decimalString) == ["4.5"])
+    }
+
+    @Test("Basic Fit hip abduction plates print whole kg")
+    func hipAbductionPhoto() {
+        let plates: [(String, String)] = [
+            ("25", "11"), ("40", "18"), ("55", "25"), ("70", "32"),
+            ("85", "39"), ("100", "45"), ("115", "52"), ("130", "59"),
+            ("145", "66"), ("160", "73"), ("175", "79"), ("190", "86"),
+            ("205", "93"), ("220", "100"),
+        ]
+        for (lbsLabel, kgLabel) in plates {
+            #expect(Sticker.ones(of: lbs(lbsLabel), readIn: .kg)?.decimalString == kgLabel)
+        }
+    }
+
     @Test("Same-unit sticker is tenths of the original")
     func sameUnit() {
         #expect(Sticker(of: kg("2.5"), readIn: .kg)?.decimalString == "2.5")
