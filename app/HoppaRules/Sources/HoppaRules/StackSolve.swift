@@ -19,6 +19,7 @@ enum StackSolve {
         var addOns: [Weight]
         var leftover: [Weight]
         var loadedTotal: Weight
+        var spokenPin: Weight
     }
 
     static func load(
@@ -63,9 +64,10 @@ enum StackSolve {
     }
 
     /// Neighboring pins × add-on subsets, each scored in spoken working-unit
-    /// mass after leftover plates. A pin whose printed tenths column is the
-    /// typed weight sits there with nothing hanging. Exact hits beat a nearer
-    /// lbs slider.
+    /// mass after leftover plates. Tenths recipes match the printed column
+    /// (`4.5 kg` on 10 lbs, `6.8 kg` on 15 lbs) and may hang leftover from
+    /// that column. Ones recipes exist only when something hangs, so `79 kg
+    /// + 1 + 1` still adds and a bare 10 lb plate is never a 5 kg pin.
     private static func searchLbs(
         target: Weight,
         ladder: StackLadder,
@@ -80,58 +82,52 @@ enum StackSolve {
         let sizes = rack.plates(for: mode)
         var best: Recipe?
         for pin in neighboringPins(on: ladder, around: converted) {
-            // Light plates print tenths (15 lbs → 6.8 kg). Ones rounding would
-            // call that 7 kg, miss the plate, and hang iron that adds to 6.8.
-            if hangLeftover,
-               spokenMass(pin.label, in: target.unit, pinColumn: false) == target {
-                let printed = Recipe(
-                    pin: pin, addOns: [], leftover: [], loadedTotal: target)
-                if better(printed, than: best, target: target) { best = printed }
-            }
             for subset in addOnSubsets(addOns) {
-                let leftoverPlates: [Weight]
-                let loadedTotal: Weight
                 if hangLeftover {
-                    let spoken =
-                        spokenMass(pin.label, in: target.unit, pinColumn: true).hundredths
-                        + subset.reduce(0) {
-                            $0 + spokenMass($1, in: target.unit, pinColumn: false).hundredths
-                        }
-                    let gap = target.hundredths - spoken
-                    if gap > 0 {
-                        let need = Weight(hundredths: gap, unit: target.unit)
-                        leftoverPlates = exactCover(need, sizes: sizes)
-                            ?? Rules.greedy(need, sizes: sizes).plates
-                    } else {
-                        leftoverPlates = []
+                    // Tenths only on an exact printed column. Misses keep ones
+                    // so 88.8 kg stays `pin at 86 kg · 2.5 kg`, not 195 lbs.
+                    if let tenths = hangRecipe(
+                        pin: pin, addOns: subset, pinColumn: false,
+                        target: target, sizes: sizes
+                    ), tenths.loadedTotal == target,
+                       better(tenths, than: best, target: target) {
+                        best = tenths
                     }
-                    let hung = leftoverPlates.reduce(0) { $0 + $1.hundredths }
-                    loadedTotal = Weight(hundredths: spoken + hung, unit: target.unit)
+                    if let ones = hangRecipe(
+                        pin: pin, addOns: subset, pinColumn: true,
+                        target: target, sizes: sizes
+                    ), better(ones, than: best, target: target) {
+                        best = ones
+                    }
                 } else {
-                    leftoverPlates = []
                     let extra = subset.reduce(0) { $0 + $1.hundredths }
                     let iron = Weight(
                         hundredths: pin.label.hundredths + extra, unit: ladder.unit)
-                    loadedTotal = target.unit == ladder.unit
+                    let loadedTotal = target.unit == ladder.unit
                         ? iron
                         : iron.converted(to: target.unit)
+                    let recipe = Recipe(
+                        pin: pin, addOns: subset, leftover: [],
+                        loadedTotal: loadedTotal,
+                        spokenPin: target.unit == ladder.unit
+                            ? pin.label
+                            : spokenMass(pin.label, in: target.unit, pinColumn: true))
+                    if better(recipe, than: best, target: target) { best = recipe }
                 }
-                let recipe = Recipe(
-                    pin: pin, addOns: subset, leftover: leftoverPlates,
-                    loadedTotal: loadedTotal)
-                if better(recipe, than: best, target: target) { best = recipe }
             }
         }
+        let firstPin = StackLadder.Pin(plate: 1, label: ladder.first)
+        let fallbackTotal = target.unit == ladder.unit
+            ? ladder.first
+            : spokenMass(ladder.first, in: target.unit, pinColumn: false)
         let chosen = best ?? Recipe(
-            pin: StackLadder.Pin(plate: 1, label: ladder.first),
-            addOns: [], leftover: [],
-            loadedTotal: target.unit == ladder.unit
-                ? ladder.first
-                : ladder.first.converted(to: target.unit))
+            pin: firstPin, addOns: [], leftover: [],
+            loadedTotal: fallbackTotal, spokenPin: fallbackTotal)
         return StackLoad(
             blocks: chosen.pin.plate,
             stackStep: ladder.step,
             pinWeight: chosen.pin.label,
+            spokenPinWeight: chosen.spokenPin,
             hanging: .addOns(chosen.addOns, leftover: chosen.leftover),
             isExact: chosen.loadedTotal == target,
             microload: microload,
@@ -139,6 +135,37 @@ enum StackSolve {
             workingUnit: target.unit,
             loadedTotal: chosen.loadedTotal,
             difference: chosen.loadedTotal - target)
+    }
+
+    /// Leftover fill from one pin column. Ones recipes with nothing hanging
+    /// are dropped: that column is a rounding, not a plate the gym printed.
+    private static func hangRecipe(
+        pin: StackLadder.Pin,
+        addOns: [Weight],
+        pinColumn: Bool,
+        target: Weight,
+        sizes: [Weight]
+    ) -> Recipe? {
+        let spokenPin = spokenMass(pin.label, in: target.unit, pinColumn: pinColumn)
+        let sliders = addOns.reduce(0) {
+            $0 + spokenMass($1, in: target.unit, pinColumn: false).hundredths
+        }
+        let spoken = spokenPin.hundredths + sliders
+        let leftoverPlates: [Weight]
+        let gap = target.hundredths - spoken
+        if gap > 0 {
+            let need = Weight(hundredths: gap, unit: target.unit)
+            leftoverPlates = exactCover(need, sizes: sizes)
+                ?? Rules.greedy(need, sizes: sizes).plates
+        } else {
+            leftoverPlates = []
+        }
+        if pinColumn, addOns.isEmpty, leftoverPlates.isEmpty { return nil }
+        let hung = leftoverPlates.reduce(0) { $0 + $1.hundredths }
+        return Recipe(
+            pin: pin, addOns: addOns, leftover: leftoverPlates,
+            loadedTotal: Weight(hundredths: spoken + hung, unit: target.unit),
+            spokenPin: spokenPin)
     }
 
     private static func better(_ recipe: Recipe, than current: Recipe?, target: Weight) -> Bool {
@@ -177,10 +204,14 @@ enum StackSolve {
         let extra = fill.plates.reduce(0) { $0 + $1.hundredths }
         let iron = Weight(hundredths: pinWeight.hundredths + extra, unit: ladderUnit)
         let loadedTotal = iron.converted(to: target.unit)
+        let spokenPin = pinWeight.unit == target.unit
+            ? pinWeight
+            : spokenMass(pinWeight, in: target.unit, pinColumn: true)
         return StackLoad(
             blocks: pin?.plate ?? 0,
             stackStep: step,
             pinWeight: pinWeight,
+            spokenPinWeight: spokenPin,
             hanging: .rackPlates(fill.plates),
             isExact: loadedTotal == target,
             microload: microload,

@@ -209,6 +209,7 @@ struct StackSolveTests {
         else { Issue.record("expected a stack"); return }
 
         #expect(load.pinWeight == lbs("10"))
+        #expect(load.spokenPinWeight == kg("4.5"))
         #expect(load.hanging == .addOns([], leftover: [kg("0.5")]))
         #expect(load.isExact)
         #expect(load.loadedTotal == kg("5"))

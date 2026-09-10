@@ -115,26 +115,7 @@ extension StackLoad {
     }
 
     private var spokenPin: String {
-        if workingUnit == .kg, pinWeight.unit == .lbs {
-            if speaksPrintedTenths,
-               let tenths = Sticker(of: pinWeight, readIn: .kg) {
-                return "\(tenths.decimalString) kg"
-            }
-            if let ones = Sticker.ones(of: pinWeight, readIn: .kg) {
-                return "\(ones.decimalString) kg"
-            }
-        }
-        return "\(pinWeight.decimalString) \(pinWeight.unit.rawValue)"
-    }
-
-    /// Bare pin whose tenths column is the loaded total: 15 lbs reads 6.8 kg,
-    /// not the ones rounding (7 kg). Hanging recipes still speak ones so
-    /// 79 kg + 1 + 1 adds.
-    private var speaksPrintedTenths: Bool {
-        pinRemainder.isEmpty
-            && microloadPlates.isEmpty
-            && (microload?.isZero ?? true)
-            && Sticker(of: pinWeight, readIn: .kg)?.asWeight == loadedTotal
+        "\(spokenPinWeight.decimalString) \(spokenPinWeight.unit.rawValue)"
     }
 
     private func spokenNumber(_ plate: Weight) -> String {

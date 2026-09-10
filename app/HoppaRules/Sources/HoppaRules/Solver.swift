@@ -29,9 +29,13 @@ public struct StackLoad: Sendable, Hashable {
     /// How many pin steps are under the pin.
     public var blocks: Int
     public var stackStep: Weight
-    /// What the pin plate reads in the ladder's unit. Logging copy speaks the
-    /// working-unit sticker of this label (`SPEC.md` §5.3).
+    /// What the pin plate reads in the ladder's unit. Logging copy speaks
+    /// `spokenPinWeight`, not a second rounding of this label.
     public var pinWeight: Weight
+    /// Working-unit mass named for the pin on the load line. Tenths when that
+    /// is the printed column (`4.5 kg` on 10 lbs); ones when leftover is
+    /// scored from ones (`79 kg + 1 + 1`).
+    public var spokenPinWeight: Weight
     /// Add-ons on an lbs ladder, plus leftover rack plates in the working unit when
     /// the ladder and the Working Weight disagree. Rack plates on a kg leftover path.
     public var hanging: PinHanging
