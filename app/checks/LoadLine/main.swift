@@ -20,6 +20,7 @@ func lbs(_ text: String) -> Weight { Weight(decimalString: text, unit: .lbs)! }
 func stack(
     _ weight: String, unit: WeightUnit = .kg, step: String,
     stepUnit: WeightUnit? = nil,
+    first: String? = nil,
     mode: ProgressionMode = .progressiveOverload,
     inventory: PlateInventory = .standard(.kg),
     microload: Weight? = nil
@@ -27,6 +28,7 @@ func stack(
     let working = Weight(decimalString: weight, unit: unit)!
     let ladderUnit = stepUnit ?? unit
     let stepWeight = Weight(decimalString: step, unit: ladderUnit)!
+    let firstPlate = first.map { Weight(decimalString: $0, unit: ladderUnit)! }
     let exercise = Exercise(
         id: ExerciseID(1), name: "Chest fly machine", equipment: .machineStack,
         ownWeightUnit: unit,
@@ -34,6 +36,7 @@ func stack(
         workingWeight: working, increment: stepWeight,
         modeOverride: mode,
         storedStackStep: stepWeight,
+        storedStackFirstPlate: firstPlate,
         microload: microload)
     let resolved = exercise.resolved(mode: mode, inventory: inventory)
     guard case .stack(let load) = Rules.breakdown(for: resolved, inventory: inventory) else {
@@ -162,6 +165,13 @@ check("59.5 kg hangs a 2.5 kg plate", fly595.pinRemainder == [kg("2.5")])
 check("59.5 kg is not exact", !fly595.isExact)
 check("59.5 kg loadedTotal is pin plus leftover", fly595.loadedTotal == kg("59.2"))
 check("59.5 kg qualifier adds leftover", fly595.qualifierLine == "56.7 kg + 2.5")
+
+// MARK: - 66 kg on a 15 lb stack, first plate 10 lbs
+
+let quad = stack("66", unit: .kg, step: "15", stepUnit: .lbs, first: "10")
+check("66 kg names the 145 lb plate", quad.loadLine == "pin at 145 lbs")
+check("66 kg pin is 145 lbs", quad.pinWeight == lbs("145"))
+check("66 kg is not exact", !quad.isExact)
 
 if failures > 0 {
     print("\(failures) failed")
