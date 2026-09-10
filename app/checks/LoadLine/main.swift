@@ -140,6 +140,20 @@ check("6.8 kg hangs nothing", press68.pinRemainder.isEmpty)
 check("6.8 kg qualifier is the pin", press68.qualifierLine == "6.8 kg")
 check("6.8 kg loadedTotal is the typed weight", press68.loadedTotal == kg("6.8"))
 
+// MARK: - 5 kg is not the 10 lb plate. That plate prints 4.5 kg.
+
+var fiveGym = PlateInventory.standard(.kg)
+fiveGym.setPlate(kg("1"), on: true)
+fiveGym.setPlate(kg("0.5"), on: true)
+let press5 = stack(
+    "5", unit: .kg, step: "5", stepUnit: .lbs,
+    mode: .microloading, inventory: fiveGym)
+check("5 kg is exact", press5.isExact)
+check("5 kg is the 10 lb plate plus 0.5 kg", press5.loadLine == "pin at 4.5 kg · 0.5 kg")
+check("5 kg pin is 10 lbs", press5.pinWeight == lbs("10"))
+check("5 kg hangs the 0.5 kg plate", press5.pinRemainder == [kg("0.5")])
+check("5 kg qualifier adds from the printed column", press5.qualifierLine == "4.5 kg + 0.5")
+
 if failures > 0 {
     print("\(failures) failed")
     exit(1)
