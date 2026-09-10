@@ -19,6 +19,15 @@ public struct LoggedSet: Codable, Sendable, Hashable {
         self.microload = microload
         self.oneOff = oneOff
     }
+
+    /// The only in-workout write. Weight, Microload and One-off stay.
+    /// Frozen at Finish because no Action on a finished Workout can see this Set.
+    /// Clamp at the boundary: `max(0, reps)`, same as `.logSet`.
+    public func correctingReps(to reps: Int) -> LoggedSet {
+        var copy = self
+        copy.reps = max(0, reps)
+        return copy
+    }
 }
 
 /// What progression did to one Performed Exercise. Written at Finish, **never recomputed**.

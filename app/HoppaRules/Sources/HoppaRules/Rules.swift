@@ -89,8 +89,27 @@ public enum Rules {
             book.openWorkout = workout
             return book
 
-        case .correctReps:
-            return logbook
+        case .correctReps(let index, let reps):
+            // Open Workout only. A finished Workout is history, and §2.5 freezes it.
+            guard var workout = book.openWorkout,
+                  let current = currentIndex(of: workout)
+            else { return logbook }
+
+            // Index is identity in the current Exercise's sets. A stale index
+            // after navigation is the view's bug; refuse here.
+            var performed = workout.exercises[current]
+            guard performed.sets.indices.contains(index) else { return logbook }
+
+            // Same Set: the user tapped the number they got wrong, not the load.
+            // Do not copy live working weight. Do not rebuild.
+            performed.sets[index] = performed.sets[index].correctingReps(to: reps)
+
+            // Completion is a function of count (or `.doneEarly`), not of reps.
+            // Count did not change, so state, currentIndex and rest stay.
+            // `now` is unused: the timer keeps the stamp `.logSet` wrote.
+            workout.exercises[current] = performed
+            book.openWorkout = workout
+            return book
 
         case .doneEarly:
             guard var workout = book.openWorkout, let index = currentIndex(of: workout)
