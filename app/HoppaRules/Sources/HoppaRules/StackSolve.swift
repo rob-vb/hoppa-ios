@@ -63,12 +63,6 @@ enum StackSolve {
             microloadPlates: microloadPlates)
     }
 
-    /// Neighboring pins × add-on subsets, each scored in spoken working-unit
-    /// mass after leftover plates. Tenths recipes match the printed column
-    /// (`4.5 kg` on 10 lbs, `6.8 kg` on 15 lbs) and may hang leftover from
-    /// that column. Ones recipes exist only when something hangs and when
-    /// ones do not round past tenths, so `79 kg + 1 + 1` still adds, a bare
-    /// 10 lb plate is never a 5 kg pin, and 125 lbs is 56.7 kg, not 57 kg.
     private static func searchLbs(
         target: Weight,
         ladder: StackLadder,
@@ -96,13 +90,10 @@ enum StackSolve {
                             spokenPin: sticker.asWeight,
                             dropBareEmpty: !isTenths,
                             target: target, sizes: sizes
+                        ), admit(
+                            recipe, tenthsColumn: isTenths,
+                            hasOnesFloor: onesSettable, target: target
                         ) else { continue }
-                        // Tenths leftover on a miss only when ones is not a
-                        // settable column. Otherwise 88.8 kg would leave the
-                        // 190 lb pin as 86.2 kg + 2.5 kg.
-                        if isTenths, recipe.loadedTotal != target, onesSettable {
-                            continue
-                        }
                         if better(recipe, than: best, target: target) { best = recipe }
                     }
                 } else {
@@ -141,6 +132,18 @@ enum StackSolve {
             workingUnit: target.unit,
             loadedTotal: chosen.loadedTotal,
             difference: chosen.loadedTotal - target)
+    }
+
+    private static func admit(
+        _ recipe: Recipe,
+        tenthsColumn: Bool,
+        hasOnesFloor: Bool,
+        target: Weight
+    ) -> Bool {
+        if tenthsColumn, recipe.loadedTotal != target, hasOnesFloor {
+            return false
+        }
+        return true
     }
 
     /// Leftover fill from one pin column. Ones recipes with nothing hanging
