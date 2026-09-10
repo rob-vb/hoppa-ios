@@ -89,6 +89,22 @@ public enum Rules {
             book.openWorkout = workout
             return book
 
+        case .correctReps(let index, let reps):
+            // Open Workout only. A finished Workout is history, and §2.5 freezes it.
+            guard var workout = book.openWorkout,
+                  let current = currentIndex(of: workout)
+            else { return logbook }
+
+            // A stale index after navigation is the view's bug; refuse here.
+            var performed = workout.exercises[current]
+            guard performed.sets.indices.contains(index) else { return logbook }
+
+            performed.sets[index] = performed.sets[index].correctingReps(to: reps)
+
+            workout.exercises[current] = performed
+            book.openWorkout = workout
+            return book
+
         case .doneEarly:
             guard var workout = book.openWorkout, let index = currentIndex(of: workout)
             else { return logbook }

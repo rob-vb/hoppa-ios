@@ -1,7 +1,8 @@
-/// One performed group of reps. **A record of the past, and nothing later changes it.**
+/// One performed group of reps. **A record of the past; the Open Workout may correct
+/// `reps` in place; nothing after Finish changes it.**
 ///
-/// It carries no id: the app only ever appends, so its position is its identity
-/// (`SPEC.md` §2.5, and the decision record on ticket 19).
+/// It carries no id: its position is its identity (`SPEC.md` §2.5, and the decision
+/// record on ticket 19). Program edits and progression still must not rewrite history.
 public struct LoggedSet: Codable, Sendable, Hashable {
     public var reps: Int
     /// The weight lifted, **stored here** and not read live off the Exercise. §6.4 lets
@@ -18,6 +19,13 @@ public struct LoggedSet: Codable, Sendable, Hashable {
         self.weight = weight
         self.microload = microload
         self.oneOff = oneOff
+    }
+
+    /// The only in-workout write.
+    public func correctingReps(to reps: Int) -> LoggedSet {
+        var copy = self
+        copy.reps = max(0, reps)
+        return copy
     }
 }
 
