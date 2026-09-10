@@ -63,7 +63,9 @@ enum StackSolve {
     }
 
     /// Neighboring pins × add-on subsets, each scored in spoken working-unit
-    /// mass after leftover plates. Exact hits beat a nearer lbs slider.
+    /// mass after leftover plates. A pin whose printed tenths column is the
+    /// typed weight sits there with nothing hanging. Exact hits beat a nearer
+    /// lbs slider.
     private static func searchLbs(
         target: Weight,
         ladder: StackLadder,
@@ -78,6 +80,14 @@ enum StackSolve {
         let sizes = rack.plates(for: mode)
         var best: Recipe?
         for pin in neighboringPins(on: ladder, around: converted) {
+            // Light plates print tenths (15 lbs → 6.8 kg). Ones rounding would
+            // call that 7 kg, miss the plate, and hang iron that adds to 6.8.
+            if hangLeftover,
+               spokenMass(pin.label, in: target.unit, pinColumn: false) == target {
+                let printed = Recipe(
+                    pin: pin, addOns: [], leftover: [], loadedTotal: target)
+                if better(printed, than: best, target: target) { best = printed }
+            }
             for subset in addOnSubsets(addOns) {
                 let leftoverPlates: [Weight]
                 let loadedTotal: Weight

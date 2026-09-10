@@ -126,6 +126,20 @@ check("81 kg hangs two 1 kg plates", pulldown81.loadLine == "pin at 79 kg · 1 k
 check("81 kg qualifier is the math", pulldown81.qualifierLine == "79 kg + 1 + 1")
 check("81 kg loadedTotal is the typed weight", pulldown81.loadedTotal == kg("81"))
 
+// MARK: - 6.8 kg is the 15 lb plate, not 2 kg + hangers
+
+var pressGym = PlateInventory.standard(.kg)
+pressGym.setPlate(kg("1"), on: true)
+pressGym.setPlate(kg("0.5"), on: true)
+let press68 = stack(
+    "6.8", unit: .kg, step: "5", stepUnit: .lbs,
+    mode: .microloading, inventory: pressGym)
+check("6.8 kg is exact", press68.isExact)
+check("6.8 kg is only the pin", press68.loadLine == "pin at 6.8 kg")
+check("6.8 kg hangs nothing", press68.pinRemainder.isEmpty)
+check("6.8 kg qualifier is the pin", press68.qualifierLine == "6.8 kg")
+check("6.8 kg loadedTotal is the typed weight", press68.loadedTotal == kg("6.8"))
+
 if failures > 0 {
     print("\(failures) failed")
     exit(1)

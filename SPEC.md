@@ -600,7 +600,9 @@ pin on a **kg** ladder: the user sets the Working Weight and the pin takes the l
 or under it, with the remainder hanging on it as plates from the Inventory the Mode allows.
 
 An **lbs** ladder searches neighboring pins, the gym's 2.5 lb and 5 lb sliders, and leftover
-rack plates in the spoken Working Weight column. An exact spoken total wins. On a miss Hoppa
+rack plates in the spoken Working Weight column. A pin whose printed tenths column is the
+typed kg (`6.8 kg` on 15 lbs) sits there with nothing hanging. Otherwise an exact spoken
+total wins — ones for the pin so `79 kg + 1 + 1` adds, tenths for sliders. On a miss Hoppa
 takes the smaller gap, then fewer sliders, then fewer leftover plates, then the lower pin.
 Leftover plates are an exact cover of the remaining spoken mass when one exists, otherwise
 greedy-under. The pin recipe still prints. Stacks do not show `≈ CLOSEST`. That chip is the bar
@@ -671,7 +673,7 @@ The pin is no longer the artboard's `10 × 10 lbs` either: the built caption alr
 label, and the hanging half now matches. Logging speaks the Working Weight's unit. An lbs pin
 in a kg UI is the kg column on that plate (`pin at 86 kg · 2.3 kg + 0.5 kg`); the rack still
 glosses the same slider as `5 lbs (2.3 kg)`. An exact pin with nothing hanging is only
-`pin at 86 kg`.
+the printed column: `pin at 6.8 kg` on 15 lbs, `pin at 86 kg` on 190 lbs.
 
 **Mixed units** stack two numbers, each with its own unit label: the Working Weight big
 (`100` / `LBS`), the Microload under it (`+1.25` / `KG`). **There is no combined total anywhere
