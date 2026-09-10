@@ -29,11 +29,9 @@ public struct StackLoad: Sendable, Hashable {
     /// How many pin steps are under the pin.
     public var blocks: Int
     public var stackStep: Weight
-    /// What the pin plate reads in the ladder's unit. The load line names this.
+    /// What the pin plate reads in the ladder's unit.
     public var pinWeight: Weight
-    /// Working-unit mass leftover recipes add from. Tenths when that is the
-    /// printed column (`4.5 kg` on 10 lbs); ones when leftover is scored from
-    /// ones that do not round past tenths (`79 kg + 1 + 1`). Not a pin hole.
+    /// Working-unit mass the load line names, and leftover recipes add from.
     public var columnMass: Weight
     /// Add-ons on an lbs ladder, plus leftover rack plates in the working unit when
     /// the ladder and the Working Weight disagree. Rack plates on a kg leftover path.

@@ -86,7 +86,7 @@ extension StackLoad {
     /// Progressive Overload hangs a normal plate on the pin, and even a real Microplate
     /// has a size the gym needs to hear (`SPEC.md` §5.5).
     var loadLine: String {
-        var line = "pin at \(pinHole)"
+        var line = "pin at \(columnPhrase)"
         let hanging = hangingLabels
         if !hanging.isEmpty { line += " · " + hanging.joined(separator: " + ") }
         return line
@@ -112,10 +112,6 @@ extension StackLoad {
             labels.append(named(micro))
         }
         return labels
-    }
-
-    private var pinHole: String {
-        "\(pinWeight.decimalString) \(pinWeight.unit.rawValue)"
     }
 
     private var columnPhrase: String {

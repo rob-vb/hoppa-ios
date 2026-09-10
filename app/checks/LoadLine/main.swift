@@ -166,7 +166,7 @@ check("59.5 kg is not exact", !fly595.isExact)
 check("59.5 kg loadedTotal is pin plus leftover", fly595.loadedTotal == kg("59.2"))
 check("59.5 kg qualifier adds leftover", fly595.qualifierLine == "56.7 kg + 2.5")
 
-// MARK: - 66 kg on a 15 lb stack, first plate 10 lbs. Basic Fit prints 66 kg on 145 lbs.
+// MARK: - 66 kg on a 15 lb stack, first plate 10 lbs
 
 let quad = stack("66", unit: .kg, step: "15", stepUnit: .lbs, first: "10")
 check("66 kg names the 66 kg plate", quad.loadLine == "pin at 66 kg")

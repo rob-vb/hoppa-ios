@@ -81,14 +81,16 @@ enum StackSolve {
                 if hangLeftover {
                     guard let tenthsSticker = Sticker(of: pin.label, readIn: target.unit)
                     else { continue }
-                    let columns = Sticker.settableColumns(of: pin.label, readIn: target.unit)
+                    let columns = Sticker.pinColumns(
+                        of: pin.label, readIn: target.unit, on: ladder)
                     let onesSettable = columns.contains { $0 != tenthsSticker }
+                    let onesIsOnlyRounding = columns.contains(tenthsSticker)
                     for sticker in columns {
                         let isTenths = sticker == tenthsSticker
                         guard let recipe = hangRecipe(
                             pin: pin, addOns: subset,
                             spokenPin: sticker.asWeight,
-                            dropBareEmpty: !isTenths,
+                            dropBareEmpty: !isTenths && onesIsOnlyRounding,
                             target: target, sizes: sizes
                         ), admit(
                             recipe, tenthsColumn: isTenths,
@@ -146,8 +148,7 @@ enum StackSolve {
         return true
     }
 
-    /// Leftover fill from one pin column. Ones recipes with nothing hanging
-    /// are dropped: that column is a rounding, not a plate the gym printed.
+    /// Leftover fill from one pin column.
     private static func hangRecipe(
         pin: StackLadder.Pin,
         addOns: [Weight],
