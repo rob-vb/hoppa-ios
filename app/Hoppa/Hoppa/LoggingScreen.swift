@@ -33,8 +33,6 @@ struct LoggingScreen: View {
     @Binding var path: [Route]
     let workoutDayId: WorkoutDayID
 
-    /// What `Put` will write, and which slot. Nil on `correcting` means the bottom row
-    /// is logging the next Set (or moving on). Not persisted. Not an Action.
     private struct Correction {
         var index: Int
         var reps: Int
@@ -43,7 +41,6 @@ struct LoggingScreen: View {
     /// The reps the bottom button will log. `nil` means *the Target Reps* — the top of the
     /// Rep Range — so a `−` on one Exercise never leaks into the next one. Next Set only.
     @State private var pendingReps: Int?
-    /// Aim plus the stepper count for a logged Set. `nil` means not aiming.
     @State private var correcting: Correction?
     @State private var sheet: LoggingSheet?
     @State private var showingList = false
@@ -426,8 +423,7 @@ struct LoggingScreen: View {
     }
 
     /// **Reps over the range read `14 reps · 8–12` — plain, no colour** (§6.4, §7.6). The
-    /// user did the work; nothing he did wears a warning. The whole row is the tap
-    /// target: the number is the meaning, the 50 px row is the hit.
+    /// user did the work; nothing he did wears a warning.
     private func loggedRow(_ number: Int, _ set: LoggedSet, _ exercise: ResolvedExercise) -> some View {
         let index = number - 1
         let reps = displayReps(set, at: index)
@@ -472,8 +468,6 @@ struct LoggingScreen: View {
                 Spacer(minLength: 0)
             }
         }
-        // While a logged Set is aimed, this row is still the next log, but the
-        // stroke belongs to the aimed row. Tapping it cancels.
         if correcting != nil {
             Button { correcting = nil } label: {
                 row.contentShape(Rectangle())
@@ -555,8 +549,7 @@ struct LoggingScreen: View {
     // MARK: - The bottom control row
 
     /// `−` · `LOG n REPS` · `+` while there is a Set to log, and after that the one tap
-    /// that moves on. Aiming a logged Set steals the row: `PUT n REPS` replaces, including
-    /// after the last Set, until Put or cancel.
+    /// that moves on.
     ///
     /// **Completing costs no tap; moving on costs one** (§6.4). The last Set completes the
     /// Exercise by itself — that is `Rules.reduce`, not this view — and the button then

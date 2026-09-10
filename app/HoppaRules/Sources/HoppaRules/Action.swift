@@ -26,9 +26,7 @@ public enum Action: Sendable, Hashable {
     /// `index` is identity in `PerformedExercise.sets` (ticket 19). Not an append:
     /// `.logSet` copies live weight, may complete, and starts rest; this case does
     /// none of that. The Set is frozen at Finish because no Action on a finished
-    /// Workout can see it — that is the §2.5 carve-out. View state is not here:
-    /// the screen aims, the stepper lives there, and this case arrives with a
-    /// finished number.
+    /// Workout can see it — that is the §2.5 carve-out.
     case correctReps(index: Int, reps: Int)
     /// Complete an Exercise with fewer Sets than planned. Real work, so not a Skip —
     /// and it does not progress (§3.2, §4.1).

@@ -1,8 +1,6 @@
 import Testing
 @testable import HoppaRules
 
-/// Correcting a logged Set on the Open Workout. Index is identity in the current
-/// Exercise's `sets`. The write is in place: same Set, new `reps`.
 @Suite("Correct reps on an Open Workout")
 struct CorrectRepsTests {
 
