@@ -12,7 +12,7 @@
 /// View state is **not** here. The prototype's reducer mixed real rules with the screen,
 /// the overlay, the keypad buffer and a narration log; those stay in SwiftUI and cannot
 /// fail a rules test. What the keypad produces arrives as a finished `Weight`, and the
-/// rep counter arrives as `reps` on `.logSet`.
+/// rep counter arrives as `reps` on `.logSet` or `.correctReps`.
 public enum Action: Sendable, Hashable {
     /// A Workout starts on an explicit action, never on the first logged Set (§3.1).
     case startWorkout(programId: ProgramID, workoutDayId: WorkoutDayID)
@@ -21,6 +21,15 @@ public enum Action: Sendable, Hashable {
     /// Move to the next Open Exercise, wrapping. Hoppa never jumps by itself (§6.4).
     case nextOpen
     case logSet(reps: Int)
+    /// Replace `reps` on an already-logged Set of the current Open Exercise.
+    ///
+    /// `index` is identity in `PerformedExercise.sets` (ticket 19). Not an append:
+    /// `.logSet` copies live weight, may complete, and starts rest; this case does
+    /// none of that. The Set is frozen at Finish because no Action on a finished
+    /// Workout can see it — that is the §2.5 carve-out. View state is not here:
+    /// the screen aims, the stepper lives there, and this case arrives with a
+    /// finished number.
+    case correctReps(index: Int, reps: Int)
     /// Complete an Exercise with fewer Sets than planned. Real work, so not a Skip —
     /// and it does not progress (§3.2, §4.1).
     case doneEarly

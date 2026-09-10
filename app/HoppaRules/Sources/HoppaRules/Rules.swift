@@ -89,6 +89,9 @@ public enum Rules {
             book.openWorkout = workout
             return book
 
+        case .correctReps:
+            return logbook
+
         case .doneEarly:
             guard var workout = book.openWorkout, let index = currentIndex(of: workout)
             else { return logbook }
