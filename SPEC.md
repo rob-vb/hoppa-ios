@@ -154,7 +154,7 @@ altogether. So the Workout keeps it, and the row states a fact.
 
 ### 2.5 Set
 
-**A Set is the record of a performance, and nothing later changes it.** It holds:
+**A Set is the record of a performance.** It holds:
 
 | Field | Notes |
 | --- | --- |
@@ -163,6 +163,10 @@ altogether. So the Workout keeps it, and the row states a fact.
 | Weight Unit | As performed. |
 | Microload | As performed, where the Exercise had one (§4.2). |
 | One-off mark | Set under a One-off Weight, yes or no. |
+
+The Open Workout may replace `reps` in place: the user tapped the count he got wrong, not
+the load. Weight, Microload and One-off stay. Once the Workout finishes, the Set is frozen
+— no Action on a finished Workout can see it. Program edits still must not rewrite Sets.
 
 The weight sits on the **Set** and not on the logged Exercise, because §6.4 lets the user raise
 the weight part-way through an Exercise: the Sets before that raise were lifted lighter, and one
@@ -936,6 +940,11 @@ chip on every Set row logged under it.
 **Completing an Exercise costs no tap; moving on costs one.** The last Set completes the Exercise
 by itself, and the bottom button then becomes `NEXT: BARBELL ROW`, or `FINISH WORKOUT` when
 nothing is Open. **Hoppa does not jump by itself.**
+
+**Tap a logged Set row** to aim the bottom row at that Set. The control becomes
+`−` · `PUT n REPS` · `+`. Confirm replaces `reps` on that Set; weight, Microload and One-off
+stay. Rest does not restart. Tap the same row again, or the next Set row while the Exercise
+is still Open, to cancel. After the last Set, Put steals `NEXT` / `FINISH` until Put or cancel.
 
 **The exercise counter is the navigation.** `3 / 5 ▾` opens a full-screen list where every
 Exercise carries its state as a pill, under the line *"Leaving an open Exercise means later,
