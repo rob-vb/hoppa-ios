@@ -165,6 +165,32 @@ struct StackSolveTests {
         #expect(load.difference == kg("0"))
     }
 
+    @Test("6.8 kg is the 15 lb plate, not pin at 2 kg plus hangers")
+    func fifteenPoundPinIsThePrintedSixPointEight() {
+        var inventory = PlateInventory.standard(.kg)
+        inventory.setPlate(kg("1"), on: true)
+        inventory.setPlate(kg("0.75"), on: true)
+        inventory.setPlate(kg("0.5"), on: true)
+        inventory.setPlate(kg("0.25"), on: true)
+        let press = Exercise(
+            id: ExerciseID(6), name: "Chest press machine", equipment: .machineStack,
+            ownWeightUnit: .kg,
+            plannedSets: 2, repRange: RepRange(6, 8),
+            workingWeight: kg("6.8"), increment: kg("0.5"),
+            microloadingIncrement: kg("0.5"),
+            modeOverride: .microloading,
+            storedStackStep: lbs("5"))
+        let resolved = press.resolved(mode: .microloading, inventory: inventory)
+        guard case .stack(let load) = Rules.breakdown(for: resolved, inventory: inventory)
+        else { Issue.record("expected a stack"); return }
+
+        #expect(load.pinWeight == lbs("15"))
+        #expect(load.hanging == .addOns([], leftover: []))
+        #expect(load.isExact)
+        #expect(load.loadedTotal == kg("6.8"))
+        #expect(load.difference == kg("0"))
+    }
+
     @Test("81 kg still hits with two 1 kg plates when 0.75 is off")
     func latPulldownEightyOneSkipsTheTooBigPlate() {
         var inventory = PlateInventory.standard(.kg)

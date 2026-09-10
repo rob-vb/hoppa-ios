@@ -21,6 +21,7 @@ struct StickerTests {
         #expect(Sticker.ones(of: lbs("195"), readIn: .kg)?.decimalString == "88")
         #expect(Sticker.ones(of: lbs("200"), readIn: .kg)?.decimalString == "91")
         #expect(Sticker.ones(of: lbs("10"), readIn: .kg)?.decimalString == "5")
+        #expect(Sticker.ones(of: lbs("15"), readIn: .kg)?.decimalString == "7")
     }
 
     @Test("Same-unit sticker is tenths of the original")
