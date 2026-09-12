@@ -30,6 +30,7 @@ import HoppaStore
 
 struct ProgressScreen: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
 
     private var rows: [ProgressRow] {
@@ -41,7 +42,7 @@ struct ProgressScreen: View {
             Color.floor.ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
                 Spacer().frame(height: 16)
-                Text("Progress")
+                Text(copy[.progress])
                     .typography(Typography.display(31, tracking: 0.005))
                     .foregroundStyle(Color.text)
                 content
@@ -70,7 +71,7 @@ struct ProgressScreen: View {
     /// Rows are separated by a rule and not by a card, so this page and History rhyme.
     private func list(_ rows: [ProgressRow]) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(rows.count == 1 ? "1 exercise" : "\(rows.count) exercises")
+            Text(copy.exerciseCount(rows.count))
                 .typography(Typography.label())
                 .foregroundStyle(Color.labelText)
             Spacer().frame(height: 10)
@@ -110,7 +111,7 @@ struct ProgressScreen: View {
                     if row.timesUp > 0 {
                         // The one green thing on the row, and §7.3 already gives green
                         // its meaning everywhere else.
-                        Text(row.timesUp == 1 ? "1 went up" : "\(row.timesUp) went up")
+                        Text(copy.wentUpCount(row.timesUp))
                             .typography(Typography.label(10, tracking: 0.11))
                             .foregroundStyle(Color.go)
                     }
@@ -130,14 +131,13 @@ struct ProgressScreen: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.pressable)
-        .accessibilityLabel("Chart for \(row.name), \(row.workoutDayName)")
+        .accessibilityLabel(copy.chartFor(row.name, day: row.workoutDayName))
     }
 
     /// `Upper A · 12 sessions`, and `1 session` at one. The Day comes first because it is
     /// what tells two Exercises with one Name apart (§2.7).
     private func meta(_ row: ProgressRow) -> String {
-        let sessions = row.sessionCount == 1 ? "1 session" : "\(row.sessionCount) sessions"
-        return "\(row.workoutDayName) · \(sessions)"
+        "\(row.workoutDayName) · \(copy.sessionCount(row.sessionCount))"
     }
 
     // MARK: - Before the first session (§6.7)
@@ -146,10 +146,10 @@ struct ProgressScreen: View {
     /// on History when it is finished, and every Exercise it trained lands here.
     private var empty: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Nothing here yet")
+            Text(copy[.nothingHereYet])
                 .typography(Typography.display(26))
                 .foregroundStyle(Color.text)
-            Text("Finish a workout and every exercise you trained lands here.")
+            Text(copy[.finishWorkoutLandsExercisesHere])
                 .typography(Typography.body(13, lineSpacing: 4))
                 .foregroundStyle(Color.dimText)
         }

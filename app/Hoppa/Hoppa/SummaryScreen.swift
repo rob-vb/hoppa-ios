@@ -20,6 +20,7 @@ import HoppaStore
 
 struct SummaryScreen: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     /// **The one system setting Hoppa does not ignore** (§6.5, §7.2). With it on the rows
     /// still land in sequence and no burst fires.
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -147,7 +148,7 @@ struct SummaryScreen: View {
                 // The ScrollView above takes the slack, so the bar sits on the bottom
                 // edge the way the artboard's `margin-top:auto` puts it.
                 statsBar(summary)
-                PrimaryButton("Done") { path.removeAll() }
+                PrimaryButton(copy[.done]) { path.removeAll() }
                     .padding(.top, 14)
             }
         } else {
@@ -155,11 +156,11 @@ struct SummaryScreen: View {
             // that failed to load. There is nothing to summarise and one way out.
             VStack(alignment: .leading, spacing: 16) {
                 Spacer()
-                Text("That workout is gone.")
+                Text(copy[.thatWorkoutIsGone])
                     .typography(Typography.display(26))
                     .foregroundStyle(Color.text)
                 Spacer()
-                PrimaryButton("Done") { path.removeAll() }
+                PrimaryButton(copy[.done]) { path.removeAll() }
             }
         }
     }
@@ -173,7 +174,7 @@ struct SummaryScreen: View {
                 .foregroundStyle(Color.steel)
                 .lineLimit(1)
             Spacer(minLength: 8)
-            Text("Summary")
+            Text(copy[.summary])
                 .typography(Typography.label())
                 .foregroundStyle(Color.labelText)
         }
@@ -187,10 +188,10 @@ struct SummaryScreen: View {
     private func hero(_ summary: WorkoutSummary) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             if summary.count == 0 {
-                Text("Nothing went up")
+                Text(copy[.nothingWentUp])
                     .typography(Typography.display(33, tracking: 0.03))
                     .foregroundStyle(Color.text)
-                Text(performedLine(summary.performedCount))
+                Text(copy.exercisesPerformed(summary.performedCount))
                     .typography(Typography.body(12, lineSpacing: 6))
                     .foregroundStyle(Color.dimText)
                     .padding(.top, 6)
@@ -198,12 +199,12 @@ struct SummaryScreen: View {
                 Text("\(summary.count)")
                     .typography(Typography.display(96, tracking: -0.01))
                     .foregroundStyle(Color.go)
-                Text(summary.count == 1 ? "Exercise went up" : "Exercises went up")
+                Text(summary.count == 1 ? copy[.exerciseWentUp] : copy[.exercisesWentUp])
                     .typography(Typography.display(19, tracking: 0.05))
                     .foregroundStyle(Color.text)
                     .padding(.top, 10)
                 // The statement of fact that replaces an Accept button (§7.6).
-                Text("Hoppa already changed the weight. Next time it is on the bar.")
+                Text(copy[.hoppaAlreadyChangedTheWeight])
                     .typography(Typography.body(12, lineSpacing: 6))
                     .foregroundStyle(Color.dimText)
                     .padding(.top, 6)
@@ -214,23 +215,13 @@ struct SummaryScreen: View {
         .padding(.bottom, 6)
     }
 
-    /// §6.5's `n Exercises performed. Every Set is logged.` — and the one case it does
-    /// not cover: a Workout where everything was skipped has no Set to call logged.
-    private func performedLine(_ count: Int) -> String {
-        switch count {
-        case 0: "No exercises performed."
-        case 1: "1 Exercise performed. Every Set is logged."
-        default: "\(count) Exercises performed. Every Set is logged."
-        }
-    }
-
     // MARK: - The three sections
 
     private func sections(_ summary: WorkoutSummary) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 if !summary.wentUp.isEmpty {
-                    section("Went up") {
+                    section(copy[.wentUp]) {
                         VStack(spacing: 0) {
                             ForEach(Array(summary.wentUp.enumerated()), id: \.element.id) {
                                 index, row in
@@ -247,14 +238,14 @@ struct SummaryScreen: View {
                     }
                 }
                 if !summary.stayed.isEmpty {
-                    section("Stayed") {
+                    section(copy[.stayed]) {
                         VStack(spacing: 0) {
                             ForEach(summary.stayed) { stayedRow($0) }
                         }
                     }
                 }
                 if !summary.skipped.isEmpty {
-                    section("Skipped") {
+                    section(copy[.skipped]) {
                         VStack(alignment: .leading, spacing: 0) {
                             ForEach(summary.skipped) { skippedRow($0) }
                         }
@@ -317,7 +308,7 @@ struct SummaryScreen: View {
             Text(weightText(row.to))
                 .typography(Typography.display(22, tracking: 0.02))
                 .foregroundStyle(Color.go)
-            Text("Next time")
+            Text(copy[.nextTime])
                 .typography(Typography.label(9))
                 .foregroundStyle(Color.steel)
         }
@@ -351,7 +342,7 @@ struct SummaryScreen: View {
         var parts: [String] = []
         if let performed = row.performed { parts.append(weightText(performed)) }
         if !row.reps.isEmpty {
-            parts.append(row.reps.map(String.init).joined(separator: " · ") + " reps")
+            parts.append(row.reps.map(String.init).joined(separator: " · ") + " \(copy[.reps])")
         }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
@@ -363,24 +354,24 @@ struct SummaryScreen: View {
         case .oneOff(let stays):
             // §7.6's chip, so it is the same object the logging screen draws.
             if let stays {
-                Chip("One-off · \(stays.decimalString) \(stays.unit.rawValue) stays", tone: .steel)
+                Chip(copy.oneOffStays(stays), tone: .steel)
             } else {
-                Chip("One-off", tone: .steel)
+                Chip(copy[.oneOff], tone: .steel)
             }
         case .none(let stays):
             if let stays {
-                Chip("None · \(stays.decimalString) \(stays.unit.rawValue) stays", tone: .steel)
+                Chip(copy.noneStays(stays), tone: .steel)
             } else {
-                Chip("None", tone: .steel)
+                Chip(copy.screenName(.none), tone: .steel)
             }
         case .target(let sets, let reps, let to):
-            conditionText("All \(sets) sets at \(reps) → \(weightText(to))")
+            conditionText(copy.allSetsAt(sets: sets, reps: reps, to: weightText(to)))
         case .blocked(let blocker, let sets, let reps):
             // §6.6: the blocking condition stands **in place of the green line**, so the
             // rep condition still reads and only the target is replaced.
-            conditionText("All \(sets) sets at \(reps) · \(blocker.reason)")
+            conditionText(copy.allSetsBlocked(sets: sets, reps: reps, reason: copy.reason(blocker)))
         case .gone:
-            conditionText("Removed from the program")
+            conditionText(copy[.removedFromTheProgram])
         }
     }
 
@@ -409,10 +400,10 @@ struct SummaryScreen: View {
 
     private func statsBar(_ summary: WorkoutSummary) -> some View {
         HStack(spacing: 0) {
-            stat(clock(summary.durationSeconds), "Duration")
-            stat("\(summary.setCount)", "Sets")
+            stat(clock(summary.durationSeconds), copy[.duration])
+            stat("\(summary.setCount)", copy[.sets])
             // **The one number that converts** (§5.1), to the Program's default unit.
-            stat(grouped(summary.volume), "\(summary.volume.unit.rawValue) volume")
+            stat(grouped(summary.volume), copy.volumeLabel(summary.volume.unit))
         }
         .overlay(alignment: .top) { hairline(Color.line) }
     }

@@ -1673,7 +1673,7 @@ arm's length. The **sleeve stops stay**; they are what says where the loading zo
   progress".
 - No warning colour on anything the user did — over-range reps, skipped Exercises, a lowered
   weight.
-- All UI copy is **English**.
+- All UI copy is **English or Dutch**, per the user's `AppLanguage`. The phone's language picks the first-run default (Dutch only when the primary preferred language is Dutch); after that the stored choice wins.
 
 ---
 

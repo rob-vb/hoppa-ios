@@ -15,6 +15,7 @@ import HoppaStore
 
 struct WorkoutDayPicker: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
 
     /// §3.3's last line, and ticket 0040's whole screen. `nil` is the ordinary picker.
@@ -83,21 +84,21 @@ struct WorkoutDayPicker: View {
     /// because it is the one that keeps nothing.
     private func earlierDaySheet(_ open: Workout) -> some View {
         SheetStack(
-            heading: "\(open.workoutDayName) is still open",
-            note: "You started it \(started(open)). Hoppa never ends a workout by itself."
+            heading: copy.stillOpenHeading(open.workoutDayName),
+            note: copy.youStartedNote(started(open))
         ) {
-            SheetPrimary("Resume") {
+            SheetPrimary(copy[.resume]) {
                 sheet = nil
                 path.append(.logging(open.workoutDayId))
             }
-            SheetRow("Finish it", sub: finishSub(open)) {
+            SheetRow(copy[.finishIt], sub: finishSub(open)) {
                 sheet = nil
                 // §3.3's shortcut, said where the user taps rather than in a second sheet:
                 // one tap skips what is still Open and finishes, and nothing is ambiguous
                 // — every Exercise still ends Completed or Skipped.
                 end(open.canFinish ? .finish : .skipRemainingAndFinish)
             }
-            SheetRow("Discard it", sub: nil, tone: .stop) {
+            SheetRow(copy[.discardIt], sub: nil, tone: .stop) {
                 // A Workout with no logged Sets discards without a question (§3.3).
                 if open.hasLoggedAnything {
                     // **Not** `sheet = nil` first: dismissing and presenting in one tick
@@ -115,14 +116,14 @@ struct WorkoutDayPicker: View {
     /// Workout and two wordings would be two promises.
     private func discardSheet() -> some View {
         SheetStack(
-            heading: "Discard this workout?",
-            note: "Every logged set goes. Hoppa keeps nothing."
+            heading: copy[.discardThisWorkout],
+            note: copy[.everyLoggedSetGoes]
         ) {
-            SheetRow("Discard", sub: nil, tone: .stop, centred: true) {
+            SheetRow(copy[.discard], sub: nil, tone: .stop, centred: true) {
                 sheet = nil
                 end(.discard)
             }
-            SheetRow("Keep it", sub: nil, centred: true) { sheet = nil }
+            SheetRow(copy[.keepIt], sub: nil, centred: true) { sheet = nil }
         }
     }
 
@@ -130,14 +131,15 @@ struct WorkoutDayPicker: View {
     private func finishSub(_ open: Workout) -> String {
         let stillOpen = open.openExerciseCount
         guard stillOpen > 0 else {
-            let sets = open.loggedSetCount
-            return sets == 1 ? "1 set logged" : "\(sets) sets logged"
+            return copy.setsLogged(open.loggedSetCount)
         }
-        return "\(stillOpen) exercise\(stillOpen == 1 ? "" : "s") still open · will be skipped"
+        return copy.finishSkipNote(stillOpen)
     }
 
     private func started(_ open: Workout) -> String {
-        RelativeDay.text(open.startedAt, now: Date().timeIntervalSince1970).lowercased()
+        copy.relativeDay(
+            RelativeDay.elapsed(open.startedAt, now: Date().timeIntervalSince1970)
+        ).lowercased()
     }
 
     /// **A Finish lands on §6.5's Summary and a Discard lands on the picker** — the same
@@ -174,16 +176,16 @@ struct WorkoutDayPicker: View {
     /// background video sits behind the same centre. The tab bar hides until a Program
     /// exists: History, Progress and Settings with nothing behind them would be furniture.
     private var firstRun: some View {
-        ZStack {
-            Text("Nothing here yet")
+        VStack(spacing: 0) {
+            Spacer()
+            Text(copy[.nothingHereYet])
                 .typography(Typography.display(26))
                 .foregroundStyle(Color.text)
                 .multilineTextAlignment(.center)
-            VStack(spacing: 0) {
-                Spacer()
-                PrimaryButton("Create a program") { path.append(.createProgram) }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            Spacer().frame(height: 24)
+            LanguagePicker()
+            Spacer()
+            PrimaryButton(copy[.createAProgram]) { path.append(.createProgram) }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -195,7 +197,7 @@ struct WorkoutDayPicker: View {
             header(program)
             reweighBanner
             Spacer().frame(height: 8)
-            Text("Pick a day")
+            Text(copy[.pickADay])
                 .typography(Typography.label())
                 .foregroundStyle(Color.labelText)
             Spacer().frame(height: 16)
@@ -247,11 +249,13 @@ struct WorkoutDayPicker: View {
                         // It replaces the last-trained line rather than joining it: §3.1's
                         // line reads the newest **finished** Workout, and *running now* is
                         // the more useful of the two facts while it is true.
-                        Text("Running")
+                        Text(copy[.running])
                             .typography(Typography.meta())
                             .foregroundStyle(Color.go)
                     } else {
-                        Text(RelativeDay.text(store.logbook?.lastTrained(day.id), now: now))
+                        Text(copy.relativeDay(
+                            RelativeDay.elapsed(store.logbook?.lastTrained(day.id), now: now)
+                        ))
                             .typography(Typography.meta())
                             .foregroundStyle(Color.dimText)
                     }
@@ -285,11 +289,10 @@ struct WorkoutDayPicker: View {
             Button { path.append(.reweigh) } label: {
                 card {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(count == 1 ? "1 exercise has no weight" : "\(count) exercises have no weight")
+                        Text(copy.reweighHeadline(exerciseCount: count))
                             .typography(Typography.display(15))
                             .foregroundStyle(Color.text)
-                        // No blame and no advice (§7.6) — the condition, and what it costs.
-                        Text(count == 1 ? "It logs no set until you weigh it" : "They log no sets until you weigh them")
+                        Text(copy.reweighFootnote(exerciseCount: count))
                             .typography(Typography.meta())
                             .foregroundStyle(Color.dimText)
                     }
@@ -306,10 +309,10 @@ struct WorkoutDayPicker: View {
     /// to render and nothing to send, and Hoppa has changed no byte of the file.
     private var unreadable: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Hoppa cannot read your logbook.")
+            Text(copy[.hoppaCannotReadLogbook])
                 .typography(Typography.display(26))
                 .foregroundStyle(Color.stop)
-            Text("Nothing was changed. The file is exactly as it was.")
+            Text(copy[.fileUnchanged])
                 .typography(Typography.body(13, lineSpacing: 4))
                 .foregroundStyle(Color.dimText)
         }

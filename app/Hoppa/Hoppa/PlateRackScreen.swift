@@ -18,6 +18,7 @@ import HoppaStore
 
 struct PlateRackScreen: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
     /// §6.1 step 2 when it is there; the rack on its own when it is not.
     let draft: ProgramDraft?
@@ -37,13 +38,13 @@ struct PlateRackScreen: View {
                 // `STEP 2 OF 3` only while onboarding: the same screen reached from
                 // Flow 5 is not a step in anything.
                 StepHeader(step: draft == nil ? nil : 2, back: goBack)
-                Text("Your plate rack")
+                Text(copy[.yourPlateRack])
                     .typography(Typography.display(31, tracking: 0.005))
                     .foregroundStyle(Color.text)
                 Spacer().frame(height: 12)
                 unitToggle
                 Spacer().frame(height: 10)
-                Text("This unit applies to every barbell, dumbbell, machine (plates) and bodyweight exercise in the program.")
+                Text(copy[.thisUnitApplies])
                     .typography(Typography.body(12, lineSpacing: 3))
                     .foregroundStyle(Color.dimText)
                 Spacer().frame(height: 16)
@@ -51,7 +52,7 @@ struct PlateRackScreen: View {
                 Spacer(minLength: 12)
                 footer
                 Spacer().frame(height: 12)
-                PrimaryButton(draft == nil ? "Done" : "This is my rack", action: confirm)
+                PrimaryButton(draft == nil ? copy[.done] : copy[.thisIsMyRack], action: confirm)
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
@@ -65,10 +66,10 @@ struct PlateRackScreen: View {
             // Not `.destructive`: §6.6 switches nothing off in the data. Stranding is
             // **derived**, so switching the plate back on un-strands exactly what
             // switching it off stranded, and nothing is written and nothing is cleared.
-            Button("Switch it off") { store.send(.setPlate(plate, on: false)) }
-            Button("Cancel", role: .cancel) {}
-        } message: { plate in
-            Text(strandMessage(plate))
+            Button(copy[.switchItOff]) { store.send(.setPlate(plate, on: false)) }
+            Button(copy[.cancel], role: .cancel) {}
+        } message: { _ in
+            Text(copy.stopsProgressing(strandCount))
         }
         .confirmationDialog(
             clearTitle, isPresented: unitIsPresented, titleVisibility: .visible,
@@ -76,20 +77,16 @@ struct PlateRackScreen: View {
         ) { unit in
             // This one **is** destructive: it clears a real Working Weight on every
             // Exercise that reads its unit off the rack (§6.6).
-            Button("Switch to \(unit.rawValue.uppercased())", role: .destructive) {
+            Button(copy.switchToUnit(unit), role: .destructive) {
                 store.send(.setPlateInventoryUnit(unit))
                 // **The confirm leads to the Re-weigh list** (§6.6, ticket 0046). Only
                 // this path: `ask` sends the switch straight through when it clears
                 // nothing, and a list with no rows is a screen with nothing to say.
                 path.append(.reweigh)
             }
-            Button("Cancel", role: .cancel) {}
+            Button(copy[.cancel], role: .cancel) {}
         } message: { _ in
-            Text("""
-                Every barbell, dumbbell, machine (plates) and bodyweight exercise loses its \
-                weight, its increment and its base weight, and every microloading \
-                increment resets. The next screen asks for the weights again.
-                """)
+            Text(copy[.unitSwitchClears])
         }
     }
 
@@ -135,13 +132,13 @@ struct PlateRackScreen: View {
     private var groups: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                groupLabel("Plates you own")
+                groupLabel(copy[.platesYouOwn])
                 plateRows(rack.plates, tallest: 26, shortest: 11, width: 8)
                 Spacer().frame(height: 16)
-                groupLabel("Microplates")
+                groupLabel(copy[.microplates])
                 plateRows(rack.microplates, tallest: 10, shortest: 7, width: 7)
                 Spacer().frame(height: 16)
-                groupLabel("Stack add-ons")
+                groupLabel(copy[.stackAddOns])
                 addOnRows
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -289,8 +286,7 @@ struct PlateRackScreen: View {
     }
 
     private var strandTitle: String {
-        let count = strandCount
-        return count == 1 ? "1 EXERCISE USES THIS PLATE" : "\(count) EXERCISES USE THIS PLATE"
+        copy.usesThisPlate(strandCount)
     }
 
     private var strandCount: Int {
@@ -298,21 +294,10 @@ struct PlateRackScreen: View {
         return Rules.exercisesUsingMicroplate(plate, in: logbook).count
     }
 
-    private func strandMessage(_ plate: Weight) -> String {
-        let one = strandCount == 1
-        return """
-            \(one ? "It stops" : "They stop") progressing until you pick another plate. \
-            Nothing is cleared: switch the \(plate.decimalString) \(rack.unit.rawValue) \
-            back on and \(one ? "it progresses" : "they progress") again.
-            """
-    }
-
     private var clearTitle: String {
         guard let unit = pendingUnit, let logbook = store.logbook else { return "" }
         let count = Rules.exercisesClearedByInventoryUnit(unit, in: logbook).count
-        return count == 1
-            ? "THIS CLEARS THE WEIGHT ON 1 EXERCISE"
-            : "THIS CLEARS THE WEIGHT ON \(count) EXERCISES"
+        return copy.thisClearsWeight(count)
     }
 }
 
@@ -328,6 +313,7 @@ struct PlateRackScreen: View {
 struct MicroplateSheet: View {
     @Environment(LogbookStore.self) private var store
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.copy) private var copy
 
     private var rack: PlateInventory { store.logbook?.plateInventory ?? .standard(.kg) }
 
@@ -335,11 +321,11 @@ struct MicroplateSheet: View {
         ZStack {
             Color.floor.ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
-                Text("Microplates")
+                Text(copy[.microplates])
                     .typography(Typography.display(26))
                     .foregroundStyle(Color.text)
                 Spacer().frame(height: 8)
-                Text("Microloading needs a microplate you own. Switch on what is in your gym.")
+                Text(copy[.microplatesNeed])
                     .typography(Typography.body(12, lineSpacing: 3))
                     .foregroundStyle(Color.dimText)
                 Spacer().frame(height: 16)
@@ -374,7 +360,7 @@ struct MicroplateSheet: View {
                 Spacer(minLength: 12)
                 RackFooter(rack: rack)
                 Spacer().frame(height: 12)
-                PrimaryButton("Done") { dismiss() }
+                PrimaryButton(copy[.done]) { dismiss() }
             }
             .padding(.horizontal, 20)
             .padding(.top, 24)
@@ -394,6 +380,7 @@ struct MicroplateSheet: View {
 /// The number itself is a rule and lives in `HoppaRules`
 /// (`PlateInventory.smallestJumpOnTheBar(for:)`), where six tests run it.
 struct RackFooter: View {
+    @Environment(\.copy) private var copy
     let rack: PlateInventory
 
     var body: some View {
@@ -404,11 +391,11 @@ struct RackFooter: View {
         if normal == nil, micro == nil {
             // A rack emptied on purpose. Printing `0 kg` would read as a bar that moves
             // in steps of nothing, which is a different claim from *it does not move*.
-            Text("No plate is switched on.")
+            Text(copy[.noPlateSwitchedOn])
                 .typography(Typography.body(12))
                 .foregroundStyle(Color.dimText)
         } else {
-            (Text(normal.map(text) ?? "nothing").foregroundStyle(Color.text)
+            (Text(normal.map(text) ?? copy[.nothingOn]).foregroundStyle(Color.text)
                 + microClause(micro))
                 .typography(Typography.body(12, lineSpacing: 3))
         }
@@ -418,7 +405,7 @@ struct RackFooter: View {
         guard let micro else { return Text("") }
         return Text(" · ").foregroundStyle(Color.dimText)
             + Text(text(micro)).foregroundStyle(Color.text)
-            + Text(" with microloading").foregroundStyle(Color.dimText)
+            + Text(" \(copy[.withMicroloading])").foregroundStyle(Color.dimText)
     }
 
     private func text(_ weight: Weight) -> String {

@@ -28,8 +28,12 @@ struct RelativeDayTests {
         return formatter.date(from: text)!.timeIntervalSince1970
     }
 
+    private func elapsed(_ then: Double?, at now: String) -> ElapsedDays {
+        RelativeDay.elapsed(then, now: at(now), calendar: calendar)
+    }
+
     private func text(_ then: Double?, at now: String) -> String {
-        RelativeDay.text(then, now: at(now), calendar: calendar)
+        Phrasebook(.english).relativeDay(elapsed(then, at: now))
     }
 
     /// Every Day of a Program the user has just created. The common first case.

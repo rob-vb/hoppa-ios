@@ -28,6 +28,7 @@ import HoppaStore
 struct ExerciseSheet: View {
     @Environment(LogbookStore.self) private var store
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.copy) private var copy
 
     let target: ExerciseSheetTarget
 
@@ -153,7 +154,7 @@ struct ExerciseSheet: View {
                     VStack(alignment: .leading, spacing: 0) {
                         nameBlock
                         Spacer().frame(height: ExerciseSheetMetrics.blockSpacer)
-                        Text("Equipment type")
+                        Text(copy[.equipmentType])
                             .typography(Typography.label(10.5))
                             .foregroundStyle(equipmentIsMissing ? Color.stop : Color.labelText)
                         Spacer().frame(height: 8)
@@ -194,45 +195,45 @@ struct ExerciseSheet: View {
             // non-field, which on a scrolling sheet is not always reachable.
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button("Done") { focus = nil }
+                Button(copy[.done]) { focus = nil }
                     .typography(Typography.label(11))
                     .foregroundStyle(Color.text)
             }
         }
         .sheet(isPresented: $microplateSheet) { MicroplateSheet() }
         .confirmationDialog(
-            "Progression for this exercise", isPresented: $progressionDialog,
+            copy[.progressionForThisExercise], isPresented: $progressionDialog,
             titleVisibility: .visible
         ) {
-            Button(ProgressionMode.progressiveOverload.screenName) {
+            Button(copy.screenName(.progressiveOverload)) {
                 setMode(.progressiveOverload)
             }
-            Button(ProgressionMode.microloading.screenName) {
+            Button(copy.screenName(.microloading)) {
                 setMode(.microloading)
             }
-            Button(ProgressionMode.none.screenName) {
+            Button(copy.screenName(.none)) {
                 setMode(.none)
             }
-            Button("Cancel", role: .cancel) {}
+            Button(copy[.cancel], role: .cancel) {}
         }
         .confirmationDialog(
-            "Discard this exercise?", isPresented: $discardDialog, titleVisibility: .visible
+            copy[.discardThisExercise], isPresented: $discardDialog, titleVisibility: .visible
         ) {
-            Button("Discard", role: .destructive) { dismiss() }
-            Button("Keep editing", role: .cancel) {}
+            Button(copy[.discard], role: .destructive) { dismiss() }
+            Button(copy[.keepEditing], role: .cancel) {}
         } message: {
-            Text("Nothing is saved until you tap save.")
+            Text(copy[.nothingSavedUntilSave])
         }
         .confirmationDialog(
-            "Remove this exercise?", isPresented: $removeDialog, titleVisibility: .visible
+            copy[.removeThisExercise], isPresented: $removeDialog, titleVisibility: .visible
         ) {
-            Button("Remove", role: .destructive) { remove() }
-            Button("Cancel", role: .cancel) {}
+            Button(copy[.remove], role: .destructive) { remove() }
+            Button(copy[.cancel], role: .cancel) {}
         } message: {
             // §6.6: plain, with **no** count of destroyed Sets — because nothing is
             // destroyed. A finished Workout keeps its Sets and the Name it logged them
             // under (§2.4).
-            Text("It leaves the program from today. Finished workouts keep the sets you logged.")
+            Text(copy[.leavesProgramFromToday])
         }
         .onChange(of: unitTag.unit) { clearForUnitChange() }
     }
@@ -251,7 +252,7 @@ struct ExerciseSheet: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.pressable)
-            Text("\(dayName) · Exercise \(position)")
+            Text(copy.exerciseAt(day: dayName, position: position))
                 .typography(Typography.label(11))
                 .foregroundStyle(Color.dimText)
                 .lineLimit(1)
@@ -266,7 +267,7 @@ struct ExerciseSheet: View {
     private var nameBlock: some View {
         VStack(alignment: .leading, spacing: 0) {
             if isAdd {
-                Text("New exercise")
+                Text(copy[.newExercise])
                     .typography(Typography.display(31, tracking: 0.005))
                     .foregroundStyle(Color.text)
                 Spacer().frame(height: 12)
@@ -322,7 +323,7 @@ struct ExerciseSheet: View {
                         }
                     }
                     if offerTyped {
-                        suggestionRow("Use “\(typed)” as you typed it", divider: !rows.isEmpty) {
+                        suggestionRow(copy.useTypedName(typed), divider: !rows.isEmpty) {
                             focus = nil
                         }
                     }
@@ -365,12 +366,12 @@ struct ExerciseSheet: View {
     private var fields: some View {
         VStack(spacing: 0) {
             if equipmentChosen, draft.equipment.takesBaseWeight {
-                row("Base weight (machine)") {
+                row(copy[.baseWeightMachine]) {
                     weightBox($baseText, field: .base, width: ExerciseSheetMetrics.baseWeightWidth) { draft.baseWeight = $0 }
                 }
             }
             if equipmentChosen, draft.equipment.hasPin {
-                row("Stack step") {
+                row(copy[.stackStep]) {
                     HStack(spacing: 8) {
                         offerChips(
                             value: draft.stackStep,
@@ -384,7 +385,7 @@ struct ExerciseSheet: View {
                     }
                 }
                 if draft.stackStep != nil {
-                    row("First plate", note: firstPlateLabels) {
+                    row(copy[.firstPlate], note: firstPlateLabels) {
                         weightBox(
                             $firstText, field: .firstPlate,
                             width: ExerciseSheetMetrics.baseWeightWidth,
@@ -393,9 +394,9 @@ struct ExerciseSheet: View {
                     }
                 }
             }
-            row("Sets") { setsStepper }
-            row("Rep range") { repRange }
-            row("Total working weight") {
+            row(copy[.sets]) { setsStepper }
+            row(copy[.repRange]) { repRange }
+            row(copy[.totalWorkingWeight]) {
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 8) {
                         weightBox(
@@ -409,7 +410,7 @@ struct ExerciseSheet: View {
                         if case .stack(let load) = Rules.breakdown(
                             for: probe, at: typed, inventory: rack
                         ) {
-                            Text(load.loadLine)
+                            Text(copy.loadLine(load))
                                 .typography(Typography.meta(11))
                                 .foregroundStyle(Color.dimText)
                             if !load.isExact {
@@ -421,10 +422,10 @@ struct ExerciseSheet: View {
                 }
             }
             incrementRow
-            row("Progression") {
+            row(copy[.progression]) {
                 Button { progressionDialog = true } label: {
                     HStack(spacing: 10) {
-                        Text(mode.screenName)
+                        Text(copy.screenName(mode))
                             .typography(Typography.body(13))
                             .foregroundStyle(Color.text)
                         Text("›")
@@ -531,7 +532,7 @@ struct ExerciseSheet: View {
     private var incrementRow: some View {
         switch mode {
         case .progressiveOverload:
-            row("Increment") {
+            row(copy[.increment]) {
                 offerChips(
                     value: draft.increment,
                     offers: offeredIncrements,
@@ -541,7 +542,7 @@ struct ExerciseSheet: View {
                 ) { draft.increment = $0 }
             }
         case .microloading:
-            row("Microloading increment") { microplateChips }
+            row(copy[.microloadingIncrement]) { microplateChips }
             microloadingNote
         case .none:
             EmptyView()
@@ -618,7 +619,7 @@ struct ExerciseSheet: View {
             // it (§7.6).
             Button { microplateSheet = true } label: {
                 HStack(spacing: 8) {
-                    Text("No microplates · set up your rack")
+                    Text(copy[.noMicroplatesSetUpRack])
                         .typography(Typography.label(10, tracking: 0.12))
                         .foregroundStyle(Color.steel)
                     Text("›")
@@ -683,7 +684,7 @@ struct ExerciseSheet: View {
     @ViewBuilder
     private var microloadingNote: some View {
         if let plate = draft.microloadingIncrement, isStranded(plate) {
-            note("Your \(plate.decimalString) \(rack.unit.rawValue) plate is switched off. Pick another, or switch it back on in your rack.")
+            note(copy.plateOff(plate, rack: rack.unit))
         } else if let clause = microloadingClause {
             note(clause)
         }
@@ -702,12 +703,13 @@ struct ExerciseSheet: View {
         let jump = move.workingWeight
         if probe.isMixedUnitPin {
             guard let step = probe.stackStep else { return nil }
-            return "\(plate.decimalString) \(rack.unit.rawValue) hangs on the pin, and rolls into the stack at \(step.decimalString) \(unit.rawValue)."
+            return copy.microloadingHang(
+                plate: plate, rack: rack.unit, step: step, workingUnit: unit)
         }
         guard jump.hundredths > 0 else { return nil }
         return draft.equipment.isBarLoaded
-            ? "+\(jump.decimalString) \(unit.rawValue) on the bar."
-            : "+\(jump.decimalString) \(unit.rawValue) per progression."
+            ? copy.plusOnTheBar(jump)
+            : copy.plusPerProgression(jump)
     }
 
     /// The draft as a `ResolvedExercise`, so a rule can be asked about a sheet nobody has
@@ -736,17 +738,19 @@ struct ExerciseSheet: View {
     @ViewBuilder
     private var notes: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if let text = stash.note(showing: unit) {
+            if let text = copy.unitStashNote(
+                showing: unit, held: stash.heldUnit, numbersReturned: stash.numbersReturned
+            ) {
                 note(text)
             }
-            if let text = Rules.exceptionNote(tag: unitTag, rack: rack.unit) {
-                note(text)
+            if let fact = Rules.unitException(tag: unitTag, rack: rack.unit) {
+                note(copy.exceptionNote(fact))
             }
             if !equipmentChosen {
-                note("Base weight appears as soon as you pick Machine (Plates).")
+                note(copy[.baseWeightAppears])
             }
             if !isAdd {
-                note("Your changes save when you close this sheet.")
+                note(copy[.changesSaveOnClose])
             }
         }
     }
@@ -766,12 +770,12 @@ struct ExerciseSheet: View {
     @ViewBuilder
     private var bottomControl: some View {
         if isAdd {
-            PrimaryButton("Save", action: save)
+            PrimaryButton(copy[.save], action: save)
         } else {
             VStack(spacing: 10) {
-                PrimaryButton("Save", action: save)
+                PrimaryButton(copy[.save], action: save)
                 Button { removeDialog = true } label: {
-                    Text("Remove exercise")
+                    Text(copy[.removeExercise])
                         .typography(Typography.label(11))
                         .foregroundStyle(Color.steel)
                         .frame(maxWidth: .infinity)
@@ -1051,12 +1055,13 @@ struct ExerciseSheet: View {
 struct EquipmentChips: View {
     let chosen: EquipmentType?
     let pick: (EquipmentType) -> Void
+    @Environment(\.copy) private var copy
 
     var body: some View {
         WrapRows(spacing: 6, lineSpacing: 6) {
             ForEach(EquipmentType.allCases, id: \.self) { type in
                 Button { pick(type) } label: {
-                    Text(type.screenName)
+                    Text(copy.screenName(type))
                         .typography(Typography.label(11, tracking: 0.10))
                         .lineLimit(1)
                         .fixedSize(horizontal: true, vertical: false)

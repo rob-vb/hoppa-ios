@@ -1,5 +1,6 @@
 import SwiftUI
 import HoppaRules
+import HoppaStore
 
 // Ticket 0036 — §7.5's signature, drawn.
 //
@@ -23,6 +24,7 @@ import HoppaRules
 /// The whole block under the Working Weight: the drawing, the caption, and the
 /// `≈ CLOSEST` line where the rack cannot build the number (§5.4).
 struct PlateBreakdownView: View {
+    @Environment(\.copy) private var copy
     let breakdown: PlateBreakdown
     let exercise: ResolvedExercise
     /// What the drawing was solved at — the One-off Weight where there is one, otherwise
@@ -92,7 +94,7 @@ struct PlateBreakdownView: View {
         switch breakdown {
         case .bar:
             HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Text("Per side: ")
+                Text("\(copy[.perSide]): ")
                     .typography(Typography.listValue(13))
                 Text(loadLine)
                     .typography(Typography.listValue(17))
@@ -137,41 +139,34 @@ struct PlateBreakdownView: View {
 
         case .stack(let load):
             // Ticket 0060 — names the hanging plates. Never a count of microplates.
-            return load.loadLine
+            return copy.loadLine(load)
 
         case .dumbbell:
-            return "each hand"
+            return copy[.eachHand]
 
         case .bodyweight:
-            return "added weight only"
+            return copy[.addedWeightOnly]
         }
     }
 
     /// `20 + 5`, or `no plates` when the side is empty.
     private func plateLine(_ plates: [Weight]) -> String {
-        plates.isEmpty ? "no plates" : plates.map(\.decimalString).joined(separator: " + ")
+        plates.isEmpty ? copy[.noPlates] : plates.map(\.decimalString).joined(separator: " + ")
     }
 
     private var captionRight: String {
         switch breakdown {
         case .bar(let load):
-            let perSide = "\(load.perSide.decimalString) \(load.perSide.unit.rawValue) per side"
-            // A Barbell's bar is standard, so only a Machine (Plates) names the base.
-            return load.printsBaseWeight
-                ? "\(load.baseWeight.decimalString) base + \(perSide)"
-                : perSide
+            return copy.perSideTotal(load)
 
         case .stack(let load):
-            return load.qualifierLine
+            return copy.qualifierLine(load)
 
         case .dumbbell(let each):
             return "2 × \(each.decimalString) \(each.unit.rawValue)"
 
         case .bodyweight(let added, let plates):
-            let unit = added.unit.rawValue
-            return plates.count == 1
-                ? "1 × \(added.decimalString) \(unit) on the belt"
-                : "\(added.decimalString) \(unit) on the belt"
+            return copy.beltLine(added: added, plateCount: plates.count)
         }
     }
 
@@ -191,6 +186,7 @@ struct PlateBreakdownView: View {
 ///
 /// Draws nothing at all when the rack builds the weight exactly, which is the common case.
 struct ClosestLine: View {
+    @Environment(\.copy) private var copy
     let breakdown: PlateBreakdown
     /// The weight the breakdown was solved at. Named against the number the user is lifting.
     let performedAt: Weight
@@ -199,7 +195,7 @@ struct ClosestLine: View {
         if let gap {
             HStack(spacing: 9) {
                 if showsClosestChip {
-                    Chip("≈ closest", tone: .steel)
+                    Chip(copy[.closest], tone: .steel)
                 }
                 Text(text(gap))
                     .typography(Typography.meta(11))
@@ -227,8 +223,9 @@ struct ClosestLine: View {
     private func text(_ gap: (loaded: Weight, difference: Weight)) -> String {
         let over = gap.difference.hundredths > 0
         let size = Weight(hundredths: abs(gap.difference.hundredths), unit: gap.difference.unit)
-        return "you load \(gap.loaded.decimalString) \(gap.loaded.unit.rawValue) · "
-            + "\(size.decimalString) \(over ? "over" : "under")"
+        return copy.youLoad(
+            loaded: gap.loaded,
+            remainder: copy.gapRemainder(size: size, over: over))
     }
 }
 
