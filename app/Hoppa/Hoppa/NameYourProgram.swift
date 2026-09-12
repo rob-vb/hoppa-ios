@@ -42,6 +42,7 @@ struct ProgramDraft: Hashable {
 
 struct NameYourProgram: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
 
     @State private var draft = ProgramDraft()
@@ -60,23 +61,23 @@ struct NameYourProgram: View {
                 StepHeader(step: 1, back: { if !path.isEmpty { path.removeLast() } })
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
-                        Text("Name your\nprogram")
+                        Text(copy[.nameYourProgram])
                             .typography(Typography.display(38, tracking: 0.005))
                             .foregroundStyle(Color.text)
                         Spacer().frame(height: 16)
                         nameField
                         Spacer().frame(height: 8)
-                        Text(nameIsMissing ? "Give it a name first." : "You can rename it later.")
+                        Text(nameIsMissing ? copy[.giveItANameFirst] : copy[.youCanRenameItLater])
                             .typography(Typography.body(12, lineSpacing: 4))
                             .foregroundStyle(nameIsMissing ? Color.stop : Color.dimText)
                         Spacer().frame(height: 24)
-                        Text("What Hoppa already picked")
+                        Text(copy[.whatHoppaAlreadyPicked])
                             .typography(Typography.label(10.5))
                             .foregroundStyle(Color.labelText)
                         Spacer().frame(height: 8)
                         assumptions
                         Spacer().frame(height: 16)
-                        Text("Hoppa picked these three for you. Tap one only if it is wrong.")
+                        Text(copy[.hoppaPickedTheseThree])
                             .typography(Typography.body(12, lineSpacing: 4))
                             .foregroundStyle(Color.dimText)
                     }
@@ -84,7 +85,7 @@ struct NameYourProgram: View {
                 }
                 .scrollBounceBehavior(.basedOnSize)
                 Spacer(minLength: 16)
-                PrimaryButton("Continue", action: cont)
+                PrimaryButton(copy[.continueLabel], action: cont)
             }
             .padding(.horizontal, 20)   // §7.4 screen padding
             .padding(.bottom, 20)
@@ -126,14 +127,14 @@ struct NameYourProgram: View {
         VStack(spacing: 6) {
             // One tap flips it, because there are two values and a picker for two values
             // is ceremony.
-            assumptionRow("Weight unit", value: draft.defaultWeightUnit(rack: rack.unit).rawValue) {
+            assumptionRow(copy[.weightUnit], value: draft.defaultWeightUnit(rack: rack.unit).rawValue) {
                 draft.weightUnit = draft.defaultWeightUnit(rack: rack.unit) == .kg ? .lbs : .kg
                 draft.unitChosenByHand = true
             }
-            assumptionRow("Progression", value: draft.mode.screenName) {
+            assumptionRow(copy[.progression], value: copy.screenName(draft.mode)) {
                 draft.mode = draft.mode.next
             }
-            assumptionRow("Plate rack", value: rackName, chips: true) {
+            assumptionRow(copy[.plateRack], value: rackName, chips: true) {
                 path.append(.plateRack(draft))
             }
         }
@@ -144,8 +145,7 @@ struct NameYourProgram: View {
     /// is `Equatable` and `.standard(_:)` is the shipped rack, so the question needs no
     /// stored flag and survives an edit made two screens away.
     private var rackName: String {
-        let shape = rack == .standard(rack.unit) ? "Standard" : "Custom"
-        return "\(shape) \(rack.unit.rawValue)"
+        copy.rackName(isStandard: rack == .standard(rack.unit), unit: rack.unit)
     }
 
     private func assumptionRow(
@@ -217,19 +217,28 @@ struct NameYourProgram: View {
 struct StepHeader: View {
     /// `nil` on the same screen reached outside onboarding, where there is no step 2 of
     /// anything — the chevron stays, the count goes.
-    let label: String?
+    private let step: Int?
+    private let fixedLabel: String?
     let back: () -> Void
+    @Environment(\.copy) private var copy
 
     init(step: Int?, back: @escaping () -> Void) {
-        self.label = step.map { "Step \($0) of 3" }
+        self.step = step
+        self.fixedLabel = nil
         self.back = back
     }
 
     /// Ticket 0034's Day screen, which draws the Program's Name where onboarding draws
     /// the step count — the same chevron, the same band, a different word.
     init(label: String?, back: @escaping () -> Void) {
-        self.label = label
+        self.step = nil
+        self.fixedLabel = label
         self.back = back
+    }
+
+    private var label: String? {
+        if let step { return copy.step(step) }
+        return fixedLabel
     }
 
     var body: some View {

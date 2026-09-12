@@ -56,15 +56,20 @@ extension Rules {
     }
 
     /// `nil` unless the Exercise owns a unit the rack does not.
-    public static func exceptionNote(tag: UnitTag, rack: WeightUnit) -> String? {
-        guard case .own(let unit) = tag, unit != rack else { return nil }
-        return "This machine is marked in \(printed(unit)). Your gym is \(printed(rack))."
+    public static func unitException(tag: UnitTag, rack: WeightUnit) -> UnitException? {
+        guard case .own(let unit) = tag else { return nil }
+        return UnitException(exerciseUnit: unit, rackUnit: rack)
     }
+}
 
-    private static func printed(_ unit: WeightUnit) -> String {
-        switch unit {
-        case .kg: "KG"
-        case .lbs: "LBS"
-        }
+/// Exists only when an Exercise owns a unit the rack does not.
+public struct UnitException: Sendable, Hashable {
+    public let exerciseUnit: WeightUnit
+    public let rackUnit: WeightUnit
+
+    public init?(exerciseUnit: WeightUnit, rackUnit: WeightUnit) {
+        guard exerciseUnit != rackUnit else { return nil }
+        self.exerciseUnit = exerciseUnit
+        self.rackUnit = rackUnit
     }
 }

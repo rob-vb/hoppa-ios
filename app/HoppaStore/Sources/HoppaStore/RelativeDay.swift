@@ -15,25 +15,37 @@ import HoppaRules
 // belongs in `HoppaRules` or `HoppaStore`, where a test is cheap and runs on this machine.
 // It is the whole of what the picker computes, so it is the whole of what can be wrong.
 
+/// Whole calendar days already clamped. `days` is always ≥ 2.
+public struct Ago: Sendable, Hashable {
+    public let days: Int
+    fileprivate init(days: Int) { self.days = days }
+}
+
+/// Calendar fact for the picker line. Words live on `Phrasebook.relativeDay`.
+public enum ElapsedDays: Sendable, Hashable {
+    case never
+    case today
+    case yesterday
+    case daysAgo(Ago)
+}
+
 /// §3.1's picker line: *when the user last did each Day*. Information, not advice (§7.6).
 public enum RelativeDay {
 
-    /// Sentence case, as the artboard writes it: `Yesterday`, `2 days ago`.
+    /// Calendar-day span. Does not produce a word.
     ///
-    /// - `nil` — the Day has never been done. Every Day a fresh Program creates is in this
-    ///   state, so it is the common first case and not an edge.
-    /// - The comparison is in **calendar days**, not in 24-hour periods: a Workout at
-    ///   21:00 and a glance at 07:00 the next morning reads *Yesterday*, which is what a
-    ///   person means. That is the whole reason a time zone is involved.
-    /// - A timestamp in the future — a phone whose clock moved back — reads `Today`
-    ///   rather than a negative count.
-    public static func text(_ then: Timestamp?, now: Timestamp, calendar: Calendar = .current) -> String {
-        guard let then else { return "Never" }
+    /// - `nil` — the Day has never been done.
+    /// - The comparison is in **calendar days**, not in 24-hour periods.
+    /// - A timestamp in the future reads `.today` rather than a negative count.
+    public static func elapsed(
+        _ then: Timestamp?, now: Timestamp, calendar: Calendar = .current
+    ) -> ElapsedDays {
+        guard let then else { return .never }
         let days = daysBetween(then, and: now, calendar: calendar)
         return switch days {
-        case ..<1: "Today"
-        case 1: "Yesterday"
-        default: "\(days) days ago"
+        case ..<1: .today
+        case 1: .yesterday
+        default: .daysAgo(Ago(days: days))
         }
     }
 

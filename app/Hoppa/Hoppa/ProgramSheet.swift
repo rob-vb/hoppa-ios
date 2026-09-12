@@ -22,6 +22,7 @@ import HoppaStore
 
 struct ProgramSheet: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
     let programId: ProgramID
     /// §6.1 step 3, rather than Flow 5's hub. See `Route.programSheet`.
@@ -58,9 +59,9 @@ struct ProgramSheet: View {
         .toolbar(onboarding ? .hidden : .automatic, for: .tabBar)
         .sheet(isPresented: $newDay) {
             NameSheet(
-                heading: "Name the day",
-                confirm: "Add the day",
-                hint: "Push, Upper A, Legs — whatever you call it in the gym.",
+                heading: copy[.nameTheDay],
+                confirm: copy[.addTheDay],
+                hint: copy[.dayNameHint],
                 initial: ""
             ) { name in
                 store.send(.addWorkoutDay(programId: programId, name: name))
@@ -84,16 +85,20 @@ struct ProgramSheet: View {
                 .typography(Typography.label(10.5, tracking: 0.12))
                 .foregroundStyle(Color.dimText)
             Spacer().frame(height: 20)
-            Text("Workout days")
+            Text(copy[.workoutDays])
                 .typography(Typography.label(10.5))
                 .foregroundStyle(Color.labelText)
             Spacer().frame(height: 8)
             days(program)
             Spacer(minLength: 12)
             settingsRow
+            if !onboarding {
+                Spacer().frame(height: 16)
+                LanguagePicker()
+            }
             if onboarding {
                 Spacer().frame(height: 10)
-                PrimaryButton("Start a workout", action: goHome)
+                PrimaryButton(copy[.startAWorkout], action: goHome)
             }
         }
     }
@@ -102,10 +107,12 @@ struct ProgramSheet: View {
     /// a stored field, so nothing here is a rule; the two Program-level decisions are on
     /// the line because §6.1 put them on the card at step 1 and this is where they land.
     private func summary(_ program: Program) -> String {
-        let days = program.days.count == 1 ? "1 day" : "\(program.days.count) days"
-        let count = program.days.reduce(0) { $0 + $1.exercises.count }
-        let exercises = count == 1 ? "1 exercise" : "\(count) exercises"
-        return "\(days) · \(exercises) · \(program.defaultWeightUnit.rawValue) · \(program.mode.screenName)"
+        copy.programSummary(
+            days: program.days.count,
+            exercises: program.days.reduce(0) { $0 + $1.exercises.count },
+            unit: program.defaultWeightUnit,
+            mode: program.mode
+        )
     }
 
     // MARK: - The Workout Days
@@ -118,7 +125,7 @@ struct ProgramSheet: View {
                     // §6.1: Hoppa starts empty and invents no Day. The line states the
                     // rule §6.6 already enforces at the other end — the last Day cannot
                     // be deleted — rather than telling the user what to do (§7.6).
-                    Text("A program needs at least one workout day.")
+                    Text(copy[.aProgramNeedsOneDay])
                         .typography(Typography.body(12, lineSpacing: 3))
                         .foregroundStyle(Color.dimText)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -131,7 +138,7 @@ struct ProgramSheet: View {
                 } row: { (day: WorkoutDay, index: Int) in
                     dayRow(index: index, day: day)
                 }
-                AddRow("Add a day") { newDay = true }
+                AddRow(copy[.addADay]) { newDay = true }
             }
         }
         .scrollBounceBehavior(.basedOnSize)
@@ -161,7 +168,7 @@ struct ProgramSheet: View {
                         .typography(Typography.display(17))
                         .foregroundStyle(Color.text)
                         .lineLimit(1)
-                    Text(day.exerciseCountText)
+                    Text(copy.exerciseCount(day.exercises.count))
                         .typography(Typography.label(10.5, tracking: 0.12))
                         .foregroundStyle(Color.dimText)
                 }
@@ -184,8 +191,8 @@ struct ProgramSheet: View {
     /// own `DONE` branch was unreachable.
     private var settingsRow: some View {
         DoorRow(
-            title: "Program settings",
-            detail: "unit, progression, plate rack"
+            title: copy[.programSettings],
+            detail: copy[.unitProgressionPlateRack]
         ) {
             path.append(.programSettings(programId))
         }
@@ -195,10 +202,10 @@ struct ProgramSheet: View {
 
     private var gone: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("That program is gone.")
+            Text(copy[.thatProgramIsGone])
                 .typography(Typography.display(26))
                 .foregroundStyle(Color.text)
-            PrimaryButton("Back", action: goHome)
+            PrimaryButton(copy[.back], action: goHome)
         }
         .padding(.horizontal, 20)
     }
@@ -218,6 +225,7 @@ struct ProgramSheet: View {
 /// (§2.7). This screen picks the value and sends it; it decides none of that.
 struct ProgramSettings: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
     let programId: ProgramID
 
@@ -236,17 +244,17 @@ struct ProgramSettings: View {
             if let program {
                 VStack(alignment: .leading, spacing: 0) {
                     StepHeader(label: program.name, back: { if !path.isEmpty { path.removeLast() } })
-                    Text("Program settings")
+                    Text(copy[.programSettings])
                         .typography(Typography.display(31, tracking: 0.005))
                         .foregroundStyle(Color.text)
                     Spacer().frame(height: 20)
                     rows(program)
                     Spacer(minLength: 16)
-                    Text("The weight unit is the default for new exercises only. Changing the progression mode moves every exercise that does not override it.")
+                    Text(copy[.weightUnitDefaultNote])
                         .typography(Typography.body(12, lineSpacing: 3))
                         .foregroundStyle(Color.dimText)
                     Spacer().frame(height: 12)
-                    PrimaryButton("Done") { if !path.isEmpty { path.removeLast() } }
+                    PrimaryButton(copy[.done]) { if !path.isEmpty { path.removeLast() } }
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 20)
@@ -255,9 +263,9 @@ struct ProgramSettings: View {
         .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $renaming) {
             NameSheet(
-                heading: "Rename the program",
-                confirm: "Save the name",
-                hint: "Renaming changes nothing else. Finished workouts keep the name they were logged with.",
+                heading: copy[.renameTheProgram],
+                confirm: copy[.saveTheName],
+                hint: copy[.renamingChangesNothing],
                 initial: program?.name ?? ""
             ) { name in
                 store.send(.renameProgram(programId, name: name))
@@ -265,30 +273,30 @@ struct ProgramSettings: View {
         }
         .sheet(isPresented: $microplateSheet) { MicroplateSheet() }
         .confirmationDialog(
-            "Progression mode", isPresented: $progressionDialog, titleVisibility: .visible
+            copy[.progressionMode], isPresented: $progressionDialog, titleVisibility: .visible
         ) {
-            Button(ProgressionMode.progressiveOverload.screenName) {
+            Button(copy.screenName(.progressiveOverload)) {
                 setProgramMode(.progressiveOverload)
             }
-            Button(ProgressionMode.microloading.screenName) {
+            Button(copy.screenName(.microloading)) {
                 setProgramMode(.microloading)
             }
-            Button("Cancel", role: .cancel) {}
+            Button(copy[.cancel], role: .cancel) {}
         }
     }
 
     @ViewBuilder
     private func rows(_ program: Program) -> some View {
         VStack(spacing: 6) {
-            SettingRow(label: "Name", value: program.name) { renaming = true }
-            SettingRow(label: "Weight unit", value: program.defaultWeightUnit.rawValue) {
+            SettingRow(label: copy[.name], value: program.name) { renaming = true }
+            SettingRow(label: copy[.weightUnit], value: program.defaultWeightUnit.rawValue) {
                 store.send(.setProgramDefaultWeightUnit(
                     programId, program.defaultWeightUnit == .kg ? .lbs : .kg))
             }
-            SettingRow(label: "Progression", value: program.mode.screenName) {
+            SettingRow(label: copy[.progression], value: copy.screenName(program.mode)) {
                 progressionDialog = true
             }
-            SettingRow(label: "Plate rack", value: rackName) {
+            SettingRow(label: copy[.plateRack], value: rackName) {
                 path.append(.plateRack(nil))
             }
         }
@@ -297,7 +305,7 @@ struct ProgramSettings: View {
     /// The same sentence step 1 draws, and for the same reason: the row exists to say what
     /// the rack is, so it has to stop saying *standard* the moment that stops being true.
     private var rackName: String {
-        "\(rack == .standard(rack.unit) ? "Standard" : "Custom") \(rack.unit.rawValue)"
+        copy.rackName(isStandard: rack == .standard(rack.unit), unit: rack.unit)
     }
 
     private func setProgramMode(_ mode: ProgressionMode) {
@@ -397,6 +405,7 @@ struct NameSheet: View {
     @State private var isMissing = false
     @FocusState private var focused: Bool
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.copy) private var copy
 
     init(
         heading: String, confirm: String, hint: String, initial: String,
@@ -419,7 +428,7 @@ struct NameSheet: View {
                 Spacer().frame(height: 16)
                 field
                 Spacer().frame(height: 8)
-                Text(isMissing ? "Give it a name first." : hint)
+                Text(isMissing ? copy[.giveItANameFirst] : hint)
                     .typography(Typography.body(12, lineSpacing: 4))
                     .foregroundStyle(isMissing ? Color.stop : Color.dimText)
                 Spacer(minLength: 16)

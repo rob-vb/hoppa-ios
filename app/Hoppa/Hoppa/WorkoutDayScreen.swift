@@ -45,6 +45,7 @@ import HoppaStore
 
 struct WorkoutDayScreen: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
     let workoutDayId: WorkoutDayID
 
@@ -85,23 +86,23 @@ struct WorkoutDayScreen: View {
         .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $renaming) {
             NameSheet(
-                heading: "Rename the day",
-                confirm: "Save the name",
-                hint: "Renaming changes nothing else. Finished workouts keep the name they were logged with.",
+                heading: copy[.renameTheDay],
+                confirm: copy[.saveTheName],
+                hint: copy[.renamingChangesNothing],
                 initial: found?.day.name ?? ""
             ) { name in
                 store.send(.renameWorkoutDay(workoutDayId, name: name))
             }
         }
         .confirmationDialog(
-            "Remove this day?", isPresented: $removeDialog, titleVisibility: .visible
+            copy[.removeThisDay], isPresented: $removeDialog, titleVisibility: .visible
         ) {
-            Button("Remove", role: .destructive) { remove() }
-            Button("Cancel", role: .cancel) {}
+            Button(copy[.remove], role: .destructive) { remove() }
+            Button(copy[.cancel], role: .cancel) {}
         } message: {
             // §6.6, and the same sentence the Exercise sheet's own confirm prints, with
             // the one clause a Day adds: the Workout keeps the Day's Name too (§2.4).
-            Text("It leaves the program from today. Finished workouts keep their name and the sets you logged.")
+            Text(copy[.dayLeavesKeepName])
         }
         // Ticket 0035 landed §6.2's full sheet here, and ticket 0034's line held: **add
         // and edit are the same sheet**, so one presentation serves both.
@@ -182,7 +183,7 @@ struct WorkoutDayScreen: View {
             Spacer(minLength: 12)
             removeRow
             Spacer().frame(height: 10)
-            PrimaryButton("Day done") { if !path.isEmpty { path.removeLast() } }
+            PrimaryButton(copy[.dayDone]) { if !path.isEmpty { path.removeLast() } }
         }
     }
 
@@ -216,7 +217,7 @@ struct WorkoutDayScreen: View {
             Button {
                 if block == nil { removeDialog = true } else { refused = true }
             } label: {
-                Text("Remove day")
+                Text(copy[.removeDay])
                     .typography(Typography.label(11))
                     .foregroundStyle(Color.steel)
                     .frame(maxWidth: .infinity)
@@ -226,7 +227,7 @@ struct WorkoutDayScreen: View {
             }
             .buttonStyle(.pressable)
             if refused, let block {
-                Text(block.reason)
+                Text(copy.reason(block))
                     .typography(Typography.body(12, lineSpacing: 3))
                     .foregroundStyle(Color.stop)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -256,7 +257,7 @@ struct WorkoutDayScreen: View {
                 .lineLimit(2)
             Spacer(minLength: 8)
             Button { renaming = true } label: {
-                Text("Rename")
+                Text(copy[.rename])
                     .typography(Typography.label(10.5))
                     .foregroundStyle(Color.steel)
                     .frame(height: 50)
@@ -268,8 +269,8 @@ struct WorkoutDayScreen: View {
 
     private func meta(_ day: WorkoutDay) -> String {
         day.exercises.isEmpty
-            ? "No exercises yet"
-            : "\(day.exerciseCountText) · tap a row to open it"
+            ? copy[.noExercisesYet]
+            : copy.tapRowMeta(exerciseCount: day.exercises.count)
     }
 
     // MARK: - The Exercises
@@ -287,7 +288,7 @@ struct WorkoutDayScreen: View {
                 } row: { (exercise: Exercise, _: Int) in
                     row(exercise.resolved(in: program, inventory: rack))
                 }
-                AddRow("Add an exercise") {
+                AddRow(copy[.addAnExercise]) {
                     sheetTarget = ExerciseSheetTarget(day: workoutDayId, at: day.exercises.count)
                 }
             }
@@ -338,9 +339,9 @@ struct WorkoutDayScreen: View {
     /// mixed-unit pin, and `Progression.progressionMove` is where that lives — a card
     /// that did the multiplication itself would be a second copy of a rule.
     private func line(_ exercise: ResolvedExercise) -> String {
-        var parts = [exercise.equipment.screenName.lowercased()]
+        var parts = [copy.screenName(exercise.equipment).lowercased()]
         if let base = exercise.baseWeight {
-            parts.append("base \(base.decimalString)")
+            parts.append(copy.baseLabel(base))
         }
         parts.append("\(exercise.plannedSets) × \(exercise.repRange.bottom)–\(exercise.repRange.top)")
         switch exercise.mode {
@@ -350,13 +351,13 @@ struct WorkoutDayScreen: View {
             if let increment = exercise.increment { parts.append("+\(increment.decimalString)") }
         case .microloading:
             if let plate = exercise.microloadingIncrement {
-                parts.append("+\(plate.decimalString) \(plate.unit.rawValue) plate")
+                parts.append(copy.plusPlate(plate))
             }
         }
         // §6.6: a Microplate switched off strands the Exercises using it, and a stranded
         // Exercise does not progress. No warning colour — the user threw the switch, and
         // §7.6 keeps colour off anything the user did. Switching it back on ends it.
-        if exercise.isStranded { parts.append("stranded") }
+        if exercise.isStranded { parts.append(copy[.stranded]) }
         return parts.joined(separator: " · ")
     }
 
@@ -388,10 +389,10 @@ struct WorkoutDayScreen: View {
 
     private var gone: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("That day is gone.")
+            Text(copy[.thatDayIsGone])
                 .typography(Typography.display(26))
                 .foregroundStyle(Color.text)
-            PrimaryButton("Back") { if !path.isEmpty { path.removeLast() } }
+            PrimaryButton(copy[.back]) { if !path.isEmpty { path.removeLast() } }
         }
         .padding(.horizontal, 20)
     }

@@ -35,6 +35,7 @@ import HoppaStore
 
 struct ReweighScreen: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
 
     /// The list as it stood when the screen opened — see the note above. Empty until
@@ -53,7 +54,7 @@ struct ReweighScreen: View {
             Color.floor.ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
                 StepHeader(label: nil, back: leave)
-                Text("Re-weigh")
+                Text(copy[.reweigh])
                     .typography(Typography.display(31, tracking: 0.005))
                     .foregroundStyle(Color.text)
                 Spacer().frame(height: 12)
@@ -63,7 +64,7 @@ struct ReweighScreen: View {
                 Spacer().frame(height: 20)
                 list
                 Spacer(minLength: 12)
-                PrimaryButton("Done", action: leave)
+                PrimaryButton(copy[.done], action: leave)
             }
             .padding(.horizontal, 20)   // §7.4 screen padding
             .padding(.bottom, 20)
@@ -180,7 +181,7 @@ struct ReweighScreen: View {
                 let breakdown = Rules.breakdown(
                     for: resolved, at: weight, inventory: rack)
                 if case .stack(let load) = breakdown {
-                    Text(load.loadLine)
+                    Text(copy.loadLine(load))
                         .typography(Typography.meta(11))
                         .foregroundStyle(Color.dimText)
                 }
@@ -237,7 +238,7 @@ struct ReweighScreen: View {
         if let missing = missing(exercise) {
             Button { sheetTarget = ExerciseSheetTarget(day: day.id, exercise: exercise.id) } label: {
                 HStack(spacing: 8) {
-                    Text("\(exercise.equipment.screenName) · \(missing)")
+                    Text("\(copy.screenName(exercise.equipment)) · \(missing)")
                         .typography(Typography.meta())
                         .foregroundStyle(Color.dimText)
                     Text("›")
@@ -250,7 +251,7 @@ struct ReweighScreen: View {
             }
             .buttonStyle(.pressable)
         } else {
-            Text(exercise.equipment.screenName)
+            Text(copy.screenName(exercise.equipment))
                 .typography(Typography.meta())
                 .foregroundStyle(Color.dimText)
                 .frame(height: 22)
@@ -262,14 +263,14 @@ struct ReweighScreen: View {
     /// (§4.1); a Microloading Exercise with no Microplate is §5.2's empty state.
     private func missing(_ exercise: Exercise) -> String? {
         guard let resolved = resolved(exercise.id) else { return nil }
-        if resolved.equipment.takesBaseWeight, resolved.baseWeight == nil { return "no base weight" }
+        if resolved.equipment.takesBaseWeight, resolved.baseWeight == nil { return copy[.noBaseWeight] }
         switch resolved.mode {
         case .none:
             return nil
         case .progressiveOverload:
-            return resolved.increment == nil ? "no increment" : nil
+            return resolved.increment == nil ? copy[.noIncrement] : nil
         case .microloading:
-            return resolved.microloadingIncrement == nil ? "no microplate" : nil
+            return resolved.microloadingIncrement == nil ? copy[.noMicroplate] : nil
         }
     }
 
@@ -279,12 +280,11 @@ struct ReweighScreen: View {
         let left = store.logbook.map { Rules.reweighList(in: $0).count } ?? 0
         let done = frozen.count - left
         guard done > 0 else {
-            return "An exercise with no weight logs no set and does not progress. "
-                + "Type what you lift it with now."
+            return copy[.reweighIntro]
         }
         return left == 0
-            ? "Every exercise has a weight."
-            : "\(done) of \(frozen.count) done. \(left) still \(left == 1 ? "has" : "have") no weight."
+            ? copy[.everyExerciseHasAWeight]
+            : copy.reweighProgress(done: done, total: frozen.count, left: left)
     }
 
     private func binding(_ id: ExerciseID) -> Binding<String> {
