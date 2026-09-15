@@ -1,5 +1,6 @@
 import SwiftUI
 import HoppaRules
+import HoppaStore
 
 // Ticket 0032 — the navigation spine. Ticket 0059 — the spine is four stacks.
 //
@@ -84,18 +85,19 @@ enum Route: Hashable {
 struct NotBuiltYet: View {
     let screen: String
     let ticket: String
+    @Environment(\.copy) private var copy
 
     var body: some View {
         ZStack {
             Color.floor.ignoresSafeArea()
             VStack(alignment: .leading, spacing: 16) {
-                Text("Not built yet")
+                Text(copy[.notBuiltYet])
                     .typography(Typography.display(26))
                     .foregroundStyle(Color.text)
                 Text(screen)
                     .typography(Typography.body(13, lineSpacing: 4))
                     .foregroundStyle(Color.dimText)
-                Text("Ticket \(ticket)")
+                Text(copy.ticketLine(ticket))
                     .typography(Typography.label())
                     .foregroundStyle(Color.labelText)
             }

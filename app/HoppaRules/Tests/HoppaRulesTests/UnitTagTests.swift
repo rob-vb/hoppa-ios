@@ -61,16 +61,16 @@ struct UnitTagTests {
         ])
     }
 
-    @Test("exceptionNote only for an own unit that is not the rack")
-    func theExceptionNote() {
-        #expect(Rules.exceptionNote(tag: .locked(.kg), rack: .kg) == nil)
-        #expect(Rules.exceptionNote(tag: .locked(.lbs), rack: .kg) == nil)
-        #expect(Rules.exceptionNote(tag: .own(.kg), rack: .kg) == nil)
-        #expect(
-            Rules.exceptionNote(tag: .own(.lbs), rack: .kg)
-                == "This machine is marked in LBS. Your gym is KG.")
-        #expect(
-            Rules.exceptionNote(tag: .own(.kg), rack: .lbs)
-                == "This machine is marked in KG. Your gym is LBS.")
+    @Test("unitException only for an own unit that is not the rack")
+    func theUnitException() {
+        #expect(Rules.unitException(tag: .locked(.kg), rack: .kg) == nil)
+        #expect(Rules.unitException(tag: .locked(.lbs), rack: .kg) == nil)
+        #expect(Rules.unitException(tag: .own(.kg), rack: .kg) == nil)
+        let lbsOnKg = Rules.unitException(tag: .own(.lbs), rack: .kg)
+        #expect(lbsOnKg?.exerciseUnit == .lbs)
+        #expect(lbsOnKg?.rackUnit == .kg)
+        let kgOnLbs = Rules.unitException(tag: .own(.kg), rack: .lbs)
+        #expect(kgOnLbs?.exerciseUnit == .kg)
+        #expect(kgOnLbs?.rackUnit == .lbs)
     }
 }

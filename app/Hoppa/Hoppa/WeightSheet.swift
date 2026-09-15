@@ -1,5 +1,6 @@
 import SwiftUI
 import HoppaRules
+import HoppaStore
 
 // Ticket 0037 — §6.4's weight sheet, and §4.3's question under it.
 //
@@ -28,6 +29,7 @@ import HoppaRules
 // Prototype: `design/0007-logging/fitty-workout-logging.html`, the `weight` overlay.
 
 struct WeightSheet: View {
+    @Environment(\.copy) private var copy
     let exercise: ResolvedExercise
     /// The Exercise as stored. `Rules.progressionMove` takes a `ResolvedExercise` and the
     /// probe below has to build one, which needs the stored fields.
@@ -77,14 +79,14 @@ struct WeightSheet: View {
                     let breakdown = Rules.breakdown(
                         for: exercise, at: typed, inventory: inventory)
                     if case .stack(let load) = breakdown {
-                        Text(load.loadLine)
+                        Text(copy.loadLine(load))
                             .typography(Typography.meta(11))
                             .foregroundStyle(Color.dimText)
                     }
                     ClosestLine(breakdown: breakdown, performedAt: typed)
                 }
                 keypad
-                PrimaryButton("Set the weight") { if let typed { commit(typed) } }
+                PrimaryButton(copy[.setTheWeight]) { if let typed { commit(typed) } }
                     .opacity(typed == nil ? 0.4 : 1)
                     .disabled(typed == nil)
             }
@@ -112,12 +114,12 @@ struct WeightSheet: View {
 
     private var header: some View {
         HStack {
-            Text("Weight")
+            Text(copy[.weight])
                 .typography(Typography.display(19))
                 .foregroundStyle(Color.text)
             Spacer()
             Button(action: cancel) {
-                Text("Cancel")
+                Text(copy[.cancel])
                     .typography(Typography.label(10.5))
                     .foregroundStyle(Color.steel)
                     .frame(height: 50)   // §7.4 hit target
@@ -144,7 +146,7 @@ struct WeightSheet: View {
                 // A One-off never writes back, so the chip names the Working Weight that
                 // survives it — not just the fact of the one-off (§6.4).
                 if oneOffIsStanding, let working = exercise.workingWeight {
-                    Chip("one-off · \(working.decimalString) \(exercise.unit.rawValue) stays", tone: .steel)
+                    Chip(copy.oneOffStays(working), tone: .steel)
                 }
             }
             .padding(.bottom, 6)
@@ -169,13 +171,13 @@ struct WeightSheet: View {
     private var steppers: some View {
         if exercise.equipment.hasPin {
             VStack(spacing: 8) {
-                if let step = pinStep { stepperRow("Pin", step, floor: exercise.stack?.first) }
-                if let step = microStep { stepperRow("Micro", step) }
+                if let step = pinStep { stepperRow(copy[.pin], step, floor: exercise.stack?.first) }
+                if let step = microStep { stepperRow(copy[.micro], step) }
             }
         } else if let step = incrementStep {
             HStack(spacing: 12) {
                 stepButton("−") { nudge(step, -1) }
-                Text("− / + step by \(step.decimalString) \(step.unit.rawValue)")
+                Text(copy.stepBy(step))
                     .typography(Typography.meta(11))
                     .foregroundStyle(Color.dimText)
                     .frame(maxWidth: .infinity)

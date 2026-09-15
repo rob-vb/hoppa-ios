@@ -23,6 +23,7 @@ enum HoppaTab: Hashable {
 
 struct HoppaShell: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(LanguageStore.self) private var languages
     @State private var tab = HoppaTab.home
     @State private var homePath: [Route] = []
     @State private var historyPath: [Route] = []
@@ -30,22 +31,24 @@ struct HoppaShell: View {
     @State private var settingsPath: [Route] = []
 
     private var hasProgram: Bool { store.logbook?.programs.first != nil }
+    private var copy: Phrasebook { languages.phrasebook }
 
     var body: some View {
         TabView(selection: $tab) {
-            pane(.home, "Home", "house", path: $homePath) {
+            pane(.home, copy[.tabHome], "house", path: $homePath) {
                 WorkoutDayPicker(path: $homePath)
             }
-            pane(.history, "History", "clock", path: $historyPath) {
+            pane(.history, copy[.tabHistory], "clock", path: $historyPath) {
                 HistoryScreen(path: $historyPath)
             }
-            pane(.progress, "Progress", "chart.line.uptrend.xyaxis", path: $progressPath) {
+            pane(.progress, copy[.tabProgress], "chart.line.uptrend.xyaxis", path: $progressPath) {
                 ProgressScreen(path: $progressPath)
             }
-            pane(.settings, "Settings", "gearshape", path: $settingsPath) {
+            pane(.settings, copy[.tabSettings], "gearshape", path: $settingsPath) {
                 settingsRoot
             }
         }
+        .environment(\.copy, copy)
     }
 
     @ViewBuilder

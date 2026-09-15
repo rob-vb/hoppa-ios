@@ -30,6 +30,7 @@ import HoppaStore
 
 struct LoggingScreen: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
     let workoutDayId: WorkoutDayID
 
@@ -107,14 +108,14 @@ struct LoggingScreen: View {
     @ViewBuilder
     private var content: some View {
         if store.isUnreadable {
-            stopped("Hoppa could not read the logbook.",
-                    detail: "Nothing was changed and nothing was written. The file is still on the phone.")
+            stopped(copy[.hoppaCouldNotRead],
+                    detail: copy[.nothingChangedOnPhone])
         } else if let workout {
             screen(workout)
         } else if let elsewhere = logbook?.openWorkout {
             oneAtATime(elsewhere)
         } else if logbook?.workoutDay(workoutDayId) == nil {
-            stopped("That day is gone.", detail: nil)
+            stopped(copy[.thatDayIsGone], detail: nil)
         } else {
             // Two states, and both are one frame long: before `.task` has started the
             // Workout, and after Finish cleared it while the path swaps this screen for
@@ -167,10 +168,10 @@ struct LoggingScreen: View {
             VStack(alignment: .leading, spacing: 16) {
                 header(workout)
                 Spacer()
-                Text("That exercise is gone.")
+                Text(copy[.thatExerciseIsGone])
                     .typography(Typography.display(26))
                     .foregroundStyle(Color.text)
-                Text("It was removed from the program. What you logged is kept.")
+                Text(copy[.removedFromProgramKept])
                     .typography(Typography.body(13, lineSpacing: 4))
                     .foregroundStyle(Color.dimText)
                 Spacer()
@@ -191,13 +192,13 @@ struct LoggingScreen: View {
     private func moveOn(_ workout: Workout) -> some View {
         if let next = workout.nextOpenIndex(after: workout.currentIndex),
            next != workout.currentIndex {
-            PrimaryButton("Next: \(workout.exercises[next].name)") {
+            PrimaryButton(copy.nextExercise(workout.exercises[next].name)) {
                 store.send(.nextOpen)
                 pendingReps = nil
                 correcting = nil
             }
         } else {
-            PrimaryButton("Finish workout") { attemptFinish() }
+            PrimaryButton(copy[.finishWorkout]) { attemptFinish() }
         }
     }
 
@@ -252,7 +253,7 @@ struct LoggingScreen: View {
                     .typography(Typography.label(10.5, tracking: 0.12))
                     .foregroundStyle(Color.dimText)
                 if performed.state == .completed {
-                    Text(" · completed")
+                    Text(" · \(copy[.completed])")
                         .typography(Typography.label(10.5, tracking: 0.12))
                         .foregroundStyle(Color.go)
                 }
@@ -263,18 +264,20 @@ struct LoggingScreen: View {
     }
 
     private func metaLine(_ performed: PerformedExercise, _ exercise: ResolvedExercise) -> String {
-        var parts = ["\(exercise.repRange.bottom)–\(exercise.repRange.top) reps"]
+        var parts = ["\(exercise.repRange.bottom)–\(exercise.repRange.top) \(copy[.reps])"]
         switch performed.state {
         case .skipped:
-            parts.append("skipped")
+            parts.append(copy[.skipped])
         case .completed:
-            parts.append("\(performed.sets.count) of \(exercise.plannedSets) sets done")
+            parts.append(copy.setsDone(logged: performed.sets.count, planned: exercise.plannedSets))
         case .open:
-            parts.append("set \(min(performed.sets.count + 1, exercise.plannedSets)) of \(exercise.plannedSets)")
+            parts.append(copy.setOf(
+                current: min(performed.sets.count + 1, exercise.plannedSets),
+                total: exercise.plannedSets))
         }
         // A Barbell's bar is standard, so only a Machine (Plates) names a Base Weight.
         if let base = exercise.baseWeight {
-            parts.append("base \(base.decimalString) \(base.unit.rawValue)")
+            parts.append("\(copy.baseLabel(base)) \(base.unit.rawValue)")
         }
         return parts.joined(separator: " · ")
     }
@@ -347,13 +350,11 @@ struct LoggingScreen: View {
     private func ruleChip(
         _ performed: PerformedExercise, _ exercise: ResolvedExercise
     ) -> (text: String, tone: ChipTone)? {
-        let unit = exercise.unit.rawValue
-
         // A One-off never writes back, so the chip names the Working Weight that survives
         // — not just the fact of the one-off (§6.4).
         if performed.oneOffWeight != nil {
-            guard let working = exercise.workingWeight else { return ("one-off", .steel) }
-            return ("one-off · \(working.decimalString) \(unit) stays", .steel)
+            guard let working = exercise.workingWeight else { return (copy[.oneOff], .steel) }
+            return (copy.oneOffStays(working), .steel)
         }
 
         if performed.state == .completed {
@@ -361,13 +362,12 @@ struct LoggingScreen: View {
                 performed: performed, exercise: exercise, inventory: rack)
             if result.outcome.progressed, let move = result.move {
                 if exercise.isMixedUnitPin, let micro = move.microload {
-                    return ("→ \(move.workingWeight.decimalString) \(unit) "
-                            + "+\(micro.decimalString) \(micro.unit.rawValue) next time", .go)
+                    return (copy.nextTimeMixed(working: move.workingWeight, micro: micro), .go)
                 }
-                return ("→ \(move.workingWeight.decimalString) \(unit) next time", .go)
+                return (copy.nextTimeWeight(move.workingWeight), .go)
             }
             guard let working = exercise.workingWeight else { return nil }
-            return ("stays \(working.decimalString) \(unit)", .steel)
+            return (copy.stays(working), .steel)
         }
 
         // While logging: the condition, printed as the Increment is **held**. A
@@ -383,14 +383,13 @@ struct LoggingScreen: View {
             increment = nil
         }
         guard let increment else { return nil }
-        return ("+\(increment.decimalString) \(increment.unit.rawValue) "
-                + "if all \(exercise.thresholdReps)", .steel)
+        return (copy.ifAllIncrement(increment, reps: exercise.thresholdReps), .steel)
     }
 
     /// **An unset weight is not zero** (§2.8), so there is nothing to draw and nothing to
     /// log. §6.6's Re-weigh list is the other end of this.
     private var unweighed: some View {
-        Text("No weight yet. Tap the dash above and type one.")
+        Text(copy[.noWeightYetTap])
             .typography(Typography.body(12, lineSpacing: 4))
             .foregroundStyle(Color.dimText)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -430,7 +429,7 @@ struct LoggingScreen: View {
         return Button { tapLogged(index, set) } label: {
             setRow(number, isNext: isAimed(loggedIndex: index)) {
                 HStack(spacing: 8) {
-                    Text("\(reps) reps")
+                    Text(copy.nReps(reps))
                         .typography(Typography.listValue(14))
                         .foregroundStyle(Color.text)
                     if reps > exercise.repRange.top {
@@ -440,7 +439,7 @@ struct LoggingScreen: View {
                     }
                     // §6.4 marks a One-off twice, and this is the second mark: a plain chip on
                     // **every** Set logged under it.
-                    if set.oneOff { Chip("one-off", tone: .steel) }
+                    if set.oneOff { Chip(copy[.oneOff], tone: .steel) }
                     Spacer(minLength: 8)
                     Text("✓")
                         .typography(Typography.body(14))
@@ -457,7 +456,7 @@ struct LoggingScreen: View {
         let reps = pendingReps ?? exercise.targetReps
         let row = setRow(number, isNext: correcting == nil) {
             HStack(spacing: 8) {
-                Text(reps == exercise.targetReps ? "Target \(reps) reps" : "\(reps) reps")
+                Text(reps == exercise.targetReps ? copy.targetReps(reps) : copy.nReps(reps))
                     .typography(Typography.listValue(14))
                     .foregroundStyle(Color.text)
                 if reps > exercise.repRange.top {
@@ -481,7 +480,7 @@ struct LoggingScreen: View {
     private func emptyRow(_ number: Int, skipped: Bool) -> some View {
         setRow(number, isNext: false) {
             HStack {
-                Text(skipped ? "skipped" : "not done")
+                Text(skipped ? copy[.skipped] : copy[.notDone])
                     .typography(Typography.meta(12))
                     .foregroundStyle(Color.dimText)
                 Spacer(minLength: 0)
@@ -519,7 +518,7 @@ struct LoggingScreen: View {
             if let started = workout.restStartedAt {
                 TimelineView(.periodic(from: .now, by: 1)) { timeline in
                     HStack(spacing: 9) {
-                        Text("Resting")
+                        Text(copy[.resting])
                             .typography(Typography.label())
                             .foregroundStyle(Color.labelText)
                         Text(clock(timeline.date.timeIntervalSince1970 - started))
@@ -528,12 +527,12 @@ struct LoggingScreen: View {
                     }
                 }
             } else {
-                Text("Ready")
+                Text(copy[.ready])
                     .typography(Typography.label())
                     .foregroundStyle(Color.labelText)
             }
             Spacer(minLength: 8)
-            Text("\(workout.openExerciseCount) open")
+            Text(copy.openShort(workout.openExerciseCount))
                 .typography(Typography.label())
                 .foregroundStyle(Color.labelText)
         }
@@ -563,7 +562,7 @@ struct LoggingScreen: View {
             let reps = correcting.reps
             HStack(spacing: 9) {
                 adjust("−") { self.correcting?.reps = max(0, reps - 1) }
-                PrimaryButton("Put \(reps) reps") { put(reps, at: correcting.index) }
+                PrimaryButton(copy.putReps(reps)) { put(reps, at: correcting.index) }
                 adjust("+") { self.correcting?.reps = reps + 1 }
             }
         } else if performed.state == .open, performed.sets.count < exercise.plannedSets {
@@ -571,7 +570,7 @@ struct LoggingScreen: View {
             HStack(spacing: 9) {
                 adjust("−") { pendingReps = max(0, reps - 1) }
                 // The `+` is what makes logging **above** the range reachable by design.
-                PrimaryButton("Log \(reps) reps") { log(reps) }
+                PrimaryButton(copy.logReps(reps)) { log(reps) }
                 adjust("+") { pendingReps = reps + 1 }
             }
         } else {
@@ -700,23 +699,23 @@ struct LoggingScreen: View {
     ) -> some View {
         SheetStack(heading: exercise.name) {
             if performed.state == .skipped {
-                SheetRow("Put it back", sub: "reopen") { act(.reopen) }
+                SheetRow(copy[.putItBack], sub: copy[.reopen]) { act(.reopen) }
             } else {
-                SheetRow("Skip this exercise", sub: "not at all") { act(.skip) }
+                SheetRow(copy[.skipThisExercise], sub: copy[.notAtAll]) { act(.skip) }
             }
             if performed.state == .open, !performed.sets.isEmpty {
                 SheetRow(
-                    "Done early",
-                    sub: "\(performed.sets.count) of \(exercise.plannedSets) sets · will not progress"
+                    copy[.doneEarly],
+                    sub: copy.doneEarlyNote(logged: performed.sets.count, planned: exercise.plannedSets)
                 ) { act(.doneEarly) }
             }
             SheetRow(
-                "Change the weight",
+                copy[.changeTheWeight],
                 sub: performedWeight(performed, exercise)
-                    .map { "\($0.decimalString) \(exercise.unit.rawValue)" } ?? "not set yet"
+                    .map { "\($0.decimalString) \(exercise.unit.rawValue)" } ?? copy[.notSetYet]
             ) { sheet = .weight }
-            SheetRow("Finish the workout", sub: nil) { attemptFinish() }
-            SheetRow("Discard the workout", sub: nil, tone: .stop) {
+            SheetRow(copy[.finishTheWorkout], sub: nil) { attemptFinish() }
+            SheetRow(copy[.discardTheWorkout], sub: nil, tone: .stop) {
                 // A Workout with no logged Sets discards without a question (§3.3).
                 if workout.hasLoggedAnything {
                     sheet = .discard
@@ -731,28 +730,27 @@ struct LoggingScreen: View {
     private func gateSheet(_ workout: Workout) -> some View {
         let open = workout.openExerciseCount
         return SheetStack(
-            heading: "\(open) exercise\(open == 1 ? " is" : "s are") still open",
-            note: "Skip \(open == 1 ? "it" : "them") and finish? "
-                + "Every exercise still ends completed or skipped."
+            heading: copy.stillOpen(open),
+            note: copy.skipAndFinishNote(open: open)
         ) {
-            SheetPrimary("Skip and finish") {
+            SheetPrimary(copy[.skipAndFinish]) {
                 sheet = nil
                 finish(.skipRemainingAndFinish)
             }
-            SheetRow("Keep logging", sub: nil, centred: true) { sheet = nil }
+            SheetRow(copy[.keepLogging], sub: nil, centred: true) { sheet = nil }
         }
     }
 
     private func discardSheet() -> some View {
         SheetStack(
-            heading: "Discard this workout?",
-            note: "Every logged set goes. Hoppa keeps nothing."
+            heading: copy[.discardThisWorkout],
+            note: copy[.everyLoggedSetGoes]
         ) {
-            SheetRow("Discard", sub: nil, tone: .stop, centred: true) {
+            SheetRow(copy[.discard], sub: nil, tone: .stop, centred: true) {
                 sheet = nil
                 finish(.discard)
             }
-            SheetRow("Keep it", sub: nil, centred: true) { sheet = nil }
+            SheetRow(copy[.keepIt], sub: nil, centred: true) { sheet = nil }
         }
     }
 
@@ -780,18 +778,18 @@ struct LoggingScreen: View {
     }
 
     /// *Just today, or from now on?* — the one question §4.3 asks, and it asks it once.
-    private func lowerSheet(_ weight: Weight, _ exercise: ResolvedExercise) -> some View {
+    private func lowerSheet(_ weight: Weight, _: ResolvedExercise) -> some View {
         SheetStack(
-            heading: "Down to \(weight.decimalString) \(exercise.unit.rawValue)",
-            note: "Just today, or from now on?"
+            heading: copy.downTo(weight),
+            note: copy[.justTodayOrFromNowOn]
         ) {
-            SheetRow("Just today", sub: "a one-off weight · never written back") {
+            SheetRow(copy[.justToday], sub: copy[.oneOffNeverWritten]) {
                 setWeight(.setOneOffWeight(weight))
             }
-            SheetRow("From now on", sub: "this becomes the working weight") {
+            SheetRow(copy[.fromNowOn], sub: copy[.becomesWorkingWeight]) {
                 setWeight(.setWorkingWeight(weight))
             }
-            SheetRow("Cancel", sub: nil, centred: true) { sheet = nil }
+            SheetRow(copy[.cancel], sub: nil, centred: true) { sheet = nil }
         }
     }
 
@@ -821,14 +819,14 @@ struct LoggingScreen: View {
     private func oneAtATime(_ open: Workout) -> some View {
         VStack(alignment: .leading, spacing: 16) {
             Spacer()
-            Text("\(open.workoutDayName) is still running")
+            Text(copy.stillRunning(open.workoutDayName))
                 .typography(Typography.display(26))
                 .foregroundStyle(Color.text)
-            Text("Hoppa keeps one workout open at a time. Finish or discard that one first.")
+            Text(copy[.hoppaKeepsOneWorkout])
                 .typography(Typography.body(13, lineSpacing: 4))
                 .foregroundStyle(Color.dimText)
             Spacer()
-            PrimaryButton("Go to \(open.workoutDayName)") {
+            PrimaryButton(copy.goTo(open.workoutDayName)) {
                 if !path.isEmpty { path.removeLast() }
                 path.append(.logging(open.workoutDayId))
             }
@@ -847,7 +845,7 @@ struct LoggingScreen: View {
                     .foregroundStyle(Color.dimText)
             }
             Spacer()
-            PrimaryButton("Back") { if !path.isEmpty { path.removeLast() } }
+            PrimaryButton(copy[.back]) { if !path.isEmpty { path.removeLast() } }
         }
     }
 }
@@ -878,6 +876,7 @@ enum LoggingSheet: Identifiable {
 /// `3 / 5 ▾` opens this: every Exercise with its state as a pill, under the line that
 /// names the distinction the UI must never conflate (§3.2).
 struct ExerciseListDrawer: View {
+    @Environment(\.copy) private var copy
     let workout: Workout
     let pick: (Int) -> Void
     let finish: () -> Void
@@ -893,7 +892,7 @@ struct ExerciseListDrawer: View {
                         .foregroundStyle(Color.text)
                     Spacer()
                     Button(action: close) {
-                        Text("Close ✕")
+                        Text(copy[.close])
                             .typography(Typography.label(10.5))
                             .foregroundStyle(Color.steel)
                             .frame(height: 50)
@@ -903,7 +902,7 @@ struct ExerciseListDrawer: View {
                 }
                 .frame(height: 50)
 
-                Text("Leaving an open exercise means later, never \"not at all\".")
+                Text(copy[.leavingOpenExercise])
                     .typography(Typography.body(12, lineSpacing: 4))
                     .foregroundStyle(Color.dimText)
 
@@ -916,7 +915,7 @@ struct ExerciseListDrawer: View {
                 }
                 .scrollBounceBehavior(.basedOnSize)
 
-                PrimaryButton("Finish workout", action: finish)
+                PrimaryButton(copy[.finishWorkout], action: finish)
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
@@ -954,9 +953,8 @@ struct ExerciseListDrawer: View {
     /// drawer that resolved every one of them would be the logging screen five times over.
     private func setLine(_ performed: PerformedExercise) -> String {
         switch performed.sets.count {
-        case 0: "No sets yet"
-        case 1: "1 set logged"
-        default: "\(performed.sets.count) sets logged"
+        case 0: copy[.noSetsYet]
+        default: copy.setsLogged(performed.sets.count)
         }
     }
 }
@@ -964,10 +962,11 @@ struct ExerciseListDrawer: View {
 /// Open / Completed / Skipped (§3.2). **No warning colour** — §7.6 keeps colour off
 /// anything the user did, and skipping is a decision, not a mistake.
 struct StatePill: View {
+    @Environment(\.copy) private var copy
     let state: ExerciseState
 
     var body: some View {
-        Text(state.rawValue)
+        Text(copy.stateName(state))
             .typography(Typography.label(10, tracking: 0.08))
             .foregroundStyle(colour)
             .padding(.horizontal, 6)

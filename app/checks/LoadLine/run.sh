@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
 # Ticket 0060 — the stack load line, walked on this machine.
 #
-# `DomainCopy.swift` lives in the app target but imports no SwiftUI, so it compiles here
-# against the built `HoppaRules` (see the build map's charter bullet on Swift on the VPS).
-# The view prints `StackLoad.loadLine` and decides nothing; this is that English, against
-# the shipping solver.
+# Copy lives on `Phrasebook`. The solve is `Rules.breakdown`, the shipping call.
+# What this proves is the English the logging screen prints for a pin, against
+# the same remainder the drawing hangs.
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 rules="$here/../../HoppaRules"
+store="$here/../../HoppaStore"
 out="${TMPDIR:-/tmp}/load-line-checks"
 
-swift build --package-path "$rules" >/dev/null
-debug="$rules/.build/$(swift -print-target-info | sed -n 's/.*"unversionedTriple": "\([^"]*\)".*/\1/p')/debug"
+swift build --package-path "$store" >/dev/null
+triple="$(swift -print-target-info | sed -n 's/.*"unversionedTriple": "\([^"]*\)".*/\1/p')"
+rulesDebug="$rules/.build/$triple/debug"
+storeDebug="$store/.build/$triple/debug"
 
 swiftc -swift-version 6 \
-    -I "$debug/Modules" "$debug"/HoppaRules.build/*.o \
+    -I "$storeDebug/Modules" -I "$rulesDebug/Modules" \
+    "$storeDebug"/HoppaRules.build/*.o "$storeDebug"/HoppaStore.build/*.o \
     -o "$out" \
-    "$here/../../Hoppa/Hoppa/DomainCopy.swift" "$here/main.swift"
+    "$here/main.swift"
 "$out"

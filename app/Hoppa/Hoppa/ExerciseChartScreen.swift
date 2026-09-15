@@ -44,6 +44,7 @@ import HoppaStore
 
 struct ExerciseChartScreen: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
     let exerciseId: ExerciseID
 
@@ -66,7 +67,7 @@ struct ExerciseChartScreen: View {
     private var content: some View {
         if let chart {
             VStack(alignment: .leading, spacing: 0) {
-                StepHeader(label: "Progress", back: leave)
+                StepHeader(label: copy[.progress], back: leave)
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
                         Text(chart.name)
@@ -97,7 +98,7 @@ struct ExerciseChartScreen: View {
             VStack(alignment: .leading, spacing: 16) {
                 StepHeader(label: nil, back: leave)
                 Spacer()
-                Text("That exercise is gone.")
+                Text(copy[.thatExerciseIsGone])
                     .typography(Typography.display(26))
                     .foregroundStyle(Color.text)
                 Spacer()
@@ -125,9 +126,9 @@ struct ExerciseChartScreen: View {
         var parts: [String] = []
         if let dayName { parts.append(dayName) }
         parts += [
-            chart.equipment.screenName,
+            copy.screenName(chart.equipment),
             "\(chart.plannedSets) × \(chart.repRange.bottom)–\(chart.repRange.top)",
-            chart.mode.screenName
+            copy.screenName(chart.mode)
         ]
         return parts.joined(separator: " · ")
     }
@@ -139,13 +140,13 @@ struct ExerciseChartScreen: View {
     @ViewBuilder
     private func heroes(_ chart: ExerciseChart) -> some View {
         if chart.isMixedUnitPin {
-            hero(chart.hero.weight, label: "Pin", size: 46, prefix: nil)
+            hero(chart.hero.weight, label: copy[.chartPin], size: 46, prefix: nil)
                 .padding(.top, 16)
             hero(chart.hero.microload ?? .zero(chart.axisUnit ?? .kg),
-                 label: "Microload\non the pin", size: 46, prefix: "+ ")
+                 label: copy[.microloadOnThePin], size: 46, prefix: "+ ")
                 .padding(.top, 10)
         } else {
-            hero(chart.hero.weight, label: "Working\nweight", size: 58, prefix: nil)
+            hero(chart.hero.weight, label: copy[.workingWeight], size: 58, prefix: nil)
                 .padding(.top, 14)
         }
     }
@@ -174,10 +175,11 @@ struct ExerciseChartScreen: View {
     /// with, so the two screens cannot give one stopped plate two reasons.
     private func chipText(_ chart: ExerciseChart) -> String? {
         if let target = chart.target {
-            return "All \(target.sets) sets at \(target.reps) → \(weightText(target.to))"
+            return copy.allSetsAt(sets: target.sets, reps: target.reps, to: weightText(target.to))
         }
         guard let blocker = chart.blocker else { return nil }
-        return "All \(chart.plannedSets) sets at \(chart.thresholdReps) · \(blocker.reason)"
+        return copy.allSetsBlocked(
+            sets: chart.plannedSets, reps: chart.thresholdReps, reason: copy.reason(blocker))
     }
 
     // MARK: - The plot
@@ -198,12 +200,12 @@ struct ExerciseChartScreen: View {
             }
         } else {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Nothing here yet")
+                Text(copy[.nothingHereYet])
                     .typography(Typography.display(20))
                     .foregroundStyle(Color.text)
                 Text(chart.points.isEmpty
-                     ? "This exercise gets a line once you have trained it twice."
-                     : "One session is a dot, not a climb. Train it once more.")
+                     ? copy[.thisExerciseGetsALine]
+                     : copy[.oneSessionIsADot])
                     .typography(Typography.body(13, lineSpacing: 4))
                     .foregroundStyle(Color.dimText)
             }
@@ -224,26 +226,21 @@ struct ExerciseChartScreen: View {
     /// §6.7 rather than solved behind the user's back.
     private func mixedUnitNote(_ chart: ExerciseChart) -> String {
         guard chart.totals?.pinMoved == true, let start = chart.points.first?.performed.weight else {
-            return "The line is the microload. The pin has not moved, so the pin is not on"
-                + " it. Nothing here converts."
+            return copy.mixedUnitUnmoved()
         }
-        return "The line is the microload. The pin has gone from"
-            + " \(start.decimalString) \(start.unit.rawValue) to"
-            + " \(chart.hero.weight.decimalString) \(chart.hero.weight.unit.rawValue),"
-            + " and the line drops back each time the microload rolls onto it."
-            + " Nothing here converts."
+        return copy.mixedUnitMoved(from: start, to: chart.hero.weight)
     }
 
     private func legend(_ chart: ExerciseChart) -> some View {
         HStack(spacing: 16) {
-            legendItem("Went up") { Circle().fill(Color.go).frame(width: 8, height: 8) }
-            legendItem("Stayed") { Circle().fill(Color.steel).frame(width: 6.4, height: 6.4) }
+            legendItem(copy[.wentUp]) { Circle().fill(Color.go).frame(width: 8, height: 8) }
+            legendItem(copy[.stayed]) { Circle().fill(Color.steel).frame(width: 6.4, height: 6.4) }
             if chart.points.contains(where: { $0.oneOff != nil }) {
-                legendItem("One-off") {
+                legendItem(copy[.oneOff]) {
                     Circle().stroke(Color.steel, lineWidth: 1.6).frame(width: 8, height: 8)
                 }
             }
-            legendItem("Set at \(chart.thresholdReps)") {
+            legendItem(copy.setAt(chart.thresholdReps)) {
                 RoundedRectangle(cornerRadius: 1.5).fill(Color.go).frame(width: 7, height: 7)
             }
             Spacer(minLength: 0)
@@ -269,20 +266,20 @@ struct ExerciseChartScreen: View {
     @ViewBuilder
     private func lastSessions(_ chart: ExerciseChart) -> some View {
         if !chart.points.isEmpty {
-            Text("Last sessions")
+            Text(copy[.lastSessions])
                 .typography(Typography.label())
                 .foregroundStyle(Color.labelText)
                 .padding(.top, 24)
             ForEach(chart.lastSessions) { point in
                 HStack(spacing: 0) {
-                    Text(HistoryDate.week(point.startedAt))
+                    Text(HistoryDate.week(point.startedAt, locale: copy.locale))
                         .typography(Typography.label(10, tracking: 0.1))
                         .foregroundStyle(Color.steel)
                         .frame(width: 58, alignment: .leading)
                     repsLine(point)
                     Spacer(minLength: 8)
                     if point.oneOff != nil {
-                        Chip("One-off", tone: .steel)
+                        Chip(copy[.oneOff], tone: .steel)
                             .padding(.trailing, 8)
                     }
                     Text(weightText(point.performed))
@@ -325,16 +322,16 @@ struct ExerciseChartScreen: View {
                 figure(
                     firstValue(chart, totals),
                     label: chart.isMixedUnitPin && !totals.pinMoved
-                        ? "Pin, unchanged"
-                        : "On \(HistoryDate.week(totals.firstDate))",
+                        ? copy[.pinUnchanged]
+                        : copy.onDate(HistoryDate.week(totals.firstDate, locale: copy.locale)),
                     tone: Color.text)
                 figure(
                     gainText(totals.gain),
-                    label: chart.isMixedUnitPin ? "On the pin" : "Since then",
+                    label: chart.isMixedUnitPin ? copy[.onThePin] : copy[.sinceThen],
                     // Green is progression everywhere (§7.3). A weight the user lowered by
                     // hand is not one, and it must not read as one.
                     tone: totals.gain.hundredths > 0 ? Color.go : Color.text)
-                figure("\(totals.timesUp)", label: "Times up", tone: Color.text)
+                figure("\(totals.timesUp)", label: copy[.timesUp], tone: Color.text)
             }
             .padding(.top, 18)
         }
@@ -390,6 +387,7 @@ struct ExerciseChartScreen: View {
 /// one of them would recompute the same `x(of:)` and `y(of:)`, and the day two of them
 /// disagreed the line would leave its own dots behind.
 private struct ChartPlot: View {
+    @Environment(\.copy) private var copy
     let chart: ExerciseChart
     let scale: ChartScale
 
@@ -400,8 +398,6 @@ private struct ChartPlot: View {
     private static let padLeft: CGFloat = 36
     private static let padRight: CGFloat = 34
     private static let padTop: CGFloat = 14
-    private static let months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
-                                 "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
 
     var body: some View {
         Canvas { context, size in
@@ -506,7 +502,7 @@ private struct ChartPlot: View {
         context.fill(disc(to, radius: 6), with: .color(Color.floor))
         context.fill(disc(to, radius: 4), with: .color(Color.floor))
         context.stroke(disc(to, radius: 4), with: .color(colour), lineWidth: 1.8)
-        draw(&context, next.isProgression ? "NEXT" : "NOW",
+        draw(&context, next.isProgression ? copy[.next].uppercased() : copy[.now].uppercased(),
              at: CGPoint(x: to.x, y: to.y - 12),
              size: 8.5, tracking: 1.1, colour: colour, anchor: .trailing)
     }
@@ -531,7 +527,7 @@ private struct ChartPlot: View {
             let at = CGPoint(x: x, y: lifted)
             context.fill(disc(at, radius: 4), with: .color(Color.floor))
             context.stroke(disc(at, radius: 4), with: .color(Color.steel), lineWidth: 1.6)
-            draw(&context, "ONE-OFF", at: CGPoint(x: x + 9, y: lifted),
+            draw(&context, copy[.oneOff].uppercased(), at: CGPoint(x: x + 9, y: lifted),
                  size: 8.5, tracking: 1.1, colour: Color.steel, anchor: .leading)
         }
     }
@@ -554,9 +550,9 @@ private struct ChartPlot: View {
         for point in chart.points {
             let month = Calendar.current.component(
                 .month, from: Date(timeIntervalSince1970: point.startedAt)) - 1
-            guard month != last, Self.months.indices.contains(month) else { continue }
+            guard month != last, copy.monthAbbreviations.indices.contains(month) else { continue }
             last = month
-            draw(&context, Self.months[month],
+            draw(&context, copy.monthAbbreviations[month],
                  at: CGPoint(x: g.x(point.startedAt), y: Self.plotHeight - 4),
                  size: 9, tracking: 1.17, colour: Color.labelText, anchor: .center)
         }
@@ -585,7 +581,7 @@ private struct ChartPlot: View {
                 }
             }
         }
-        draw(&context, "SETS", at: CGPoint(x: Self.padLeft - 8, y: top + 8),
+        draw(&context, copy[.sets].uppercased(), at: CGPoint(x: Self.padLeft - 8, y: top + 8),
              size: 8.5, tracking: 0.85, colour: Color.labelText, anchor: .trailing)
     }
 

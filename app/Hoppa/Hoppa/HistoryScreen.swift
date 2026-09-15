@@ -27,6 +27,7 @@ import HoppaStore
 
 struct HistoryScreen: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
 
     private var rows: [HistoryRow] {
@@ -38,7 +39,7 @@ struct HistoryScreen: View {
             Color.floor.ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
                 Spacer().frame(height: 16)
-                Text("History")
+                Text(copy[.history])
                     .typography(Typography.display(31, tracking: 0.005))
                     .foregroundStyle(Color.text)
                 content
@@ -84,7 +85,7 @@ struct HistoryScreen: View {
                     .typography(Typography.display(44, tracking: -0.01))
                     .foregroundStyle(Color.text)
                 Spacer().frame(height: 9)
-                Text(streak.run == 1 ? "Week in a row" : "Weeks in a row")
+                Text(copy.weekStreak(streak.run))
                     .typography(Typography.display(14, tracking: 0.05))
                     .foregroundStyle(Color.text)
                 Spacer().frame(height: 15)
@@ -98,11 +99,11 @@ struct HistoryScreen: View {
                 }
                 Spacer().frame(height: 8)
                 HStack {
-                    Text(HistoryDate.week(streak.weeks.first!.start))
+                    Text(HistoryDate.week(streak.weeks.first!.start, locale: copy.locale))
                         .typography(Typography.label())
                         .foregroundStyle(Color.labelText)
                     Spacer()
-                    Text(HistoryDate.week(streak.weeks.last!.start))
+                    Text(HistoryDate.week(streak.weeks.last!.start, locale: copy.locale))
                         .typography(Typography.label())
                         .foregroundStyle(Color.labelText)
                 }
@@ -121,7 +122,7 @@ struct HistoryScreen: View {
     /// line up down the screen.
     private func list(_ rows: [HistoryRow]) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(rows.count == 1 ? "1 workout" : "\(rows.count) workouts")
+            Text(copy.workoutCount(rows.count))
                 .typography(Typography.label())
                 .foregroundStyle(Color.labelText)
             Spacer().frame(height: 10)
@@ -144,10 +145,10 @@ struct HistoryScreen: View {
         } label: {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(HistoryDate.day(row.startedAt))
+                    Text(HistoryDate.day(row.startedAt, locale: copy.locale))
                         .typography(Typography.display(15, tracking: 0.03))
                         .foregroundStyle(Color.steel)
-                    Text(HistoryDate.month(row.startedAt))
+                    Text(HistoryDate.month(row.startedAt, locale: copy.locale))
                         .typography(Typography.label(10))
                         .foregroundStyle(Color.labelText)
                 }
@@ -164,7 +165,7 @@ struct HistoryScreen: View {
                     if row.wentUpCount > 0 {
                         // The one green thing on the screen, and §7.3 already gives green
                         // its meaning everywhere else.
-                        Text(row.wentUpCount == 1 ? "1 went up" : "\(row.wentUpCount) went up")
+                        Text(copy.wentUpCount(row.wentUpCount))
                             .typography(Typography.label(10, tracking: 0.11))
                             .foregroundStyle(Color.go)
                     }
@@ -187,11 +188,11 @@ struct HistoryScreen: View {
     /// listed plain, the way §6.5 lists it: no warning colour and no invitation to fix.
     private func meta(_ row: HistoryRow) -> String {
         var parts = [
-            row.exerciseCount == 1 ? "1 exercise" : "\(row.exerciseCount) exercises",
-            row.setCount == 1 ? "1 set" : "\(row.setCount) sets"
+            copy.exerciseCount(row.exerciseCount),
+            copy.setCount(row.setCount)
         ]
         if row.skippedCount > 0 {
-            parts.append("\(row.skippedCount) skipped")
+            parts.append(copy.skippedCount(row.skippedCount))
         }
         return parts.joined(separator: " · ")
     }
@@ -203,10 +204,10 @@ struct HistoryScreen: View {
     /// on the Progress page, which has its own empty state to say so.
     private var empty: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Nothing here yet")
+            Text(copy[.nothingHereYet])
                 .typography(Typography.display(26))
                 .foregroundStyle(Color.text)
-            Text("Finish your first workout and it lands here.")
+            Text(copy[.finishFirstWorkoutLandsHere])
                 .typography(Typography.body(13, lineSpacing: 4))
                 .foregroundStyle(Color.dimText)
         }
@@ -220,25 +221,26 @@ struct HistoryScreen: View {
 /// of `HoppaRules`. A date is a calendar and a zone, and this is only the printing of one.
 enum HistoryDate {
 
-    static func day(_ timestamp: Timestamp) -> String {
-        Date(timeIntervalSince1970: timestamp).formatted(.dateTime.day())
+    static func day(_ timestamp: Timestamp, locale: Locale) -> String {
+        Date(timeIntervalSince1970: timestamp).formatted(.dateTime.day().locale(locale))
     }
 
     /// `AUG`, and `AUG 25` once the date leaves the current year — see the note at the top
     /// of this file. Uppercased by `Typography.label`, so the value here is the plain one.
-    static func month(_ timestamp: Timestamp, now: Date = Date()) -> String {
+    static func month(_ timestamp: Timestamp, locale: Locale, now: Date = Date()) -> String {
         let date = Date(timeIntervalSince1970: timestamp)
-        let calendar = Calendar.current
-        let month = date.formatted(.dateTime.month(.abbreviated))
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = locale
+        let month = date.formatted(.dateTime.month(.abbreviated).locale(locale))
         guard calendar.component(.year, from: date) != calendar.component(.year, from: now)
         else { return month }
-        return "\(month) \(date.formatted(.dateTime.year(.twoDigits)))"
+        return "\(month) \(date.formatted(.dateTime.year(.twoDigits).locale(locale)))"
     }
 
     /// `4 MAY` — the date under an end of the strip.
-    static func week(_ timestamp: Timestamp) -> String {
+    static func week(_ timestamp: Timestamp, locale: Locale) -> String {
         Date(timeIntervalSince1970: timestamp)
-            .formatted(.dateTime.day().month(.abbreviated))
+            .formatted(.dateTime.day().month(.abbreviated).locale(locale))
     }
 }
 

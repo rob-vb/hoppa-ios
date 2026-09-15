@@ -35,6 +35,7 @@ import HoppaStore
 
 struct PastWorkoutScreen: View {
     @Environment(LogbookStore.self) private var store
+    @Environment(\.copy) private var copy
     @Binding var path: [Route]
     let workoutId: WorkoutID
 
@@ -73,7 +74,7 @@ struct PastWorkoutScreen: View {
             VStack(alignment: .leading, spacing: 16) {
                 header(nil)
                 Spacer()
-                Text("That workout is gone.")
+                Text(copy[.thatWorkoutIsGone])
                     .typography(Typography.display(26))
                     .foregroundStyle(Color.text)
                 Spacer()
@@ -85,10 +86,10 @@ struct PastWorkoutScreen: View {
 
     private func header(_ past: PastWorkout?) -> some View {
         HStack(spacing: 0) {
-            StepHeader(label: "History", back: leave)
+            StepHeader(label: copy[.history], back: leave)
             if past != nil {
                 Menu {
-                    Button("Delete workout", role: .destructive) { confirmingDelete = true }
+                    Button(copy[.deleteWorkout], role: .destructive) { confirmingDelete = true }
                 } label: {
                     Text("•••")
                         .typography(Typography.body(17))
@@ -118,11 +119,11 @@ struct PastWorkoutScreen: View {
     /// numbers, and the confirm counts what the header counts.
     private func meta(_ row: HistoryRow) -> String {
         var parts = [
-            row.exerciseCount == 1 ? "1 exercise" : "\(row.exerciseCount) exercises",
-            row.setCount == 1 ? "1 set" : "\(row.setCount) sets"
+            copy.exerciseCount(row.exerciseCount),
+            copy.setCount(row.setCount)
         ]
-        if row.skippedCount > 0 { parts.append("\(row.skippedCount) skipped") }
-        return "\(PastWorkoutDate.full(row.startedAt)) · " + parts.joined(separator: " · ")
+        if row.skippedCount > 0 { parts.append(copy.skippedCount(row.skippedCount)) }
+        return "\(PastWorkoutDate.full(row.startedAt, locale: copy.locale)) · " + parts.joined(separator: " · ")
     }
 
     // MARK: - The Exercises, in the order they were performed
@@ -187,14 +188,14 @@ struct PastWorkoutScreen: View {
             // The one green thing on the row, and §7.3 already gives green its meaning.
             // Without the recorded number the row still says it went up, rather than
             // inventing a weight from an Increment that has since moved.
-            Text(to.map { "\(weightText(from)) → \(weightText($0))" } ?? "Went up")
+            Text(to.map { "\(weightText(from)) → \(weightText($0))" } ?? copy[.wentUp])
                 .typography(Typography.label(10, tracking: 0.12))
                 .foregroundStyle(Color.go)
                 .fixedSize(horizontal: false, vertical: true)
         case .stayed:
-            verdictLabel("Stayed")
+            verdictLabel(copy[.stayed])
         case .skipped:
-            verdictLabel("Skipped")
+            verdictLabel(copy[.skipped])
         case .oneOff:
             // The chip under the name carries it. Nothing here, so the name is not
             // competing with two statements about the same Exercise.
@@ -202,7 +203,7 @@ struct PastWorkoutScreen: View {
         case .gone:
             // Deleted mid-Workout: Finish wrote no outcome, so there is no verdict to
             // state and this says why the row has none (§2.7, and §6.5's own sentence).
-            verdictLabel("Removed from the program")
+            verdictLabel(copy[.removedFromTheProgram])
         }
     }
 
@@ -214,8 +215,8 @@ struct PastWorkoutScreen: View {
     }
 
     private func oneOffText(_ stayed: PastWeight?) -> String {
-        guard let stayed else { return "One-off" }
-        return "One-off · \(weightText(stayed)) stayed"
+        guard let stayed else { return copy[.oneOff] }
+        return copy.oneOffStayed(stayed.weight)
     }
 
     // MARK: - The Sets, exactly as they were logged
@@ -233,7 +234,7 @@ struct PastWorkoutScreen: View {
                 .typography(Typography.display(19, tracking: 0.02))
                 .foregroundStyle(set.metThreshold ? Color.go : Color.text)
                 .frame(width: 54, alignment: .leading)
-            Text("Reps")
+            Text(copy[.reps])
                 .typography(Typography.label(9, tracking: 0.13))
                 .foregroundStyle(Color.labelText)
             Spacer(minLength: 8)
@@ -273,6 +274,7 @@ struct PastWorkoutScreen: View {
 /// drawing of a bar, so outside one the palette is simply Hoppa's palette.
 struct DeleteWorkoutSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.copy) private var copy
     let row: HistoryRow
     let confirm: () -> Void
 
@@ -280,20 +282,20 @@ struct DeleteWorkoutSheet: View {
         ZStack {
             Color.floor.ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
-                Text("Delete this workout?")
+                Text(copy[.deleteThisWorkout])
                     .typography(Typography.display(22, tracking: 0.03))
                     .foregroundStyle(Color.text)
                 Text(removes)
                     .typography(Typography.body(13, lineSpacing: 5))
                     .foregroundStyle(Color.rowText)
                     .padding(.top, 14)
-                Text("Your working weights stay where they are.")
+                Text(copy[.workingWeightsStay])
                     .typography(Typography.body(13, lineSpacing: 5))
                     .foregroundStyle(Color.steel)
                     .padding(.top, 10)
                 HStack(spacing: 10) {
-                    button("Cancel", fill: nil) { dismiss() }
-                    button("Delete", fill: Color.stop) {
+                    button(copy[.cancel], fill: nil) { dismiss() }
+                    button(copy[.delete], fill: Color.stop) {
                         dismiss()
                         confirm()
                     }
@@ -314,9 +316,9 @@ struct DeleteWorkoutSheet: View {
     /// it said was there. A skip is named separately or not at all, the way it is
     /// everywhere else — it holds no Sets, and this sentence is about what is destroyed.
     private var removes: String {
-        let exercises = row.exerciseCount == 1 ? "1 exercise" : "\(row.exerciseCount) exercises"
-        let sets = row.setCount == 1 ? "1 set" : "\(row.setCount) sets"
-        return "This removes \(exercises) and \(sets) from your history."
+        copy.deleteRemoves(
+            exercises: copy.exerciseCount(row.exerciseCount),
+            sets: copy.setCount(row.setCount))
     }
 
     private func button(_ title: String, fill: Color?, action: @escaping () -> Void) -> some View {
@@ -350,12 +352,12 @@ enum PastWorkoutDate {
     /// orders itself by the phone's locale, and on a US one it answers `Aug 3, 2026`. The
     /// artboard writes day, month, year, and this screen is not the place a Program's
     /// dates start reading in two different orders.
-    static func full(_ timestamp: Timestamp) -> String {
+    static func full(_ timestamp: Timestamp, locale: Locale) -> String {
         let date = Date(timeIntervalSince1970: timestamp)
         return [
-            date.formatted(.dateTime.day()),
-            date.formatted(.dateTime.month(.abbreviated)),
-            date.formatted(.dateTime.year())
+            date.formatted(.dateTime.day().locale(locale)),
+            date.formatted(.dateTime.month(.abbreviated).locale(locale)),
+            date.formatted(.dateTime.year().locale(locale))
         ].joined(separator: " ").uppercased()
     }
 }
