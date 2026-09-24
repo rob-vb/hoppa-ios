@@ -135,11 +135,11 @@ Heb je iemand nodig die je schema schrijft, dan is dit de verkeerde app.
 Required: iPhone 6.9" (1320 × 2868 portrait). Apple scales these down for smaller
 iPhones. Up to 10 per language; 5 is enough:
 
-1. The logging screen with a loaded barbell (hero: "The weight goes up when you earn it")
-2. The workout summary leading with what went up
-3. The plate rack with microplates switched on
-4. A mixed-unit stack exercise (`100 lbs + 1 kg`)
-5. The per-exercise chart
+1. Logging — Barbell back squat mid-workout, the loaded bar drawn
+2. Workout summary — right after Finish, leading with what went up
+3. Progress — the streak and the lifts climbing over sixteen weeks
+4. Exercise chart — Smith machine bench press, with the one-off marker
+5. Plate rack — microplates switched on
 
 Capture in the iPhone 16 Pro Max / 17 Pro Max simulator with `HarnessSeed.isEnabled`
 and `seedsHistory` set to `true` for the history shots — and back to `false` before
